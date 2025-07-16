@@ -17,7 +17,7 @@
     }
 
     try {
-        $sql = "SELECT * FROM reservas;";
+        $sql = "SELECT nombre, fecha, hora FROM reservas JOIN ;";
         $sentencia = $con->prepare($sql);
         $sentencia->execute([$var1, $var2]);
     } catch (\Throwable $th) {

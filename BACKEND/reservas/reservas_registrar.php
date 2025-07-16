@@ -17,7 +17,7 @@
     }
 
     try {
-        $sql = "INSERT INTO reserva () VALUES ();";
+        $sql = "INSERT INTO Reserva (idPedido, idMesa, fecha, horaInicio, duracion) VALUES ();";
         $sentencia = $con->prepare($sql);
         $sentencia->execute([$var1, $var2]);
     } catch (\Throwable $th) {
