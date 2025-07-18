@@ -1,6 +1,8 @@
 const subFavicon = document.getElementById('subir_favicon');
 const subLogo = document.getElementById('subir_logo');
 
+document.getElementById('descargar_favicon').href = ; // Actualiza el enlace de descarga del favicon
+
 // El código no está optimizado, se hará en una próxima versión
 subFavicon.addEventListener('click', function (e) {
     const favicon = document.getElementById('favicon');
@@ -22,7 +24,6 @@ subFavicon.addEventListener('click', function (e) {
     .then(data => {
         // document.getElementById('mensaje').textContent = "Favicon subido correctamente a " + data;
         document.getElementById('favicon_img').src = data; // Actualiza la vista previa del favicon
-        document.getElementById('descargar_favicon').href = data; // Actualiza el enlace de descarga del favicon
     })
     .catch(err => {
         document.getElementById('mensaje').textContent = 'Error al subir: ' + err;
@@ -50,7 +51,6 @@ subLogo.addEventListener('click', function (e) {
     .then(res => res.text()) // o res.json() si el PHP responde en JSON
     .then(data => {
         document.getElementById('logo_img').src = data;
-        document.getElementById('descargar_logo').href = data;
     })
     .catch(err => {
         document.getElementById('mensaje').textContent = 'Error al subir: ' + err;
