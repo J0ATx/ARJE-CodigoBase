@@ -1,5 +1,4 @@
 <?php
-
     include_once '../../../Control/Conexión/conexion.php';
 
     $id_reserva = $_POST['idReserva'];
@@ -9,8 +8,7 @@
         $stmt = $con->prepare($sql);
         $stmt->execute([$id_reserva]);
     } catch (\Throwable $th) {
-        JSON_encode(array("error" => "Error preparando la consulta: " . $th->getMessage()));
+        echo JSON_encode(("error" => "Error preparando la consulta: " . $th->getMessage()));
         exit();
     }
-
 ?>

@@ -1,5 +1,4 @@
 <?php
-
     include_once '../../../Control/Conexión/conexion.php';
 
     // $lugar = $_POST['lugar']; Por el momento la mesa se selecciona aleatoriamente independientemente del lugar que el usuario elija.
@@ -39,5 +38,4 @@
         JSON_encode(array("error" => "Error preparando la consulta: " . $th->getMessage()));
         exit();
     }
-
 ?>
