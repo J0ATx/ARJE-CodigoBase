@@ -1,8 +1,6 @@
 const subFavicon = document.getElementById('subir_favicon');
 const subLogo = document.getElementById('subir_logo');
 
-document.getElementById('descargar_favicon').href = ; // Actualiza el enlace de descarga del favicon
-
 // El código no está optimizado, se hará en una próxima versión
 subFavicon.addEventListener('click', function (e) {
     const favicon = document.getElementById('favicon');
@@ -10,6 +8,14 @@ subFavicon.addEventListener('click', function (e) {
 
     if (!archivo) {
         alert('Por favor, selecciona un archivo.');
+        return;
+    }
+
+    const nomFavicon = archivo.name;
+    const extFavicon = nomFavicon.split('.').pop().toLowerCase();
+
+    if (extFavicon !== 'ico') {
+        alert('Por favor, selecciona un archivo de imagen válido para el favicon (.ico).');
         return;
     }
 
@@ -38,6 +44,14 @@ subLogo.addEventListener('click', function (e) {
 
     if (!archivo) {
         alert('Por favor, selecciona un archivo.');
+        return;
+    }
+
+    const nomLogo = archivo.name;
+    const extLogo = nomLogo.split('.').pop().toLowerCase();
+
+    if (extLogo !== 'svg') {
+        alert('Por favor, selecciona un archivo de imagen válido para el logo (.svg).');
         return;
     }
 
