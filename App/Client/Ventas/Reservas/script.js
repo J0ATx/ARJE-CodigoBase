@@ -4,7 +4,6 @@ const mensajesAlerta = document.querySelector('.mensajes-alerta');
 
 
 btn.addEventListener('click', () => {
-    // Limpiar mensajes anteriores
     mensajesAlerta.innerHTML = '';
 
     const lugar = document.getElementById('lugar').value;
