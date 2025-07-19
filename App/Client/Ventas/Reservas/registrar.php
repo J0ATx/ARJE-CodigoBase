@@ -4,7 +4,7 @@
     // $lugar = $_POST['lugar']; Por el momento la mesa se selecciona aleatoriamente independientemente del lugar que el usuario elija.
     $fecha = $_POST['fecha'];
     $hora = $_POST['hora'];
-    $id_cliente = $_POST['id_cliente']; // El ID del cliente se obtiene de la sesión o del formulario.
+    $id_cliente = 1; // $_POST['id_cliente']; // El ID del cliente se obtiene de la sesión o del formulario.
     $fechReg = date("Y-m-d");
     $mesa = rand(1, 20); // $_POST['mesa']; El CRUD de mesas aún no está implementado, se usa un número aleatorio para simular la selección de una mesa.
     $id_camarero = rand(6, 10);; // $_POST['id_camarero']; El ID del camarero se obtiene de la sesión o del formulario.
@@ -27,13 +27,15 @@
         $stmt = $con->prepare($sql);
         $stmt->execute([0, 0, 0, $fechReg]);
 
-        $sql = "INSERT INTO Reserva (idPedido, idMesa, idUsuario, fecha, horaInicio, duracion) VALUES (LAST_INSERT_ID(), ?, ?, ?, ?, 1)";
+        $id_pedido = $con->lastInsertId();
+
+        $sql = "INSERT INTO Reserva (idPedido, idMesa, idUsuario, fecha, horaInicio, duracion) VALUES (?, ?, ?, ?, ?, 1)";
         $stmt = $con->prepare($sql);
-        $stmt->execute([$mesa, $id_camarero, $fecha, $hora]);
+        $stmt->execute([$id_pedido, $mesa, $id_camarero, $fecha, $hora]);
 
         $sql = "INSERT INTO Relaciona (idUsuario, idPedido) VALUES (?, ?)";
         $stmt = $con->prepare($sql);
-        $stmt->execute([$id_cliente, $con->lastInsertId()]);
+        $stmt->execute([$id_cliente, $id_pedido]);
     } catch (\Throwable $th) {
         JSON_encode(array("error" => "Error preparando la consulta: " . $th->getMessage()));
         exit();
