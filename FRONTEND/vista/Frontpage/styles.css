@@ -1,0 +1,301 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100dvh;
+    background-color: #0A0B0A;
+}
+
+html {
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+}
+
+@font-face {
+    font-family: 'Nesatho';
+    src: url('nesatho-webfont.woff') format('woff'),
+        url('nesatho-webfont.woff2') format('woff2');
+}
+
+h1 {
+    margin: 0;
+    font-family: 'Nesatho', sans-serif;
+    font-weight: 100;
+    color: #EFE7D2;
+    z-index: 1;
+    font-size: 8vw;
+}
+
+h2 {
+    font-family: 'Nesatho', sans-serif;
+    font-weight: 200;
+    color: rgba(188, 182, 167, 0.7);
+    z-index: 1;
+    font-size: 2.5vw;
+}
+
+.icons {
+    z-index: 1;
+    display: flex;
+    margin-bottom: 2vw;
+    margin-top: 0.5vw;
+    gap: 6vw;
+}
+
+.icons svg {
+    margin: 0;
+    width: 3vw;
+    height: 3vw;
+    fill: #EFE7D2;
+}
+
+.maincontent {
+    grid-column: span 5 / span 5;
+    grid-row: span 8 / span 8;
+    background-color: #1B1B1B;
+    border-radius: 1vw;
+    padding: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+    border: 0.1vw solid rgba(239, 231, 210, 0.1);
+}
+
+.maincontent::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1vw;
+    background: linear-gradient(to top, #000000f1 0%, transparent 30%);
+    opacity: 1;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.texture-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('texture.webp');
+    background-size: cover;
+    pointer-events: none;
+    opacity: 1;
+    z-index: 1;
+}
+
+.smoke-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('smoke.webp');
+    background-size: cover;
+    pointer-events: none;
+    opacity: 0.8;
+    z-index: 1;
+}
+
+header {
+    margin-top: 0.4vw;
+    gap: 0.5vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5vw;
+    padding-right: 1vw;
+    padding-left: 0.5vw;
+    background-color: #0A0B0A;
+    width: fit-content;
+    border-radius: 1vw;
+}
+
+header .logo {
+    max-width: 3vw;
+    max-height: 3vw;
+}
+
+header svg {
+    width: auto;
+    height: 3vw;
+    height: 3vw;
+    margin: 0;
+    display: block;
+}
+
+.btn-header {
+    font-family: 'Nesatho', sans-serif;
+    color: #EFE7D2;
+    z-index: 1;
+    font-size: 1.2vw;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 1vw;
+    height: 100vh;
+    padding: 1vw;
+    box-sizing: border-box;
+}
+
+
+.card {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+    grid-column-start: 6;
+    border-radius: 1vw;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    border-radius: 1vw;
+    object-fit: cover;
+    transition: transform 0.35s ease, filter 0.25s;
+}
+
+.card:hover img {
+    transform: scale(1.05);
+}
+
+
+.card:hover .entry-btn-hover {
+    display: block;
+    z-index: 2;
+}
+
+.card:hover .entry-btn {
+    display: none;
+}
+
+.card-text {
+    position: absolute;
+    bottom: -1vw;
+    right: -1vw;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    background-color: #0A0B0A;
+    text-align: right;
+    padding: 1vw 1vw 1vw 1.5vw;
+    border-top-left-radius: 2vw;
+    font-family: 'Nesatho', sans-serif;
+    color: #EFE7D2;
+    font-size: 1.5vw;
+    z-index: 10;
+}
+
+.entry-btn {
+    z-index: 1;
+    width: 2vw;
+    height: 2vw;
+}
+
+.entry-btn-hover {
+    display: none;
+    z-index: 1;
+    width: 2vw;
+    height: 2vw;
+}
+
+.card-2 {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+    grid-column-start: 6;
+    grid-row-start: 4;
+    background-color: #5070ff;
+    border-radius: 1vw;
+}
+
+.card-3 {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+    grid-column-start: 6;
+    grid-row-start: 7;
+    background-color: #5070ff;
+    border-radius: 1vw;
+}
+
+footer {
+    grid-column: span 5 / span 5;
+    grid-column-start: 1;
+    grid-row-start: 9;
+    border-radius: 1vw;
+    border: 0.1vw solid rgba(239, 231, 210, 0.1);
+    padding: 1vw;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    color: #EFE7D2;
+    font-size: 1vw;
+}
+
+footer a {
+    color: #EFE7D2;
+    font-family: 'Poppins', sans-serif;
+}
+
+footer a:visited {
+    color: #EFE7D2;
+    font-family: 'Poppins', sans-serif;
+}
+
+footer a:hover,
+footer a:active {
+    color: #BCB6A7;
+    font-family: 'Poppins', sans-serif;
+}
+
+@media (max-width: 1000px) {
+    h1 {
+        font-size: 5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    .card-text {
+        font-size: 1.1rem;
+    }
+
+    .btn-header {
+        font-size: 0.7rem;
+    }
+
+    .icons svg {
+        width: 2.2rem;
+        height: 2.2rem;
+    }
+
+    .entry-btn {
+        width: 3vw;
+        height: 3vw;
+    }
+    .entry-btn-hover {
+        display: none;
+        z-index: 1;
+        width: 3vw;
+        height: 3vw;
+    }
+}
