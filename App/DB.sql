@@ -6,7 +6,7 @@ create table Usuario(
     idUsuario int auto_increment,
     nombre varchar (30) NOT NULL,
     apellido varchar (30) NOT NULL,
-    contrasenia varchar (30) NOT NULL,
+    contrasenia varchar (256) NOT NULL,
     gmail varchar (100) UNIQUE NOT NULL,
     calificacion int (2),
     numTel int (9) UNIQUE NOT NULL,
