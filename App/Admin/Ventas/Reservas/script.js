@@ -41,6 +41,7 @@ function eliminarReserva(idReserva) {
     })
     .then(response => response.text())
     .then(data => {
+        fetchReservas();
         console.log(data);
     }).catch(error => {
         console.error('Error:', error);

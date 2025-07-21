@@ -13,8 +13,4 @@
         echo json_encode(["error" => "Error al insertar los datos: " . $th->getMessage()]);
         exit();
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 7e73f24edffe91bf21cf2aa9ab5bf384c16b13ab
 ?>

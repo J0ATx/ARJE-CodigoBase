@@ -22,7 +22,7 @@ subFavicon.addEventListener('click', function (e) {
     const archivoFavicon = new FormData();
     archivoFavicon.append('favicon', archivo); // clave 'favicon' debe coincidir con $_FILES['favicon']
 
-    fetch('archivo.php', {
+    fetch('BackEnd/archivo.php', {
         method: 'POST',
         body: archivoFavicon
     })
@@ -58,7 +58,7 @@ subLogo.addEventListener('click', function (e) {
     const archivoLogo = new FormData();
     archivoLogo.append('logo', archivo); // clave 'logo' debe coincidir con $_FILES['logo']
 
-    fetch('archivo.php', {
+    fetch('../BackEnd/archivo.php', {
         method: 'POST',
         body: archivoLogo
     })

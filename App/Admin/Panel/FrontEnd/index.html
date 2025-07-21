@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../Recursos/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <title>Los 3 Tanos - Panel de Administración</title>
+</head>
+
+<body>
+    <h1>Panel de Administración</h1>
+    <main class="container">
+        <div class="section-1">
+
+            <section>
+                <span class="card-title" id="favicon-title">Cambiar Favicon</span>
+                <img src="../../../Recursos/favicon.ico" id="favicon_img" alt="Favicon actual">
+                <div class="download">
+                    <a href="../../../Recursos/favicon.ico" id="descargar_favicon" download="Favicon">
+                        <svg id='Download_24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'
+                            style='fill: currentColor; cursor: pointer;'>
+                            <path
+                                d="M 11 2 C 10.448 2 10 2.448 10 3 L 10 11 L 6 11 L 12 17 L 18 11 L 14 11 L 14 3 C 14 2.448 13.552 2 13 2 L 11 2 z M 2 20 L 2 22 L 22 22 L 22 20 L 2 20 z" />
+                        </svg>
+                    </a>
+                </div>
+                <form>
+                    <input type="file" name="archivo" id="favicon" required>
+                    <input type="button" value="Subir" id="subir_favicon">
+                </form>
+
+            </section>
+
+
+            <section>
+                <span class="card-title" id="logo-title">Cambiar Logo</span>
+                <img src="../../../Recursos/logo.svg" id="logo_img" alt="Logo actual">
+                <div class="download">
+                    <a href="../../../Recursos/logo.svg" id="descargar_logo" download="Logo">
+                        <svg id='Download_24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'
+                            style='fill: currentColor; cursor: pointer;'>
+                            <path
+                                d="M 11 2 C 10.448 2 10 2.448 10 3 L 10 11 L 6 11 L 12 17 L 18 11 L 14 11 L 14 3 C 14 2.448 13.552 2 13 2 L 11 2 z M 2 20 L 2 22 L 22 22 L 22 20 L 2 20 z" />
+                        </svg>
+                    </a>
+                </div>
+                <form>
+                    <input type="file" name="archivo" id="logo" required>
+                    <input type="button" value="Subir" id="subir_logo">
+                </form>
+
+            </section>
+        </div>
+    </main>
+    <script src="../script.js"></script>
+</body>
+
+</html>
