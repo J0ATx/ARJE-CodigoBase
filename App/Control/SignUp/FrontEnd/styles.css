@@ -28,7 +28,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('decoration.webp');
+    background-image: url('files/decoration.webp');
     background-size: cover;
     pointer-events: none;
     opacity: 0.03;
@@ -44,7 +44,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('texture.webp');
+    background-image: url('files/texture.webp');
     background-size: cover;
     pointer-events: none;
     opacity: 1;
@@ -59,7 +59,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('smoke.webp');
+    background-image: url('files/smoke.webp');
     background-size: cover;
     pointer-events: none;
     opacity: 1;
@@ -250,6 +250,7 @@ html {
 }
 
 .login-btn {
+    margin-top: 16px;
     position: relative;
     z-index: 1;
     background: linear-gradient(to right, #ffffff23, #ffffff02);
