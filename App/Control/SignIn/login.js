@@ -21,6 +21,8 @@ entrar.addEventListener('click', function (e) {
                     location.href = '../../../Client/Panel/FrontEnd/index.html';
                 }
             }
-            console.log(data);
+            if(data.errores){
+                alert(data.errores);
+            }
         })
 })

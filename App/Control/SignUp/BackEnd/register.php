@@ -45,5 +45,8 @@ if ($checkEmail->fetchColumn() > 0) { // Ve si se repite el valor en otra column
     $sql = "INSERT INTO Usuario(nombre, contrasenia, gmail, numTel) VALUES (?, ?, ?, ?)";
     $stmt = $con->prepare($sql); // Prepara la consulta SQL
     $stmt->execute([$nombre, $contraseniaHash, $email, $telefono]); // Ejecuta la consulta
+    $sql = "INSERT INTO Cliente(idUsuario, noShows, platilloFav) VALUES (?, ?, ?)";
+    $stmt = $con->prepare($sql); // Prepara la consulta SQL
+    $stmt->execute([$con->lastInsertId(), 0, null]); // Ejecuta la consulta
     echo json_encode(["exito" => true, "mensaje" => "Registro exitoso."]);
 }

@@ -15,9 +15,14 @@ entrar.addEventListener('click', function (e) {
     fetch('../BackEnd/register.php', {
         method: 'POST',
         body: formulario
-    }).then(res => res.text())
+    }).then(res => res.json())
         .then(data => {
             //location.href="Login.html";
-            console.log(data);
+            if (data.errores) {
+                alert(data.errores);
+            }
+            if(data.exito){
+                location.href="../../SignIn/FrontEnd/index.html";
+            }
         })
 })

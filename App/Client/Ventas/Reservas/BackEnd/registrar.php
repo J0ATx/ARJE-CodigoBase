@@ -1,15 +1,25 @@
 <?php
+session_start();
+// Verificar si hay sesión iniciada
+if (!isset($_SESSION['usuario_id'])) {
+    echo json_encode(["error" => "empty"]);
+    exit();
+}
 
-    include_once '../../../../Control/Conexión/conexion.php';
+// Incluir la conexión después de verificar la sesión
+include_once '../../../../Control/Conexión/conexion.php';
 
-    // $lugar = $_POST['lugar']; Por el momento la mesa se selecciona aleatoriamente independientemente del lugar que el usuario elija.
-    $fecha = $_POST['fecha'];
-    $hora = $_POST['hora'];
-    $id_cliente = "1";
-    //$id_cliente = $_POST['id_cliente']; // El ID del cliente se obtiene de la sesión o del formulario.
-    $fechReg = date("Y-m-d");
-    $mesa = rand(1, 20); // $_POST['mesa']; El CRUD de mesas aún no está implementado, se usa un número aleatorio para simular la selección de una mesa.
-    $id_camarero = rand(6, 10); // $_POST['id_camarero']; El ID del camarero se obtiene de la sesión o del formulario.
+// Obtener datos del formulario
+$fecha = isset($_POST['fecha']) ? $_POST['fecha'] : '';
+$hora = isset($_POST['hora']) ? $_POST['hora'] : '';
+
+// Obtener ID del cliente de la sesión
+$id_cliente = $_SESSION["usuario_id"];
+$fechReg = date("Y-m-d");
+
+// Asignar mesa y camarero aleatorios (temporal)
+$mesa = rand(1, 20);
+$id_camarero = rand(6, 10);
 
     // Validar existencia de fecha y hora
     if (empty($fecha) || empty($hora)) {
@@ -52,7 +62,7 @@
         $stmt = $con->prepare($sql);
         $stmt->execute([$id_cliente, $id_pedido]);
     } catch (\Throwable $th) {
-        JSON_encode(array("error" => "error " . $th->getMessage()));
+        echo json_encode(array("error" => "error " . $th->getMessage()));
         exit();
     }
 

@@ -1,5 +1,5 @@
 <?php
-    include_once '..\..\..\Control\Conexión\conexion.php';
+    include_once '..\..\..\..\Control\Conexión\conexion.php';
 
     try {
         $sql = "SELECT usu.nombre, res.idPedido, res.idMesa, res.fecha, res.horaInicio FROM Usuario AS usu

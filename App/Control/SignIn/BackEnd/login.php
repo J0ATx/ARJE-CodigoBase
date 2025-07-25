@@ -9,6 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resultado->execute([$email]);
     $usuario = $resultado->fetch(PDO::FETCH_ASSOC);
     if($usuario && password_verify($contrasenia, $usuario['contrasenia'])){ //Compara la contraseña ingresada con la almacenada en hash
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
+        
         session_start();
         $_SESSION["usuario_id"] = $usuario["idUsuario"];
         $_SESSION["nombre"] = $usuario["nombre"];
