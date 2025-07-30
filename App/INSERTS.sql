@@ -41,3 +41,8 @@ INSERT INTO Usuario (nombre, apellido, contrasenia, gmail, calificacion, numTel)
 INSERT INTO Mozo (idUsuario, fechContratacion) VALUES (LAST_INSERT_ID(), '2024-04-25');
 INSERT INTO Usuario (nombre, apellido, contrasenia, gmail, calificacion, numTel) VALUES ('Javier', 'Castro', 'claveJavier', 'javier@email.com', 4, 101010101);
 INSERT INTO Mozo (idUsuario, fechContratacion) VALUES (LAST_INSERT_ID(), '2024-05-30');
+-- Usuario Gerente de Prueba
+-- Email: gerente@prueba.com
+-- Contraseña: gerente123 (hasheada correctamente con password_hash)
+INSERT INTO Usuario (nombre, apellido, contrasenia, gmail, calificacion, numTel) VALUES ('Gerente', 'Prueba', '$2y$10$gy0d3tiaoPcx3J34cw2ia.4dV42Zea1VvGt75nqikQZGxDJpLtERy', 'gerente@prueba.com', 5, 123456789);
+INSERT INTO Gerente (idUsuario, fechContratacion) VALUES (LAST_INSERT_ID(), '2024-01-01');

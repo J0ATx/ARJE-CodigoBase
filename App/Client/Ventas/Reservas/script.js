@@ -9,7 +9,7 @@ btn.addEventListener('click', () => {
     const lugar = document.getElementById('lugar').value;
     const fecha = document.getElementById('fecha').value;
     const hora = document.getElementById('hora').value;
-
+    
     const datos = new FormData();
     datos.append('lugar', lugar);
     datos.append('fecha', fecha);
@@ -19,39 +19,39 @@ btn.addEventListener('click', () => {
         method: 'POST',
         body: datos
     }).then(response => response.json())
-    .then(data => {
-        let mensaje = document.createElement('div');
-        let success = document.createElement('div');
-        mensaje.className = 'alert';
-        success.className = 'success';
-        if (data.error) {
-            switch (data.error) {
-                case "empty":
-                    mensaje.textContent = "Por favor, complete todos los campos.";
-                    break;
-                case "date":
-                    mensaje.textContent = "La fecha debe ser mayor o igual a la fecha actual.";
-                    break;
-                case "success":
-                    success.textContent = "Reserva realizada exitosamente!";
-                    break;
-                case "invalid date":
-                    mensaje.textContent = "Formato de fecha inválido. Debe ser YYYY-MM-DD.";
-                    break;
-                case "invalid hour":
-                    mensaje.textContent = "Formato de hora inválido. Debe ser HH:MM.";
-                    break;
-                default:
-                    mensaje.textContent = "Error: " + data.error;
+        .then(data => {
+            let mensaje = document.createElement('div');
+            let success = document.createElement('div');
+            mensaje.className = 'alert';
+            success.className = 'success';
+            if (data.error) {
+                switch (data.error) {
+                    case "empty":
+                        mensaje.textContent = "Por favor, complete todos los campos.";
+                        break;
+                    case "date":
+                        mensaje.textContent = "La fecha debe ser mayor o igual a la fecha actual.";
+                        break;
+                    case "success":
+                        success.textContent = "Reserva realizada exitosamente!";
+                        break;
+                    case "invalid date":
+                        mensaje.textContent = "Formato de fecha inválido. Debe ser YYYY-MM-DD.";
+                        break;
+                    case "invalid hour":
+                        mensaje.textContent = "Formato de hora inválido. Debe ser HH:MM.";
+                        break;
+                    default:
+                        mensaje.textContent = "Error: " + data.error;
+                }
+            } else {
+                success.textContent = data.success;
+                document.getElementById('lugar').value = '';
+                document.getElementById('fecha').value = '';
+                document.getElementById('hora').value = '';
             }
-        } else {
-            success.textContent = data.success;
-            document.getElementById('lugar').value = '';
-            document.getElementById('fecha').value = '';
-            document.getElementById('hora').value = '';
-        }
 
-        mensajesAlerta.appendChild(mensaje);
-        mensajesAlerta.appendChild(success);
-    })
+            mensajesAlerta.appendChild(mensaje);
+            mensajesAlerta.appendChild(success);
+        })
 });

@@ -1,3 +1,23 @@
+async function loadSVGLogo() {
+    try {
+        const response = await fetch('../../../Recursos/logo.svg');
+        const svgText = await response.text();
+        const logoContainer = document.getElementById('logo-container');
+        if (logoContainer) {
+            logoContainer.innerHTML = svgText;
+            
+            const svg = logoContainer.querySelector('svg');
+            if (svg) {
+                svg.setAttribute('fill', 'currentColor');
+                svg.setAttribute('stroke', 'currentColor');
+                svg.setAttribute('stroke-width', '1.5');
+            }
+        }
+    } catch (error) {
+        console.error('Error loading SVG logo:', error);
+    }
+}
+
 async function checkSession() {
     try {
         const response = await fetch('../BackEnd/checkSession.php', {
@@ -7,12 +27,12 @@ async function checkSession() {
         const data = await response.json();
 
         if (!data.logged_in) {
-            // Si no hay sesión iniciada, redirigir al login
             window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
             return false;
         }
 
-        // Mostrar nombre del usuario en el modal
+        showContent();
+
         const userNameElement = document.getElementById('userName');
         if (userNameElement) {
             userNameElement.textContent = `${data.user.nombre} ${data.user.apellido}`;
@@ -21,7 +41,20 @@ async function checkSession() {
         return true;
     } catch (error) {
         console.error('Error checking session:', error);
+        window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
         return false;
+    }
+}
+
+function showContent() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.display = 'none';
+    }
+    
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+        mainContent.classList.add('visible');
     }
 }
 
@@ -34,7 +67,6 @@ async function logout() {
         const data = await response.json();
 
         if (data.success) {
-            // Redirigir al login después de cerrar sesión
             window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
         } else {
             console.error('Error al cerrar sesión:', data.message);
@@ -46,39 +78,34 @@ async function logout() {
     }
 }
 
-// Verificar sesión al cargar la página
 window.addEventListener('load', async () => {
+    await loadSVGLogo();
     await checkSession();
 });
 
-// Manejar el menú desplegable
 document.addEventListener('DOMContentLoaded', () => {
     const userDropdown = document.getElementById('userDropdown');
     const userIcon = document.getElementById('userIcon');
     const dropdownContent = document.querySelector('.dropdown-content');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    // Abrir/cerrar menú desplegable al hacer clic en el ícono
     userIcon.addEventListener('click', (e) => {
         e.stopPropagation();
         dropdownContent.classList.toggle('active');
     });
 
-    // Cerrar menú desplegable al hacer clic fuera
     document.addEventListener('click', (e) => {
         if (!userDropdown.contains(e.target)) {
             dropdownContent.classList.remove('active');
         }
     });
 
-    // Cerrar menú desplegable al hacer clic en el botón de cerrar sesión
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async (e) => {
-            e.stopPropagation(); // Evitar que el clic cierre el menú
+            e.stopPropagation();
             await logout();
         });
     }
 });
 
-// Exportar las funciones para usarlas en otros archivos
 export { checkSession, logout };

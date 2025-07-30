@@ -41,13 +41,15 @@
                             <label for="email">Email
                                 <div class="input-wrapper">
                                     <input type="email" placeholder="tuemail@gmail.com" name="email" class="email-input" id="email"
-                                        required>
+                                        required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
+                                        title="Por favor ingresa un email válido (ejemplo: usuario@dominio.com)">
                                 </div>
                             </label>
                             <label for="tel">Teléfono
                                 <div class="input-wrapper">
-                                    <input type="tel" placeholder="Teléfono" name="tel" class="tel-input" id="telefono"
-                                        required pattern="[0-9]{9}" maxlength="9">
+                                    <input type="tel" placeholder="123456789" name="tel" class="tel-input" id="telefono"
+                                        required pattern="[0-9]{9}" minlength="9" maxlength="9" 
+                                        title="El número de teléfono debe contener exactamente 9 dígitos numéricos">
                                 </div>
                             </label>
                             <label for="password">Contraseña
@@ -64,7 +66,7 @@
                                     contraseña?</a></span>
                             </label>
                         </div>
-                        <button class="login-btn" id="boton">Iniciar sesión</button>
+                        <button class="login-btn" id="boton">Registrate</button>
                         <a href="../../SignIn/FrontEnd/index.html" class="signup-btn">¿Aún no tenés una cuenta?</a></span>
                     </form>
                 </div>

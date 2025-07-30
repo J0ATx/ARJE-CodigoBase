@@ -12,68 +12,67 @@
 </head>
 
 <body>
+    <div id="loading-screen">
+        <div id="logo-container" class="logo-loading"></div>
+    </div>
 
-    <!-- Botón flotante superior -->
-    <a href="../../../Panel/FrontEnd/index.html">
-        <div class="top-bar">
-            <button class="btn-pedir">
-                <img src="files/svg/Avatar.svg" alt="Avatar" class="avatar-icon" />
-                <img src="../../../../Recursos/logo.svg" alt="logo Los 3 Tanos" class="logo-icon">
-                <span class="btn-text">PEDÍ AHORA</span>
-            </button>
-        </div>
-    </a>
-
-
-
-    <main class="main-container">
-        <!-- Imagen izquierda -->
-        <div class="left-side">
-            <img src="files/svg/Image Wrapper.svg" alt="Local" class="local-img" />
-        </div>
-
-        <!-- Formulario a la derecha -->
-        <div class="right-side">
-            <div class="form-box">
-
-                <h1 class="titulo">RESERVAS</h1>
-                <p class="subtitulo">Asegurá tu lugar en la mejor pizzería de Uruguay</p>
-
-                <form class="formulario" autocomplete="off" id="formulario">
-                    <div class="datos-reserva">
-                        <div class="input-group">
-                            <img src="files/svg/Chair.svg" alt="Ubicación" />
-                            <select name="ubicacion" id="lugar" required>
-                                <option value="" disabled selected>Ubicación</option>
-                                <option>Interior</option>
-                                <option>Exterior</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group">
-                            <img src="files/svg/Group.svg" alt="Fecha" />
-                            <input type="date" name="fecha" id="fecha" required>
-                        </div>
-
-                        <div class="input-group">
-                            <img src="files/svg/Vector (3).svg" alt="Hora" />
-                            <input type="time" name="hora" id="hora" required>
-                        </div>
-                    </div>
-
-                    <input type="button" value="Reservar" id="btn" class="btn-reservar">
-                </form>
-                <div class="mensajes-alerta"></div>
-
-                <!-- Footer -->
-                <footer class="footer">
-                    <a href="#">Los 3 Tanos Pizzería</a> |
-                    <a href="#">Contacto</a> |
-                    Las Toscas M. Ferreira y Central
-                </footer>
+    <div id="main-content">
+        <a href="../../../Panel/FrontEnd/index.html">
+            <div class="top-bar">
+                <button class="btn-pedir">
+                    <img src="files/svg/Avatar.svg" alt="Avatar" class="avatar-icon" />
+                    <img src="../../../../Recursos/logo.svg" alt="logo Los 3 Tanos" class="logo-icon">
+                    <span class="btn-text">PEDÍ AHORA</span>
+                </button>
             </div>
-        </div>
-    </main>
+        </a>
+
+        <main class="main-container">
+            <div class="left-side">
+                <img src="files/svg/Image Wrapper.svg" alt="Local" class="local-img" />
+            </div>
+
+            <div class="right-side">
+                <div class="form-box">
+
+                    <h1 class="titulo">RESERVAS</h1>
+                    <p class="subtitulo">Asegurá tu lugar en la mejor pizzería de Uruguay</p>
+
+                    <form class="formulario" autocomplete="off" id="formulario">
+                        <div class="datos-reserva">
+                            <div class="input-group">
+                                <img src="files/svg/Chair.svg" alt="Ubicación" />
+                                <select name="ubicacion" id="lugar" required>
+                                    <option value="" disabled selected>Ubicación</option>
+                                    <option>Interior</option>
+                                    <option>Exterior</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <img src="files/svg/Group.svg" alt="Fecha" />
+                                <input type="date" name="fecha" id="fecha" required>
+                            </div>
+
+                            <div class="input-group">
+                                <img src="files/svg/Vector (3).svg" alt="Hora" />
+                                <input type="time" name="hora" id="hora" required>
+                            </div>
+                        </div>
+
+                        <input type="button" value="Reservar" id="btn" class="btn-reservar">
+                    </form>
+                    <div class="mensajes-alerta"></div>
+
+                    <footer class="footer">
+                        <a href="#">Los 3 Tanos Pizzería</a> |
+                        <a href="#">Contacto</a> |
+                        Las Toscas M. Ferreira y Central
+                    </footer>
+                </div>
+            </div>
+        </main>
+    </div>
     <script src="../script.js"></script>
 </body>
 

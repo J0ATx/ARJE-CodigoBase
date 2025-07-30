@@ -10,8 +10,14 @@
 body {
     min-height: 100dvh;
     background-color: #1B1B1B;
+    overflow-y: hidden;
 }
-
+p{
+    color: #696969;
+    font-size: 0.8rem;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+}
 html {
     -moz-text-size-adjust: none;
     -webkit-text-size-adjust: none;

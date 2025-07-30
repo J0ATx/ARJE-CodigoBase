@@ -23,13 +23,43 @@ if (!empty($missing_fields)) {
         "errores" => ["Los siguientes campos son requeridos: " . implode(', ', $missing_fields)]
     ]);
     exit;
+} else {
+    
 }
 
-// Obtener los valores del POST
-$nombre = $_POST["nombre"];
-$email = $_POST["email"];
-$telefono = $_POST["telefono"];
+// Obtener y limpiar los valores del POST
+$nombre = trim($_POST["nombre"]);
+$email = trim($_POST["email"]);
+$telefono = trim($_POST["telefono"]);
 $contrasenia = $_POST["contrasenia"];
+
+// Validaciones adicionales
+$errores = [];
+
+// Validar nombre
+if (strlen($nombre) < 2) {
+    $errores[] = "El nombre debe tener al menos 2 caracteres.";
+}
+
+// Validar email
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errores[] = "El formato del email no es válido.";
+}
+
+// Validar teléfono (solo números, exactamente 9 dígitos)
+if (!preg_match('/^[0-9]{9}$/', $telefono)) {
+    $errores[] = "El teléfono debe contener exactamente 9 dígitos numéricos.";
+}
+
+// Validar contraseña
+if (strlen($contrasenia) < 6) {
+    $errores[] = "La contraseña debe tener al menos 6 caracteres.";
+}
+
+if (!empty($errores)) {
+    echo json_encode(["exito" => false, "errores" => $errores]);
+    exit;
+}
 
 // Encriptar la contraseña
 $contraseniaHash = password_hash($contrasenia, PASSWORD_DEFAULT);

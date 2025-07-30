@@ -10,6 +10,7 @@
 body {
     min-height: 100dvh;
     background-color: #1B1B1B;
+    overflow-y: hidden;
 }
 
 html {
@@ -212,6 +213,29 @@ html {
     background-repeat: no-repeat;
     background-position: 16px center;
     padding-left: 50px;
+}
+
+/* Estilos para estados de error */
+.login-inputs input:invalid {
+    border-color: #ff4444;
+}
+
+.login-inputs input:invalid:focus {
+    border-color: #ff4444;
+    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
+}
+
+.login-inputs input:valid {
+    border-color: #4CAF50;
+}
+
+/* Mensaje de error personalizado */
+.input-wrapper.error::before {
+    background: radial-gradient(circle, #ff44441f 60%, #ff444479 100%) !important;
+}
+
+.input-wrapper.valid::before {
+    background: radial-gradient(circle, #4CAF501f 60%, #4CAF5079 100%) !important;
 }
 
 .hidePass-icon{

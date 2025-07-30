@@ -1,28 +1,37 @@
 const $ = el => document.querySelector(el);
 const $$ = el => document.querySelectorAll(el);
-const entrar = $('#boton');
-entrar.addEventListener('click', function (e) {
+const boton = $('#boton');
+const form = $('form');
+
+form.addEventListener('submit', function(e) {
     e.preventDefault();
-    const mail = email.value;
-    const contrasenia = passInput.value;
-    formulario = new FormData();
-    formulario.append('email', mail)
-    formulario.append('contrasenia', contrasenia)
+    const mail = $('#email').value;
+    const contrasenia = $('#passInput').value;
+    
+    const formulario = new FormData();
+    formulario.append('email', mail);
+    formulario.append('contrasenia', contrasenia);
+
     fetch('../BackEnd/login.php', {
         method: 'POST',
         body: formulario
     }).then(res => res.json())
         .then(data => {
             if(data.exito){
-                // Redirigir al panel de admin si es gerente, sino al panel normal
                 if (data.es_gerente) {
-                    location.href = '../../../Admin/Panel/FrontEnd/index.html';
+                    window.location.href = '../../../Admin/Panel/FrontEnd/index.html';
                 } else {
-                    location.href = '../../../Client/Panel/FrontEnd/index.html';
+                    window.location.href = '../../../Client/Panel/FrontEnd/index.html';
                 }
             }
             if(data.errores){
                 alert(data.errores);
+                console.log(data.errores);
             }
-        })
-})
+        });
+});
+
+// También agregamos un listener para el botón directamente
+boton.addEventListener('click', function(e) {
+    form.dispatchEvent(new Event('submit'));
+});
