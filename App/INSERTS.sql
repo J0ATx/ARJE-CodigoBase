@@ -45,4 +45,5 @@ INSERT INTO Mozo (idUsuario, fechContratacion) VALUES (LAST_INSERT_ID(), '2024-0
 -- Email: gerente@prueba.com
 -- Contraseña: gerente123 (hasheada correctamente con password_hash)
 INSERT INTO Usuario (nombre, apellido, contrasenia, gmail, calificacion, numTel) VALUES ('Gerente', 'Prueba', '$2y$10$gy0d3tiaoPcx3J34cw2ia.4dV42Zea1VvGt75nqikQZGxDJpLtERy', 'gerente@prueba.com', 5, 123456789);
+INSERT INTO Cliente (idUsuario, noShows, platilloFav) VALUES (LAST_INSERT_ID(), 0, 'Pizza');
 INSERT INTO Gerente (idUsuario, fechContratacion) VALUES (LAST_INSERT_ID(), '2024-01-01');

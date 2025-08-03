@@ -61,7 +61,8 @@ h2 {
     grid-row: span 8 / span 8;
     background-color: #1B1B1B;
     border-radius: 1vw;
-    padding: 2vw;
+    padding-top: 2vw;
+    padding-left: 2vw;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
