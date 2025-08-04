@@ -8,9 +8,10 @@
 }
 
 body {
-    min-height: 100dvh;
+    min-height: 100vh;
     background-color: #1B1B1B;
-    overflow-y: hidden;
+    overflow-y: auto;
+    position: relative;
 }
 p{
     color: #696969;
@@ -22,6 +23,8 @@ html {
     -moz-text-size-adjust: none;
     -webkit-text-size-adjust: none;
     text-size-adjust: none;
+    height: 100%;
+    overflow-y: auto;
 }
 
 @view-transition {
@@ -29,7 +32,7 @@ html {
 }
 
 .decoration-bg {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -91,7 +94,7 @@ html {
     position: relative;
     width: fit-content;
     background-color: #2f2f2f0a;
-    height: 700px;
+    height: 90vh;
     border-radius: 60px;
     backdrop-filter: blur(16px);
     box-shadow: 20px 20px 64px rgba(0, 0, 0, 0.5);
@@ -123,20 +126,25 @@ html {
     align-items: center;
     display: flex;
     flex-direction: column;
-    padding: 64px;
-    padding-top: 0;
+    padding: 24px;
     justify-content: center;
 }
 
 .login-inputs {
     width: 300px;
     height: 100%;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    max-height: 300px;
+}
+
+form{
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 0;
 }
 
 .login-content h2 {
@@ -144,6 +152,7 @@ html {
     text-align: center;
     line-height: 1.2;
     margin-bottom: 16px;
+    margin-top: 4vh;
     font-family: 'Poppins', sans-serif;
     color: #EFE7D2;
 }
@@ -353,6 +362,7 @@ html {
         gap: 16px;
         height: auto;
         margin-bottom: 32px;
+        margin-top: 32px;
     }
 
     .login-inputs input {
@@ -402,5 +412,47 @@ html {
     .login-inputs input {
         height: 46px;
         font-size: 0.85rem;
+    }
+}
+
+@media (max-height: 500px) {
+    .login-bg {
+        min-height: 80vh;
+    }
+
+    .login-content h2 {
+        font-size: 2rem;
+        margin-top: 2vh;
+    }
+
+    .login-content h3 {
+        font-size: 0.8rem;
+    }
+
+    .login-inputs input {
+        height: 40px;
+        padding: 15px;
+    }
+
+    .login-inputs .input-wrapper::before {
+        padding: 0.5px;
+    }
+
+    .login-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .signup-btn {
+        font-size: 0.7rem;
+    }
+
+    .login-inputs .forgot-pass {
+        font-size: 0.65rem;
+        top: 75px;
+    }
+
+    p {
+        font-size: 0.7rem;
     }
 }
