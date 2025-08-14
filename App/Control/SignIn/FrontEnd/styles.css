@@ -90,6 +90,18 @@ html {
     padding: 20px;
 }
 
+.login-container::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, #00000050 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -2;
+}
+
 .login-bg {
     position: relative;
     width: fit-content;
@@ -100,6 +112,7 @@ html {
     box-shadow: 20px 20px 64px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
+    max-height: 700px;
 }
 
 .login-image {
@@ -128,6 +141,7 @@ html {
     flex-direction: column;
     padding: 24px;
     justify-content: center;
+    z-index: 1;
 }
 
 .login-inputs {
@@ -349,12 +363,12 @@ form{
     .login-content h2 {
         font-size: 1.8rem;
         margin-bottom: 8px;
+        margin-top: 0;
     }
 
     .login-content h3 {
         font-size: 0.85rem;
         text-wrap: wrap;
-        margin-bottom: 30px;
     }
 
     .login-inputs {
