@@ -6,14 +6,14 @@ const form = $('form');
 form.addEventListener('submit', function(e) {
     e.preventDefault();
     const nom = $('#nombre').value;
+    const ape = $('#apellido').value;
     const mail = $('#email').value;
-    const telef = $('#telefono').value;
     const contra = $('#passInput').value;
     
     const formulario = new FormData();
     formulario.append('nombre', nom);
+    formulario.append('apellido', ape);
     formulario.append('email', mail);
-    formulario.append('telefono', telef);
     formulario.append('contrasenia', contra);
 
     fetch('../BackEnd/register.php', {

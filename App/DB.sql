@@ -9,7 +9,7 @@ create table Usuario(
     contrasenia varchar (256) NOT NULL,
     gmail varchar (100) UNIQUE NOT NULL,
     calificacion int (2),
-    numTel int (9) UNIQUE NOT NULL,
+    numTel int (9) UNIQUE,
     primary key(idUsuario)
 );
 

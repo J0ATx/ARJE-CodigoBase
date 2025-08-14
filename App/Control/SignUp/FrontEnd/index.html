@@ -28,8 +28,10 @@
                     </svg>
                 </div>
                 <div class="login-content">
-                    <h2>¡Registrate ahora!</h2>
-                    <h3>Crea tu cuenta para no perderte de nada</h3>
+                    <div>
+                        <h2>¡Registrate ahora!</h2>
+                        <h3>Crea tu cuenta para no perderte de nada</h3>
+                    </div>
                     <form>
                         <div class="login-inputs">
                             <label for="nombre">Usuario
@@ -43,21 +45,17 @@
                             <label for="email">Email
                                 <div class="input-wrapper">
                                     <input type="email" placeholder="tuemail@gmail.com" name="email" class="email-input"
-                                        id="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                                        title="Por favor ingresa un email válido (ejemplo: usuario@dominio.com)">
-                                </div>
-                            </label>
-                            <label for="telefono">Teléfono
-                                <div class="input-wrapper">
-                                    <input type="tel" placeholder="123456789" name="tel" class="tel-input" id="telefono"
-                                        required pattern="[0-9]{9}" minlength="9" maxlength="9"
-                                        title="El número de teléfono debe contener exactamente 9 dígitos numéricos">
+                                        id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                                        title="Por favor ingresa un email válido (ejemplo: usuario@dominio.com)"
+                                        required>
                                 </div>
                             </label>
                             <label for="passInput">Contraseña
                                 <div class="input-wrapper">
                                     <input type="password" placeholder="•••••••••" name="password"
-                                        class="password-input" id="passInput" required>
+                                        class="password-input" id="passInput" required
+                                        pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$"
+                                        title="La contraseña debe tener al menos 8 caracteres, incluir letras, números y un carácter especial.">
                                     <button type="button" class="hidePass-icon" onClick="toggleHide()">
                                         <svg class="eye-open" id="eyeOpen" width="20" height="20" viewBox="0 0 20 20"
                                             fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,6 +84,7 @@
                                 <a href="#" class="forgot-pass">¿Olvidaste tu
                                     contraseña?</a></span>
                             </label>
+
                         </div>
                         <button class="login-btn" id="boton">Registrate</button>
                         <a href="../../SignIn/FrontEnd/index.html" class="signup-btn">¿Ya tenés una cuenta?</a></span>
