@@ -38,4 +38,4 @@ function init() {
     esac
 }
 
-init "$@"
+init "$2"

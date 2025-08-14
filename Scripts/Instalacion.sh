@@ -4,11 +4,21 @@ function init() {
     case $@ in
         -i | -install)
             echo "Iniciando la instalación de los scripts..."
-            # Aquí puedes agregar los comandos de instalación necesarios
+            cd /
+            git clone --no-checkout https://github.com/J0ATx/Proyecto-Final-2025-Los3tanos.git
+            cd /Proyecto-Final-2025-Los3tanos
+            git sparse-checkout init --cone
+            git sparse-checkout set Scripts
+            git checkout
             ;;
         -u | -update)
             echo "Actualizando los scripts y la aplicación..."
-            # Aquí puedes agregar los comandos de actualización necesarios
+            cd /
+            git clone --no-checkout https://github.com/J0ATx/Proyecto-Final-2025-Los3tanos.git
+            cd /Proyecto-Final-2025-Los3tanos
+            git sparse-checkout init --cone
+            git sparse-checkout set Scripts
+            git checkout
             ;;
         -h | -help)
             echo "Uso: $0 [opción]"
@@ -24,4 +34,4 @@ function init() {
     esac
 }
 
-init "$@"
+init "$2"

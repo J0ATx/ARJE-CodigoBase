@@ -27,5 +27,5 @@ function init() {
             ;;
     esac
 }
-
+# Logs de ingresos al sistema, logues del sistema operativo.
 init "$@"

@@ -2,31 +2,31 @@
 
 function init() {
 
-
-██╗      ██████╗ ███████╗    ██████╗     ████████╗ █████╗ ███╗   ██╗ ██████╗ ███████╗
-██║     ██╔═══██╗██╔════╝    ╚════██╗    ╚══██╔══╝██╔══██╗████╗  ██║██╔═══██╗██╔════╝
-██║     ██║   ██║███████╗     █████╔╝       ██║   ███████║██╔██╗ ██║██║   ██║███████╗
-██║     ██║   ██║╚════██║     ╚═══██╗       ██║   ██╔══██║██║╚██╗██║██║   ██║╚════██║
-███████╗╚██████╔╝███████║    ██████╔╝       ██║   ██║  ██║██║ ╚████║╚██████╔╝███████║
-╚══════╝ ╚═════╝ ╚══════╝    ╚═════╝        ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝
-                                                                                     
+echo "
+          ██╗      ██████╗ ███████╗    ██████╗     ████████╗ █████╗ ███╗   ██╗ ██████╗ ███████╗          
+          ██║     ██╔═══██╗██╔════╝    ╚════██╗    ╚══██╔══╝██╔══██╗████╗  ██║██╔═══██╗██╔════╝          
+█████╗    ██║     ██║   ██║███████╗     █████╔╝       ██║   ███████║██╔██╗ ██║██║   ██║███████╗    █████╗
+╚════╝    ██║     ██║   ██║╚════██║     ╚═══██╗       ██║   ██╔══██║██║╚██╗██║██║   ██║╚════██║    ╚════╝
+          ███████╗╚██████╔╝███████║    ██████╔╝       ██║   ██║  ██║██║ ╚████║╚██████╔╝███████║          
+          ╚══════╝ ╚═════╝ ╚══════╝    ╚═════╝        ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝          
+"                                                            
     read -p "Ingrese su opción: " option
 
     case $option in
         -S | -services)
-            ./Servicios.sh "$@"
+            ./Servicios.sh "$2"
             ;;
         -P | -processes)
-            ./Procesos.sh "$@"
+            ./Procesos.sh "$2"
             ;;
         -R | -network)
-            ./Red.sh "$@"
+            ./Red.sh "$2"
             ;;
         -L | -logs)
-            ./Registros.sh "$@"
+            ./Registros.sh "$2"
             ;;
         -U | -users)
-            ./Usuarios.sh "$@"
+            ./Usuarios.sh "$2"
             ;;
         -M | -monthly-backup)
             ./RespaldoMensual.sh
@@ -40,17 +40,33 @@ function init() {
         -I | -install)
             ./Instalacion.sh
             ;;
-        5)
+        -E | -exit)
             echo "Saliendo..."
             exit 0
+            ;;
+        -H | -help)
+            echo "Opciones disponibles:"
+            echo "-S, -services: Ver servicios"
+            echo "-P, -processes: Ver procesos"
+            echo "-R, -network: Ver red"
+            echo "-L, -logs: Ver registros"
+            echo "-U, -users: Ver usuarios"
+            echo "-M, -monthly-backup: Realizar respaldo mensual"
+            echo "-D, -daily-backup: Realizar respaldo diario"
+            echo "-W, -weekly-backup: Realizar respaldo semanal"
+            echo "-I, -install: Instalar dependencias"
+            echo "-E, -exit: Salir del script"
+            echo "-H, -help: Mostrar esta ayuda"
+            init "$@"
             ;;
         *)
             echo "Opción no válida. Por favor, intente de nuevo."
             init "$@"
             ;;
     esac
+}
 
 if [ "$#" -eq 0 ]; then
     echo "Por favor, especifique una opción."
-    exit 1
+    init "$@"
 fi

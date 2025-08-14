@@ -8,11 +8,11 @@ function init() {
             ;;
         -s | -status)
             echo "Checking network status..."
-            # Add commands to check network status
+            nmcli general status
             ;;
         -r | -reset)
             echo "Resetting network settings..."
-            # Add commands to reset network settings
+            nmcli connection reload
             ;;
         -h | -help)
             echo "Usage: $0 [option]"
@@ -29,4 +29,4 @@ function init() {
     esac
 }
 
-init "$@"
+init "$2"
