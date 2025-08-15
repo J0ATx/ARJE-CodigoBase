@@ -25,12 +25,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $resultado_gerente->execute([$usuario["idUsuario"]]);
         $es_gerente = $resultado_gerente->fetch(PDO::FETCH_ASSOC)["es_gerente"] > 0;
         
-        // Guardar en sesión si es gerente
-        $_SESSION["es_gerente"] = $es_gerente;
+        if($es_gerente == true){
+            $_SESSION["rol"] = "Gerente";
+        } else {
+            $_SESSION["rol"] = "Cliente";
+        }
+        
         
         echo json_encode([
             "exito" => true,
-            "es_gerente" => $es_gerente
+            "rol" => $_SESSION["rol"]
         ]);
     } else {
         echo json_encode(["exito" => false, "errores" => ["Correo electrónico o contraseña incorrectos."]]);

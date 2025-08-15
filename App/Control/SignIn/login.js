@@ -18,7 +18,7 @@ form.addEventListener('submit', function(e) {
     }).then(res => res.json())
         .then(data => {
             if(data.exito){
-                if (data.es_gerente) {
+                if (data.rol === 'Gerente') {
                     window.location.href = '../../../Admin/Panel/FrontEnd/index.html';
                 } else {
                     window.location.href = '../../../Client/Panel/FrontEnd/index.html';
@@ -31,7 +31,6 @@ form.addEventListener('submit', function(e) {
         });
 });
 
-// También agregamos un listener para el botón directamente
 boton.addEventListener('click', function(e) {
     form.dispatchEvent(new Event('submit'));
 });

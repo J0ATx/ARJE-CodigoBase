@@ -56,5 +56,3 @@ window.addEventListener('load', async () => {
     await loadSVGLogo();
     await checkSession();
 });
-
-export { checkSession };

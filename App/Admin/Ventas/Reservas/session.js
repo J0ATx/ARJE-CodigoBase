@@ -31,7 +31,7 @@ async function checkSession() {
             return false;
         }
         
-        if (!data.is_admin) {
+        if (!data.es_gerente) {
             window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }
@@ -61,5 +61,3 @@ window.addEventListener('load', async () => {
     await loadSVGLogo();
     await checkSession();
 });
-
-export { checkSession };
