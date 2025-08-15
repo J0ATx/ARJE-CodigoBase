@@ -386,6 +386,7 @@ create table Ingredientes(
     nombre varchar (100) UNIQUE NOT NULL,
     caducidad date NOT NULL,
     stock int (10) NOT NULL,
+    medida varchar (10) NOT NULL,
     primary key(idIngrediente)
 );
 

@@ -47,6 +47,11 @@ $id_camarero = rand(6, 10);
         exit();
     }
 
+    if($_SESSION["rol"] !== "Cliente") {
+        echo json_encode(["error" => "not client"]);
+        exit();
+    }
+
     try {
         $sql = "INSERT INTO Pedido (montoTotal, pagoPedido, pagoPropina, fechReg) VALUES (?,?,?,?)";
         $stmt = $con->prepare($sql);

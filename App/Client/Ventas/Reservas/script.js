@@ -41,6 +41,9 @@ btn.addEventListener('click', () => {
                     case "invalid hour":
                         mensaje.textContent = "Formato de hora inválido. Debe ser HH:MM.";
                         break;
+                    case "not client":
+                        mensaje.textContent = "Solo los usuarios pueden hacer reservas.";
+                        break;
                     default:
                         mensaje.textContent = "Error: " + data.error;
                 }

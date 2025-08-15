@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../session.js" type="module"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../Recursos/favicon.ico">
+    <title>Los 3 Tanos - Gestión de Inventario</title>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader"></div>
+    </div>
+
+    <div id="main-content">
+        <header>
+            <div id="logo-container"></div>
+            <div id="userDropdown">
+                <div class="user-info">
+                    <span id="userName"></span>
+                    <button id="userIcon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="dropdown-content">
+                    <button id="logoutBtn">Cerrar Sesión</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <h1>Gestión de Inventario</h1>
+            
+            <section class="inventory-actions">
+                <button id="addIngredientBtn" class="action-button">Agregar Lote</button>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Buscar lote...">
+                </div>
+            </section>
+
+            <section class="inventory-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Stock</th>
+                            <th>Medida</th>
+                            <th>Fecha de Caducidad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ingredientsTableBody">
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <div id="ingredientModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalTitle">Agregar Lote</h2>
+                <form id="ingredientForm">
+                    <input type="hidden" id="ingredientId">
+                    <div class="form-group">
+                        <label for="nombre">Nombre del Lote</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stock">Cantidad</label>
+                        <input type="number" id="stock" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medida">Unidad de Medida</label>
+                        <select id="medida" required>
+                            <option value="g">Gramos (g)</option>
+                            <option value="kg">Kilogramos (kg)</option>
+                            <option value="ml">Mililitros (ml)</option>
+                            <option value="L">Litros (L)</option>
+                            <option value="u">Unidades (u)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="caducidad">Fecha de Caducidad</label>
+                        <input type="date" id="caducidad" required>
+                    </div>
+                    <button type="submit" class="submit-button">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>
