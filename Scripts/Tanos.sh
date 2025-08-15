@@ -19,7 +19,7 @@ echo "
         -P | -processes)
             ./Procesos.sh "$2"
             ;;
-        -R | -network)
+        -N | -network)
             ./Red.sh "$2"
             ;;
         -L | -logs)
@@ -36,6 +36,9 @@ echo "
             ;;
         -W | -weekly-backup)
             ./RespaldoSemanal.sh
+            ;;
+        -R | -restore)
+            ./Restaurar.sh
             ;;
         -I | -install)
             ./Instalacion.sh
