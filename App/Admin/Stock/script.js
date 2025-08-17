@@ -100,7 +100,6 @@ function renderIngredients(ingredientes) {
         row.innerHTML = `
             <td>${ingrediente.nombre}</td>
             <td>${ingrediente.stock} ${ingrediente.medida}</td>
-            <td>${ingrediente.medida}</td>
             <td>${formatDate(ingrediente.caducidad)}</td>
             <td class="action-icons">
                 <button class="edit-btn" onclick="editIngredient(${ingrediente.idIngrediente})">

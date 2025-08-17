@@ -90,7 +90,6 @@ nav ul li a i {
     text-align: center;
 }
 
-/* Ajustar el contenido principal para que ocupe el espacio restante */
 .container main {
     flex: 1;
     padding: 20px;
