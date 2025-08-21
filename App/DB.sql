@@ -393,6 +393,7 @@ create table Ingredientes(
 create table Incluye(
 	idProducto int,
     idIngrediente int,
+    cantidad int NOT NULL,
     primary key(idProducto, idIngrediente),
     foreign key(idProducto) REFERENCES Productos(idProducto) ON DELETE CASCADE,
     foreign key(idIngrediente) REFERENCES Ingredientes(idIngrediente) ON DELETE CASCADE

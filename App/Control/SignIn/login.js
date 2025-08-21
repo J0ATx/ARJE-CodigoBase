@@ -19,7 +19,7 @@ form.addEventListener('submit', function(e) {
         .then(data => {
             if(data.exito){
                 if (data.rol === 'Gerente') {
-                    window.location.href = '../../../Admin/Panel/FrontEnd/index.html';
+                    window.location.href = '../../../Admin/Gerente/Empresa/FrontEnd/index.html';
                 } else {
                     window.location.href = '../../../Client/Panel/FrontEnd/index.html';
                 }

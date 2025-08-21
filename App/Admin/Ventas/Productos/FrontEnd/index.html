@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
+    <script src="../session.js" type="module"></script>
+    <title>Los 3 Tanos - Gestión de Productos</title>
+</head>
+
+<body>
+    <div id="loading-screen">
+        <div id="logo-container" class="logo-loading"></div>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="../../../Gerente/Empresa/FrontEnd/index.html">Panel de Administración</a></li>
+            <li><a href="../../../Gerente/Usuarios/FrontEnd/index.html">Gestión de Usuarios</a></li>
+            <li><a href="../../../Ventas/Reservas/FrontEnd/index.html">Gestión de Reservas</a></li>
+            <li><a href="../../../Stock/FrontEnd/index.html">Gestión de Inventario</a></li>
+            <li><a href="../../../Ventas/Productos/FrontEnd/index.html">Gestión de Productos</a></li>
+            <li><a href="../../../../Client/Panel/FrontEnd/index.html">Panel Cliente</a></li>
+        </ul>
+    </nav>
+    <div id="main-content">
+        <main>
+            <h1>Gestión de Productos</h1>
+
+            <section class="products-actions">
+                <button id="addProductBtn" class="action-button">Agregar Producto</button>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Buscar producto...">
+                </div>
+            </section>
+
+            <section class="products-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Calificación</th>
+                            <th>Ingredientes</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <!-- Modal para productos -->
+        <div id="productModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalTitle">Agregar Producto</h2>
+                <form id="productForm">
+                    <input type="hidden" id="productId">
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre del Producto</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="precio">Precio</label>
+                        <input type="number" id="precio" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ingredientes</label>
+                        <div class="ingredient-selector">
+                            <select id="ingredientSelect">
+                                <option value="">Seleccione un ingrediente...</option>
+                            </select>
+                            <input type="number" id="ingredientAmount" placeholder="Cantidad" min="0">
+                            <button type="button" class="add-ingredient-btn">Añadir</button>
+                        </div>
+                        <div id="ingredientsList">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pasos de la Receta</label>
+                        <div id="recipeSteps">
+
+                        </div>
+                        <button type="button" id="addStepBtn" class="secondary-button">Agregar Paso</button>
+                    </div>
+
+                    <button type="submit" class="submit-button">Guardar Producto</button>
+                </form>
+            </div>
+        </div>
+
+
+        <div id="ingredientModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Agregar Ingrediente</h2>
+                <form id="ingredientForm">
+                    <div class="form-group">
+                        <label for="ingredientName">Nombre del Ingrediente</label>
+                        <input type="text" id="ingredientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ingredientStock">Cantidad</label>
+                        <input type="number" id="ingredientStock" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ingredientMeasure">Unidad de Medida</label>
+                        <select id="ingredientMeasure" required>
+                            <option value="g">Gramos (g)</option>
+                            <option value="kg">Kilogramos (kg)</option>
+                            <option value="ml">Mililitros (ml)</option>
+                            <option value="L">Litros (L)</option>
+                            <option value="u">Unidades (u)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ingredientExpiry">Fecha de Caducidad</label>
+                        <input type="date" id="ingredientExpiry" required>
+                    </div>
+                    <button type="submit" class="submit-button">Guardar Ingrediente</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="../script.js"></script>
+</body>
+
+</html>

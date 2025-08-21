@@ -22,13 +22,14 @@ subFavicon.addEventListener('click', function (e) {
     const archivoFavicon = new FormData();
     archivoFavicon.append('favicon', archivo); // clave 'favicon' debe coincidir con $_FILES['favicon']
 
-    fetch('BackEnd/archivo.php', {
+    fetch('../BackEnd/archivo.php', {
         method: 'POST',
         body: archivoFavicon
     })
     .then(res => res.text()) // o res.json() si el PHP responde en JSON
     .then(data => {
         // document.getElementById('mensaje').textContent = "Favicon subido correctamente a " + data;
+        console.log(data);
         document.getElementById('favicon_img').src = data; // Actualiza la vista previa del favicon
     })
     .catch(err => {

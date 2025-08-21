@@ -6,7 +6,7 @@
             // $nombre = basename($archivo['name']);
             $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
             $nombre = 'favicon.' . $extension;
-            $destino = '../../Recursos/' . $nombre;
+            $destino = '../../../../Recursos/' . $nombre;
 
             // Crear carpeta si no existe
             // if (!is_dir('uploads')) {
@@ -24,7 +24,7 @@
             // $nombre = basename($archivo['name']);
             $extension = pathinfo($archivo['name'], PATHINFO_EXTENSION);
             $nombre = 'logo.' . $extension;
-            $destino = '../../../Recursos/' . $nombre;
+            $destino = '../../../../Recursos/' . $nombre;
 
             // Crear carpeta si no existe
             // if (!is_dir('uploads')) {
