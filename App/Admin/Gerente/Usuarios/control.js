@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     cargarUsuarios();
 
-    document.getElementById('formUsuario').addEventListener('submit', async function(e) {
+    document.getElementById('formUsuario').addEventListener('submit', async function (e) {
         e.preventDefault();
         await crearUsuario();
     });
@@ -32,7 +32,7 @@ async function cargarUsuarios() {
     });
 }
 
-window.editarUsuario = function(idUsuario, nombre, apellido, gmail, calificacion, numTel, tipoUsuario) {
+window.editarUsuario = function (idUsuario, nombre, apellido, gmail, calificacion, numTel, tipoUsuario) {
     document.getElementById('edit_idUsuario').value = idUsuario;
     document.getElementById('edit_nombre').value = nombre;
     document.getElementById('edit_apellido').value = apellido;
@@ -43,11 +43,11 @@ window.editarUsuario = function(idUsuario, nombre, apellido, gmail, calificacion
     document.getElementById('modalEditar').style.display = 'flex';
 };
 
-window.cerrarModalEditar = function() {
+window.cerrarModalEditar = function () {
     document.getElementById('modalEditar').style.display = 'none';
 };
 
-document.getElementById('formEditar').addEventListener('submit', async function(e) {
+document.getElementById('formEditar').addEventListener('submit', async function (e) {
     e.preventDefault();
     await guardarCambiosUsuario();
 });
@@ -62,6 +62,19 @@ async function guardarCambiosUsuario() {
     const numTel = numTelRaw === '' ? null : numTelRaw;
     const tipoUsuario = document.getElementById('edit_tipoUsuario').value;
 
+    try {
+        const response = await fetch('../BackEnd/checkSession.php', {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+        const data = await response.json();
+        if (data.user.id == idUsuario && data.user.rol !== tipoUsuario) {
+            alert('No puedes cambiar el rol tu propia cuenta.');
+            return false;
+        }
+    } catch (error) {
+        console.error('Error checking session:', error);
+    }
     const res = await fetch('../BackEnd/modificar.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

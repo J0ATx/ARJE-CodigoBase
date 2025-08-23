@@ -27,7 +27,7 @@ async function checkSession() {
         const data = await response.json();
 
         if (!data.logged_in) {
-            window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
+            window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
             return false;
         }
         
@@ -40,7 +40,7 @@ async function checkSession() {
         return true;
     } catch (error) {
         console.error('Error checking session:', error);
-        window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
+        window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
         return false;
     }
 }
