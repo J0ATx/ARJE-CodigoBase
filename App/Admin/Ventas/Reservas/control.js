@@ -15,7 +15,7 @@ function fetchReservas() {
         .then(data => {
             data.forEach(reserva => {
                 const row = tabla.insertRow();
-                row.insertCell(0).innerText = reserva.nombre;
+                row.insertCell(0).innerText = reserva.nombre + ' ' + reserva.apellido;
                 row.insertCell(1).innerText = reserva.idMesa;
                 row.insertCell(2).innerText = reserva.fecha;
                 row.insertCell(3).innerText = reserva.horaInicio;
@@ -40,7 +40,7 @@ function fetchReservas() {
                 const editOption = document.createElement('button');
                 editOption.className = 'opcion';
                 editOption.innerHTML = '<i class="bx bx-edit"></i> Editar';
-                // editOption.onclick = () => editarReserva(reserva.id);
+                editOption.onclick = () => editarReserva(reserva.idPedido);
                 
                 // Delete option
                 const deleteOption = document.createElement('button');
@@ -81,3 +81,8 @@ function eliminarReserva(idReserva) {
         console.error('Error:', error);
     });
 };
+
+function editarReserva(idReserva) {
+    // Implement edit functionality here
+    console.log('Editar reserva con ID:', idReserva);
+}

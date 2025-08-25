@@ -4,6 +4,7 @@ body {
   background-color: #a7a7a7;
   font-family: sans-serif;
   position: relative;
+  overflow: hidden;
 }
 
 .fondo-svg {
@@ -26,58 +27,108 @@ body {
   display: block;
 }
 
+.logo {
+  width: 75px;
+  filter: contrast(0%);
+}
+
+.logo-container {
+  display: flex;
+  height: 100px;
+  align-items: center;
+  justify-content: center;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.logo-container p {
+  margin: 0;
+  margin-left: 10px;
+  font-size: 2.5rem;
+  font-weight: 1000;
+  color: #0A0B0A;
+  line-height: 32px;
+  font-family: 'Poppins', sans-serif;
+}
+
 nav {
-    width: 240px;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #181818;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  grid-area: nav;
+  width: 300px;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #F0F0F0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 nav ul li {
-    margin: 10px 0;
+  margin: 10px 0;
+  margin-inline: 8px;
 }
 
 nav ul li a {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 6px;
-    transition: background-color 0.3s;
-    font-family: 'Poppins', sans-serif;
-    font-size: 1rem;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: #434343;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
 }
 
 nav ul li a:hover,
 nav ul li a.active {
-    background-color: #4e4e4e;
+  background-color: #C3C3C3;
 }
 
 nav ul li a i {
-    margin-right: 10px;
-    width: 20px;
-    text-align: center;
-}
-
-
-.contenedor {
-  position: relative;
-  z-index: 1;
-  padding: 40px 20px;
+  margin-right: 10px;
+  width: 20px;
   text-align: center;
 }
 
+.page {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-areas:
+    "nav main";
+  grid-template-columns: 300px 1fr;
+}
+
+.contenedor {
+  grid-area: main;
+  text-align: center;
+  padding: 20px;
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.contenedor::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../../../../Recursos/PageIcons/reservas.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70%;
+  opacity: 0.1;
+  z-index: -1;
+}
 
 h1 {
   font-family: 'Poppins', sans-serif;
@@ -204,7 +255,7 @@ tr:nth-child(odd) {
   font-size: 15px;
   border: none;
   background: none;
-  cursor: not-allowed;
+  cursor: pointer;
 }
 
 .menu-opciones .opcion:hover {
@@ -263,18 +314,19 @@ tr:nth-child(odd) {
   color: #EFE7D2;
 }
 
-.logo-loading svg{
+.logo-loading svg {
   fill-opacity: 0;
   stroke-dasharray: 1300;
   stroke-dashoffset: 1300;
   animation: dash 1s ease-in forwards
 }
 
-@keyframes dash{
-  70%{
+@keyframes dash {
+  70% {
     fill-opacity: 0;
   }
-  100%{
+
+  100% {
     fill-opacity: 100%;
     stroke-dashoffset: 0;
     stroke-width: 0;

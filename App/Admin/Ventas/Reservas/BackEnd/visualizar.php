@@ -2,7 +2,7 @@
     include_once '..\..\..\..\Control\Conexión\conexion.php';
 
     try {
-        $sql = "SELECT usu.nombre, res.idPedido, res.idMesa, res.fecha, res.horaInicio FROM Usuario AS usu
+        $sql = "SELECT usu.nombre, usu.apellido, res.idPedido, res.idMesa, res.fecha, res.horaInicio FROM Usuario AS usu
                 JOIN Relaciona AS rel ON usu.idUsuario = rel.idUsuario
                 JOIN Reserva AS res ON rel.idPedido = res.idPedido";
         $sentencia = $con->prepare($sql);

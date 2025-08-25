@@ -3,7 +3,7 @@ header('Content-Type: application/json');
 session_start();
 
 if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
-    require_once "../../../Control/Conexión/conexion.php";
+    require_once "../../../../Control/Conexión/conexion.php";
     $sql = "SELECT * FROM Usuario WHERE idUsuario = ?";
     $resultado = $con->prepare($sql);
     $resultado->execute([$_SESSION["usuario_id"]]);
