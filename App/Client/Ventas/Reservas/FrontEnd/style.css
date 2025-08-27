@@ -5,26 +5,50 @@
         url('files/fonts/nesatho-webfont.woff2') format('woff2');
 }
 
-* {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
 }
 
 body {
     height: 100vh;
-    background-color: #000;
+    background-color: #0A0B0A;
     color: #fff;
-    overflow: hidden;
-    background-image: url('files/img/Image.png');
+
+}
+
+body::before {
+    background-image: url('files/img/textura.webp');
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    opacity: 0.5;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
 
+html {
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+    height: 100%;
+    overflow-y: auto;
+}
+
 header {
-    margin-top: 0.4vw;
+    position: absolute;
+    margin-top: 2.45vw;
+    margin-left: 2vw;
     gap: 0.5vw;
     display: flex;
     justify-content: space-between;
@@ -42,7 +66,8 @@ header .logo {
     max-height: 3vw;
 }
 
-header svg,img {
+header svg,
+img {
     width: auto;
     height: 3vw;
     margin: 0;
@@ -65,7 +90,7 @@ header svg,img {
     left: 0;
     background-color: #363636;
     min-width: 200px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     display: none;
     z-index: 1000;
 }
@@ -75,7 +100,6 @@ header svg,img {
 }
 
 .user-info h3 {
-    font-family: 'Poppins', sans-serif;
     font-weight: normal;
     color: #ffffff;
     margin: 0;
@@ -89,7 +113,6 @@ header svg,img {
     color: white;
     border: none;
     border-radius: 0 0 5px 5px;
-    font-family: 'Poppins', sans-serif;
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s;
@@ -118,36 +141,57 @@ header svg,img {
 
 .main-container {
     display: flex;
-    width: 100%;
+}
+
+.page {
+    display: grid;
+    grid-template-areas:
+        "left right"
+        "left  footer";
+    grid-template-rows: 1fr 80px;
+    grid-template-columns: 1fr 1fr;
+    gap: 1vw;
     height: 100vh;
-    gap: 16px;
-    padding: 40px;
+    width: 100vw;
+    padding: 1vw;
+    box-sizing: border-box;
 }
 
-.left-side,
-.right-side {
-    flex: 1;
-    overflow: hidden;
-    padding: 24px;
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03);
-    background-color: transparent;
-    position: relative;
-}
-
-
-.local-img {
+.left-side {
+    grid-area: left;
+    border: 0.1vw solid rgba(239, 231, 210, 0.1);
+    background-image: url(../FrontEnd/files/img/local.png);
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    border-radius: 16px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 1vw;
 }
 
 .right-side {
+    grid-area: right;
+    border: 0.1vw solid rgba(239, 231, 210, 0.1);
+    border-radius: 1vw;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.right-side::before {
+    content: "";
+    position: absolute;
+    top: 5;
+    width: 90%;
+    height: 90%;
+    right: 10;
+    background-image: url(../../../../Recursos/logo.svg);
+    filter: contrast(0%);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50%;
+    opacity: 0.015;
+    z-index: -1;
 }
 
 .form-box {
@@ -156,20 +200,20 @@ header svg,img {
 }
 
 .titulo {
-    font-size: 36px;
+    font-size: 48px;
     font-weight: 400;
     text-align: center;
     margin-bottom: 8px;
     color: #f6f0e2;
     letter-spacing: 2px;
-    font-family: 'Nesatho', 'Outfit', sans-serif;
+    font-family: 'Nesatho', 'Poppins', sans-serif;
 }
 
 .subtitulo {
     text-align: center;
-    font-size: 14px;
+    font-size: 16px;
     color: #bbb;
-    margin-bottom: 32px;
+    margin-bottom: 48px;
 }
 
 .formulario {
@@ -222,43 +266,71 @@ header svg,img {
 }
 
 .btn-reservar {
-    margin-top: 12px;
-    padding: 14px;
+    margin-top: 16px;
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(to right, #ffffff23, #ffffff02);
     width: 100%;
-    background: linear-gradient(90deg, #ffffff31 0%, #000000 100%);
-    color: #fff;
-    border-radius: 15px;
-    font-weight: 500;
-    font-size: 20px;
-    border: 1px solid #888;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
     cursor: pointer;
-    transition: background 0.3s ease;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-    letter-spacing: 1px;
+    box-shadow: 0 0 1px #fff;
+    background-clip: padding-box;
+}
+
+.btn-reservar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 16px;
+    padding: 1px;
+    background: radial-gradient(circle, #ffffff44 60%, #ffffffbe 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
 }
 
 .btn-reservar:hover {
-    background: linear-gradient(90deg, #000000 0%, #ffffff31 100%);
+    background: linear-gradient(to right, #ffffff4d, #ffffff2d);
 }
 
 .footer {
-    margin-top: 100px;
-    text-align: center;
-    font-size: 12px;
-    color: #888;
+    grid-area: footer;
+    margin: 0vw;
+    border-radius: 1vw;
+    border: 0.1vw solid rgba(239, 231, 210, 0.1);
+    padding: 1vw;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    color: #EFE7D2;
+    font-size: 1vw;
+    max-height: 80px;
 }
 
 .footer a {
-    color: #aaa;
-    text-decoration: none;
-    margin: 0 4px;
+    color: #EFE7D2;
+    font-family: 'Poppins', sans-serif;
 }
 
-.footer a:hover {
-    text-decoration: underline;
+.footer a:visited {
+    color: #EFE7D2;
+    font-family: 'Poppins', sans-serif;
 }
 
-.mensajes-alerta{
+.footer a:hover,
+.footer a:active {
+    color: #BCB6A7;
+    font-family: 'Poppins', sans-serif;
+}
+
+.mensajes-alerta {
     height: 16px;
     display: flex;
     justify-content: center;
@@ -271,6 +343,7 @@ header svg,img {
     color: #ff4040;
     text-align: center;
 }
+
 .success {
     padding: 8px;
     border-radius: 999px;
@@ -291,7 +364,6 @@ header svg,img {
     align-items: center;
     z-index: 9999;
     color: #EFE7D2;
-    font-family: 'Outfit', sans-serif;
 }
 
 .logo-loading {
@@ -300,18 +372,19 @@ header svg,img {
     color: #EFE7D2;
 }
 
-.logo-loading svg{
+.logo-loading svg {
     fill-opacity: 0;
     stroke-dasharray: 1300;
     stroke-dashoffset: 1300;
     animation: dash 1s ease-in forwards
 }
 
-@keyframes dash{
-    70%{
+@keyframes dash {
+    70% {
         fill-opacity: 0;
     }
-    100%{
+
+    100% {
         fill-opacity: 100%;
         stroke-dashoffset: 0;
         stroke-width: 0;

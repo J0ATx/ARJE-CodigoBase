@@ -3,7 +3,8 @@ const mensajesAlerta = document.querySelector('.mensajes-alerta');
 
 
 
-btn.addEventListener('click', () => {
+formulario.addEventListener('submit', (e) => {
+    e.preventDefault();
     mensajesAlerta.innerHTML = '';
 
     const lugar = document.getElementById('lugar').value;

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Los 3 Tanos - Reservas</title>
     <link rel="stylesheet" href="style.css" />
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <script src="../session.js" type="module"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
@@ -16,77 +17,79 @@
         <div id="logo-container" class="logo-loading"></div>
     </div>
     <main class="main-container">
-        <div class="left-side">
-            <header>
-                <div class="user-dropdown" id="userDropdown">
-                    <div class="user-icon" id="userIcon">
-                        <svg width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x=".101" y=".862" width="46" height="45.292" rx="22.646" fill="#181818"
-                                fill-opacity=".5" />
-                            <rect x=".601" y="1.362" width="45" height="44.292" rx="22.146" stroke="#767676"
-                                stroke-opacity=".7" />
-                            <path
-                                d="M23 23.362q-2.337 0-4.002-1.714t-1.665-4.12 1.665-4.12T23 11.696t4.002 1.713 1.665 4.12-1.665 4.12T23 23.362M11.667 35.028v-4.083q0-1.24.62-2.279a4.2 4.2 0 0 1 1.646-1.586 20.7 20.7 0 0 1 4.463-1.695A19 19 0 0 1 23 24.82q2.337 0 4.604.565 2.267.566 4.463 1.695a4.2 4.2 0 0 1 1.647 1.586q.62 1.04.62 2.279v4.083zm2.833-2.916h17v-1.167q0-.4-.195-.73a1.4 1.4 0 0 0-.513-.51 18 18 0 0 0-3.86-1.476A16 16 0 0 0 23 27.737a16 16 0 0 0-3.931.492q-1.949.492-3.86 1.476a1.4 1.4 0 0 0-.514.51 1.4 1.4 0 0 0-.195.73zM23 20.445q1.17 0 2.001-.857a2.85 2.85 0 0 0 .832-2.06 2.85 2.85 0 0 0-.832-2.06q-.832-.856-2.001-.856t-2.001.856a2.85 2.85 0 0 0-.832 2.06q0 1.203.832 2.06.833.857 2.001.857"
-                                fill="#A4A4A4" />
-                        </svg>
-                    </div>
-                    <div class="dropdown-content">
-                        <div class="user-info">
-                            <h3 id="userName">Cargando...</h3>
+        <div class="page">
+            <div class="left-side">
+                <header>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-icon" id="userIcon">
+                            <svg width="47" height="47" viewBox="0 0 47 47" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect x=".101" y=".862" width="46" height="45.292" rx="22.646" fill="#181818"
+                                    fill-opacity=".5" />
+                                <rect x=".601" y="1.362" width="45" height="44.292" rx="22.146" stroke="#767676"
+                                    stroke-opacity=".7" />
+                                <path
+                                    d="M23 23.362q-2.337 0-4.002-1.714t-1.665-4.12 1.665-4.12T23 11.696t4.002 1.713 1.665 4.12-1.665 4.12T23 23.362M11.667 35.028v-4.083q0-1.24.62-2.279a4.2 4.2 0 0 1 1.646-1.586 20.7 20.7 0 0 1 4.463-1.695A19 19 0 0 1 23 24.82q2.337 0 4.604.565 2.267.566 4.463 1.695a4.2 4.2 0 0 1 1.647 1.586q.62 1.04.62 2.279v4.083zm2.833-2.916h17v-1.167q0-.4-.195-.73a1.4 1.4 0 0 0-.513-.51 18 18 0 0 0-3.86-1.476A16 16 0 0 0 23 27.737a16 16 0 0 0-3.931.492q-1.949.492-3.86 1.476a1.4 1.4 0 0 0-.514.51 1.4 1.4 0 0 0-.195.73zM23 20.445q1.17 0 2.001-.857a2.85 2.85 0 0 0 .832-2.06 2.85 2.85 0 0 0-.832-2.06q-.832-.856-2.001-.856t-2.001.856a2.85 2.85 0 0 0-.832 2.06q0 1.203.832 2.06.833.857 2.001.857"
+                                    fill="#A4A4A4" />
+                            </svg>
                         </div>
-                        <button class="logout-btn" id="logoutBtn">Cerrar Sesión</button>
-                    </div>
-                </div>
-                <div class="logo">
-                    <a href="../../../Panel/FrontEnd/index.html">
-                        <img src="../../../../Recursos/logo.svg" alt="logo Los 3 Tanos">
-                    </a>
-                </div>
-                <span class="btn-header">PEDÍ AHORA</span>
-            </header>
-            <img src="files/svg/Image Wrapper.svg" alt="Local" class="local-img" />
-        </div>
-
-        <div class="right-side">
-            <div class="form-box">
-
-                <h1 class="titulo">RESERVAS</h1>
-                <p class="subtitulo">Asegurá tu lugar en la mejor pizzería de Uruguay</p>
-
-                <form class="formulario" autocomplete="off" id="formulario">
-                    <div class="datos-reserva">
-                        <div class="input-group">
-                            <img src="files/svg/Chair.svg" alt="Ubicación" />
-                            <select name="ubicacion" id="lugar" required>
-                                <option value="" disabled selected>Ubicación</option>
-                                <option>Interior</option>
-                                <option>Exterior</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group">
-                            <img src="files/svg/Group.svg" alt="Fecha" />
-                            <input type="date" name="fecha" id="fecha" required>
-                        </div>
-
-                        <div class="input-group">
-                            <img src="files/svg/Vector (3).svg" alt="Hora" />
-                            <input type="time" name="hora" id="hora" required>
+                        <div class="dropdown-content">
+                            <div class="user-info">
+                                <h3 id="userName">Cargando...</h3>
+                            </div>
+                            <button class="logout-btn" id="logoutBtn">Cerrar Sesión</button>
                         </div>
                     </div>
-
-                    <input type="button" value="Reservar" id="btn" class="btn-reservar">
-                </form>
-                <div class="mensajes-alerta"></div>
-
-                <footer class="footer">
-                    <a href="#">Los 3 Tanos Pizzería</a> |
-                    <a href="#">Contacto</a> |
-                    Las Toscas M. Ferreira y Central
-                </footer>
+                    <div class="logo">
+                        <a href="../../../Panel/FrontEnd/index.html">
+                            <img src="../../../../Recursos/logo.svg" alt="logo Los 3 Tanos">
+                        </a>
+                    </div>
+                    <span class="btn-header">PEDÍ AHORA</span>
+                </header>
             </div>
+
+            <div class="right-side">
+                <div class="form-box">
+
+                    <h1 class="titulo">RESERVAS</h1>
+                    <p class="subtitulo">Asegurá tu lugar en la mejor pizzería de Uruguay</p>
+
+                    <form class="formulario" autocomplete="off" id="formulario">
+                        <div class="datos-reserva">
+                            <div class="input-group">
+                                <img src="files/svg/Chair.svg" alt="Ubicación" />
+                                <select name="ubicacion" id="lugar" required>
+                                    <option value="" disabled selected>Ubicación</option>
+                                    <option>Interior</option>
+                                    <option>Exterior</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <img src="files/svg/Group.svg" alt="Fecha" />
+                                <input type="date" name="fecha" id="fecha" required>
+                            </div>
+
+                            <div class="input-group">
+                                <img src="files/svg/Vector (3).svg" alt="Hora" />
+                                <input type="time" name="hora" id="hora" required>
+                            </div>
+                        </div>
+
+                        <button id="btn" class="btn-reservar">RESERVAR</button>
+                    </form>
+                    <div class="mensajes-alerta"></div>
+                </div>
+            </div>
+            <footer class="footer">
+                <a href="#">Los 3 Tanos Pizzería</a>
+                <a href="#">Contacto</a>
+                Las Toscas M. Ferreira y Central
+            </footer>
         </div>
     </main>
+
     <script src="../script.js"></script>
 </body>
 
