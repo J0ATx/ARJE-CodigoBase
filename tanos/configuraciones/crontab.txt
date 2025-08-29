@@ -1,0 +1,7 @@
+# Automated crontab configuration
+# Run daily backup at 2:00 AM
+0 2 * * * /bin/bash /Scripts/RespaldoDiario.sh
+# Run weekly backup at 3:00 AM every Sunday
+0 3 * * 0 /bin/bash /Scripts/RespaldoSemanal.sh
+# Run monthly backup at 4:00 AM on the first day of the month
+0 4 1 * * /bin/bash /Scripts/RespaldoMensual.sh

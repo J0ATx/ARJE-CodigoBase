@@ -1,0 +1,55 @@
+#!/bin/bash
+LOGFILE="/var/log/tanos.log"
+
+
+# Ejecutar archivos de configuración
+
+function init() {
+    case $@ in
+        -i | -install)
+            echo "Instalando los scripts y configurando el sistema..."
+            echo "[$(date)] Instalación iniciada" >> "$LOGFILE"
+            cd /usr/local/bin || exit 1
+            git clone --no-checkout https://github.com/J0ATx/Proyecto-Final-2025-Los3tanos.git
+            cd /Proyecto-Final-2025-Los3tanos
+            git sparse-checkout init --cone
+            git sparse-checkout set tanos/scripts
+            git checkout
+            bash scripts/setup_ssh.sh
+            echo "[$(date)] SSH configurado" >> "$LOGFILE"
+            bash scripts/setup_network.sh
+            echo "[$(date)] Red configurada" >> "$LOGFILE"
+            touch /var/log/tanos.log
+            echo "[$(date)] Archivo de log creado" >> "$LOGFILE"
+            echo "Instalación y configuración completada."
+            echo "[$(date)] Instalación completada" >> "$LOGFILE"
+            ;;
+        -u | -update)
+            echo "Actualizando los scripts..."
+            echo "[$(date)] Actualización iniciada" >> "$LOGFILE"
+            cd /usr/local/bin || exit 1
+            git clone --no-checkout https://github.com/J0ATx/Proyecto-Final-2025-Los3tanos.git
+            cd /Proyecto-Final-2025-Los3tanos
+            git sparse-checkout init --cone
+            git sparse-checkout set tanos/scripts
+            git checkout
+            echo "Instalación completada."
+            echo "[$(date)] Actualización completada" >> "$LOGFILE"
+            ;;
+        -h | -help)
+            echo "Uso: $0 [opción]"
+            echo "[$(date)] Ayuda solicitada" >> "$LOGFILE"
+            echo "Opciones:"
+            echo "  -i, --install    Instalar los scripts y configurar el sistema operativo"
+            echo "  -u, --update     Actualizar los scripts a la última versión"
+            echo "  -h, --help       Mostrar este mensaje de ayuda"
+            ;;
+        *)
+            echo "Opción no válida. Use -h o --help para ver las opciones disponibles."
+            echo "[$(date)] Opción no válida" >> "$LOGFILE"
+            exit 1
+            ;;
+    esac
+}
+
+init "$@"

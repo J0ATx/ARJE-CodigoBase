@@ -1,9 +1,11 @@
 #!/bin/bash
+LOGFILE="/var/log/tanos.log"
 
 function init() {
-    case $@ in
+    case $1 in
         -l | -list)
             echo "Listando servicios..."
+            echo "[$(date)] Listando servicios" >> "$LOGFILE"
             systemctl list-units --type=service --all
             ;;
         -s | -status)
@@ -12,6 +14,7 @@ function init() {
                 exit 1
             fi
             echo "Verificando el estado del servicio: $2"
+            echo "[$(date)] Verificando estado servicio: $2" >> "$LOGFILE"
             systemctl status "$2"
             ;;
         -r | -restart)
@@ -20,8 +23,10 @@ function init() {
                 exit 1
             fi
             echo "Reiniciando el servicio: $2"
+            echo "[$(date)] Reiniciando servicio: $2" >> "$LOGFILE"
             systemctl restart "$2"
             echo "Servicio $2 reiniciado."
+            echo "[$(date)] Servicio $2 reiniciado" >> "$LOGFILE"
             ;;
         -k | -kill)
             if [ -z "$2" ]; then
@@ -29,15 +34,19 @@ function init() {
                 exit 1
             fi
             echo "Deteniendo el servicio: $2"
+            echo "[$(date)] Deteniendo servicio: $2" >> "$LOGFILE"
             systemctl stop "$2"
             echo "Servicio $2 detenido."
+            echo "[$(date)] Servicio $2 detenido" >> "$LOGFILE"
             ;;
         -a | -active)
             echo "Listando servicios activos..."
+            echo "[$(date)] Listando servicios activos" >> "$LOGFILE"
             systemctl list-units --type=service --state=active
             ;;
         -h | -help)
             echo "Uso: $0 [opción] [servicio]"
+            echo "[$(date)] Ayuda solicitada" >> "$LOGFILE"
             echo "Opciones:"
             echo "  -l, --list       Listar todos los servicios"
             echo "  -s, --status     Verificar el estado de un servicio"
@@ -48,6 +57,7 @@ function init() {
             ;;
         *)
             echo "Opción no válida. Use -h o --help para ver las opciones disponibles."
+            echo "[$(date)] Opción no válida" >> "$LOGFILE"
             exit 1
             ;;
     esac

@@ -1,8 +1,7 @@
 #!/bin/bash
 
 function init() {
-
-echo "
+    echo "
           ██╗      ██████╗ ███████╗    ██████╗     ████████╗ █████╗ ███╗   ██╗ ██████╗ ███████╗          
           ██║     ██╔═══██╗██╔════╝    ╚════██╗    ╚══██╔══╝██╔══██╗████╗  ██║██╔═══██╗██╔════╝          
 █████╗    ██║     ██║   ██║███████╗     █████╔╝       ██║   ███████║██╔██╗ ██║██║   ██║███████╗    █████╗
@@ -14,34 +13,34 @@ echo "
 
     case $option in
         -S | -services)
-            ./Servicios.sh "$2"
+            servicios "$2"
             ;;
         -P | -processes)
-            ./Procesos.sh "$2"
+            procesos "$2"
             ;;
         -N | -network)
-            ./Red.sh "$2"
+            red "$2"
             ;;
         -L | -logs)
-            ./Registros.sh "$2"
+            registros "$2"
             ;;
         -U | -users)
-            ./Usuarios.sh "$2"
+            usuarios "$2"
             ;;
         -M | -monthly-backup)
-            ./RespaldoMensual.sh
+            respaldo_mensual
             ;;
         -D | -daily-backup)
-            ./RespaldoDiario.sh
+            respaldo_diario
             ;;
         -W | -weekly-backup)
-            ./RespaldoSemanal.sh
+            respaldo_semanal
             ;;
         -R | -restore)
-            ./Restaurar.sh
+            restauracion "$2"
             ;;
         -I | -install)
-            ./Instalacion.sh
+            instalacion "$2"
             ;;
         -E | -exit)
             echo "Saliendo..."
@@ -49,18 +48,18 @@ echo "
             ;;
         -H | -help)
             echo "Opciones disponibles:"
-            echo "-S, -services: Ver servicios"
-            echo "-P, -processes: Ver procesos"
-            echo "-R, -network: Ver red"
-            echo "-L, -logs: Ver registros"
-            echo "-U, -users: Ver usuarios"
+            echo "-S, -services: Operaciones de servicios"
+            echo "-P, -processes: Operaciones de procesos"
+            echo "-N, -network: Operaciones red"
+            echo "-L, -logs: Operaciones registros"
+            echo "-U, -users: Operaciones usuarios"
             echo "-M, -monthly-backup: Realizar respaldo mensual"
             echo "-D, -daily-backup: Realizar respaldo diario"
             echo "-W, -weekly-backup: Realizar respaldo semanal"
-            echo "-I, -install: Instalar dependencias"
+            echo "-R, -restore: Restaurar la aplicación"
+            echo "-I, -install: Instalar o actualizar scripts"
             echo "-E, -exit: Salir del script"
-            echo "-H, -help: Mostrar esta ayuda"
-            init "$@"
+            echo "-H, -help: Mostrar este mensaje de ayuda"
             ;;
         *)
             echo "Opción no válida. Por favor, intente de nuevo."
@@ -69,7 +68,4 @@ echo "
     esac
 }
 
-if [ "$#" -eq 0 ]; then
-    echo "Por favor, especifique una opción."
-    init "$@"
-fi
+init "$@"
