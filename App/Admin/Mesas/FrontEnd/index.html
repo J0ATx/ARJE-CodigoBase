@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Mesas</title>
+</head>
+
+<body>
+    <div id="loading-screen">
+        <div id="logo-container" class="logo-loading"></div>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="../../../Gerente/Empresa/FrontEnd/index.html">Panel de Administración</a></li>
+            <li><a href="../../../Gerente/Usuarios/FrontEnd/index.html">Gestión de Usuarios</a></li>
+            <li><a href="../../../Ventas/Reservas/FrontEnd/index.html">Gestión de Reservas</a></li>
+            <li><a href="../../../Stock/FrontEnd/index.html">Gestión de Inventario</a></li>
+            <li><a href="../../../Ventas/Productos/FrontEnd/index.html">Gestión de Productos</a></li>
+            <li><a href="../../../../Client/Panel/FrontEnd/index.html">Panel Cliente</a></li>
+        </ul>
+    </nav>
+    <div id="main-content">
+        <div id="content">
+            <h1>Gestión de Mesas</h1>
+        </div>
+        <main class="contenedor">
+            <form id="formMesa">
+                <div class="form-container">
+                    <input id="capacidad" placeholder="Capacidad" type="number" required>
+                    <select id="estadoActual">
+                        <option value="Disponible">Disponible</option>
+                        <option value="Reservado">En uso</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                    </select>
+                    <select id="ubicacion">
+                        <option value="Interior">Interior</option>
+                        <option value="Exterior">Exterior</option>
+                    </select>
+                    <button id="btnCrear" type="submit">Crear Mesa</button>
+                </div>
+            </form>
+            <div class="tabla-contenedor">
+                <table id="mesasTable">
+                    <thead>
+                        <tr>
+                            <th>ID Mesa</th>
+                            <th>Capacidad</th>
+                            <th>Estado Actual</th>
+                            <th>Ubicación</th>
+                            <th>Fecha de Uso</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaMesas"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <div id="modalEditar"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
+        <form id="formEditar" style="background:#fff; padding:20px; border-radius:8px; min-width:300px;">
+            <h2>Editar Mesa</h2>
+            <input id="edit_idMesa" type="hidden">
+            <input id="edit_capacidad" placeholder="Capacidad" type="number" required>
+            <select id="edit_estadoActual">
+                <option value="Disponible">Disponible</option>
+                <option value="Reservado">En uso</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+            </select>
+            <select id="edit_ubicacion">
+                <option value="Interior">Interior</option>
+                <option value="Exterior">Exterior</option>
+            </select>
+            <input id="edit_fechUsoOcupadoReservado" placeholder="Fecha y Hora de Uso" type="datetime-local">
+            <button type="submit">Guardar cambios</button>
+            <button type="button" onclick="cerrarModalEditar()">Cancelar</button>
+        </form>
+    </div>
+    
+</body>
+<script src="../control.js"></script>
+</html>

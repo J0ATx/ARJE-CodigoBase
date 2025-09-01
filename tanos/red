@@ -1,0 +1,34 @@
+#!/bin/bash
+
+LOGFILE="/var/log/tanos.log"
+
+function init() {
+    case $@ in
+        -s | -status)
+            echo "Verificando estado de las interfaces."
+            nmcli device status
+            nmcli connection show --active
+            echo "[$(date)] Verificación del estado de las interfaces" >> "$LOGFILE"
+            ;;
+        -r | -reset)
+            echo "Reiniciando la configuración de red..."
+            nmcli networking off
+            sleep 2
+            nmcli networking on
+            echo "[$(date)] Configuración de red reiniciada" >> "$LOGFILE"
+            ;;
+        -h | -help)
+            echo "Uso: $0 [opción]"
+            echo "Opciones:"
+            echo "  -s, --status      Verificar el estado de las interfaces de red"
+            echo "  -r, --reset       Reiniciar la configuración de red"
+            echo "  -h, --help        Mostrar este mensaje de ayuda"
+            ;;
+        *)
+            echo "Opción no válida. Use -h o --help para ver las opciones disponibles."
+            exit 1
+            ;;
+    esac
+}
+
+init "$@"

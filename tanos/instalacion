@@ -1,0 +1,60 @@
+#!/bin/bash
+
+touch /var/log/tanos.log
+chmod 666 /var/log/tanos.log
+LOGFILE="/var/log/tanos.log"
+echo "[$(date)] Archivo de log creado" >> "$LOGFILE"
+
+function init() {
+    case $@ in
+        -c | -config)
+            echo "Configurando el sistema..."
+            echo "[$(date)] Configuración del sistema iniciada" >> "$LOGFILE"
+            
+            bash setup_ssh.sh
+            echo "[$(date)] SSH configurado" >> "$LOGFILE"
+            bash setup_network.sh
+            echo "[$(date)] Red configurada" >> "$LOGFILE"
+            bash setup_nftables.sh
+            echo "[$(date)] Nftables configuradas" >> "$LOGFILE"
+            bash setup_dnf.sh
+            echo "[$(date)] DNF configurado" >> "$LOGFILE"
+            bash setup_crontab.sh
+            echo "[$(date)] Crontab configurado" >> "$LOGFILE"
+            
+            echo "Configuración completada."
+            echo "[$(date)] Configuración del sistema completada" >> "$LOGFILE"
+            ;;
+        -u | -update)
+            echo "Actualizando los scripts..."
+            echo "[$(date)] Actualización iniciada" >> "$LOGFILE"
+
+            cd /usr/local/bin || exit 1
+            git clone --no-checkout https://github.com/J0ATx/Proyecto-Final-2025-Los3tanos.git
+            cd /Proyecto-Final-2025-Los3tanos
+            git sparse-checkout init --cone
+            git sparse-checkout set tanos
+            git checkout master
+            cd ..
+            mv Proyecto-Final-2025-Los3tanos/tanos/* .
+            rm -rf Proyecto-Final-2025-Los3tanos
+            chmod 755 /usr/local/bin/*
+
+            echo "Actualización completada."
+            echo "[$(date)] Actualización completada" >> "$LOGFILE"
+            ;;
+        -h | -help)
+            echo "Uso: $0 [opción]"
+            echo "Opciones:"
+            echo "  -c, --config     Configurr el sistema"
+            echo "  -u, --update     Actualizar los scripts a la última versión"
+            echo "  -h, --help       Mostrar este mensaje de ayuda"
+            ;;
+        *)
+            echo "Opción no válida. Use -h o --help para ver las opciones disponibles."
+            exit 1
+            ;;
+    esac
+}
+
+init "$@"

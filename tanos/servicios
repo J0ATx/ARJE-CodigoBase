@@ -1,10 +1,13 @@
 #!/bin/bash
 
+LOGFILE="/var/log/tanos.log"
+
 function init() {
-    case $@ in
+    case $1 in
         -l | -list)
             echo "Listando servicios..."
-            systemctl list-units --type=service --all
+            systemctl list-units --type=service --all | grep -E 'nftables|ssh|cron|crontab|dnf-automatic'
+            echo "[$(date)] Servicios listados" >> "$LOGFILE"
             ;;
         -s | -status)
             if [ -z "$2" ]; then
@@ -13,6 +16,7 @@ function init() {
             fi
             echo "Verificando el estado del servicio: $2"
             systemctl status "$2"
+            echo "[$(date)] Verifición de estado del servicio: $2" >> "$LOGFILE"
             ;;
         -r | -restart)
             if [ -z "$2" ]; then
@@ -22,6 +26,7 @@ function init() {
             echo "Reiniciando el servicio: $2"
             systemctl restart "$2"
             echo "Servicio $2 reiniciado."
+            echo "[$(date)] Servicio $2 reiniciado" >> "$LOGFILE"
             ;;
         -k | -kill)
             if [ -z "$2" ]; then
@@ -31,10 +36,12 @@ function init() {
             echo "Deteniendo el servicio: $2"
             systemctl stop "$2"
             echo "Servicio $2 detenido."
+            echo "[$(date)] Servicio $2 detenido" >> "$LOGFILE"
             ;;
         -a | -active)
             echo "Listando servicios activos..."
-            systemctl list-units --type=service --state=active
+            systemctl list-units --type=service --state=active | grep -E 'nftables|ssh|cron|crontab|dnf-automatic'
+            echo "[$(date)] Servicios activos lsitados" >> "$LOGFILE"
             ;;
         -h | -help)
             echo "Uso: $0 [opción] [servicio]"
