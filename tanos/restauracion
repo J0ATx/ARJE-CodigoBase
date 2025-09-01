@@ -1,0 +1,55 @@
+#!/bin/bash
+
+function init() {
+    case "$1" in
+        -r | --restore)
+            RESTORE_DIR="/usr/local/bin/tanos"
+            BACKUP_DIR="/dev/nvme0n1/respaldos"
+            LATEST_FULL=$(ls -t "$BACKUP_DIR/full/"*.tar.gz | head -n 1)
+            LATEST_DIFF=$(ls -t "$BACKUP_DIR/differential/"*.tar.gz | head -n 1)
+
+            if [ -f "$LATEST_FULL" ]; then
+                tar -xzpf "$LATEST_FULL" -C /
+                echo "[$(date)] Restored full backup from $LATEST_FULL" >> "/var/log/tanos.log"
+            else
+                echo "[$(date)] No full backup found to restore." >> "/var/log/tanos.log"
+                exit 1
+            fi
+
+            if [ -f "$LATEST_DIFF" ]; then
+                tar -xzpf "$LATEST_DIFF" -C /
+                echo "[$(date)] Restored differential backup from $LATEST_DIFF" >> "/var/log/tanos.log"
+            else
+                echo "[$(date)] No differential backup found to restore." >> "/var/log/tanos.log"
+            fi
+            ;;
+        -db | --database)
+            echo "Restoring database..."
+            # Aquí iría el comando para restaurar la base de datos, por ejemplo:
+            # mysql -u usuario -p base_de_datos < /ruta/al/dump.sql
+            ;;
+        -app | --application)
+            echo "Restoring application files..."
+            # Aquí iría el comando para restaurar los archivos de la aplicación, por ejemplo:
+            # tar -xzpf /ruta/al/backup.tar.gz -C /ruta/de/la/aplicacion
+            ;;
+        -m | --model)
+            echo "Restaurando al último modelo conocido..."
+            # Aquí iría el comando para restaurar al último modelo conocido
+            ;;
+        -h | --help)
+            echo "Uso: $0 [opción]"
+            echo "Opciones:"
+            echo "  -r, --restore       Restaurar todo desde el último backup completo y diferencial"
+            echo "  -db, --database     Restaurar solo la base de datos"
+            echo "  -app, --application Restaurar solo los archivos de la aplicación"
+            echo "  -m, --model         Restaurar al último modelo de IA"
+            echo "  -h, --help          Mostrar este mensaje de ayuda"
+        *)
+            echo "Opción no válida. Use -h o --help para ver las opciones disponibles."
+            exit 1
+            ;;
+    esac
+}
+
+init "$@"

@@ -1,37 +1,39 @@
 #!/bin/bash
+
 LOGFILE="/var/log/tanos.log"
 
 function init() {
     case $1 in
         -l | -list)
             echo "Listando usuarios..."
-            echo "[$(date)] Listando usuarios" >> "$LOGFILE"
             getent passwd | grep -E '/bin/bash|/bin/sh|/bin/zsh' | awk -F: '{print $1}'
+            echo "[$(date)] Usuarios listados" >> "$LOGFILE"
             ;;
         -a | -add)
             read -p "Ingrese el nombre del nuevo usuario: " username
             read -p "Ingrese el nombre completo del usuario: " fullname
             raed -p "Ingrese el grupo del usuario ('Operarios' o 'Administrativos'): " group
-            read -s -p "Ingrese la contraseña para el usuario: " password
-            echo
+            if [[ "$group" != "Operarios" && "$group" != "Administrativos" ]]; then
+                echo "Grupo inválido. Use 'Operarios' o 'Administrativos'."
+                exit 1
+            fi
             sudo useradd -m -G "$group" "$username"
-            echo "[$(date)] Usuario añadido: $username ($fullname, grupo: $group)" >> "$LOGFILE"
             sudo chfn -f "$fullname" "$username"
             sudo passwd "$username"
+            echo "[$(date)] Usuario añadido al sistema: $username ($fullname, grupo: $group)" >> "$LOGFILE"
             ;;
         -d | -delete)
             read -p "Ingrese el nombre del usuario a eliminar: " username
             sudo deluser -r "$username"
-            echo "[$(date)] Usuario eliminado: $username" >> "$LOGFILE"
+            echo "[$(date)] Usuario eliminado del sistema: $username" >> "$LOGFILE"
             ;;
         -g | -groups)
             echo "Listando grupos..."
-            echo "[$(date)] Listando grupos" >> "$LOGFILE"
             getent group | awk -F: '$3 >= 1000 {print $1}'
+            echo "[$(date)] Grupos listados" >> "$LOGFILE"
             ;;
         -h | -help)
             echo "Uso: $0 [opción]"
-            echo "[$(date)] Ayuda solicitada" >> "$LOGFILE"
             echo "Opciones:"
             echo "  -l, --list       Listar los usuarios del sistema creados manualmente"
             echo "  -a, --add        Añadir un nuevo usuario"
@@ -41,7 +43,6 @@ function init() {
             ;;
         *)
             echo "Opción no válida. Use -h o --help para ver las opciones disponibles."
-            echo "[$(date)] Opción no válida" >> "$LOGFILE"
             exit 1
             ;;
     esac

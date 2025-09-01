@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Adinistración de logs del sistema
 function init() {
     case "$1" in
         -v | --view)

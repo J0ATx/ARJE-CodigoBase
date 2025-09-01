@@ -9,61 +9,59 @@ function init() {
           ███████╗╚██████╔╝███████║    ██████╔╝       ██║   ██║  ██║██║ ╚████║╚██████╔╝███████║          
           ╚══════╝ ╚═════╝ ╚══════╝    ╚═════╝        ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝          
 "                                                            
-    read -p "Ingrese su opción: " option
 
-    case $option in
-        -S | -services)
+    case "$1" in
+        -s | -services)
             servicios "$2"
             ;;
-        -P | -processes)
+        -p | -processes)
             procesos "$2"
             ;;
-        -N | -network)
+        -n | -network)
             red "$2"
             ;;
-        -L | -logs)
+        -l | -logs)
             registros "$2"
             ;;
-        -U | -users)
+        -u | -users)
             usuarios "$2"
             ;;
-        -M | -monthly-backup)
+        -m | -monthly-backup)
             respaldo_mensual
             ;;
-        -D | -daily-backup)
+        -d | -daily-backup)
             respaldo_diario
             ;;
-        -W | -weekly-backup)
+        -w | -weekly-backup)
             respaldo_semanal
             ;;
-        -R | -restore)
+        -r | -restore)
             restauracion "$2"
             ;;
-        -I | -install)
+        -i | -install)
             instalacion "$2"
             ;;
-        -E | -exit)
+        -e | -exit)
             echo "Saliendo..."
             exit 0
             ;;
-        -H | -help)
+        -h | -help)
             echo "Opciones disponibles:"
-            echo "-S, -services: Operaciones de servicios"
-            echo "-P, -processes: Operaciones de procesos"
-            echo "-N, -network: Operaciones red"
-            echo "-L, -logs: Operaciones registros"
-            echo "-U, -users: Operaciones usuarios"
-            echo "-M, -monthly-backup: Realizar respaldo mensual"
-            echo "-D, -daily-backup: Realizar respaldo diario"
-            echo "-W, -weekly-backup: Realizar respaldo semanal"
-            echo "-R, -restore: Restaurar la aplicación"
-            echo "-I, -install: Instalar o actualizar scripts"
-            echo "-E, -exit: Salir del script"
-            echo "-H, -help: Mostrar este mensaje de ayuda"
+            echo "-s, -services: Operaciones de servicios"
+            echo "-p, -processes: Operaciones de procesos"
+            echo "-n, -network: Operaciones red"
+            echo "-l, -logs: Operaciones registros"
+            echo "-u, -users: Operaciones usuarios"
+            echo "-m, -monthly-backup: Realizar respaldo mensual"
+            echo "-d, -daily-backup: Realizar respaldo diario"
+            echo "-w, -weekly-backup: Realizar respaldo semanal"
+            echo "-r, -restore: Restaurar la aplicación"
+            echo "-i, -install: Instalar o actualizar scripts"
+            echo "-e, -exit: Salir del script"
+            echo "-h, -help: Mostrar este mensaje de ayuda"
             ;;
         *)
             echo "Opción no válida. Por favor, intente de nuevo."
-            init "$@"
             ;;
     esac
 }
