@@ -1,50 +1,109 @@
 #!/bin/bash
 
+LOGFILE="/var/log/tanos.log"
+
+BACKUP_DIR="/var/respaldos"
+DB_USER="root"
+DB_PASS=""
+DB_NAME="losTresTanosDB"
+
 function init() {
     case "$1" in
         -r | --restore)
-            RESTORE_DIR="/usr/local/bin/tanos"
-            BACKUP_DIR="/dev/nvme0n1/respaldos"
-            LATEST_FULL=$(ls -t "$BACKUP_DIR/full/"*.tar.gz | head -n 1)
-            LATEST_DIFF=$(ls -t "$BACKUP_DIR/differential/"*.tar.gz | head -n 1)
+            # read -p "ADVERTENCIA: Esta a punto de sobrescribir la base de datos. ¿Desea continuar? (s/n)" confirmacion
+            # if [[ "$confirmacion" =~ ^[Nn]$ ]]; then
+            #     exit 0
+            # fi
+            # echo "[$(date)] Opción --restore seleccionada. Restaurando sistema completo..." >> "$LOGFILE"
+            # LATEST_FULL=$(ls -t "$BACKUP_DIR/mensual/"*files.tar.gz | head -n 1)
+            # DB_FULL=$(ls -t "$BACKUP_DIR/mensual/"*db.sql.gz | head -n 1)
 
-            if [ -f "$LATEST_FULL" ]; then
-                tar -xzpf "$LATEST_FULL" -C /
-                echo "[$(date)] Restored full backup from $LATEST_FULL" >> "/var/log/tanos.log"
-            else
-                echo "[$(date)] No full backup found to restore." >> "/var/log/tanos.log"
-                exit 1
-            fi
+            # if [ -f "$LATEST_FULL" ] && [ -f "$DB_FULL" ]; then
+            #     echo "[$(date)] Restaurando respaldo completo: $LATEST_FULL" >> "$LOGFILE"
+            #     tar -xzpf "$LATEST_FULL" -C /
+            #     gunzip < "$DB_FULL" | mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME"
+            #     echo "[$(date)] Respaldo completo restaurado con éxito." >> "$LOGFILE"
+            # else
+            #     echo "[$(date)] Error: No se encontró un respaldo completo para restaurar." >> "$LOGFILE"
+            #     exit 1
+            # fi
 
-            if [ -f "$LATEST_DIFF" ]; then
-                tar -xzpf "$LATEST_DIFF" -C /
-                echo "[$(date)] Restored differential backup from $LATEST_DIFF" >> "/var/log/tanos.log"
-            else
-                echo "[$(date)] No differential backup found to restore." >> "/var/log/tanos.log"
-            fi
+            # LATEST_DIFF=$(ls -t "$BACKUP_DIR/semanal/"*files.tar.gz | head -n 1)
+            # DB_DIFF=$(ls -t "$BACKUP_DIR/semanal/"*db.sql.gz | head -n 1)
+
+            # if [ -f "$LATEST_DIFF" ] && [ -f "$DB_DIFF" ]; then
+            #     echo "[$(date)] Restaurando respaldo diferencial: $LATEST_DIFF" >> "$LOGFILE"
+            #     tar -xzpf "$LATEST_FILES" -C / --keep-newer-files
+            #     gunzip < "$DB_DIFF" | mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME"
+            #     echo "[$(date)] Respaldo diferencial restaurado con éxito." >> "$LOGFILE"
+            # else
+            #     echo "[$(date)] Advertencia: No se encontró un respaldo diferencial. Saltando este paso." >> "$LOGFILE"
+            # fi
+
+            # INCREMENTALS=$(ls -tr "$BACKUP_DIR/diario/"*files.tar.gz 2>/dev/null)
+            # DB_INCREMENTALS=$(ls -tr "$BACKUP_DIR/diario/"*db.sql.gz 2>/dev/null)
+
+            # if [ -n "$INCREMENTALS" ]; then
+            #     echo "[$(date)] Restaurando respaldos incrementales..." >> "$LOGFILE"
+            #     for inc_file in $INCREMENTALS; do
+            #         echo "[$(date)] Restaurando incremental de archivos: $inc_file" >> "$LOGFILE"
+            #         tar -xzpf "$inc_file" -C /
+            #     done
+            #     for db_inc in $DB_INCREMENTALS; do
+            #         echo "[$(date)] Restaurando incremental de DB: $db_inc" >> "$LOGFILE"
+            #         gunzip < "$db_inc" | mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME"
+            #     done
+            #     echo "[$(date)] Todos los respaldos incrementales restaurados con éxito." >> "$LOGFILE"
+            # else
+            #     echo "[$(date)] Advertencia: No se encontraron respaldos incrementales. Saltando este paso." >> "$LOGFILE"
+            # fi
+
+            # echo "[$(date)] Proceso de restauración completo finalizado." >> "$LOGFILE"
             ;;
         -db | --database)
-            echo "Restoring database..."
-            # Aquí iría el comando para restaurar la base de datos, por ejemplo:
-            # mysql -u usuario -p base_de_datos < /ruta/al/dump.sql
+            # read -p "ADVERTENCIA: Esta a punto de sobrescribir la base de datos. ¿Desea continuar? (s/n)" confirmacion
+            # if [[ "$confirmacion" =~ ^[Nn]$ ]]; then
+            #     exit 0
+            # fi
+            # echo "[$(date)] Opción --database seleccionada. Restaurando solo la base de datos..." >> "$LOGFILE"
+            # LATEST_DB=$(ls -t "$BACKUP_DIR/"*db.sql.gz | head -n 1)
+            # if [ -f "$LATEST_DB" ]; then
+            #     gunzip < "$LATEST_DB" | mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME"
+                # if [ $? -eq 0 ]; then
+                #     echo "[$(date)] Base de datos restaurada desde el último respaldo: $LATEST_DB" >> "$LOGFILE"
+                # else
+                #     echo "[$(date)] Error al restaurar la base de datos del respaldo completo." >> "$LOGFILE"
+                #     exit 1
+                # fi
+            # else
+            #     echo "[$(date)] Error: No se encontró ningún respaldo de base de datos." >> "$LOGFILE"
+            #     exit 1
+            # fi
             ;;
         -app | --application)
-            echo "Restoring application files..."
-            # Aquí iría el comando para restaurar los archivos de la aplicación, por ejemplo:
-            # tar -xzpf /ruta/al/backup.tar.gz -C /ruta/de/la/aplicacion
-            ;;
-        -m | --model)
-            echo "Restaurando al último modelo conocido..."
-            # Aquí iría el comando para restaurar al último modelo conocido
+            echo "[$(date)] Opción --application seleccionada. Restaurando solo los archivos..." >> "$LOGFILE"
+            LATEST_FILES=$(ls -t "$BACKUP_DIR/"*files.tar.gz | head -n 1)
+            if [ -f "$LATEST_FILES" ]; then
+                tar -xzpf "$LATEST_FILES" -C / --keep-newer-files
+                if [ $? -eq 0 ]; then
+                    echo "[$(date)] Archivos restaurados desde el último respaldo: $LATEST_FILES" >> "$LOGFILE"
+                else
+                    echo "[$(date)] Error al restaurar el respaldo de archivos completo." >> "$LOGFILE"
+                    exit 1
+                fi
+            else
+                echo "[$(date)] Error: No se encontró ningún respaldo de archivos." >> "$LOGFILE"
+                exit 1
+            fi
             ;;
         -h | --help)
             echo "Uso: $0 [opción]"
             echo "Opciones:"
-            echo "  -r, --restore       Restaurar todo desde el último backup completo y diferencial"
-            echo "  -db, --database     Restaurar solo la base de datos"
-            echo "  -app, --application Restaurar solo los archivos de la aplicación"
-            echo "  -m, --model         Restaurar al último modelo de IA"
-            echo "  -h, --help          Mostrar este mensaje de ayuda"
+            echo "  -r, --restore        Restaurar sistema completo (archivos y base de datos)."
+            echo "  -db, --database      Restaurar solo la base de datos desde el último respaldo."
+            echo "  -app, --application  Restaurar solo los archivos de la aplicación desde el último respaldo."
+            echo "  -h, --help           Mostrar este mensaje de ayuda."
+            ;;
         *)
             echo "Opción no válida. Use -h o --help para ver las opciones disponibles."
             exit 1

@@ -27,13 +27,13 @@ function init() {
             usuarios "$2"
             ;;
         -m | -monthly-backup)
-            respaldo_mensual
+            respaldomes
             ;;
         -d | -daily-backup)
-            respaldo_diario
+            respaldodia
             ;;
         -w | -weekly-backup)
-            respaldo_semanal
+            respaldosemana
             ;;
         -r | -restore)
             restauracion "$2"
@@ -46,17 +46,18 @@ function init() {
             exit 0
             ;;
         -h | -help)
+            echo "Uso: $0 [opción] [opción]"
             echo "Opciones disponibles:"
             echo "-s, -services: Operaciones de servicios"
             echo "-p, -processes: Operaciones de procesos"
-            echo "-n, -network: Operaciones red"
-            echo "-l, -logs: Operaciones registros"
-            echo "-u, -users: Operaciones usuarios"
+            echo "-n, -network: Operaciones de red"
+            echo "-l, -logs: Operaciones de registros"
+            echo "-u, -users: Operaciones de usuarios"
             echo "-m, -monthly-backup: Realizar respaldo mensual"
             echo "-d, -daily-backup: Realizar respaldo diario"
             echo "-w, -weekly-backup: Realizar respaldo semanal"
-            echo "-r, -restore: Restaurar la aplicación"
-            echo "-i, -install: Instalar o actualizar scripts"
+            echo "-r, -restore: Operaciones de restauración"
+            echo "-i, -install: Configurar o actualizar scripts"
             echo "-e, -exit: Salir del script"
             echo "-h, -help: Mostrar este mensaje de ayuda"
             ;;
