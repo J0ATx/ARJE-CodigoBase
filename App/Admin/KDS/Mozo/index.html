@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>KDS - Mozo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="kds-container">
+    <h1>Pedidos - Mozo</h1>
+    <button id="btnAbrirNuevoPedido" style="margin-bottom:1em;">Nuevo Pedido</button>
+    <section class="lista-pedidos">
+      <h2>Pedidos Activos</h2>
+      <div id="pedidosList">
+        <table>
+          <thead>
+            
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+    <dialog id="modalNuevoPedido">
+      <form id="formPedido" method="dialog">
+        <h2>Nuevo Pedido</h2>
+        <label>Mesa:
+          <select id="selectMesa" required></select>
+        </label>
+        <div id="productosContainer"></div>
+        <button type="button" id="agregarProducto">Agregar producto</button>
+        <div class="form-group">
+          <label>Especificaciones del pedido:</label>
+          <textarea id="especificacionPedido" rows="3" placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
+        </div>
+        <div style="margin-top:1em;">
+          <button type="submit">Crear pedido</button>
+          <button type="button" onclick="document.getElementById('modalNuevoPedido').close()">Cancelar</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="modalEditar">
+      <form id="formEditarPedido" method="dialog">
+        <h2>Editar Pedido</h2>
+        <input type="hidden" id="editarIdPedido">
+        <div id="editarProductosContainer"></div>
+        <button type="button" id="agregarProductoEditar">Agregar producto</button>
+        <div class="form-group">
+          <label>Especificaciones del pedido:</label>
+          <textarea id="especificacionPedidoEditar" rows="3" placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
+        </div>
+        <div style="margin-top:1em;">
+          <button type="submit">Guardar cambios</button>
+          <button type="button" onclick="document.getElementById('modalEditar').close()">Cancelar</button>
+        </div>
+      </form>
+    </dialog>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -208,10 +208,12 @@ create table ClienteFidelizado(
 
 create table Pedido(
 	idPedido int auto_increment,
+    estado ENUM('pendiente','en_preparacion','listo','entregado') DEFAULT 'pendiente',
     montoTotal int (6) NOT NULL,
     pagoPedido int (6) NOT NULL,
     pagoPropina int (6) NOT NULL,
-    fechReg date NOT NULL,
+    horaIngreso DATETIME DEFAULT CURRENT_TIMESTAMP,
+    horaFinalizacion DATETIME NULL,
     primary key(idPedido)
 );
 
