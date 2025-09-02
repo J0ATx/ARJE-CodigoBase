@@ -327,10 +327,11 @@ create table Productos(
 );
 
 create table Tiene(
-	idPedido int,
+    idTiene int auto_increment,
+    idPedido int,
     idProducto int,
     tiempoPrep time,
-    primary key(idPedido, idProducto),
+    primary key(idTiene),
     foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE,
     foreign key(idProducto) REFERENCES Productos(idProducto) ON DELETE CASCADE
 );

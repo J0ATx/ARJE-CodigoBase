@@ -2,8 +2,32 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   cargarComandas();
-  setInterval(cargarComandas, 5000); // Actualiza cada 5 segundos
 });
+
+window.onload = function () {
+  ws = new WebSocket('ws://localhost:8080/App/Admin/KDS/Cocina/index');
+  ws.onopen = function () {
+    console.log('Sistema conectado a cocina');
+  };
+  ws.onmessage = function (event) {
+    let data = event.data;
+    try {
+      let obj = JSON.parse(data);
+      if (obj.error) {
+        console.log(obj.error);
+      } else {
+        if (obj.action === 'reload') {
+          cargarComandas();
+        }
+      }
+    } catch {
+      console.log('Desconocido ', data);
+    }
+  };
+  ws.onclose = function () {
+    console.log('Sistema desconectado');
+  };
+};
 
 function cargarComandas() {
   fetch('BackEnd/listarPedidos.php')
@@ -17,10 +41,11 @@ function cargarComandas() {
         div.className = 'comanda-cocina';
         div.innerHTML = `
           <b>Pedido #${ped.idPedido}</b> | Mesa: ${ped.idMesa} | Estado: ${ped.estado}<br>
-          Productos: ${ped.productos || ''}<br>
+          Productos: ${ped.nombres_productos || ''}<br>
           Comentarios: ${ped.comentarios || ''}<br>
           <button onclick="cambiarEstado(${ped.idPedido}, '${ped.estado}')">Cambiar Estado</button>
         `;
+        console.log(ped)
         cont.appendChild(div);
       });
     });
@@ -34,11 +59,19 @@ function cambiarEstado(idPedido, estadoActual) {
   else return;
   fetch('BackEnd/cambiarEstado.php', {
     method: 'POST',
-    body: new URLSearchParams({idPedido, nuevoEstado})
+    body: new URLSearchParams({ idPedido, nuevoEstado })
   })
     .then(r => r.json())
     .then(data => {
-      if (data.success) cargarComandas();
-      else alert(data.message || 'Error');
+      if (data.success) {
+        sendReload();
+        cargarComandas();
+      } else {
+        alert(data.message || 'Error');
+      }
     });
+}
+
+function sendReload() {
+  ws.send(JSON.stringify({ action: 'reload' }));
 }
