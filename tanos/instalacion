@@ -30,15 +30,15 @@ function init() {
             echo "[$(date)] Actualización iniciada" >> "$LOGFILE"
 
             cd /usr/local/bin || exit 1
-            git clone --no-checkout https://github.com/J0ATx/Proyecto-Final-2025-Los3tanos.git
+            sudo git clone --no-checkout https://github.com/J0ATx/Proyecto-Final-2025-Los3tanos.git
             cd /Proyecto-Final-2025-Los3tanos
-            git sparse-checkout init --cone
-            git sparse-checkout set tanos
-            git checkout master
+            sudo git sparse-checkout init --cone
+            sudo git sparse-checkout set tanos
+            sudo git checkout master
             cd ..
-            mv Proyecto-Final-2025-Los3tanos/tanos/* .
-            rm -rf Proyecto-Final-2025-Los3tanos
-            chmod 755 /usr/local/bin/*
+            sudo mv Proyecto-Final-2025-Los3tanos/tanos/* .
+            sudo rm -rf Proyecto-Final-2025-Los3tanos
+            sudo chmod 755 /usr/local/bin/*
 
             echo "Actualización completada."
             echo "[$(date)] Actualización completada" >> "$LOGFILE"

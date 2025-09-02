@@ -24,32 +24,32 @@ function init() {
     rm -rf "$BACKUP_DIR/diario/*"
     echo "[$(date)] Respaldos diarios eliminados de $BACKUP_DIR/diario" >> "$LOGFILE"
 
-    # mysqldump -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" | gzip > "$DIFF_DIR/$DB_BACKUP_NAME"
-    # echo "[$(date)] Respaldo de base de datos realizado: $DIFF_DIR/$DB_BACKUP_NAME" >> "$LOGFILE"
+    mysqldump -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" | gzip > "$DIFF_DIR/$DB_BACKUP_NAME"
+    echo "[$(date)] Respaldo de base de datos realizado: $DIFF_DIR/$DB_BACKUP_NAME" >> "$LOGFILE"
     tar --listed-incremental="$SNAPSHOT_FILE" -czpf "$DIFF_DIR/$FILES_BACKUP_NAME" /etc --exclude="$BACKUP_DIR"
     echo "[$(date)] Respaldo diferencial semanal de archivos realizado: $DIFF_DIR/$FILES_BACKUP_NAME" >> "$LOGFILE"
 
-    # sha256sum "$DIFF_DIR/$DB_BACKUP_NAME" > "$DIFF_DIR/$DB_BACKUP_NAME.sha256"
-    # echo "[$(date)] Checksum generado para respaldo de base de datos: $DIFF_DIR/$DB_BACKUP_NAME.sha256" >> "$LOGFILE"
+    sha256sum "$DIFF_DIR/$DB_BACKUP_NAME" > "$DIFF_DIR/$DB_BACKUP_NAME.sha256"
+    echo "[$(date)] Checksum generado para respaldo de base de datos: $DIFF_DIR/$DB_BACKUP_NAME.sha256" >> "$LOGFILE"
     sha256sum "$DIFF_DIR/$FILES_BACKUP_NAME" > "$DIFF_DIR/$FILES_BACKUP_NAME.sha256"
     echo "[$(date)] Checksum generado para respaldo de archivos: $DIFF_DIR/$FILES_BACKUP_NAME.sha256" >> "$LOGFILE"
 
-    # scp "$DIFF_DIR/$DB_BACKUP_NAME" "$DIFF_DIR/$DB_BACKUP_NAME.sha256" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/"
-    # echo "[$(date)] Respaldo de base de datos y checksum enviados a remoto" >> "$LOGFILE"
+    scp "$DIFF_DIR/$DB_BACKUP_NAME" "$DIFF_DIR/$DB_BACKUP_NAME.sha256" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/"
+    echo "[$(date)] Respaldo de base de datos y checksum enviados a remoto" >> "$LOGFILE"
     scp "$DIFF_DIR/$FILES_BACKUP_NAME" "$DIFF_DIR/$FILES_BACKUP_NAME.sha256" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/"
     echo "[$(date)] Respaldo de archivos y checksum enviados a remoto" >> "$LOGFILE"
 
-    # ssh "$REMOTE_USER@$REMOTE_HOST" "cd $REMOTE_PATH && \
-    #     sha256sum -c $DB_BACKUP_NAME.sha256 && \
-    #     sha256sum -c $FILES_BACKUP_NAME.sha256"
+    ssh "$REMOTE_USER@$REMOTE_HOST" "cd $REMOTE_PATH && \
+        sha256sum -c $DB_BACKUP_NAME.sha256 && \
+        sha256sum -c $FILES_BACKUP_NAME.sha256"
 
-    # if [ $? -eq 0 ]; then
-    #     echo "[$(date)] Verificación exitosa, respaldo semanal completado" >> "$LOGFILE"
-    #     exit 0
-    # else
-    #     echo "[$(date)] Error en la verificación, respaldo semanal fallido" >> "$LOGFILE"
-    #     exit 1
-    # fi
+    if [ $? -eq 0 ]; then
+        echo "[$(date)] Verificación exitosa, respaldo semanal completado" >> "$LOGFILE"
+        exit 0
+    else
+        echo "[$(date)] Error en la verificación, respaldo semanal fallido" >> "$LOGFILE"
+        exit 1
+    fi
 }
 
-init "$@"
+# init "$@"

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo "Deteniendo y deshabilitando firewalld..."
 sudo systemctl stop firewalld
 sudo systemctl disable firewalld
 
@@ -13,21 +12,18 @@ NFT_RULES="
 flush ruleset
 
 table ip filter {
-    chain input {
-        type filter hook input priority 0;
-    }
-
     set denylist {
-        type ipv4_addr;
-        flags dynamic, timeout;
-        timeout 5m;
+        type ipv4_addr
+        size 65535
+        flags dynamic, timeout
+        timeout 5m
+        }
+        
+    chain input {
+        type filter hook input priority filter; policy accept;
+        ip protocol tcp ct state new,untracked limit rate over 10/minute burst 5 packets add @denylist { ip saddr }
+        ip saddr @denylist drop
     }
-
-    # Bloquea temporalmente a IPs que intenten más de 10 conexiones nuevas por minuto
-    rule input tcp dport ssh ct state new, untracked limit rate over 10/minute add @denylist { ip saddr }
-    
-    # Descarta todo el tráfico de las IPs en la lista negra
-    rule input ip saddr @denylist drop
 }
 "
 

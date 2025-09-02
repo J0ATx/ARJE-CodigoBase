@@ -13,7 +13,7 @@ sudo sed -i 's/^#Protocol 2/Protocol 2/' $SSHD_CONFIG
 sudo sed -i 's/^#PubkeyAuthentication.*/PubkeyAuthentication yes/' $SSHD_CONFIG
 sudo sed -i 's/^#PasswordAuthentication.*/PasswordAuthentication no/' $SSHD_CONFIG
 sudo sed -i 's/^#PermitRootLogin.*/PermitRootLogin no/' $SSHD_CONFIG
-sudo echo "AllowUsers operario" >> $SSHD_CONFIG
+echo "AllowUsers operario" | sudo tee -a "$SSHD_CONFIG"
 sudo sed -i 's/^#MaxAuthTries 6/MaxAuthTries 3/' $SSHD_CONFIG
 sudo sed -i 's/^#LogLevel INFO/LogLevel VERBOSE/' $SSHD_CONFIG
 
