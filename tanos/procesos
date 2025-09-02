@@ -14,7 +14,7 @@ function init() {
                 echo "Por favor, especifique un PID para matar el proceso."
                 exit 1
             fi
-            kill "$2"
+            sudo kill "$2"
             echo "Proceso $2 detenido."
             echo "[$(date)] Proceso $2 detenido" >> "$LOGFILE"
             ;;
