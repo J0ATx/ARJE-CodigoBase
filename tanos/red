@@ -21,9 +21,9 @@ function init() {
         -h | -help)
             echo "Uso: $0 [opción]"
             echo "Opciones:"
-            echo "  -s, --status      Verificar el estado de las interfaces de red"
-            echo "  -r, --reset       Reiniciar la configuración de red"
-            echo "  -h, --help        Mostrar este mensaje de ayuda"
+            echo "  -s, -status      Verificar el estado de las interfaces de red"
+            echo "  -r, -reset       Reiniciar la configuración de red"
+            echo "  -h, -help        Mostrar este mensaje de ayuda"
             ;;
         *)
             echo "Opción no válida. Use -h o --help para ver las opciones disponibles."

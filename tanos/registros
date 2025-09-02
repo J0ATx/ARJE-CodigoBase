@@ -2,11 +2,11 @@
 
 function init() {
     case "$1" in
-        -v | --view)
+        -v | -view)
             echo "Mostrando los últimos 10 registros:"
             tail -n 10 /var/log/tanos.log
             ;;
-        -s | --search)
+        -s | -search)
             if [ -z "$2" ]; then
                 echo "Por favor, proporciona un término de búsqueda."
                 exit 1
@@ -14,17 +14,17 @@ function init() {
             echo "Buscando registros que contengan '$2':"
             grep "$2" /var/log/tanos.log
             ;;
-        -a | --access)
+        -a | -access)
             echo "Mostrando los últimos 10 registros de acceso:"
             sudo journalctl -n
             ;;
-        -h | --help)
+        -h | -help)
             echo "Uso: $0 [opción]"
             echo "Opciones:"
-            echo "  -v, --view     Ver los últimos 10 registros del centro de cómputos"
-            echo "  -s, --search   Buscar registros del centro de cómputos que contengan un término específico"
-            echo "  -a, --access   Ver los últimos 10 registros de acceso del sistema"
-            echo "  -h, --help     Mostrar este mensaje de ayuda"
+            echo "  -v, -view     Ver los últimos 10 registros del centro de cómputos"
+            echo "  -s, -search   Buscar registros del centro de cómputos que contengan un término específico"
+            echo "  -a, -access   Ver los últimos 10 registros de acceso del sistema"
+            echo "  -h, -help     Mostrar este mensaje de ayuda"
             ;;
         *)
             echo "Opción no válida. Use -h o --help para ver las opciones disponibles."

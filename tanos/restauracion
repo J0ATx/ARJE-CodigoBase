@@ -9,7 +9,7 @@ DB_NAME="losTresTanosDB"
 
 function init() {
     case "$1" in
-        -r | --restore)
+        -r | -restore)
             read -p "ADVERTENCIA: Esta a punto de sobrescribir la base de datos. ¿Desea continuar? (s/n)" confirmacion
             if [[ "$confirmacion" =~ ^[Nn]$ ]]; then
                 exit 0
@@ -60,7 +60,7 @@ function init() {
 
             echo "[$(date)] Proceso de restauración completo finalizado." >> "$LOGFILE"
             ;;
-        -db | --database)
+        -db | -database)
             read -p "ADVERTENCIA: Esta a punto de sobrescribir la base de datos. ¿Desea continuar? (s/n)" confirmacion
             if [[ "$confirmacion" =~ ^[Nn]$ ]]; then
                 exit 0
@@ -80,7 +80,7 @@ function init() {
                 exit 1
             fi
             ;;
-        -app | --application)
+        -app | -application)
             echo "[$(date)] Opción --application seleccionada. Restaurando solo los archivos..." >> "$LOGFILE"
             LATEST_FILES=$(ls -t "$BACKUP_DIR/"*files.tar.gz | head -n 1)
             if [ -f "$LATEST_FILES" ]; then
@@ -96,13 +96,13 @@ function init() {
                 exit 1
             fi
             ;;
-        -h | --help)
+        -h | -help)
             echo "Uso: $0 [opción]"
             echo "Opciones:"
-            echo "  -r, --restore        Restaurar sistema completo (archivos y base de datos)."
-            echo "  -db, --database      Restaurar solo la base de datos desde el último respaldo."
-            echo "  -app, --application  Restaurar solo los archivos de la aplicación desde el último respaldo."
-            echo "  -h, --help           Mostrar este mensaje de ayuda."
+            echo "  -r, -restore        Restaurar sistema completo (archivos y base de datos)."
+            echo "  -db, -database      Restaurar solo la base de datos desde el último respaldo."
+            echo "  -app, -application  Restaurar solo los archivos de la aplicación desde el último respaldo."
+            echo "  -h, -help           Mostrar este mensaje de ayuda."
             ;;
         *)
             echo "Opción no válida. Use -h o --help para ver las opciones disponibles."
