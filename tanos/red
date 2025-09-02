@@ -15,6 +15,7 @@ function init() {
             nmcli networking off
             sleep 2
             nmcli networking on
+            echo "Configuración de red reiniciada"
             echo "[$(date)] Configuración de red reiniciada" >> "$LOGFILE"
             ;;
         -h | -help)

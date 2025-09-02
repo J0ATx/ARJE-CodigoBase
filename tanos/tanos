@@ -12,19 +12,19 @@ function init() {
 
     case "$1" in
         -s | -services)
-            servicios "$2"
+            servicios "${@:2}"
             ;;
         -p | -processes)
-            procesos "$2"
+            procesos "${@:2}"
             ;;
         -n | -network)
-            red "$2"
+            red "${@:2}"
             ;;
         -l | -logs)
-            registros "$2"
+            registros "${@:2}"
             ;;
         -u | -users)
-            usuarios "$2"
+            usuarios "${@:2}"
             ;;
         -m | -monthly-backup)
             respaldomes
@@ -36,10 +36,10 @@ function init() {
             respaldosemana
             ;;
         -r | -restore)
-            restauracion "$2"
+            restauracion "${@:2}"
             ;;
         -i | -install)
-            instalacion "$2"
+            instalacion "${@:2}"
             ;;
         -e | -exit)
             echo "Saliendo..."

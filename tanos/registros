@@ -16,7 +16,7 @@ function init() {
             ;;
         -a | --access)
             echo "Mostrando los últimos 10 registros de acceso:"
-            tail -n 10 /var/log/auth.log
+            sudo journalctl -n
             ;;
         -h | --help)
             echo "Uso: $0 [opción]"

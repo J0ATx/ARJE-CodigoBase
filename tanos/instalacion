@@ -1,7 +1,7 @@
 #!/bin/bash
 
-touch /var/log/tanos.log
-chmod 666 /var/log/tanos.log
+sudo touch /var/log/tanos.log
+sudo chmod 666 /var/log/tanos.log
 LOGFILE="/var/log/tanos.log"
 echo "[$(date)] Archivo de log creado" >> "$LOGFILE"
 

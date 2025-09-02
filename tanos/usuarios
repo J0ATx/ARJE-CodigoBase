@@ -12,7 +12,7 @@ function init() {
         -a | -add)
             read -p "Ingrese el nombre del nuevo usuario: " username
             read -p "Ingrese el nombre completo del usuario: " fullname
-            raed -p "Ingrese el grupo del usuario ('Operarios' o 'Administrativos'): " group
+            read -p "Ingrese el grupo del usuario ('Operarios' o 'Administrativos'): " group
             if [[ "$group" != "Operarios" && "$group" != "Administrativos" ]]; then
                 echo "Grupo inválido. Use 'Operarios' o 'Administrativos'."
                 exit 1
@@ -24,7 +24,7 @@ function init() {
             ;;
         -d | -delete)
             read -p "Ingrese el nombre del usuario a eliminar: " username
-            sudo deluser -r "$username"
+            sudo userdel -r "$username"
             echo "[$(date)] Usuario eliminado del sistema: $username" >> "$LOGFILE"
             ;;
         -g | -groups)
