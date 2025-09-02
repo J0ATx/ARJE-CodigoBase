@@ -31,7 +31,7 @@ function init() {
 
             cd /usr/local/bin || exit 1
             sudo git clone --no-checkout https://github.com/J0ATx/Proyecto-Final-2025-Los3tanos.git
-            cd /Proyecto-Final-2025-Los3tanos
+            cd Proyecto-Final-2025-Los3tanos
             sudo git sparse-checkout init --cone
             sudo git sparse-checkout set tanos
             sudo git checkout master
