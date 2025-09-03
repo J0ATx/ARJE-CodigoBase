@@ -7,25 +7,35 @@
 </head>
 <body>
   <div class="kds-container">
-    <h1>Pedidos - Mozo</h1>
-    <button id="btnAbrirNuevoPedido" style="margin-bottom:1em;">Nuevo Pedido</button>
-    <section class="lista-pedidos">
-      <h2>Pedidos Activos</h2>
-      <div id="pedidosList">
-        <table>
-          <thead>
-            
-          </thead>
-          <tbody></tbody>
-        </table>
+    <header class="kds-header">
+      <h1>KDS - Sistema de Visualización de Cocina</h1>
+      <button id="btnAbrirNuevoPedido" class="btn-nuevo-pedido">+ Nuevo Pedido</button>
+    </header>
+    
+    <div class="kds-filters">
+      <div class="filter-options">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="pendiente">Pendientes</button>
+        <button class="filter-btn" data-filter="en_preparacion">En Preparación</button>
+        <button class="filter-btn" data-filter="listo">Listos</button>
+        <button class="filter-btn" data-filter="entregado">Entregados</button>
       </div>
-    </section>
+    </div>
+
+    <div id="pedidosList" class="pedidos-grid">
+      <!-- Las tarjetas de pedidos se insertarán aquí dinámicamente -->
+    </div>
     <dialog id="modalNuevoPedido">
       <form id="formPedido" method="dialog">
         <h2>Nuevo Pedido</h2>
-        <label>Mesa:
-          <select id="selectMesa" required></select>
-        </label>
+        <div class="form-row">
+          <label>Mesa:
+            <select id="selectMesa" required></select>
+          </label>
+          <label>Mozo:
+            <select id="selectMozo" required></select>
+          </label>
+        </div>
         <div id="productosContainer"></div>
         <button type="button" id="agregarProducto">Agregar producto</button>
         <div class="form-group">
@@ -42,6 +52,11 @@
       <form id="formEditarPedido" method="dialog">
         <h2>Editar Pedido</h2>
         <input type="hidden" id="editarIdPedido">
+        <div class="form-row">
+          <label>Mozo:
+            <select id="editarSelectMozo" required></select>
+          </label>
+        </div>
         <div id="editarProductosContainer"></div>
         <button type="button" id="agregarProductoEditar">Agregar producto</button>
         <div class="form-group">

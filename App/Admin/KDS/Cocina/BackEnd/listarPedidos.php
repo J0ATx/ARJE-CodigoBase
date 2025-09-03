@@ -6,7 +6,7 @@ require_once '../../../../Control/Conexión/conexion.php';
 $sql = "SELECT p.idPedido, pf.idMesa, pf.idUsuario as idMozo, p.estado, p.horaIngreso, p.horaFinalizacion,
     GROUP_CONCAT(t.idProducto) as productos,
     GROUP_CONCAT(prod.nombre) as nombres_productos,
-    GROUP_CONCAT(e.especificacion) as comentarios
+    GROUP_CONCAT(DISTINCT e.especificacion SEPARATOR ', ') as comentarios
 FROM Pedido p
 JOIN PedidoFisico pf ON p.idPedido = pf.idPedido
 LEFT JOIN Tiene t ON p.idPedido = t.idPedido
