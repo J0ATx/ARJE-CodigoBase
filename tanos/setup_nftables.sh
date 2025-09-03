@@ -17,10 +17,17 @@ table ip filter {
         size 65535
         flags dynamic, timeout
         timeout 5m
-        }
-        
+    }
+
+    
     chain input {
-        type filter hook input priority filter; policy accept;
+        type filter hook input priority filter;
+        policy drop;
+        ct state related,established accept
+        iifname "lo" accept
+        ct state invalid drop
+        tcp dport { 80, 443, 3306 } accept
+        udp dport 500 accept
         ip protocol tcp ct state new,untracked limit rate over 10/minute burst 5 packets add @denylist { ip saddr }
         ip saddr @denylist drop
     }
