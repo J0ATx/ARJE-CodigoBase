@@ -46,12 +46,12 @@ function init() {
         -h | -help)
             echo "Uso: $0 [opción] [servicio]"
             echo "Opciones:"
-            echo "  -l, --list       Listar todos los servicios"
-            echo "  -s, --status     Verificar el estado de un servicio"
-            echo "  -r, --restart    Reiniciar un servicio"
-            echo "  -k, --kill       Detener un servicio"
-            echo "  -a, --active     Listar servicios activos"
-            echo "  -h, --help       Mostrar este mensaje de ayuda"
+            echo "  -l, -list       Listar todos los servicios"
+            echo "  -s, -status     Verificar el estado de un servicio"
+            echo "  -r, -restart    Reiniciar un servicio"
+            echo "  -k, -kill       Detener un servicio"
+            echo "  -a, -active     Listar servicios activos"
+            echo "  -h, -help       Mostrar este mensaje de ayuda"
             ;;
         *)
             echo "Opción no válida. Use -h o --help para ver las opciones disponibles."
