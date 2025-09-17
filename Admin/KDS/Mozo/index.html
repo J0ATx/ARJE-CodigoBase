@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pedidos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="kds-container">
+    <header class="kds-header">
+      <h1>Pedidos</h1>
+      <button id="btnAbrirNuevoPedido" class="btn-nuevo-pedido">+ Nuevo Pedido</button>
+    </header>
+    
+    <div class="kds-filters">
+      <div class="filter-options">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="pendiente">Pendientes</button>
+        <button class="filter-btn" data-filter="en_preparacion">En Preparación</button>
+        <button class="filter-btn" data-filter="listo">Listos</button>
+        <button class="filter-btn" data-filter="entregado">Entregados</button>
+      </div>
+    </div>
+
+    <div id="pedidosList" class="pedidos-grid">
+      <!-- Las tarjetas de pedidos se insertarán aquí dinámicamente -->
+    </div>
+    <dialog id="modalNuevoPedido">
+      <form id="formPedido" method="dialog">
+        <h2>Nuevo Pedido</h2>
+        <div class="form-row">
+          <label>Mesa:
+            <select id="selectMesa" required></select>
+          </label>
+          <label>Mozo:
+            <select id="selectMozo" required></select>
+          </label>
+        </div>
+        <div id="productosContainer"></div>
+        <button type="button" id="agregarProducto">Agregar producto</button>
+        <div class="form-group">
+          <label>Especificaciones del pedido:</label>
+          <textarea id="especificacionPedido" rows="3" placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
+        </div>
+        <div style="margin-top:1em;">
+          <button type="submit">Crear pedido</button>
+          <button type="button" onclick="document.getElementById('modalNuevoPedido').close()">Cancelar</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="modalEditar">
+      <form id="formEditarPedido" method="dialog">
+        <h2>Editar Pedido</h2>
+        <input type="hidden" id="editarIdPedido">
+        <div class="form-row">
+          <label>Mozo:
+            <select id="editarSelectMozo" required></select>
+          </label>
+        </div>
+        <div id="editarProductosContainer"></div>
+        <button type="button" id="agregarProductoEditar">Agregar producto</button>
+        <div class="form-group">
+          <label>Especificaciones del pedido:</label>
+          <textarea id="especificacionPedidoEditar" rows="3" placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
+        </div>
+        <div style="margin-top:1em;">
+          <button type="submit">Guardar cambios</button>
+          <button type="button" onclick="document.getElementById('modalEditar').close()">Cancelar</button>
+        </div>
+      </form>
+    </dialog>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
