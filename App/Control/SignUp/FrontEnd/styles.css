@@ -19,6 +19,13 @@ html {
     text-size-adjust: none;
 }
 
+p{
+    color: #696969;
+    font-size: 0.8rem;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+}
+
 @view-transition {
     navigation: auto;
 }
@@ -366,6 +373,17 @@ form {
     text-decoration: none;
 }
 
+.mensajes{
+    height: 32px;
+    text-wrap: pretty;
+    word-wrap: break-word;
+    color: #ff4040;
+    font-size: 15px;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+}
+
 @media (max-width: 700px) {
     @view-transition {
         navigation: none;
@@ -478,7 +496,7 @@ form {
     }
 }
 
-@media (max-height: 560px) {
+@media (max-height: 630px) {
     .login-bg {
         min-height: 80vh;
     }
@@ -517,5 +535,9 @@ form {
 
     p {
         font-size: 0.7rem;
+    }
+    .mensajes{
+        padding-top: 12px;
+        font-size: 12px;
     }
 }

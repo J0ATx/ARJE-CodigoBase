@@ -32,6 +32,18 @@ async function checkSession() {
         }
         
         showContent();
+
+        const userNameElement = document.getElementById('userName');
+        const userRolElement = document.getElementById('userRol');
+        const dashboardBtnElement = document.getElementById('dashboardBtn');
+        if (userNameElement) {
+            userNameElement.textContent = `${data.user.nombre} ${data.user.apellido}`;
+            userRolElement.textContent = `${data.user.rol}`;
+        }
+        if(data.user.rol === "Gerente"){
+            dashboardBtnElement.style.display = 'flex';
+        }
+
         return true;
     } catch (error) {
         console.error('Error checking session:', error);

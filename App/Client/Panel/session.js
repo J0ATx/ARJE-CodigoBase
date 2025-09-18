@@ -64,52 +64,7 @@ function showContent() {
     }
 }
 
-async function logout() {
-    try {
-        const response = await fetch('../../../Control/Panel/BackEnd/logout.php', {
-            method: 'POST',
-            credentials: 'same-origin'
-        });
-        const data = await response.json();
-
-        if (data.success) {
-            window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
-        } else {
-            console.error('Error al cerrar sesión:', data.message);
-            alert('Error al cerrar sesión. Por favor, intenta nuevamente.');
-        }
-    } catch (error) {
-        console.error('Error al cerrar sesión:', error);
-        alert('Error al cerrar sesión. Por favor, intenta nuevamente.');
-    }
-}
-
 window.addEventListener('load', async () => {
     await loadSVGLogo();
     await checkSession();
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const userDropdown = document.getElementById('userDropdown');
-    const userIcon = document.getElementById('userIcon');
-    const dropdownContent = document.querySelector('.dropdown-content');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    userIcon.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdownContent.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!userDropdown.contains(e.target)) {
-            dropdownContent.classList.remove('active');
-        }
-    });
-
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            await logout();
-        });
-    }
 });

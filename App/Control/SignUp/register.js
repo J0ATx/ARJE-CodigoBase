@@ -21,13 +21,11 @@ form.addEventListener('submit', function(e) {
         body: formulario
     }).then(res => res.json())
         .then(data => {
-            console.log(data);
             if (data.errores) {
-                alert(data.errores);
-                console.log(data.errores);
+                $('.mensajes').textContent = data.errores;
             }
             if(data.exito){
-                window.location.href = "../../SignIn/FrontEnd/index.html";
+                window.location.href = "../../../Client/Panel/FrontEnd/index.html";
             }
         });
 });

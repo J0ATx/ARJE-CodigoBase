@@ -139,7 +139,7 @@ html {
     align-items: center;
     display: flex;
     flex-direction: column;
-    padding: 24px;
+    padding: 64px;
     justify-content: center;
     z-index: 1;
 }
@@ -317,6 +317,19 @@ form{
     text-decoration: none;
 }
 
+.mensajes{
+    height: 8px;
+    text-wrap: pretty;
+    word-wrap: break-word;
+    color: #ff4040;
+    font-size: 15px;
+    width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
 @media (max-width: 700px) {
     @view-transition {
         navigation: none;
@@ -394,6 +407,10 @@ form{
         margin-top: 12px;
         font-size: 0.8rem;
     }
+    .mensajes{
+        padding-top: 12px;
+        font-size: 13px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -468,5 +485,11 @@ form{
 
     p {
         font-size: 0.7rem;
+    }
+}
+@media(max-height: 700px){
+    .mensajes{
+        padding-top: 12px;
+        font-size: 13px;
     }
 }

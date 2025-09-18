@@ -21,8 +21,17 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON losTresTanosDB.reserva TO 'cliente_regis
 GRANT SELECT, UPDATE ON losTresTanosDB.usuario TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON losTresTanosDB.productos TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON losTresTanosDB.pedido TO 'cliente_registrado'@'localhost';
+GRANT SELECT ON losTresTanosDB.gerente TO 'cliente_registrado'@'localhost';
+GRANT SELECT ON losTresTanosDB.chef TO 'cliente_registrado'@'localhost';
+GRANT SELECT ON losTresTanosDB.chefejecutivo TO 'cliente_registrado'@'localhost';
+GRANT SELECT ON losTresTanosDB.mozo TO 'cliente_registrado'@'localhost';
 
 GRANT SELECT, INSERT ON losTresTanosDB.usuario TO 'cliente_no_registrado'@'localhost';
+GRANT INSERT ON losTresTanosDB.cliente TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON losTresTanosDB.productos TO 'cliente_no_registrado'@'localhost';
+GRANT SELECT ON losTresTanosDB.gerente TO 'cliente_no_registrado'@'localhost';
+GRANT SELECT ON losTresTanosDB.chef TO 'cliente_no_registrado'@'localhost';
+GRANT SELECT ON losTresTanosDB.chefejecutivo TO 'cliente_no_registrado'@'localhost';
+GRANT SELECT ON losTresTanosDB.mozo TO 'cliente_no_registrado'@'localhost';
 
 FLUSH PRIVILEGES;

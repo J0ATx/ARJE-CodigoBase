@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require_once "../../Conexión/conexion.php";
+require_once "../../Conexión/clienteNoRegistrado.php";
 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -64,5 +64,12 @@ if ($checkEmail->fetchColumn() > 0) {
     $sql = "INSERT INTO Cliente(idUsuario, noShows, platilloFav) VALUES (?, ?, ?)";
     $stmt = $con->prepare($sql);
     $stmt->execute([$con->lastInsertId(), 0, null]);
+    include "../../SignIn/BackEnd/funLogin.php";
+    $sql = "SELECT * FROM Usuario WHERE gmail = ?";
+    
+    $stmt = $con->prepare($sql);
+    $stmt->execute([$email]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    iniciarSesion($usuario);
     echo json_encode(["exito" => true, "mensaje" => "Registro exitoso."]);
 }

@@ -25,8 +25,7 @@ form.addEventListener('submit', function(e) {
                 }
             }
             if(data.errores){
-                alert(data.errores);
-                console.log(data.errores);
+                $('.mensajes').textContent = data.errores;
             }
         });
 });

@@ -12,7 +12,7 @@ window.onload = function () {
     ws.onopen = function () {
         console.log('Sistema conectado a cocina');
     };
-    
+
     ws.onmessage = function (event) {
         try {
             const data = JSON.parse(event.data);
@@ -23,7 +23,7 @@ window.onload = function () {
             console.error('Error al procesar mensaje WebSocket:', error);
         }
     };
-    
+
     ws.onclose = function () {
         console.log('Conexión WebSocket cerrada');
     };
@@ -51,34 +51,34 @@ async function cargarComandas() {
     try {
         const response = await fetch('BackEnd/listarPedidos.php');
         const data = await response.json();
-        
+
         if (!data.success) {
             throw new Error(data.message || 'Error al cargar comandas');
         }
-        
+
         const contenedor = document.getElementById('comandasList');
         if (!contenedor) return;
-        
+
         contenedor.innerHTML = '';
-        
+
         // Ordenar por estado y hora de ingreso
         data.data.sort((a, b) => {
             // Primero por estado (pendiente > en_preparacion > listo)
             const ordenEstados = { 'pendiente': 1, 'en_preparacion': 2, 'listo': 3 };
             const ordenA = ordenEstados[a.estado] || 4;
             const ordenB = ordenEstados[b.estado] || 4;
-            
+
             if (ordenA !== ordenB) return ordenA - ordenB;
-            
+
             // Luego por hora de ingreso (más antiguo primero)
             return new Date(a.horaIngreso) - new Date(b.horaIngreso);
         });
-        
+
         // Crear tarjetas para cada pedido
         data.data.forEach(pedido => {
             contenedor.appendChild(crearTarjetaPedido(pedido));
         });
-        
+
     } catch (error) {
         console.error('Error al cargar comandas:', error);
         console.log('danger', 'Error al cargar las comandas: ' + error.message);
@@ -92,12 +92,12 @@ function crearTarjetaPedido(pedido) {
     const card = document.createElement('div');
     card.className = 'card mb-3';
     card.dataset.estado = pedido.estado;
-    
+
     // Procesar productos únicos
-    const productos = pedido.nombres_productos 
-        ? [...new Set(pedido.nombres_productos.split(',').map(p => p.trim()))] 
+    const productos = pedido.nombres_productos
+        ? [...new Set(pedido.nombres_productos.split(',').map(p => p.trim()))]
         : [];
-    
+
     // Crear el HTML de la tarjeta
     card.innerHTML = `
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -123,7 +123,7 @@ function crearTarjetaPedido(pedido) {
             </div>
         </div>
     `;
-    
+
     return card;
 }
 
@@ -135,14 +135,14 @@ function crearSelectEstado(idPedido, estadoActual) {
     if (!TRANSICIONES[estadoActual]?.length) {
         return `<div class="form-control">${ESTADOS[estadoActual]?.texto || estadoActual}</div>`;
     }
-    
+
     // Crear opciones disponibles
     let opcionesHTML = '<option value="" selected disabled>Cambiar estado...</option>';
-    
+
     TRANSICIONES[estadoActual].forEach(estado => {
         opcionesHTML += `<option value="${estado}">${ESTADOS[estado]?.texto || estado}</option>`;
     });
-    
+
     return `
         <select class="form-select" 
                 onchange="actualizarEstadoPedido('${idPedido}', '${estadoActual}', this.value)"
@@ -157,18 +157,18 @@ function crearSelectEstado(idPedido, estadoActual) {
  */
 async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
     console.log(`Cambiando pedido #${idPedido} de '${estadoActual}' a '${nuevoEstado}'`);
-    
+
     // Validaciones básicas
     if (!idPedido || !nuevoEstado) {
         console.error('Faltan parámetros requeridos');
         return;
     }
-    
+
     if (estadoActual === nuevoEstado) {
         console.warn('El pedido ya está en el estado solicitado');
         return;
     }
-    
+
     // Mostrar confirmación
     const mensaje = `¿Cambiar estado del pedido #${idPedido} a "${ESTADOS[nuevoEstado]?.texto || nuevoEstado}"?`;
     console.log("espera")
@@ -180,24 +180,24 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
         if (select) select.value = '';
         return;
     }
-    
+
     try {
         // Enviar solicitud al servidor
         const formData = new FormData();
         formData.append('idPedido', idPedido);
         formData.append('nuevoEstado', nuevoEstado);
-        
+
         const response = await fetch('BackEnd/cambiarEstado.php', {
             method: 'POST',
             body: formData
         });
-        
+
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             console.log('success', 'Estado actualizado correctamente');
             // Recargar la lista de comandas
@@ -206,13 +206,13 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
             console.log(data);
             throw new Error(data.message || 'Error al actualizar el estado');
         }
-        
+
     } catch (error) {
         console.error('Error al actualizar estado:', error);
-        
+
         // Mostrar mensaje de error
         console.log('danger', `Error: ${error.message}`);
-        
+
         // Restaurar el selector de estado
         if (contenedor) {
             contenedor.innerHTML = crearSelectEstado(idPedido, estadoActual);
@@ -231,7 +231,7 @@ function mostrarConfirmacion(mensaje) {
         modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
         modal.tabIndex = '-1';
         modal.role = 'dialog';
-        
+
         modal.innerHTML = `
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -249,21 +249,21 @@ function mostrarConfirmacion(mensaje) {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
-        
+
         // Manejar clic en Aceptar
         modal.querySelector('#confirmarSi').addEventListener('click', () => {
             document.body.removeChild(modal);
             resolve(true);
         });
-        
+
         // Manejar clic en Cancelar
         modal.querySelector('#confirmarNo').addEventListener('click', () => {
             document.body.removeChild(modal);
             resolve(false);
         });
-        
+
         // Manejar clic fuera del modal
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
@@ -271,7 +271,7 @@ function mostrarConfirmacion(mensaje) {
                 resolve(false);
             }
         });
-        
+
         // Manejar tecla Escape
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') {
@@ -280,7 +280,7 @@ function mostrarConfirmacion(mensaje) {
                 resolve(false);
             }
         };
-        
+
         document.addEventListener('keydown', handleKeyDown);
     });
 }
@@ -289,7 +289,5 @@ function mostrarConfirmacion(mensaje) {
 function sendReload() {
     if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ action: 'reload' }));
-    } else {
-        cargarComandas();
     }
 }

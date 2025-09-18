@@ -53,7 +53,7 @@ $id_camarero = rand(6, 10);
     }
 
     try {
-        $sql = "INSERT INTO Pedido (montoTotal, pagoPedido, pagoPropina, fechReg) VALUES (?,?,?,?)";
+        $sql = "INSERT INTO Pedido (montoTotal, pagoPedido, pagoPropina, horaIngreso) VALUES (?,?,?,?)";
         $stmt = $con->prepare($sql);
         $stmt->execute([0, 0, 0, $fechReg]);
 
