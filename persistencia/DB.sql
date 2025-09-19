@@ -241,6 +241,8 @@ create table EspecificacionesPedido(
 
 create table Mesas(
 	idMesa int auto_increment,
+    capacidad int (2) NOT NULL,
+    ubicacion varchar (30) NOT NULL,
     estadoActual varchar (30) NOT NULL,
     fechUsoOcupadoReservado datetime,
     primary key(idMesa)

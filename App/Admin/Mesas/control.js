@@ -26,6 +26,8 @@ async function cargarMesas() {
             <td>${m.estadoActual}</td>
             <td>${m.ubicacion}</td>
             <td>${m.fechUsoOcupadoReservado || ''}</td>
+            <td>${m.pedidoAsignado || ''}</td>
+            <td>${m.reservaAsignada || ''}</td>
             <td>
                 <button onclick="editarMesa(${m.idMesa}, ${m.capacidad}, '${m.estadoActual}', '${m.ubicacion}', '${m.fechUsoOcupadoReservado || ''}')">Editar</button>
                 <button onclick="eliminarMesa(${m.idMesa})">Eliminar</button>
