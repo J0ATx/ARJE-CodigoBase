@@ -107,6 +107,22 @@ h2 {
     fill: #EFE7D2;
 }
 
+/* Iconos sociales: mostrar normal por defecto y coloreado al hacer hover */
+.icons a svg:nth-child(1) {
+    display: block;
+}
+
+.icons a svg:nth-child(2) {
+    display: none;
+}
+
+.icons a:hover svg:nth-child(1) {
+    display: none;
+}
+
+.icons a:hover svg:nth-child(2) {
+    display: block;
+}
 
 .page>main::after {
     content: '';
