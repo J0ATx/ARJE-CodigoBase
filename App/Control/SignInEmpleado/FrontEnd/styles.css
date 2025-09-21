@@ -8,22 +8,23 @@
 }
 
 body {
-    min-height: 100dvh;
+    min-height: 100vh;
     background-color: #1B1B1B;
-    overflow-y: hidden;
+    overflow-y: auto;
+    position: relative;
 }
-
-html {
-    -moz-text-size-adjust: none;
-    -webkit-text-size-adjust: none;
-    text-size-adjust: none;
-}
-
 p{
     color: #696969;
     font-size: 0.8rem;
     font-family: 'Poppins', sans-serif;
     text-align: center;
+}
+html {
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+    height: 100%;
+    overflow-y: auto;
 }
 
 @view-transition {
@@ -31,19 +32,19 @@ p{
 }
 
 .decoration-bg {
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('files/decoration.webp');
-    background-size: cover;
-    pointer-events: none;
-    opacity: 0.03;
-    mask-image: radial-gradient(ellipse 65% 90% at center, transparent 60%, black 100%);
-    mask-size: cover;
-    mask-repeat: no-repeat;
-    z-index: 1;
+    background-image: url(../../../Recursos/logo.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 65%;
+    opacity: .2;
+    z-index: -1;
+    filter: brightness(0%);
 }
 
 .texture-bg {
@@ -86,10 +87,10 @@ p{
     justify-content: center;
     align-items: center;
     z-index: 2;
+    padding: 20px;
 }
 
-
-.login-container::after {
+.login-container::after{
     content: "";
     position: absolute;
     top: 0;
@@ -105,7 +106,7 @@ p{
     position: relative;
     width: fit-content;
     background-color: #2f2f2f0a;
-    height: 90vh;
+    height: 520px;
     border-radius: 60px;
     backdrop-filter: blur(16px);
     box-shadow: 20px 20px 64px rgba(0, 0, 0, 0.5);
@@ -138,9 +139,8 @@ p{
     align-items: center;
     display: flex;
     flex-direction: column;
-    padding-inline: 64px;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    padding: 64px;
+    padding-bottom: 48px;
     justify-content: center;
     z-index: 1;
 }
@@ -148,15 +148,15 @@ p{
 .login-inputs {
     width: 300px;
     height: 100%;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
     max-height: 300px;
 }
 
-form {
-    height: 70%;
+form{
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -166,7 +166,7 @@ form {
     font-size: 2.5rem;
     text-align: center;
     line-height: 1.2;
-    margin-bottom: 16px;
+    margin-bottom: 32px;
     font-family: 'Poppins', sans-serif;
     color: #EFE7D2;
 }
@@ -192,37 +192,16 @@ form {
     color: #EFE7D2;
     outline: none;
     border: none;
+    gap: 16px;
     position: relative;
 }
 
-.user-input {
-    border-radius: 60px 0 0 60px !important;
-    width: 50%;
-}
-
-.apellido-input {
-    border-radius: 0 60px 60px 0 !important;
-    width: 50%;
-}
-
 .input-wrapper {
-    display: flex;
     position: relative;
     border-radius: 60px;
     padding: 1px;
     z-index: 0;
     margin-top: 8px;
-    gap: 1px;
-}
-
-.input-wrapper:has(.user-input, .apellido-input) {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
-.input-wrapper:has(.user-input, .apellido-input)::before {
-    border-radius: 60px !important;
 }
 
 .login-inputs .input-wrapper::before {
@@ -233,9 +212,6 @@ form {
     padding: 1px;
     background: radial-gradient(circle, #ffffff1f 60%, #ffffff79 100%);
     -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    mask:
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -249,22 +225,6 @@ form {
     padding-left: 50px;
 }
 
-.login-inputs .user-input {
-    background-image: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.788 15.842c-1.271-2.198-3.232-3.775-5.519-4.523a6.013 6.013 0 1 0-6.151 0c-2.288.747-4.248 2.324-5.52 4.523a.669.669 0 1 0 1.157.668c1.574-2.719 4.354-4.342 7.438-4.342 3.085 0 5.865 1.623 7.439 4.343a.669.669 0 1 0 1.156-.669M4.517 6.155a4.677 4.677 0 1 1 9.353 0 4.677 4.677 0 0 1-9.353 0" fill="%23A4A4A4"/></svg>');
-    background-repeat: no-repeat;
-    background-position: 16px center;
-    width: 50%;
-    padding-left: 50px;
-    position: relative;
-    border-right: 1px solid #ffffff1f;
-}
-
-.login-inputs .tel-input {
-    background-image: url('data:image/svg+xml;utf8,<svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28.314 28.323" xml:space="preserve"><path fill="%23A4A4A4" d="m27.728 20.384-4.242-4.242a1.98 1.98 0 0 0-1.413-.586h-.002c-.534 0-1.036.209-1.413.586L17.83 18.97l-8.485-8.485 2.828-2.828c.78-.78.78-2.05-.001-2.83L7.929.585A2 2 0 0 0 6.516 0h-.001C5.98 0 5.478.209 5.101.587L.858 4.83C.729 4.958-.389 6.168.142 8.827c.626 3.129 3.246 7.019 7.787 11.56 6.499 6.499 10.598 7.937 12.953 7.937 1.63 0 2.426-.689 2.604-.867l4.242-4.242c.378-.378.587-.881.586-1.416 0-.534-.208-1.037-.586-1.415m-5.656 5.658c-.028.028-3.409 2.249-12.729-7.07C-.178 9.452 2.276 6.243 2.272 6.244L6.515 2l4.243 4.244-3.535 3.535a1 1 0 0 0 0 1.414l9.899 9.899a1 1 0 0 0 1.414 0l3.535-3.536 4.243 4.244z "/></svg>');
-    background-repeat: no-repeat;
-    background-position: 16px center;
-    padding-left: 50px;
-}
 
 .login-inputs .password-input {
     background-image: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m17.89 2.21.65-.641a.919.919 0 1 0-1.3-1.3l-1.28 1.29-2.59 2.59-5.775 5.765a4.575 4.575 0 1 0 1.3 1.3l5.115-5.125 1.94 1.95a.915.915 0 1 0 1.29-1.3l-1.94-1.94 1.3-1.29.64.64a.916.916 0 1 0 1.3-1.29zM5.08 16.475a2.746 2.746 0 1 1 0-5.492 2.746 2.746 0 0 1 0 5.492" fill="%23A4A4A4"/></svg>');
@@ -274,26 +234,10 @@ form {
     padding-right: 50px;
 }
 
-
-.login-inputs input:invalid:focus {
-    border-color: #ff444400;
-    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
-}
-
-
-.input-wrapper.error::before {
-    background: radial-gradient(circle, #ff44441f 60%, #ff444479 100%) !important;
-}
-
-.input-wrapper.valid::before {
-    background: radial-gradient(circle, #4CAF501f 60%, #4CAF5079 100%) !important;
-}
-
-.hidePass-icon {
+.hidePass-icon{
     position: absolute;
     display: flex;
-    align-items: center;
-    ;
+    align-items: center;;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
@@ -301,8 +245,7 @@ form {
     border: none;
     cursor: pointer;
 }
-
-.eye-closed {
+.eye-closed{
     display: none;
 }
 
@@ -362,9 +305,11 @@ form {
 
 .signup-btn {
     display: flex;
+    align-items: top;
     margin-top: 6px;
     position: relative;
     z-index: 1;
+    width: 100%;
     color: white;
     border: none;
     border-radius: 16px;
@@ -375,14 +320,16 @@ form {
 }
 
 .mensajes{
-    height: 32px;
+    height: 8px;
     text-wrap: pretty;
     word-wrap: break-word;
     color: #ff4040;
     font-size: 15px;
     width: 300px;
     display: flex;
+    align-items: center;
     justify-content: center;
+    margin-top: 32px;
 }
 
 @media (max-width: 700px) {
@@ -462,6 +409,10 @@ form {
         margin-top: 12px;
         font-size: 0.8rem;
     }
+    .mensajes{
+        padding-top: 12px;
+        font-size: 13px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -497,7 +448,7 @@ form {
     }
 }
 
-@media (max-height: 630px) {
+@media (max-height: 500px) {
     .login-bg {
         min-height: 80vh;
     }
@@ -537,8 +488,10 @@ form {
     p {
         font-size: 0.7rem;
     }
+}
+@media(max-height: 700px){
     .mensajes{
         padding-top: 12px;
-        font-size: 12px;
+        font-size: 13px;
     }
 }

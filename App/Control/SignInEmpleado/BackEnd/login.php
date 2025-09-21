@@ -9,24 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resultado = $con->prepare($sql);
     $resultado->execute([$email]);
     $usuario = $resultado->fetch(PDO::FETCH_ASSOC);
-    
-    $sql_cliente = "SELECT COUNT(*) as existe_cliente FROM Cliente WHERE idUsuario = ?";
-    $resultado_cliente = $con->prepare($sql_cliente);
-    $resultado_cliente->execute([$usuario['idUsuario']]);
-    $existe_cliente = $resultado_cliente->fetch(PDO::FETCH_ASSOC)["existe_cliente"] > 0;
-    
-    if(!$existe_cliente){
-        echo json_encode(["exito" => false, "errores" => ["Correo electrónico o contraseña incorrectos."]]);
-        exit;
-    }
-    
-
     if ($usuario && password_verify($contrasenia, $usuario['contrasenia'])) { //Compara la contraseña ingresada con la almacenada en hash
         iniciarSesion($usuario);
-        echo json_encode([
-            "exito" => true,
-            "rol" => $_SESSION["rol"]
-        ]);
+        if($_SESSION["rol"] !== "Cliente"){
+            echo json_encode([
+                "exito" => true,
+                "rol" => $_SESSION["rol"]
+            ]);
+        }else{
+            echo json_encode([
+                "exito" => false,
+                "errores" => ["Correo electrónico o contraseña incorrectos."]
+            ]);
+        }
     } else {
         echo json_encode(["exito" => false, "errores" => ["Correo electrónico o contraseña incorrectos."]]);
     }
