@@ -159,7 +159,7 @@ CREATE TABLE Stock (
 
 CREATE TABLE Stock_Cantidad (
     stock_id INT NOT NULL,
-    stock_cantidad INT NOT NULL,
+    stock_cantidad FLOAT NOT NULL,
     stock_medida VARCHAR (3),
     PRIMARY KEY (stock_id, stock_cantidad, stock_medida),
     FOREIGN KEY (stock_id) REFERENCES Stock (stock_id) ON DELETE CASCADE
@@ -167,7 +167,7 @@ CREATE TABLE Stock_Cantidad (
 
 CREATE TABLE Pedido (
     pedido_id INT AUTO_INCREMENT NOT NULL,
-    pedido_estado ENUM ('Pendiente', 'En-Preparacion', 'Listo', 'Entregado') DEFAULT 'Pendiente',
+    pedido_estado ENUM ('Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado') DEFAULT 'Pendiente',
     pedido_especificacion VARCHAR (250),
     pedido_fecha DATE,
     pedido_monto FLOAT,

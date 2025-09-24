@@ -1,6 +1,6 @@
 async function loadSVGLogo() {
     try {
-        const response = await fetch('../../../../Recursos/logo.svg');
+        const response = await fetch('../../../Recursos/logo.svg');
         const svgText = await response.text();
         const logoContainer = document.getElementById('logo-container');
         if (logoContainer) {
@@ -27,10 +27,10 @@ async function checkSession() {
         const data = await response.json();
 
         if (!data.logged_in) {
-            window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
+            window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
             return false;
         }
-        
+
         showContent();
 
         const userNameElement = document.getElementById('userName');
@@ -47,7 +47,7 @@ async function checkSession() {
         return true;
     } catch (error) {
         console.error('Error checking session:', error);
-        window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
+        window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
         return false;
     }
 }

@@ -149,7 +149,7 @@ img {
       <header>
                 <div class="user-dropdown" id="userDropdown">
                     <div class="user-icon" id="userIcon">
-                        <svg width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="logged" width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x=".101" y=".862" width="46" height="45.292" rx="22.646" fill="#181818"
                                 fill-opacity=".5" />
                             <rect x=".601" y="1.362" width="45" height="44.292" rx="22.146" stroke="#767676"
@@ -158,6 +158,17 @@ img {
                                 d="M23 23.362q-2.337 0-4.002-1.714t-1.665-4.12 1.665-4.12T23 11.696t4.002 1.713 1.665 4.12-1.665 4.12T23 23.362M11.667 35.028v-4.083q0-1.24.62-2.279a4.2 4.2 0 0 1 1.646-1.586 20.7 20.7 0 0 1 4.463-1.695A19 19 0 0 1 23 24.82q2.337 0 4.604.565 2.267.566 4.463 1.695a4.2 4.2 0 0 1 1.647 1.586q.62 1.04.62 2.279v4.083zm2.833-2.916h17v-1.167q0-.4-.195-.73a1.4 1.4 0 0 0-.513-.51 18 18 0 0 0-3.86-1.476A16 16 0 0 0 23 27.737a16 16 0 0 0-3.931.492q-1.949.492-3.86 1.476a1.4 1.4 0 0 0-.514.51 1.4 1.4 0 0 0-.195.73zM23 20.445q1.17 0 2.001-.857a2.85 2.85 0 0 0 .832-2.06 2.85 2.85 0 0 0-.832-2.06q-.832-.856-2.001-.856t-2.001.856a2.85 2.85 0 0 0-.832 2.06q0 1.203.832 2.06.833.857 2.001.857"
                                 fill="#A4A4A4" />
                         </svg>
+                        <a href="/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html" class="notlogged">
+                            <svg width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x=".101" y=".862" width="46" height="45.292" rx="22.646" fill="#181818"
+                                    fill-opacity=".5" />
+                                <rect x=".601" y="1.362" width="45" height="44.292" rx="22.146" stroke="rgba(118, 118, 118, 0.5)"
+                                    stroke-opacity=".7" />
+                                <path
+                                    d="M23 23.362q-2.337 0-4.002-1.714t-1.665-4.12 1.665-4.12T23 11.696t4.002 1.713 1.665 4.12-1.665 4.12T23 23.362M11.667 35.028v-4.083q0-1.24.62-2.279a4.2 4.2 0 0 1 1.646-1.586 20.7 20.7 0 0 1 4.463-1.695A19 19 0 0 1 23 24.82q2.337 0 4.604.565 2.267.566 4.463 1.695a4.2 4.2 0 0 1 1.647 1.586q.62 1.04.62 2.279v4.083zm2.833-2.916h17v-1.167q0-.4-.195-.73a1.4 1.4 0 0 0-.513-.51 18 18 0 0 0-3.86-1.476A16 16 0 0 0 23 27.737a16 16 0 0 0-3.931.492q-1.949.492-3.86 1.476a1.4 1.4 0 0 0-.514.51 1.4 1.4 0 0 0-.195.73zM23 20.445q1.17 0 2.001-.857a2.85 2.85 0 0 0 .832-2.06 2.85 2.85 0 0 0-.832-2.06q-.832-.856-2.001-.856t-2.001.856a2.85 2.85 0 0 0-.832 2.06q0 1.203.832 2.06.833.857 2.001.857"
+                                    fill="rgba(118, 118, 118, 0.7)" />
+                            </svg>
+                        </a>
                     </div>
                     <div class="dropdown-content">
                         <div class="user-info">
@@ -199,7 +210,7 @@ img {
                             Mi usuario
                         </button>
                         <button class="dropdown-btn dashboard-btn" id="dashboardBtn">
-                            <a href="../../../Admin/Gerente/Empresa/FrontEnd/index.html">
+                            <a href="/ARJE-CodigoBase/App/Admin/Gerente/Empresa/FrontEnd/index.html">
                                 <svg id='Dashboard_Layout_24' width='24' height='24' viewBox='0 0 24 24'
                                     xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
                                     <rect width='24' height='24' stroke='none' fill='#000000' opacity='0' />
@@ -271,6 +282,7 @@ img {
                 alert('Error al cerrar sesión. Por favor, intenta nuevamente.');
             }
         }
+
         document.addEventListener('DOMContentLoaded', () => {
             const userDropdown = document.getElementById('userDropdown');
             const userIcon = document.getElementById('userIcon');
@@ -280,7 +292,6 @@ img {
                 e.stopPropagation();
                 dropdownContent.classList.toggle('active');
             });
-
             document.addEventListener('click', (e) => {
                 if (!userDropdown.contains(e.target)) {
                     dropdownContent.classList.remove('active');

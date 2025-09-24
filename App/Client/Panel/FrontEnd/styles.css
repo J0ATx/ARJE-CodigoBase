@@ -225,6 +225,59 @@ h2 {
     border-left: 0.1vw solid rgb(46, 45, 43);
 }
 
+.logged{
+    display:none;
+}
+
+.notlogged::after{
+    content: '';
+    background-color: #0A0B0A;
+    opacity: .9;
+}
+.notlogged p{
+    color: #767676d3;
+}
+.notlogged img {
+    filter:blur(8px);
+}
+
+.notlogged .login-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    background: linear-gradient(to right, #ffffff23, #ffffff02);
+    width: 200px;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 0 1px #fff;
+    background-clip: padding-box;
+    white-space: nowrap;
+}
+
+.login-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 16px;
+    padding: 1px;
+    background: radial-gradient(circle, #ffffff44 60%, #ffffffbe 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.notlogged:hover .login-btn {
+    background: linear-gradient(to right, #ffffff4d, #ffffff2d);
+}
+
 .entry-btn {
     z-index: 1;
     width: 2vw;

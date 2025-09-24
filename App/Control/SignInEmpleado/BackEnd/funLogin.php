@@ -2,53 +2,23 @@
 <?php
 function iniciarSesion($usuario)
 {
-    include "../../Conexión/clienteNoRegistrado.php";
+    include "../../Conexión/conexion.php";
     if (session_status() === PHP_SESSION_ACTIVE) {
         session_destroy();
     }
 
     session_start();
-    $_SESSION["usuario_id"] = $usuario["idUsuario"];
-    $_SESSION["nombre"] = $usuario["nombre"];
-    $_SESSION["apellido"] = $usuario["apellido"];
+    $_SESSION["usuario_id"] = $usuario["personal_id"];
+    $_SESSION["nombre"] = $usuario["personal_nombre"];
+    $_SESSION["apellido"] = $usuario["personal_apellido"];
     $_SESSION["logged"] = true; // Para verficar si el usuario está logueado
 
     // Verificar si el usuario es gerente
-    $sql_gerente = "SELECT COUNT(*) as es_gerente FROM Gerente WHERE idUsuario = ?";
-    $resultado_gerente = $con->prepare($sql_gerente);
-    $resultado_gerente->execute([$usuario["idUsuario"]]);
-    $es_gerente = $resultado_gerente->fetch(PDO::FETCH_ASSOC)["es_gerente"] > 0;
+    $sql_personal = "SELECT personal_rol FROM Personal WHERE personal_id = ?";
+    $resultado_personal = $con->prepare($sql_personal);
+    $resultado_personal->execute([$usuario["personal_id"]]);
+    $rol = $resultado_personal->fetch(PDO::FETCH_ASSOC);
 
-    // Verificar si el usuario es chef
-    $sql_chef = "SELECT COUNT(*) as es_chef FROM Chef WHERE idUsuario = ?";
-    $resultado_chef = $con->prepare($sql_chef);
-    $resultado_chef->execute([$usuario["idUsuario"]]);
-    $es_chef = $resultado_chef->fetch(PDO::FETCH_ASSOC)["es_chef"] > 0;
-
-    // Verificar si el usuario es ChefEjecutivo
-    $sql_chef_ejecutivo = "SELECT COUNT(*) as es_chef_ejecutivo FROM ChefEjecutivo WHERE idUsuario = ?";
-    $resultado_chef_ejecutivo = $con->prepare($sql_chef_ejecutivo);
-    $resultado_chef_ejecutivo->execute([$usuario["idUsuario"]]);
-    $es_chef_ejecutivo = $resultado_chef_ejecutivo->fetch(PDO::FETCH_ASSOC)["es_chef_ejecutivo"] > 0;
-
-    // Verificar si el usuario es mozo
-    $sql_mozo = "SELECT COUNT(*) as es_mozo FROM Mozo WHERE idUsuario = ?";
-    $resultado_mozo = $con->prepare($sql_mozo);
-    $resultado_mozo->execute([$usuario["idUsuario"]]);
-    $es_mozo = $resultado_mozo->fetch(PDO::FETCH_ASSOC)["es_mozo"] > 0;
-
-
-
-    if ($es_gerente == true) {
-        $_SESSION["rol"] = "Gerente";
-    } else if ($es_chef == true) {
-        $_SESSION["rol"] = "Chef";
-    } else if ($es_chef_ejecutivo == true) {
-        $_SESSION["rol"] = "ChefEjecutivo";
-    } else if ($es_mozo == true) {
-        $_SESSION["rol"] = "Mozo";
-    } else {
-        $_SESSION["rol"] = "Cliente";
-    }
+    $_SESSION["rol"] = $rol;
 }
 ?>

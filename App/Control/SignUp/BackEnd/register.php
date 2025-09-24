@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require_once "../../Conexión/clienteNoRegistrado.php";
+require_once "../../Conexión/conexion.php";
 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -53,19 +53,16 @@ if (!empty($errores)) {
 }
 
 $contraseniaHash = password_hash($contrasenia, PASSWORD_DEFAULT);
-$checkEmail = $con->prepare("SELECT COUNT(*) FROM Usuario WHERE gmail = ?");
+$checkEmail = $con->prepare("SELECT COUNT(*) FROM Cliente WHERE cliente_id = ?");
 $checkEmail->execute([$email]);
 if ($checkEmail->fetchColumn() > 0) {
     echo json_encode(["exito" => false, "errores" => ["El correo electrónico ya está registrado."]]);
 } else {
-    $sql = "INSERT INTO Usuario(nombre, apellido, contrasenia, gmail) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO Cliente(cliente_nombre, cliente_apellido, cliente_contrasenia, cliente_id) VALUES (?, ?, ?, ?)";
     $stmt = $con->prepare($sql);
     $stmt->execute([$nombre, $apellido, $contraseniaHash, $email]);
-    $sql = "INSERT INTO Cliente(idUsuario, noShows, platilloFav) VALUES (?, ?, ?)";
-    $stmt = $con->prepare($sql);
-    $stmt->execute([$con->lastInsertId(), 0, null]);
     include "../../SignIn/BackEnd/funLogin.php";
-    $sql = "SELECT * FROM Usuario WHERE gmail = ?";
+    $sql = "SELECT * FROM Cliente WHERE cliente_id = ?";
     
     $stmt = $con->prepare($sql);
     $stmt->execute([$email]);

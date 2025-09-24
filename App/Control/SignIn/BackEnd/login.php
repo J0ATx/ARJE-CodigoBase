@@ -3,25 +3,20 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST["email"];
     $contrasenia = $_POST["contrasenia"];
-    require_once "../../Conexión/clienteNoRegistrado.php";
+    require_once "../../Conexión/conexion.php";
     include "funLogin.php";
-    $sql = "SELECT * FROM Usuario WHERE gmail = ?";
+    $sql = "SELECT * FROM Cliente WHERE cliente_id = ?";
     $resultado = $con->prepare($sql);
     $resultado->execute([$email]);
     $usuario = $resultado->fetch(PDO::FETCH_ASSOC);
     
-    $sql_cliente = "SELECT COUNT(*) as existe_cliente FROM Cliente WHERE idUsuario = ?";
-    $resultado_cliente = $con->prepare($sql_cliente);
-    $resultado_cliente->execute([$usuario['idUsuario']]);
-    $existe_cliente = $resultado_cliente->fetch(PDO::FETCH_ASSOC)["existe_cliente"] > 0;
-    
-    if(!$existe_cliente){
+    if(!$usuario){
         echo json_encode(["exito" => false, "errores" => ["Correo electrónico o contraseña incorrectos."]]);
         exit;
     }
     
 
-    if ($usuario && password_verify($contrasenia, $usuario['contrasenia'])) { //Compara la contraseña ingresada con la almacenada en hash
+    if ($usuario && password_verify($contrasenia, $usuario['cliente_contrasenia'])) { //Compara la contraseña ingresada con la almacenada en hash
         iniciarSesion($usuario);
         echo json_encode([
             "exito" => true,

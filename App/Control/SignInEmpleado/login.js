@@ -18,11 +18,7 @@ form.addEventListener('submit', function(e) {
     }).then(res => res.json())
         .then(data => {
             if(data.exito){
-                if (data.rol === 'Gerente') {
-                    window.location.href = '../../../Admin/Gerente/Empresa/FrontEnd/index.html';
-                } else {
-                    window.location.href = '../../../Client/Panel/FrontEnd/index.html';
-                }
+                window.location.href = '../../../Admin/Gerente/Empresa/FrontEnd/index.html';
             }
             if(data.errores){
                 $('.mensajes').textContent = data.errores;
