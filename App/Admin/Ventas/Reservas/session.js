@@ -31,7 +31,7 @@ async function checkSession() {
             return false;
         }
         
-        if (data.user.rol !== "Gerente" && data.user.rol !== "Mozo") {
+        if (data.user.rol !== "Gerente-General" && data.user.rol !== "Camarero") {
             window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }

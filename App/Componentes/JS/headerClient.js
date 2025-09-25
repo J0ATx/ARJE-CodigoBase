@@ -145,6 +145,9 @@ img {
     z-index: 1;
     font-size: 1.2vw;
 }
+    .logged{
+    display:none;
+}
         </style>
       <header>
                 <div class="user-dropdown" id="userDropdown">

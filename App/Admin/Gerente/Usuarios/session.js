@@ -31,7 +31,7 @@ async function checkSession() {
             return false;
         }
         
-        if (data.user.rol !== "Gerente") {
+        if (data.user.rol !== "Gerente-General") {
             window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }

@@ -9,17 +9,15 @@ if (!isset($_SESSION['usuario_id'])) {
 // Incluir la conexión después de verificar la sesión
 include_once '../../../../Control/Conexión/conexion.php';
 
-// Obtener datos del formulario
 $fecha = isset($_POST['fecha']) ? $_POST['fecha'] : '';
 $hora = isset($_POST['hora']) ? $_POST['hora'] : '';
+$ubicacion = isset($_POST['ubicacion']) ? $_POST['ubicacion'] : '';
+$cantidad = isset($_POST['cantidad']) ? $_POST['cantidad'] : '';
+$duracion = 2;
 
-// Obtener ID del cliente de la sesión
 $id_cliente = $_SESSION["usuario_id"];
 $fechReg = date("Y-m-d");
 
-// Asignar mesa y camarero aleatorios (temporal)
-$mesa = rand(1, 20);
-$id_camarero = rand(6, 10);
 
     // Validar existencia de fecha y hora
     if (empty($fecha) || empty($hora)) {
@@ -34,18 +32,35 @@ $id_camarero = rand(6, 10);
         exit();
     }
 
-    // Regex validations
-    // Validar fecha (YYYY-MM-DD)
+    // Validar formato de fecha (YYYY-MM-DD)
     if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
         echo json_encode(["error" => "invalid date"]);
         exit();
     }
 
-    // Validar hora (HH:MM, 24 horas)
+    // Validar formato de hora (HH:MM)
     if (!preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d$/', $hora)) {
         echo json_encode(["error" => "invalid hour"]);
         exit();
     }
+
+    // Normalizar hora a HH:MM:SS
+    if (strlen($hora) === 5) {
+        $hora .= ':00';
+    }
+
+    if (!in_array($ubicacion, ['Interior', 'Exterior'], true)) {
+        echo json_encode(["error" => "invalid ubicacion"]);
+        exit();
+    }
+
+    // Validar cantidad (1..6)
+    if (!preg_match('/^[1-6]$/', (string)$cantidad)) {
+        echo json_encode(["error" => "invalid cantidad"]);
+        exit();
+    }
+
+    $duracion = 2;
 
     if($_SESSION["rol"] !== "Cliente") {
         echo json_encode(["error" => "not client"]);
@@ -53,20 +68,53 @@ $id_camarero = rand(6, 10);
     }
 
     try {
-        $sql = "INSERT INTO Pedido (montoTotal, pagoPedido, pagoPropina, horaIngreso) VALUES (?,?,?,?)";
-        $stmt = $con->prepare($sql);
-        $stmt->execute([0, 0, 0, $fechReg]);
+        $con->beginTransaction();
 
-        $id_pedido = $con->lastInsertId();
+        $sqlMesa = "
+            SELECT m.mesa_id, m.mesa_alcance
+            FROM Mesa m
+            WHERE m.mesa_ubicacion = ?
+              AND NOT EXISTS (
+                SELECT 1
+                FROM Reserva r
+                WHERE r.mesa_id = m.mesa_id
+                  AND r.reserva_fecha = ?
+                  AND (
+                    TIME(?) < ADDTIME(r.reserva_inicio, MAKETIME(CAST(r.reserva_duracion AS UNSIGNED), 0, 0))
+                    AND ADDTIME(TIME(?), MAKETIME(?, 0, 0)) > r.reserva_inicio
+                  )
+              )
+            ORDER BY
+              (m.mesa_alcance < ?) ASC,
+              CASE WHEN m.mesa_alcance < ? THEN m.mesa_alcance END DESC,
+              CASE WHEN m.mesa_alcance >= ? THEN m.mesa_alcance END ASC
+            LIMIT 1
+            FOR UPDATE;
+        ";
+        $stmt = $con->prepare($sqlMesa);
+        $stmt->execute([$ubicacion, $fecha, $hora, $hora, (int)$duracion, (int)$cantidad, (int)$cantidad, (int)$cantidad]);
+        $mesaRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "INSERT INTO Reserva (idPedido, idMesa, idUsuario, fecha, horaInicio, duracion) VALUES (?, ?, ?, ?, ?, 1)";
-        $stmt = $con->prepare($sql);
-        $stmt->execute([$id_pedido, $mesa, $id_camarero, $fecha, $hora]);
+        if (!$mesaRow) {
+            $con->rollBack();
+            echo json_encode(["error" => "no availability"]);
+            exit();
+        }
 
-        $sql = "INSERT INTO Relaciona (idUsuario, idPedido) VALUES (?, ?)";
-        $stmt = $con->prepare($sql);
-        $stmt->execute([$id_cliente, $id_pedido]);
+        $mesa_id = (int)$mesaRow['mesa_id'];
+
+        $sqlReserva = "
+            INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha, reserva_inicio, cliente_id, mesa_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ";
+        $stmt = $con->prepare($sqlReserva);
+        $stmt->execute([(int)$cantidad, (string)$duracion, $fecha, $hora, $id_cliente, $mesa_id]);
+
+        $con->commit();
     } catch (\Throwable $th) {
+        if ($con && $con->inTransaction()) {
+            $con->rollBack();
+        }
         echo json_encode(array("error" => "error " . $th->getMessage()));
         exit();
     }

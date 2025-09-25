@@ -30,29 +30,64 @@
 
                     <form class="formulario" autocomplete="off" id="formulario">
                         <div class="datos-reserva">
-                            <div class="input-group">
-                                <img src="files/svg/Chair.svg" alt="Ubicación" />
-                                <select name="ubicacion" id="lugar" required>
-                                    <option value="" disabled selected>Ubicación</option>
-                                    <option>Interior</option>
-                                    <option>Exterior</option>
-                                </select>
+                            <!-- Fila 1: Día y Hora -->
+                            <div class="fila">
+                                <div class="input-group">
+                                    <img src="files/svg/Group.svg" alt="Fecha" />
+                                    <input type="date" name="fecha" id="fecha" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <img src="files/svg/Vector (3).svg" alt="Hora" />
+                                    <input type="time" name="hora" id="hora" required>
+                                </div>
                             </div>
 
-                            <div class="input-group">
-                                <img src="files/svg/Group.svg" alt="Fecha" />
-                                <input type="date" name="fecha" id="fecha" required>
-                            </div>
+                            <!-- Fila 2: Ubicación y Cantidad -->
+                            <div class="fila">
+                                <div class="input-group">
+                                    <img src="files/svg/Chair.svg" alt="Ubicación" />
+                                    <select name="ubicacion" id="lugar" required>
+                                        <option value="" disabled selected>Ubicación</option>
+                                        <option>Interior</option>
+                                        <option>Exterior</option>
+                                    </select>
+                                </div>
 
-                            <div class="input-group">
-                                <img src="files/svg/Vector (3).svg" alt="Hora" />
-                                <input type="time" name="hora" id="hora" required>
+                                <div class="input-group tooltip">
+                                    <img src="files/svg/Group.svg" alt="Cantidad de personas" />
+                                    <input type="number" name="cantidad" id="cantidad" min="1" max="6" placeholder="Comensales" required>
+                                    <span class="tooltip-icon" aria-label="Más información">?</span>
+                                    <div class="tooltip-content" role="tooltip">Para reservas de más de 6 personas, por favor contactá con nuestro personal.</div>
+                                </div>
                             </div>
                         </div>
-
-                        <button id="btn" class="btn-reservar">RESERVAR</button>
+                        <button type="submit" id="btn" class="btn-reservar">RESERVAR</button>
                     </form>
                     <div class="mensajes-alerta"></div>
+                </div>
+            </div>
+            <!-- Modal de confirmación -->
+            <div id="reserva-overlay" class="modal-overlay" aria-hidden="true" hidden>
+                <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+                    <div class="modal-header">
+                        <h2 id="modal-title">Confirmar reserva</h2>
+                        <button type="button" class="modal-close" id="modalCloseBtn" aria-label="Cerrar">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="helper-text">Revisá los datos de tu reserva antes de confirmar.</p>
+                        <ul class="resumen-lista">
+                            <li><strong>Ubicación:</strong> <span id="resumen-ubicacion"></span></li>
+                            <li><strong>Fecha:</strong> <span id="resumen-fecha"></span></li>
+                            <li><strong>Hora:</strong> <span id="resumen-hora"></span></li>
+                            <li><strong>Cantidad de personas:</strong> <span id="resumen-cantidad"></span></li>
+                            <li><strong>Duración:</strong> 2 horas</li>
+                        </ul>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" id="cancelarReserva">Cancelar</button>
+                        <button type="button" class="btn-primary" id="confirmarReserva">Confirmar</button>
+                    </div>
                 </div>
             </div>
             <footer class="footer">

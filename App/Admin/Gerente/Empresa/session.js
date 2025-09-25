@@ -1,6 +1,6 @@
 async function loadSVGLogo() {
     try {
-        const response = await fetch('../../../../Recursos/logo.svg');
+        const response = await fetch('/ARJE-CodigoBase/App/Recursos/logo.svg');
         const svgText = await response.text();
         const logoContainer = document.getElementById('logo-container');
         if (logoContainer) {
@@ -31,7 +31,7 @@ async function checkSession() {
             return false;
         }
         
-        if (data.user.rol !== "Gerente") {
+        if (data.user.rol !== "Gerente-General") {
             window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }

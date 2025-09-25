@@ -1,6 +1,6 @@
 async function loadSVGLogo() {
     try {
-        const response = await fetch('../../../Recursos/logo.svg');
+        const response = await fetch('/ARJE-CodigoBase/App/Recursos/logo.svg');
         const svgText = await response.text();
         const logoContainer = document.getElementById('logo-container');
         if (logoContainer) {
@@ -25,11 +25,13 @@ async function checkSession() {
             credentials: 'same-origin'
         });
         const data = await response.json();
+        console.log(data)
         const userNameElement = document.getElementById('userName');
         const userRolElement = document.getElementById('userRol');
         const dashboardBtnElement = document.getElementById('dashboardBtn');
         const notLoggedCards = document.querySelectorAll('.notlogged');
         const loggedCards = document.querySelectorAll('.logged');
+        const userIcon = document.querySelector('.user-icon');
         showContent();
 
         if (!data.logged_in) {
@@ -37,13 +39,15 @@ async function checkSession() {
                 userNameElement.textContent = "Sin sesión";
                 userRolElement.textContent = "Sin sesión";
             }
+            const cloneUserIcon = userIcon.cloneNode(true);
+            userIcon.parentNode.replaceChild(cloneUserIcon, userIcon);
             return false;
         } else {
             if (userNameElement) {
                 userNameElement.textContent = `${data.user.nombre} ${data.user.apellido}`;
                 userRolElement.textContent = `${data.user.rol}`;
             }
-            if (data.user.rol === "Gerente") {
+            if (data.user.rol === "Gerente-General") {
                 dashboardBtnElement.style.display = 'flex';
             }
             notLoggedCards.forEach(card => {
@@ -56,7 +60,7 @@ async function checkSession() {
             return true;
         }
     } catch (error) {
-        //window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
+        window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
         return false;
     }
 }

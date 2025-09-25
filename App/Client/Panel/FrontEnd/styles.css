@@ -225,20 +225,22 @@ h2 {
     border-left: 0.1vw solid rgb(46, 45, 43);
 }
 
-.logged{
-    display:none;
+.logged {
+    display: none;
 }
 
-.notlogged::after{
+.notlogged::after {
     content: '';
     background-color: #0A0B0A;
     opacity: .9;
 }
-.notlogged p{
+
+.notlogged p {
     color: #767676d3;
 }
+
 .notlogged img {
-    filter:blur(8px);
+    filter: blur(8px);
 }
 
 .notlogged .login-btn {
@@ -543,6 +545,12 @@ footer a:active {
 
 #loading-screen {
     position: fixed;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10+ */
+    user-select: none;
+    /* Standard syntax */
     top: 0;
     left: 0;
     width: 100%;
