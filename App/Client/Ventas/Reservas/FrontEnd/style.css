@@ -45,6 +45,7 @@ html {
     height: 100%;
     overflow: hidden;
 }
+
 .btn-text {
     font-size: 14px;
     letter-spacing: 0.5px;
@@ -149,6 +150,17 @@ html {
     pointer-events: none;
 }
 
+.label {
+    display: block;
+    font-size: 13px;
+    color: #A4A4A4;
+    margin-bottom: 6px;
+}
+
+.input-group .label+img {
+    top: 64%;
+}
+
 .input-group input,
 .input-group select {
     width: 100%;
@@ -166,7 +178,7 @@ html {
 .input-group input[type="date"]::-webkit-calendar-picker-indicator {
     position: absolute;
     opacity: 0;
-    background-repeat:  no-repeat;
+    background-repeat: no-repeat;
     width: 32px;
     height: 32px;
     border-width: thin;
@@ -174,10 +186,11 @@ html {
     top: 0.5;
     z-index: 1;
 }
+
 .input-group input[type="time"]::-webkit-calendar-picker-indicator {
     position: absolute;
     opacity: 0;
-    background-repeat:  no-repeat;
+    background-repeat: no-repeat;
     width: 32px;
     height: 32px;
     border-width: thin;
@@ -188,6 +201,28 @@ html {
 
 .input-group select {
     appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Caret para select de ubicación */
+.input-group.select select {
+    padding-right: 44px;
+    /* espacio para la flecha */
+}
+
+.input-group.select::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    top: 62%;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 7px solid #bbb;
+    /* color de la flecha */
+    pointer-events: none;
 }
 
 .input-group input::placeholder {
@@ -197,14 +232,22 @@ html {
 .datos-reserva {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 24px;
 }
 
-.datos-reserva .fila { display: flex; gap: 12px; }
-.datos-reserva .fila .input-group { flex: 1; }
+.datos-reserva .fila {
+    display: flex;
+    gap: 16px;
+}
+
+.datos-reserva .fila .input-group {
+    flex: 1;
+}
 
 @media (max-width: 680px) {
-    .datos-reserva .fila { flex-direction: column; }
+    .datos-reserva .fila {
+        flex-direction: column;
+    }
 }
 
 .btn-reservar {
@@ -291,17 +334,20 @@ html {
     color: #9a9a9a;
 }
 
-.tooltip { position: relative; }
+.tooltip {
+    position: relative;
+}
+
 .tooltip-icon {
     position: absolute;
     font-family: sans-serif;
     right: 12px;
-    top: 50%;
+    top: 65%;
     transform: translateY(-50%);
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.25);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: #ddd;
     display: flex;
     align-items: center;
@@ -309,8 +355,9 @@ html {
     font-weight: 600;
     font-size: 14px;
     cursor: default;
-    background: rgba(255,255,255,0.06);
+    background: rgba(255, 255, 255, 0.06);
 }
+
 .tooltip-content {
     position: absolute;
     right: 0;
@@ -323,13 +370,14 @@ html {
     padding: 10px 12px;
     font-size: 13px;
     line-height: 1.4;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     opacity: 0;
     visibility: hidden;
     transition: opacity .15s ease, visibility .15s ease, transform .15s ease;
     transform: translateY(-4px);
     z-index: 10;
 }
+
 .tooltip:hover .tooltip-content,
 .tooltip:focus-within .tooltip-content {
     opacity: 1;
@@ -340,13 +388,13 @@ html {
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
 .modal-overlay {
@@ -397,7 +445,9 @@ input[type=number] {
     cursor: pointer;
 }
 
-.modal-close:hover { background: rgba(255,255,255,0.05); }
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
 
 .modal-body {
     padding: 16px 20px 0 20px;
@@ -409,8 +459,8 @@ input[type=number] {
     padding: 0;
 }
 
-.resumen-lista li { 
-    padding: 8px 0; 
+.resumen-lista li {
+    padding: 8px 0;
     border-bottom: 1px dashed rgba(239, 231, 210, 0.08);
 }
 
@@ -421,7 +471,8 @@ input[type=number] {
     padding: 16px 20px 20px 20px;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
     padding: 10px 16px;
     border-radius: 10px;
     border: 1px solid transparent;
@@ -432,7 +483,7 @@ input[type=number] {
 .btn-primary {
     background: linear-gradient(to right, #ffffff4d, #ffffff2d);
     color: #fff;
-    border-color: rgba(255,255,255,0.15);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .btn-primary:hover {
@@ -442,11 +493,11 @@ input[type=number] {
 .btn-secondary {
     background: transparent;
     color: #ddd;
-    border-color: rgba(255,255,255,0.15);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .btn-secondary:hover {
-    background: rgba(255,255,255,0.06);
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .alert {

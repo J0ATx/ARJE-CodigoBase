@@ -139,7 +139,8 @@ html {
     align-items: center;
     display: flex;
     flex-direction: column;
-    padding: 64px;
+    padding: 8vh;
+    padding-bottom: 8vh;
     justify-content: center;
     z-index: 1;
 }
@@ -166,7 +167,6 @@ form{
     text-align: center;
     line-height: 1.2;
     margin-bottom: 16px;
-    margin-top: 4vh;
     font-family: 'Poppins', sans-serif;
     color: #EFE7D2;
 }

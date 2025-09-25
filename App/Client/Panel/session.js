@@ -25,7 +25,6 @@ async function checkSession() {
             credentials: 'same-origin'
         });
         const data = await response.json();
-        console.log(data)
         const userNameElement = document.getElementById('userName');
         const userRolElement = document.getElementById('userRol');
         const dashboardBtnElement = document.getElementById('dashboardBtn');

@@ -25,7 +25,6 @@ async function checkSession() {
             credentials: 'same-origin'
         });
         const data = await response.json();
-        console.log(data);
         if (!data.logged_in) {
             window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
             return false;

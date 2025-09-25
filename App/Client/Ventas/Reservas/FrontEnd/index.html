@@ -30,22 +30,23 @@
 
                     <form class="formulario" autocomplete="off" id="formulario">
                         <div class="datos-reserva">
-                            <!-- Fila 1: Día y Hora -->
                             <div class="fila">
                                 <div class="input-group">
+                                    <label class="label" for="fecha">Fecha</label>
                                     <img src="files/svg/Group.svg" alt="Fecha" />
                                     <input type="date" name="fecha" id="fecha" required>
                                 </div>
 
                                 <div class="input-group">
+                                    <label class="label" for="hora">Horario</label>
                                     <img src="files/svg/Vector (3).svg" alt="Hora" />
                                     <input type="time" name="hora" id="hora" required>
                                 </div>
                             </div>
 
-                            <!-- Fila 2: Ubicación y Cantidad -->
                             <div class="fila">
-                                <div class="input-group">
+                                <div class="input-group select">
+                                    <label class="label" for="lugar">Ubicación</label>
                                     <img src="files/svg/Chair.svg" alt="Ubicación" />
                                     <select name="ubicacion" id="lugar" required>
                                         <option value="" disabled selected>Ubicación</option>
@@ -55,7 +56,8 @@
                                 </div>
 
                                 <div class="input-group tooltip">
-                                    <img src="files/svg/Group.svg" alt="Cantidad de personas" />
+                                    <label class="label" for="cantidad">Comensales</label>
+                                    <img src="files/svg/Guess.svg" alt="Cantidad de personas" />
                                     <input type="number" name="cantidad" id="cantidad" min="1" max="6" placeholder="Comensales" required>
                                     <span class="tooltip-icon" aria-label="Más información">?</span>
                                     <div class="tooltip-content" role="tooltip">Para reservas de más de 6 personas, por favor contactá con nuestro personal.</div>
