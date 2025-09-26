@@ -1,7 +1,12 @@
 const subFavicon = document.getElementById('subir_favicon');
 const subLogo = document.getElementById('subir_logo');
+// const nombreEmpresa = document.getElementById('nombre_empresa');
+// const rfcEmpresa = document.getElementById('rfc_empresa');
+// const direccionEmpresa = document.getElementById('direccion_empresa');
+// const telefonoEmpresa = document.getElementById('telefono_empresa');
+// const emailEmpresa = document.getElementById('email_empresa');
+// const  = document.getElementById('guardar_cambios');
 
-// El código no está optimizado, se hará en una próxima versión
 subFavicon.addEventListener('click', function (e) {
     const favicon = document.getElementById('favicon');
     const archivo = favicon.files[0];
@@ -73,3 +78,4 @@ subLogo.addEventListener('click', function (e) {
 
     
 });
+
