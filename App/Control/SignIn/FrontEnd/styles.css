@@ -331,6 +331,33 @@ form{
     margin-bottom: 12px;
 }
 
+.back-btn {
+    position: fixed;
+    top: 16px;
+    left: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #EFE7D2;
+    text-decoration: none;
+    background: #ffffff14;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 1px #fff;
+    z-index: 200;
+}
+
+.back-btn:hover {
+    background: #ffffff2d;
+}
+
+.back-btn svg {
+    pointer-events: none;
+}
+
 @media (max-width: 700px) {
     @view-transition {
         navigation: none;

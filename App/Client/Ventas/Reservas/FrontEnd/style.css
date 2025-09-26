@@ -205,24 +205,22 @@ html {
     -moz-appearance: none;
 }
 
-/* Caret para select de ubicación */
+
 .input-group.select select {
     padding-right: 44px;
-    /* espacio para la flecha */
 }
-
 .input-group.select::after {
     content: '';
     position: absolute;
-    right: 16px;
-    top: 62%;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 7px solid #bbb;
-    /* color de la flecha */
+    right: 24px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-right: 1px solid #A4A4A4;
+    border-bottom: 1px solid #A4A4A4;
+    transform: translateY(50%) rotate(45deg);
     pointer-events: none;
+    background: transparent;
 }
 
 .input-group input::placeholder {
