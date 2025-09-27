@@ -58,6 +58,8 @@ CREATE TABLE Empresa (
     empresa_whatsapp VARCHAR (100),
     empresa_instagram VARCHAR (100),
     empresa_facebook VARCHAR (100),
+    empresa_email VARCHAR (100),
+    empresa_horario VARCHAR (900),
     personal_id VARCHAR (100),
     PRIMARY KEY (empresa_id),
     FOREIGN KEY (personal_id) REFERENCES Personal (personal_id) ON DELETE CASCADE
