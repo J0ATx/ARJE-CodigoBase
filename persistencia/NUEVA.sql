@@ -159,7 +159,7 @@ CREATE TABLE Stock (
 
 CREATE TABLE Stock_Cantidad (
     stock_id INT NOT NULL,
-    stock_cantidad FLOAT NOT NULL,
+    stock_cantidad DECIMAL(10,3) NOT NULL,
     stock_medida VARCHAR (3),
     PRIMARY KEY (stock_id, stock_cantidad, stock_medida),
     FOREIGN KEY (stock_id) REFERENCES Stock (stock_id) ON DELETE CASCADE

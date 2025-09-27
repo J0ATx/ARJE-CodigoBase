@@ -5,28 +5,29 @@ $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Verificar si el ingrediente está siendo usado
-        $stmt = $con->prepare("SELECT COUNT(*) FROM Incluye WHERE idIngrediente = ?");
+        // Verificar si el stock está siendo usado en algún producto
+        $stmt = $con->prepare("SELECT COUNT(*) FROM Consume WHERE stock_id = ?");
         $stmt->execute([$_POST['id']]);
-        
+
         if ($stmt->fetchColumn() > 0) {
             $response['success'] = false;
-            $response['message'] = 'No se puede eliminar el ingrediente porque está siendo usado en uno o más productos';
+            $response['message'] = 'No se puede eliminar el stock porque está siendo usado en uno o más productos';
         } else {
-            $stmt = $con->prepare("DELETE FROM Ingredientes WHERE idIngrediente = ?");
-            $stmt->execute([$_POST['id']]);
-            
-            if ($stmt->rowCount() > 0) {
+            // Eliminar de Stock (ON DELETE CASCADE elimina Stock_Cantidad)
+            $stmtDel = $con->prepare("DELETE FROM Stock WHERE stock_id = ?");
+            $stmtDel->execute([$_POST['id']]);
+
+            if ($stmtDel->rowCount() > 0) {
                 $response['success'] = true;
-                $response['message'] = 'Ingrediente eliminado con éxito';
+                $response['message'] = 'Stock eliminado con éxito';
             } else {
                 $response['success'] = false;
-                $response['message'] = 'No se encontró el ingrediente';
+                $response['message'] = 'No se encontró el stock';
             }
         }
     } catch (PDOException $e) {
         $response['success'] = false;
-        $response['message'] = 'Error al eliminar el ingrediente: ' . $e->getMessage();
+        $response['message'] = 'Error al eliminar el stock: ' . $e->getMessage();
     }
 } else {
     $response['success'] = false;

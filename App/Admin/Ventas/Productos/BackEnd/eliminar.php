@@ -6,28 +6,22 @@ $response = array();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $con->beginTransaction();
-        
-        $stmt = $con->prepare("
-            SELECT idReceta 
-            FROM Recetas 
-            WHERE idProducto = ?
-        ");
-        $stmt->execute([$_POST['id']]);
-        $receta = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($receta) {
-            $stmt = $con->prepare("DELETE FROM RecetasPasos WHERE idReceta = ?");
-            $stmt->execute([$receta['idReceta']]);
+        $id = (int)$_POST['id'];
 
-            $stmt = $con->prepare("DELETE FROM Recetas WHERE idReceta = ?");
-            $stmt->execute([$receta['idReceta']]);
-        }
+        // Eliminar consumos (ingredientes)
+        $stmt = $con->prepare("DELETE FROM Consume WHERE producto_id = ?");
+        $stmt->execute([$id]);
 
-        $stmt = $con->prepare("DELETE FROM Incluye WHERE idProducto = ?");
-        $stmt->execute([$_POST['id']]);
+        // Eliminar referencias en Contiene / Posee si existieran
+        $stmt = $con->prepare("DELETE FROM Contiene WHERE producto_id = ?");
+        $stmt->execute([$id]);
+        $stmt = $con->prepare("DELETE FROM Posee WHERE producto_id = ?");
+        $stmt->execute([$id]);
 
-        $stmt = $con->prepare("DELETE FROM Productos WHERE idProducto = ?");
-        $stmt->execute([$_POST['id']]);
+        // Eliminar producto
+        $stmt = $con->prepare("DELETE FROM Producto WHERE producto_id = ?");
+        $stmt->execute([$id]);
         
         if ($stmt->rowCount() > 0) {
             $con->commit();

@@ -5,15 +5,38 @@ $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $search = isset($_POST['search']) ? $_POST['search'] : '';
-        
-        if (empty($search)) {
-            $stmt = $con->query("SELECT * FROM Ingredientes ORDER BY nombre");
+        $search = isset($_POST['search']) ? trim($_POST['search']) : '';
+
+        if ($search === '') {
+            $sql = "
+                SELECT 
+                    s.stock_id AS idIngrediente,
+                    s.stock_nombre AS nombre,
+                    s.stock_caducidad AS caducidad,
+                    sc.stock_cantidad AS stock,
+                    sc.stock_medida AS medida
+                FROM Stock s
+                LEFT JOIN Stock_Cantidad sc ON sc.stock_id = s.stock_id
+                ORDER BY s.stock_nombre
+            ";
+            $stmt = $con->query($sql);
         } else {
-            $stmt = $con->prepare("SELECT * FROM Ingredientes WHERE nombre LIKE ? ORDER BY nombre");
+            $sql = "
+                SELECT 
+                    s.stock_id AS idIngrediente,
+                    s.stock_nombre AS nombre,
+                    s.stock_caducidad AS caducidad,
+                    sc.stock_cantidad AS stock,
+                    sc.stock_medida AS medida
+                FROM Stock s
+                LEFT JOIN Stock_Cantidad sc ON sc.stock_id = s.stock_id
+                WHERE s.stock_nombre LIKE ?
+                ORDER BY s.stock_nombre
+            ";
+            $stmt = $con->prepare($sql);
             $stmt->execute(['%' . $search . '%']);
         }
-        
+
         $response['success'] = true;
         $response['ingredientes'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {

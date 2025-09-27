@@ -10,9 +10,11 @@ if (!isset($data['capacidad'], $data['estadoActual'], $data['ubicacion'])) {
 }
 
 try {
-    $fechUsoOcupadoReservado = null; 
-    $stmt = $con->prepare("INSERT INTO Mesas (capacidad, estadoActual, ubicacion, fechUsoOcupadoReservado) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$data['capacidad'], $data['estadoActual'], $data['ubicacion'], $fechUsoOcupadoReservado]);
+    $sql = "INSERT INTO Mesa (mesa_estado, mesa_ubicacion, mesa_tiempo_uso, mesa_alcance, mesa_creacion)
+            VALUES (?, ?, NULL, ?, CURDATE())";
+    $stmt = $con->prepare($sql);
+    $stmt->execute([$data['estadoActual'], $data['ubicacion'], $data['capacidad']]);
+
     echo json_encode(["mensaje" => "Mesa creada"]);
 } catch (Exception $e) {
     http_response_code(500);

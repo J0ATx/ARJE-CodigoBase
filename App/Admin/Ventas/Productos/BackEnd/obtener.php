@@ -5,36 +5,32 @@ $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $stmt = $con->prepare("SELECT * FROM Productos WHERE idProducto = ?");
+        $stmt = $con->prepare("SELECT * FROM Producto WHERE producto_id = ?");
         $stmt->execute([$_POST['id']]);
-        
         $producto = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($producto) {
-            $stmt = $con->prepare("
-                SELECT i.*, inc.cantidad
-                FROM Ingredientes i
-                JOIN Incluye inc ON i.idIngrediente = inc.idIngrediente
-                WHERE inc.idProducto = ?
-            ");
-            $stmt->execute([$_POST['id']]);
-            $ingredientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            $stmt = $con->prepare("
-                SELECT r.*, rp.paso, rp.idPaso
-                FROM Recetas r
-                LEFT JOIN RecetasPasos rp ON r.idReceta = rp.idReceta
-                WHERE r.idProducto = ?
-                ORDER BY rp.idPaso
-            ");
-            $stmt->execute([$_POST['id']]);
-            $pasos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // Map to new response structure
+            $prod = array(
+                'producto_id' => (int)$producto['producto_id'],
+                'producto_nombre' => $producto['producto_nombre'],
+                'producto_precio' => (float)$producto['producto_precio'],
+                'producto_categoria' => $producto['producto_categoria'],
+                'producto_receta' => $producto['producto_receta'],
+                'producto_tiempo_preparacion' => $producto['producto_tiempo_preparacion'],
+                'producto_calificacion' => isset($producto['producto_calificacion']) ? (float)$producto['producto_calificacion'] : null,
+                'ingredientes' => []
+            );
 
-            $producto['ingredientes'] = $ingredientes;
-            $producto['pasos'] = $pasos;
+            // Ingredients from Consume + Stock
+            $stmt = $con->prepare("SELECT c.stock_id, s.stock_nombre, c.consume_cantidad, c.consume_medida
+                                   FROM Consume c JOIN Stock s ON c.stock_id = s.stock_id
+                                   WHERE c.producto_id = ?");
+            $stmt->execute([$_POST['id']]);
+            $prod['ingredientes'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             $response['success'] = true;
-            $response['producto'] = $producto;
+            $response['producto'] = $prod;
         } else {
             $response['success'] = false;
             $response['message'] = 'Producto no encontrado';

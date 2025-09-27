@@ -37,21 +37,21 @@ async function checkSession() {
             loggedCards.forEach(card => {
                 card.style.display = 'block';
             });
-        }
 
 
-        const userNameElement = document.getElementById('userName');
-        const userRolElement = document.getElementById('userRol');
-        const dashboardBtnElement = document.getElementById('dashboardBtn');
-        if (userNameElement) {
-            userNameElement.textContent = `${data.user.nombre} ${data.user.apellido}`;
-            userRolElement.textContent = `${data.user.rol}`;
-        }
-        if (data.user.rol === "Gerente") {
-            dashboardBtnElement.style.display = 'flex';
-        }
-        showContent();
 
+            const userNameElement = document.getElementById('userName');
+            const userRolElement = document.getElementById('userRol');
+            const dashboardBtnElement = document.getElementById('dashboardBtn');
+            if (userNameElement) {
+                userNameElement.textContent = `${data.user.nombre} ${data.user.apellido}`;
+                userRolElement.textContent = `${data.user.rol}`;
+            }
+            if (data.user.rol === "Gerente-General") {
+                dashboardBtnElement.style.display = 'flex';
+            }
+            showContent();
+        }
     } catch (error) {
         console.error('Error checking session:', error);
         window.location.href = '../../../../../Control/SignIn/FrontEnd/index.html';

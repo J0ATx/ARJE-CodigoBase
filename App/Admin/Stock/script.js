@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             endpoint = '../BackEnd/crear.php';
         }
-
         try {
             const response = await fetch(endpoint, {
                 method: 'POST',
@@ -99,7 +98,7 @@ function renderIngredients(ingredientes) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${ingrediente.nombre}</td>
-            <td>${ingrediente.stock} ${ingrediente.medida}</td>
+            <td>${ingrediente.stock.toString().replace(/\./g, ',')} ${ingrediente.medida}</td>
             <td>${formatDate(ingrediente.caducidad)}</td>
             <td class="action-icons">
                 <button class="edit-btn" onclick="editIngredient(${ingrediente.idIngrediente})">

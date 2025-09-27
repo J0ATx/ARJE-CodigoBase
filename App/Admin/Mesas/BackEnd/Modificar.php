@@ -10,11 +10,13 @@ if (!isset($data['idMesa'], $data['capacidad'], $data['estadoActual'], $data['ub
 }
 
 try {
-    $stmt = $con->prepare("UPDATE Mesas SET capacidad=?, estadoActual=?, ubicacion=?, fechUsoOcupadoReservado=? WHERE idMesa=?");
-    $stmt->execute([$data['capacidad'], $data['estadoActual'], $data['ubicacion'], $data['fechUsoOcupadoReservado'], $data['idMesa']]);
+    $sql = "UPDATE Mesa SET mesa_alcance = ?, mesa_estado = ?, mesa_ubicacion = ? WHERE mesa_id = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->execute([$data['capacidad'], $data['estadoActual'], $data['ubicacion'], $data['idMesa']]);
 
     echo json_encode(["mensaje" => "Mesa actualizada"]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(["error" => $e->getMessage()]);
 }
+

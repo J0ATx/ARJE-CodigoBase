@@ -30,9 +30,9 @@
                 <div class="form-container">
                     <input id="capacidad" placeholder="Capacidad" type="number" required>
                     <select id="estadoActual">
-                        <option value="Disponible">Disponible</option>
-                        <option value="Reservado">En uso</option>
-                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Libre">Libre</option>
+                        <option value="Ocupada">Ocupada</option>
+                        <option value="Inhabilitada">Inhabilitada</option>
                     </select>
                     <select id="ubicacion">
                         <option value="Interior">Interior</option>
@@ -49,9 +49,8 @@
                             <th>Capacidad</th>
                             <th>Estado Actual</th>
                             <th>Ubicación</th>
-                            <th>Fecha de Uso</th>
-                            <th>Pedido Asignado</th>
-                            <th>Reserva Asignada</th>
+                            <th>Tiempo de uso</th>
+                            <th>Reservas</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -62,21 +61,19 @@
     </div>
     <div id="modalEditar"
         style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
-        <form id="formEditar" style="background:#fff; padding:20px; border-radius:8px; min-width:300px;">
             <h2>Editar Mesa</h2>
             <input id="edit_idMesa" type="hidden">
             <input id="edit_capacidad" placeholder="Capacidad" type="number" required>
             <select id="edit_estadoActual">
-                <option value="Disponible">Disponible</option>
-                <option value="Reservado">En uso</option>
-                <option value="Mantenimiento">Mantenimiento</option>
+                <option value="Libre">Libre</option>
+                <option value="Ocupada">Ocupada</option>
+                <option value="Inhabilitada">Inhabilitada</option>
             </select>
             <select id="edit_ubicacion">
                 <option value="Interior">Interior</option>
                 <option value="Exterior">Exterior</option>
             </select>
-            <input id="edit_fechUsoOcupadoReservado" placeholder="Fecha y Hora de Uso" type="datetime-local">
-            <button type="submit">Guardar cambios</button>
+            <input type="submit" value="Guardar cambios" onclick="guardarCambiosMesa()">
             <button type="button" onclick="cerrarModalEditar()">Cancelar</button>
         </form>
     </div>

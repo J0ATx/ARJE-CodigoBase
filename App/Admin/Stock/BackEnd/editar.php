@@ -5,25 +5,42 @@ $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $stmt = $con->prepare("UPDATE Ingredientes SET nombre = ?, caducidad = ?, stock = ?, medida = ? WHERE idIngrediente = ?");
-        $stmt->execute([
+        $con->beginTransaction();
+
+        $stmtStock = $con->prepare("UPDATE Stock SET stock_nombre = ?, stock_caducidad = ? WHERE stock_id = ?");
+        $stmtStock->execute([
             $_POST['nombre'],
             $_POST['caducidad'],
+            $_POST['id']
+        ]);
+
+        $stmtCantidad = $con->prepare("UPDATE Stock_Cantidad SET stock_cantidad = ?, stock_medida = ? WHERE stock_id = ?");
+        $stmtCantidad->execute([
             $_POST['stock'],
             $_POST['medida'],
             $_POST['id']
         ]);
-        
-        if ($stmt->rowCount() > 0) {
-            $response['success'] = true;
-            $response['message'] = 'Ingrediente actualizado con éxito';
-        } else {
-            $response['success'] = false;
-            $response['message'] = 'No se encontró el ingrediente o no hubo cambios';
+
+        if ($stmtCantidad->rowCount() === 0) {
+            // Si no existía fila de cantidad, insertarla
+            $stmtInsertCantidad = $con->prepare("INSERT INTO Stock_Cantidad (stock_id, stock_cantidad, stock_medida) VALUES (?, ?, ?)");
+            $stmtInsertCantidad->execute([
+                $_POST['id'],
+                $_POST['stock'],
+                $_POST['medida']
+            ]);
         }
+
+        $con->commit();
+
+        $response['success'] = true;
+        $response['message'] = 'Stock actualizado con éxito';
     } catch (PDOException $e) {
+        if ($con->inTransaction()) {
+            $con->rollBack();
+        }
         $response['success'] = false;
-        $response['message'] = 'Error al actualizar el ingrediente: ' . $e->getMessage();
+        $response['message'] = 'Error al actualizar el stock: ' . $e->getMessage();
     }
 } else {
     $response['success'] = false;

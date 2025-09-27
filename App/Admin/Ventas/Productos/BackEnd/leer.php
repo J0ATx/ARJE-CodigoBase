@@ -8,19 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $search = isset($_POST['search']) ? $_POST['search'] : '';
         
         $query = "
-            SELECT p.*, 
-                   GROUP_CONCAT(DISTINCT CONCAT(i.nombre, ':', i.medida, ':', inc.cantidad) SEPARATOR '|') as ingredientes
-            FROM Productos p
-            LEFT JOIN Incluye inc ON p.idProducto = inc.idProducto
-            LEFT JOIN Ingredientes i ON inc.idIngrediente = i.idIngrediente
+            SELECT p.producto_id, p.producto_nombre, p.producto_precio, p.producto_calificacion, p.producto_categoria,
+                   GROUP_CONCAT(DISTINCT CONCAT(s.stock_nombre, ':', c.consume_medida, ':', c.consume_cantidad) SEPARATOR '|') AS ingredientes
+            FROM Producto p
+            LEFT JOIN Consume c ON p.producto_id = c.producto_id
+            LEFT JOIN Stock s ON c.stock_id = s.stock_id
         ";
 
         if (!empty($search)) {
-            $query .= " WHERE p.nombre LIKE ?";
-            $params = ['%' . $search . '%'];
+            $query .= " WHERE p.producto_nombre LIKE ? OR p.producto_categoria LIKE ?";
+            $params = ['%' . $search . '%', '%' . $search . '%'];
         }
 
-        $query .= " GROUP BY p.idProducto ORDER BY p.nombre";
+        $query .= " GROUP BY p.producto_id ORDER BY p.producto_nombre";
         
         $stmt = !empty($search) ? $con->prepare($query) : $con->query($query);
         
@@ -31,10 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $productos = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $producto = array(
-                'idProducto' => $row['idProducto'],
-                'nombre' => $row['nombre'],
-                'precio' => $row['precio'],
-                'calificacionPromedio' => $row['calificacionPromedio'],
+                'producto_id' => (int)$row['producto_id'],
+                'producto_nombre' => $row['producto_nombre'],
+                'producto_precio' => (float)$row['producto_precio'],
+                'producto_calificacion' => isset($row['producto_calificacion']) ? (float)$row['producto_calificacion'] : null,
+                'producto_categoria' => $row['producto_categoria'],
                 'ingredientes' => []
             );
 
@@ -43,9 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 foreach ($ingredientesArr as $ing) {
                     list($nombre, $medida, $cantidad) = explode(':', $ing);
                     $producto['ingredientes'][] = array(
-                        'nombre' => $nombre,
-                        'medida' => $medida,
-                        'cantidad' => $cantidad
+                        'stock_nombre' => $nombre,
+                        'consume_medida' => $medida,
+                        'consume_cantidad' => $cantidad
                     );
                 }
             }

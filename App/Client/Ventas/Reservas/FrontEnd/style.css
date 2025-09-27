@@ -37,7 +37,10 @@ body::before {
     background-position: center;
     background-repeat: no-repeat;
 }
-
+a{
+    color: #9c9c9c;
+    
+}
 html {
     -moz-text-size-adjust: none;
     -webkit-text-size-adjust: none;
