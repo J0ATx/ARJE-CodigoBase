@@ -1,0 +1,70 @@
+#!/bin/bash
+
+function init() {
+    echo "
+          ██╗      ██████╗ ███████╗    ██████╗     ████████╗ █████╗ ███╗   ██╗ ██████╗ ███████╗          
+          ██║     ██╔═══██╗██╔════╝    ╚════██╗    ╚══██╔══╝██╔══██╗████╗  ██║██╔═══██╗██╔════╝          
+█████╗    ██║     ██║   ██║███████╗     █████╔╝       ██║   ███████║██╔██╗ ██║██║   ██║███████╗    █████╗
+╚════╝    ██║     ██║   ██║╚════██║     ╚═══██╗       ██║   ██╔══██║██║╚██╗██║██║   ██║╚════██║    ╚════╝
+          ███████╗╚██████╔╝███████║    ██████╔╝       ██║   ██║  ██║██║ ╚████║╚██████╔╝███████║          
+          ╚══════╝ ╚═════╝ ╚══════╝    ╚═════╝        ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝          
+"                                                            
+
+    case "$1" in
+        -s | -services)
+            servicios "${@:2}"
+            ;;
+        -p | -processes)
+            procesos "${@:2}"
+            ;;
+        -n | -network)
+            red "${@:2}"
+            ;;
+        -l | -logs)
+            registros "${@:2}"
+            ;;
+        -u | -users)
+            usuarios "${@:2}"
+            ;;
+        -m | -monthly-backup)
+            respaldomes
+            ;;
+        -d | -daily-backup)
+            respaldodia
+            ;;
+        -w | -weekly-backup)
+            respaldosemana
+            ;;
+        -r | -restore)
+            restauracion "${@:2}"
+            ;;
+        -i | -install)
+            instalacion "${@:2}"
+            ;;
+        -e | -exit)
+            echo "Saliendo..."
+            exit 0
+            ;;
+        -h | -help)
+            echo "Uso: $0 [opción] [opción]"
+            echo "Opciones disponibles:"
+            echo "-s, -services: Operaciones de servicios"
+            echo "-p, -processes: Operaciones de procesos"
+            echo "-n, -network: Operaciones de red"
+            echo "-l, -logs: Operaciones de registros"
+            echo "-u, -users: Operaciones de usuarios"
+            echo "-m, -monthly-backup: Realizar respaldo mensual"
+            echo "-d, -daily-backup: Realizar respaldo diario"
+            echo "-w, -weekly-backup: Realizar respaldo semanal"
+            echo "-r, -restore: Operaciones de restauración"
+            echo "-i, -install: Configurar o actualizar scripts"
+            echo "-e, -exit: Salir del script"
+            echo "-h, -help: Mostrar este mensaje de ayuda"
+            ;;
+        *)
+            echo "Opción no válida. Por favor, intente de nuevo."
+            ;;
+    esac
+}
+
+init "$@"
