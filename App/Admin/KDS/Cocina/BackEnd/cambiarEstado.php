@@ -1,4 +1,5 @@
 <?php
+
 /**
  * cambiarEstado.php
  * 
@@ -13,170 +14,127 @@
 
 // Configuración de encabezados para respuesta JSON
 header('Content-Type: application/json');
-
-// Incluir archivo de conexión a la base de datos
 require_once '../../../../Control/Conexión/conexion.php';
 
-/**
- * Función para enviar una respuesta JSON y terminar la ejecución
- */
-function enviarRespuesta($exito, $mensaje, $datos = []) {
-    $respuesta = [
-        'success' => $exito,
-        'message' => $mensaje
-    ];
-    
-    if (!empty($datos)) {
-        $respuesta['data'] = $datos;
-    }
-    
-    echo json_encode($respuesta, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+function responder($ok, $msg, $data = [])
+{
+    $out = ['success' => $ok, 'message' => $msg];
+    if (!empty($data)) $out['data'] = $data;
+    echo json_encode($out, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Verificar que la petición sea POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    enviarRespuesta(false, 'Método no permitido. Se requiere POST.');
+    responder(false, 'Método no permitido. Se requiere POST.');
 }
 
-// Obtener y validar parámetros
-$idPedido = filter_input(INPUT_POST, 'idPedido', FILTER_VALIDATE_INT);
+$pedidoId = filter_input(INPUT_POST, 'idPedido', FILTER_VALIDATE_INT);
 $nuevoEstado = $_POST['nuevoEstado'] ?? '';
 
-// Validar el estado proporcionado
-$estadosPermitidos = ['pendiente', 'en_preparacion', 'listo'];
-$nuevoEstado = in_array($nuevoEstado, $estadosPermitidos) ? $nuevoEstado : '';
-
-if (!$idPedido || !$nuevoEstado) {
-    enviarRespuesta(false, 'Datos incompletos o no válidos. Se requiere idPedido y nuevoEstado válido.');
-}
-if (!in_array($nuevoEstado, $estadosPermitidos)) {
-    enviarRespuesta(false, 'Estado no válido.');
+$estadosPermitidos = ['Pendiente', 'En-Preparacion', 'Listo'];
+if (!$pedidoId || !in_array($nuevoEstado, $estadosPermitidos, true)) {
+    responder(false, 'Datos inválidos: idPedido y nuevoEstado requeridos.');
 }
 
 try {
-    // Iniciar transacción
     $con->beginTransaction();
-    
-    // 1. Obtener el estado actual del pedido
-    $stmt = $con->prepare("SELECT estado FROM Pedido WHERE idPedido = ?");
-    $stmt->execute([$idPedido]);
-    $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if (!$pedido) {
-        throw new Exception('Pedido no encontrado');
-    }
-    
-    $estadoActual = $pedido['estado'];
-    
-    // 2. Validar transición de estado
-    $transicionesValidas = [
-        'pendiente' => ['en_preparacion'],
-        'en_preparacion' => ['listo'],
-        'listo' => []
+
+    // Estado actual
+    $stmt = $con->prepare('SELECT pedido_estado FROM Pedido WHERE pedido_id = ?');
+    $stmt->execute([$pedidoId]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row) responder(false, 'Pedido no encontrado');
+    $estadoActual = $row['pedido_estado'];
+
+    // Transiciones válidas
+    $transiciones = [
+        'Pendiente' => ['En-Preparacion'],
+        'En-Preparacion' => ['Listo'],
+        'Listo' => []
     ];
-    
-    if (!in_array($nuevoEstado, $transicionesValidas[$estadoActual] ?? [])) {
-        throw new Exception('Transición de estado no permitida');
+    if (!in_array($nuevoEstado, $transiciones[$estadoActual] ?? [], true)) {
+        responder(false, 'Transición de estado no permitida');
     }
-    
-    // 3. Si el nuevo estado es 'en_preparacion', verificar stock
-    if ($nuevoEstado === 'en_preparacion') {
-        $productosSinStock = [];
-        
-        // Obtener productos del pedido (usando 1 como cantidad predeterminada ya que la columna no existe)
-        $sqlProductos = "SELECT t.idProducto, 1 as cantidad, p.nombre 
-                        FROM Tiene t
-                        JOIN Productos p ON t.idProducto = p.idProducto
-                        WHERE t.idPedido = ?";
-        $stmtProductos = $con->prepare($sqlProductos);
-        $stmtProductos->execute([$idPedido]);
-        $productos = $stmtProductos->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Verificar stock para cada producto
-        foreach ($productos as $producto) {
-            $sqlIngredientes = "SELECT i.idIngrediente, i.nombre, i.stock, inc.cantidad as cantidad_necesaria
-                              FROM Incluye inc
-                              JOIN Ingredientes i ON inc.idIngrediente = i.idIngrediente
-                              WHERE inc.idProducto = ?";
-            $stmtIngredientes = $con->prepare($sqlIngredientes);
-            $stmtIngredientes->execute([$producto['idProducto']]);
-            $ingredientes = $stmtIngredientes->fetchAll(PDO::FETCH_ASSOC);
-            
-            foreach ($ingredientes as $ingrediente) {
-                $stockNecesario = $ingrediente['cantidad_necesaria'] * $producto['cantidad'];
-                
-                if ($ingrediente['stock'] < $stockNecesario) {
-                    $productosSinStock[] = [
-                        'producto' => $producto['nombre'],
-                        'ingrediente' => $ingrediente['nombre'],
-                        'stock_disponible' => $ingrediente['stock'],
-                        'cantidad_requerida' => $stockNecesario
-                    ];
-                }
+
+    // Al pasar a En-Preparacion: verificar y descontar stock
+    if ($nuevoEstado === 'En-Preparacion') {
+        // Productos del pedido
+        $stmt = $con->prepare('SELECT producto_id, contiene_cantidad FROM Contiene WHERE pedido_id = ?');
+        $stmt->execute([$pedidoId]);
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($items)) responder(false, 'El pedido no tiene productos');
+
+        // Requerimientos por (stock_id, medida)
+        $req = []; // key: "stockId|medida" => cantidad
+        foreach ($items as $it) {
+            $productoId = (int)$it['producto_id'];
+            $cantProd = (int)$it['contiene_cantidad'];
+            if ($productoId <= 0 || $cantProd <= 0) continue;
+
+            $q = $con->prepare('SELECT stock_id, consume_cantidad, consume_medida FROM Consume WHERE producto_id = ?');
+            $q->execute([$productoId]);
+            foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $c) {
+                $sid = (int)$c['stock_id'];
+                $med = $c['consume_medida'];
+                $need = (float)$c['consume_cantidad'] * $cantProd;
+                $key = $sid . '|' . $med;
+                if (!isset($req[$key])) $req[$key] = 0.0;
+                $req[$key] += $need;
             }
         }
-        
-        // Si no hay suficiente stock, cancelar la operación
-        if (!empty($productosSinStock)) {
-            throw new Exception('No hay suficiente stock para completar el pedido', 0, null, [
-                'productos_sin_stock' => $productosSinStock
-            ]);
+
+        // Verificar disponibilidad
+        $faltantes = [];
+        foreach ($req as $key => $need) {
+            list($sidStr, $med) = explode('|', $key, 2);
+            $sid = (int)$sidStr;
+            $q = $con->prepare('SELECT COALESCE(SUM(stock_cantidad),0) FROM Stock_Cantidad WHERE stock_id = ? AND stock_medida = ?');
+            $q->execute([$sid, $med]);
+            $total = (float)$q->fetchColumn();
+            if ($total + 1e-9 < $need) {
+                $faltantes[] = ['stock_id' => $sid, 'medida' => $med, 'requerido' => $need, 'disponible' => $total];
+            }
         }
-        
-        // Descontar ingredientes del inventario
-        foreach ($productos as $producto) {
-            $sqlIngredientes = "SELECT i.idIngrediente, inc.cantidad as cantidad_necesaria
-                              FROM Incluye inc
-                              JOIN Ingredientes i ON inc.idIngrediente = i.idIngrediente
-                              WHERE inc.idProducto = ?";
-            $stmtIngredientes = $con->prepare($sqlIngredientes);
-            $stmtIngredientes->execute([$producto['idProducto']]);
-            $ingredientes = $stmtIngredientes->fetchAll(PDO::FETCH_ASSOC);
-            
-            foreach ($ingredientes as $ingrediente) {
-                $cantidadARestar = $ingrediente['cantidad_necesaria'] * $producto['cantidad'];
-                
-                $sqlActualizarStock = "UPDATE Ingredientes 
-                                     SET stock = GREATEST(0, stock - ?) 
-                                     WHERE idIngrediente = ?";
-                $stmtActualizar = $con->prepare($sqlActualizarStock);
-                $stmtActualizar->execute([$cantidadARestar, $ingrediente['idIngrediente']]);
+        if (!empty($faltantes)) {
+            $con->rollBack();
+            responder(false, 'No hay suficiente stock para preparar el pedido', ['faltantes' => $faltantes]);
+        }
+
+        // Descontar de Stock_Cantidad (consumir desde filas con mayor stock)
+        foreach ($req as $key => $need) {
+            list($sidStr, $med) = explode('|', $key, 2);
+            $sid = (int)$sidStr;
+            $restante = (float)$need;
+            while ($restante > 1e-9) {
+                $q = $con->prepare('SELECT stock_cantidad FROM Stock_Cantidad WHERE stock_id = ? AND stock_medida = ? ORDER BY stock_cantidad DESC LIMIT 1');
+                $q->execute([$sid, $med]);
+                $fila = $q->fetch(PDO::FETCH_ASSOC);
+                if (!$fila) throw new Exception('Inconsistencia de stock durante el descuento');
+                $cantidadFila = (float)$fila['stock_cantidad'];
+                $usa = min($cantidadFila, $restante);
+                $nueva = $cantidadFila - $usa;
+                $upd = $con->prepare('UPDATE Stock_Cantidad SET stock_cantidad = ? WHERE stock_id = ? AND stock_medida = ? AND stock_cantidad = ?');
+                $upd->execute([$nueva, $sid, $med, $cantidadFila]);
+                $restante -= $usa;
             }
         }
     }
-    
-    // 4. Actualizar el estado del pedido
-    $sqlActualizarPedido = "UPDATE Pedido 
-                           SET estado = ?, 
-                               horaFinalizacion = CASE WHEN ? = 'listo' THEN NOW() ELSE horaFinalizacion END
-                           WHERE idPedido = ?";
-    
-    $stmtActualizar = $con->prepare($sqlActualizarPedido);
-    $stmtActualizar->execute([$nuevoEstado, $nuevoEstado, $idPedido]);
-    
-    // Confirmar la transacción
+
+    // Actualizar estado del pedido
+    $up = $con->prepare('UPDATE Pedido SET pedido_estado = ? WHERE pedido_id = ?');
+    $up->execute([$nuevoEstado, $pedidoId]);
+
     $con->commit();
-    
-    enviarRespuesta(true, 'Estado actualizado correctamente', [
-        'idPedido' => $idPedido,
+    responder(true, 'Estado actualizado correctamente', [
+        'idPedido' => $pedidoId,
         'estado_anterior' => $estadoActual,
         'nuevo_estado' => $nuevoEstado
     ]);
-    
-} catch (PDOException $e) {
-    // Revertir la transacción en caso de error
-    if (isset($con) && $con->inTransaction()) {
-        $con->rollBack();
-    }
-    
-    enviarRespuesta(false, 'Error en la base de datos: ' . $e->getMessage());
-    
 } catch (Exception $e) {
-    // Revertir la transacción en caso de error
-    if (isset($con) && $con->inTransaction()) {
-        $con->rollBack();
-    }
-    
-    enviarRespuesta(false, $e->getMessage());
+    if ($con->inTransaction()) $con->rollBack();
+    responder(false, 'Error: ' . $e->getMessage());
+}
+// Revertir la transacción en caso de error
+if (isset($con) && $con->inTransaction()) {
+    $con->rollBack();
 }

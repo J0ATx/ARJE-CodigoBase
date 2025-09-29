@@ -1,34 +1,37 @@
 <?php
-// cancelarPedido.php - Elimina un pedido si no está entregado
+// cancelarPedido.php - Cancela un pedido si no está Entregado/Pagado (nueva BD)
 header('Content-Type: application/json');
 require_once '../../../../Control/Conexión/conexion.php';
 
 $response = ["success" => false];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $idPedido = $_POST['idPedido'] ?? null;
+    $idPedido = isset($_POST['idPedido']) ? (int)$_POST['idPedido'] : null;
     if (!$idPedido) {
         $response['message'] = 'ID de pedido faltante';
         echo json_encode($response); exit;
     }
     try {
-        // Solo eliminar si no está entregado
-        $stmt = $con->prepare('SELECT estado FROM Pedido WHERE idPedido = ?');
+        // Verificar estado actual en nueva BD
+        $stmt = $con->prepare('SELECT pedido_estado FROM Pedido WHERE pedido_id = ?');
         $stmt->execute([$idPedido]);
         $estado = $stmt->fetchColumn();
-        if ($estado === 'entregado') {
-            $response['message'] = 'No se puede cancelar un pedido entregado';
+        if ($estado === false) {
+            $response['message'] = 'Pedido no encontrado';
+            echo json_encode($response); exit;
+        }
+        if ($estado === 'Pagado') {
+            $response['message'] = 'No se puede cancelar un pedido con estado final: ' . $estado;
         } else {
             $con->beginTransaction();
-            $con->prepare('DELETE FROM EspecificacionesPedido WHERE idPedido = ?')->execute([$idPedido]);
-            $con->prepare('DELETE FROM Tiene WHERE idPedido = ?')->execute([$idPedido]);
-            $con->prepare('DELETE FROM PedidoFisico WHERE idPedido = ?')->execute([$idPedido]);
-            $con->prepare('DELETE FROM Pedido WHERE idPedido = ?')->execute([$idPedido]);
+            // Eliminar relaciones y el pedido
+            $con->prepare('DELETE FROM Contiene WHERE pedido_id = ?')->execute([$idPedido]);
+            $con->prepare('DELETE FROM Pedido WHERE pedido_id = ?')->execute([$idPedido]);
             $con->commit();
             $response['success'] = true;
         }
     } catch (Exception $e) {
-        $con->rollBack();
+        if ($con->inTransaction()) $con->rollBack();
         $response['message'] = 'Error al cancelar pedido: ' . $e->getMessage();
     }
 }

@@ -99,7 +99,7 @@ CREATE TABLE Reserva (
     reserva_id INT AUTO_INCREMENT NOT NULL,
     reserva_cantidad_personas INT (1),
     reserva_duracion ENUM ('1', '2', '3', '4', '5', '6'),
-    reserva_fecha DATE,
+    reserva_fecha DATETIME,
     reserva_inicio TIME,
     cliente_id VARCHAR (100),
     mesa_id INT,
@@ -169,7 +169,7 @@ CREATE TABLE Pedido (
     pedido_id INT AUTO_INCREMENT NOT NULL,
     pedido_estado ENUM ('Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado') DEFAULT 'Pendiente',
     pedido_especificacion VARCHAR (250),
-    pedido_fecha DATE,
+    pedido_fecha DATETIME,
     pedido_monto FLOAT,
     pedido_pago ENUM ('Efectivo', 'Tarjeta'),
     personal_id VARCHAR (100),
@@ -200,6 +200,7 @@ CREATE TABLE Efectua (
 CREATE TABLE Contiene (
     pedido_id INT NOT NULL,
     producto_id INT NOT NULL,
+    contiene_cantidad INT NOT NULL,
     PRIMARY KEY (pedido_id, producto_id),
     FOREIGN KEY (pedido_id) REFERENCES Pedido (pedido_id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES Producto (producto_id) ON DELETE CASCADE

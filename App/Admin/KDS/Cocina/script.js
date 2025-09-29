@@ -31,17 +31,17 @@ window.onload = function () {
 
 // Mapa de estados con sus estilos
 const ESTADOS = {
-    pendiente: { clase: 'bg-warning', texto: 'Pendiente' },
-    en_preparacion: { clase: 'bg-info', texto: 'En preparación' },
-    listo: { clase: 'bg-success', texto: 'Listo para entregar' },
-    entregado: { clase: 'bg-secondary', texto: 'Entregado' }
+    Pendiente: { clase: 'bg-warning', texto: 'Pendiente' },
+    'En-Preparacion': { clase: 'bg-info', texto: 'En preparación' },
+    Listo: { clase: 'bg-success', texto: 'Listo para entregar' },
+    Entregado: { clase: 'bg-secondary', texto: 'Entregado' }
 };
 
 // Transiciones de estado permitidas
 const TRANSICIONES = {
-    pendiente: ['en_preparacion'],
-    en_preparacion: ['listo'],
-    listo: []
+    Pendiente: ['En-Preparacion'],
+    'En-Preparacion': ['Listo'],
+    Listo: []
 };
 
 /**
@@ -49,7 +49,7 @@ const TRANSICIONES = {
  */
 async function cargarComandas() {
     try {
-        const response = await fetch('BackEnd/listarPedidos.php');
+        const response = await fetch('../BackEnd/listarPedidos.php');
         const data = await response.json();
 
         if (!data.success) {
@@ -64,14 +64,14 @@ async function cargarComandas() {
         // Ordenar por estado y hora de ingreso
         data.data.sort((a, b) => {
             // Primero por estado (pendiente > en_preparacion > listo)
-            const ordenEstados = { 'pendiente': 1, 'en_preparacion': 2, 'listo': 3 };
+            const ordenEstados = { 'Pendiente': 1, 'En_Preparacion': 2, 'Listo': 3 };
             const ordenA = ordenEstados[a.estado] || 4;
             const ordenB = ordenEstados[b.estado] || 4;
 
             if (ordenA !== ordenB) return ordenA - ordenB;
 
             // Luego por hora de ingreso (más antiguo primero)
-            return new Date(a.horaIngreso) - new Date(b.horaIngreso);
+            return new Date(a.fecha) - new Date(b.fecha);
         });
 
         // Crear tarjetas para cada pedido
@@ -81,7 +81,6 @@ async function cargarComandas() {
 
     } catch (error) {
         console.error('Error al cargar comandas:', error);
-        console.log('danger', 'Error al cargar las comandas: ' + error.message);
     }
 }
 
@@ -116,7 +115,7 @@ function crearTarjetaPedido(pedido) {
             </ul>
             ${pedido.comentarios ? `<p class="mb-2"><strong>Notas:</strong> ${pedido.comentarios}</p>` : ''}
             <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted">${new Date(pedido.horaIngreso).toLocaleString()}</small>
+                <small class="text-muted">${new Date(pedido.fecha).toLocaleString()}</small>
                 <div class="estado-container" data-pedido="${pedido.idPedido}">
                     ${crearSelectEstado(pedido.idPedido, pedido.estado)}
                 </div>
@@ -156,7 +155,6 @@ function crearSelectEstado(idPedido, estadoActual) {
  * Actualiza el estado de un pedido
  */
 async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
-    console.log(`Cambiando pedido #${idPedido} de '${estadoActual}' a '${nuevoEstado}'`);
 
     // Validaciones básicas
     if (!idPedido || !nuevoEstado) {
@@ -171,11 +169,8 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
 
     // Mostrar confirmación
     const mensaje = `¿Cambiar estado del pedido #${idPedido} a "${ESTADOS[nuevoEstado]?.texto || nuevoEstado}"?`;
-    console.log("espera")
     const confirmado = await mostrarConfirmacion(mensaje);
-    console.log("llega")
     if (!confirmado) {
-        console.log('Cambio de estado cancelado por el usuario');
         const select = document.querySelector(`.estado-container[data-pedido="${idPedido}"] select`);
         if (select) select.value = '';
         return;
@@ -187,7 +182,7 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
         formData.append('idPedido', idPedido);
         formData.append('nuevoEstado', nuevoEstado);
 
-        const response = await fetch('BackEnd/cambiarEstado.php', {
+        const response = await fetch('../BackEnd/cambiarEstado.php', {
             method: 'POST',
             body: formData
         });
@@ -199,11 +194,9 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
         const data = await response.json();
 
         if (data.success) {
-            console.log('success', 'Estado actualizado correctamente');
             // Recargar la lista de comandas
             cargarComandas();
         } else {
-            console.log(data);
             throw new Error(data.message || 'Error al actualizar el estado');
         }
 
@@ -211,7 +204,6 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
         console.error('Error al actualizar estado:', error);
 
         // Mostrar mensaje de error
-        console.log('danger', `Error: ${error.message}`);
 
         // Restaurar el selector de estado
         if (contenedor) {

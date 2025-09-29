@@ -42,6 +42,15 @@
           <label>Especificaciones del pedido:</label>
           <textarea id="especificacionPedido" rows="3" placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
         </div>
+        <div class="form-group">
+          <label>Clientes (emails):</label>
+          <div class="chips-input">
+            <input type="email" id="clienteEmail" placeholder="email@dominio.com" />
+            <button type="button" id="agregarCliente">Agregar cliente</button>
+          </div>
+          <div id="clientesChips" class="chips"></div>
+          <small>Puede agregar varios clientes asociados al pedido</small>
+        </div>
         <div style="margin-top:1em;">
           <button type="submit">Crear pedido</button>
           <button type="button" onclick="document.getElementById('modalNuevoPedido').close()">Cancelar</button>
@@ -63,13 +72,38 @@
           <label>Especificaciones del pedido:</label>
           <textarea id="especificacionPedidoEditar" rows="3" placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
         </div>
+        <div class="form-group">
+          <label>Clientes (emails):</label>
+          <div class="chips-input">
+            <input type="email" id="clienteEmailEditar" placeholder="email@dominio.com" />
+            <button type="button" id="agregarClienteEditar">Agregar cliente</button>
+          </div>
+          <div id="clientesChipsEditar" class="chips"></div>
+          <small>Si agrega emails aquí, se reemplazará la lista de clientes del pedido</small>
+        </div>
         <div style="margin-top:1em;">
           <button type="submit">Guardar cambios</button>
           <button type="button" onclick="document.getElementById('modalEditar').close()">Cancelar</button>
         </div>
       </form>
     </dialog>
+    <dialog id="modalPago">
+      <form method="dialog" style="min-width:300px">
+        <h3>Confirmar pago</h3>
+        <p>Monto total: $<span id="modalPagoMonto"></span></p>
+        <label>
+          <input type="radio" name="metodoPago" value="Efectivo"> Efectivo
+        </label>
+        <label>
+          <input type="radio" name="metodoPago" value="Tarjeta"> Tarjeta
+        </label>
+        <div style="margin-top:1em;">
+          <button type="button" onclick="confirmarPago()">Confirmar</button>
+          <button type="button" onclick="document.getElementById('modalPago').close()">Cancelar</button>
+        </div>
+      </form>
+    </dialog>
   </div>
-  <script src="script.js"></script>
+  <script src="../script.js"></script>
 </body>
 </html>

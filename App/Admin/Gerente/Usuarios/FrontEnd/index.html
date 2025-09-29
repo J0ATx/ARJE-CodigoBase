@@ -33,14 +33,16 @@
                 <div class="form-container">
                     <input id="nombre" placeholder="Nombre" type="text" required>
                     <input id="apellido" placeholder="Apellido" type="text" required>
-                    <input id="gmail" placeholder="Correo" type="email" required>
+                    <input id="email" placeholder="Correo" type="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                    <input id="telefono" placeholder="Teléfono" type="tel" maxlength="9" pattern="\d{1,9}">
                     <input id="contrasenia" placeholder="Contraseña" type="password" required>
                     <select id="tipoUsuario">
                         <option value="Cliente">Cliente</option>
-                        <option value="Gerente">Gerente</option>
+                        <option value="Gerente-General">Gerente General</option>
+                        <option value="Gerente-Turno">Gerente de Turno</option>
+                        <option value="Chef-Ejecutivo">Chef Ejecutivo</option>
                         <option value="Chef">Chef</option>
-                        <option value="ChefEjecutivo">ChefEjecutivo</option>
-                        <option value="Mozo">Mozo</option>
+                        <option value="Camarero">Camarero</option>
                     </select>
                     <button id="btnCrear" type="submit">Crear Usuario</button>
                 </div>
@@ -49,10 +51,10 @@
                 <table id="usuariosTable">
                     <thead>
                         <tr>
-                            <th>ID Usuario</th>
+                            <th>Correo</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
-                            <th>Correo</th>
+                            <th>Teléfono</th>
                             <th>Tipo</th>
                             <th>Acciones</th>
                         </tr>
@@ -66,18 +68,17 @@
         style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
         <form id="formEditar" style="background:#fff; padding:20px; border-radius:8px; min-width:300px;">
             <h2>Editar Usuario</h2>
-            <input id="edit_idUsuario" type="hidden">
+            <input id="edit_email" type="email" placeholder="Correo" required readonly>
             <input id="edit_nombre" placeholder="Nombre" type="text" required>
             <input id="edit_apellido" placeholder="Apellido" type="text" required>
-            <input id="edit_gmail" placeholder="Correo" type="email" required>
-            <input id="edit_calificacion" placeholder="Calificación" type="number">
-            <input id="edit_numtel" placeholder="Teléfono" type="number">
+            <input id="edit_telefono" placeholder="Teléfono" type="tel" maxlength="9" pattern="\d{1,9}">
             <select id="edit_tipoUsuario">
                 <option value="Cliente">Cliente</option>
-                <option value="Gerente">Gerente</option>
+                <option value="Gerente-General">Gerente General</option>
+                <option value="Gerente-Turno">Gerente de Turno</option>
+                <option value="Chef-Ejecutivo">Chef Ejecutivo</option>
                 <option value="Chef">Chef</option>
-                <option value="ChefEjecutivo">ChefEjecutivo</option>
-                <option value="Mozo">Mozo</option>
+                <option value="Camarero">Camarero</option>
             </select>
             <button type="submit">Guardar cambios</button>
             <button type="button" onclick="cerrarModalEditar()">Cancelar</button>

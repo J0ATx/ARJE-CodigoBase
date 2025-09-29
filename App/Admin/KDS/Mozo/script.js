@@ -16,31 +16,41 @@ document.addEventListener('DOMContentLoaded', () => {
     agregarProductoInput('productosContainer', productosDisponibles);
   });
   document.getElementById('formPedido').addEventListener('submit', crearPedido);
+  // chips: agregar clientes (crear)
+  const btnAgregarCliente = document.getElementById('agregarCliente');
+  if (btnAgregarCliente) {
+    btnAgregarCliente.addEventListener('click', () => agregarClienteChip('clienteEmail', 'clientesChips'));
+  }
 
   document.getElementById('agregarProductoEditar').addEventListener('click', e => {
     e.preventDefault();
     agregarProductoInput('editarProductosContainer', productosDisponibles, true);
   });
   document.getElementById('formEditarPedido').addEventListener('submit', editarPedidoSubmit);
+  // chips: agregar clientes (editar)
+  const btnAgregarClienteEditar = document.getElementById('agregarClienteEditar');
+  if (btnAgregarClienteEditar) {
+    btnAgregarClienteEditar.addEventListener('click', () => agregarClienteChip('clienteEmailEditar', 'clientesChipsEditar'));
+  }
 });
 
 function cargarMesas() {
-  fetch('BackEnd/listarMesas.php')
+  fetch('../BackEnd/listarMesas.php')
     .then(r => r.json())
     .then(data => {
       const select = document.getElementById('selectMesa');
       select.innerHTML = '';
       data.forEach(mesa => {
         const opt = document.createElement('option');
-        opt.value = mesa.idMesa;
-        opt.textContent = mesa.nombre || `Mesa ${mesa.idMesa}`;
+        opt.value = mesa.mesa_id;
+        opt.textContent = `Mesa ${mesa.mesa_id}`;
         select.appendChild(opt);
       });
     });
 }
 
 function cargarProductos() {
-  fetch('BackEnd/listarProductos.php')
+  fetch('../BackEnd/listarProductos.php')
     .then(r => r.json())
     .then(data => {
       productosDisponibles = data;
@@ -50,7 +60,7 @@ function cargarProductos() {
 }
 
 function cargarMozos() {
-  return fetch('BackEnd/listarMozos.php')
+  return fetch('../BackEnd/listarMozos.php')
     .then(r => r.json())
     .then(data => {
       // Actualizar select de nuevo pedido
@@ -77,8 +87,8 @@ function cargarMozos() {
       data.forEach(mozo => {
         // Para nuevo pedido
         const optNuevo = document.createElement('option');
-        optNuevo.value = mozo.idUsuario;
-        optNuevo.textContent = `${mozo.apellido}, ${mozo.nombre}`;
+        optNuevo.value = mozo.personal_id;
+        optNuevo.textContent = `${mozo.personal_apellido}, ${mozo.personal_nombre}`;
         selectNuevo.appendChild(optNuevo);
         
         // Para edición
@@ -99,30 +109,41 @@ function agregarProductoInput(containerId, productos, editar = false, valor = ''
   const div = document.createElement('div');
   div.className = editar ? 'producto-item-editar' : 'producto-item';
 
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.placeholder = 'Buscar producto...';
-  input.setAttribute('autocomplete', 'off');
-  input.className = 'autocomplete-producto';
-  if (valor) input.value = valor;
-
-  const datalist = document.createElement('datalist');
-  datalist.id = `datalist-${editar ? 'edit-' : ''}${Math.random().toString(36).substr(2, 9)}`;
-  input.setAttribute('list', datalist.id);
-
+  // Selector de producto
+  const select = document.createElement('select');
+  select.className = 'select-producto';
+  select.innerHTML = '<option value="">Seleccionar producto...</option>';
   productos.forEach(p => {
     const opt = document.createElement('option');
-    opt.value = p.nombre;
-    datalist.appendChild(opt);
+    opt.value = p.producto_id;
+    opt.textContent = p.producto_nombre;
+    if (valor && valor == p.producto_nombre) opt.selected = true;
+    select.appendChild(opt);
   });
 
+  // Input cantidad
+  const inputCantidad = document.createElement('input');
+  inputCantidad.type = 'number';
+  inputCantidad.min = 1;
+  inputCantidad.value = 1;
+  inputCantidad.className = 'input-cantidad';
+  inputCantidad.style.width = '60px';
+
+  // Si valor viene de edición, buscar cantidad
+  if (editar && valor) {
+    // Buscar el producto en productosDisponibles y setear cantidad si existe
+    const prod = productos.find(p => p.producto_nombre === valor);
+    if (prod && prod.contiene_cantidad) inputCantidad.value = prod.contiene_cantidad;
+  }
+
+  // Botón quitar
   const btnQuitar = document.createElement('button');
   btnQuitar.type = 'button';
   btnQuitar.textContent = 'Quitar';
   btnQuitar.onclick = () => div.remove();
 
-  div.appendChild(input);
-  div.appendChild(datalist);
+  div.appendChild(select);
+  div.appendChild(inputCantidad);
   div.appendChild(btnQuitar);
   cont.appendChild(div);
 }
@@ -159,8 +180,13 @@ function crearPedido(e) {
   formData.append('idMozo', idMozo);
   formData.append('especificacion', especificacion);
   formData.append('productos', JSON.stringify(productos));
+  // Adjuntar clientes si hay chips
+  const clientes = obtenerClientesDesdeChips('clientesChips');
+  if (clientes.length) {
+    formData.append('clientes', JSON.stringify(clientes));
+  }
 
-  fetch('BackEnd/crearPedido.php', { method: 'POST', body: formData })
+  fetch('../BackEnd/crearPedido.php', { method: 'POST', body: formData })
     .then(r => r.json())
     .then(data => {
       if (data.success) {
@@ -176,11 +202,38 @@ function crearPedido(e) {
 }
 
 function obtenerProductosSeleccionados(selector, productos) {
-  return Array.from(document.querySelectorAll(selector)).map(div => {
-    const input = div.querySelector('.autocomplete-producto');
-    const prod = productos.find((p) => p.nombre === input.value);
-    return prod ? { idProducto: prod.idProducto, nombre: prod.nombre } : null;
-  }).filter(Boolean);
+  // Obtener productos y cantidades del formulario
+  return Array.from(document.querySelectorAll(selector))
+    .map(div => {
+      const select = div.querySelector('.select-producto');
+      const inputCantidad = div.querySelector('.input-cantidad');
+      if (!select || !inputCantidad) return null;
+      
+      const productoId = select.value;
+      const cantidad = Math.max(1, parseInt(inputCantidad.value) || 1);
+      
+      // Si el producto está en productosDisponibles, usar esa información
+      const prodDisponible = productos.find(p => String(p.producto_id) === String(productoId));
+      if (prodDisponible) {
+        return {
+          idProducto: parseInt(productoId),
+          cantidad: cantidad,
+          nombre: prodDisponible.producto_nombre
+        };
+      }
+      
+      // Si no está en productos disponibles pero tiene un valor válido, usar los datos del select
+      if (productoId && select.selectedOptions[0]) {
+        return {
+          idProducto: parseInt(productoId),
+          cantidad: cantidad,
+          nombre: select.selectedOptions[0].textContent
+        };
+      }
+      
+      return null;
+    })
+    .filter(Boolean);
 }
 
 function sendReload() {
@@ -190,7 +243,7 @@ function sendReload() {
 }
 
 function cargarPedidos() {
-  fetch('BackEnd/listarPedidos.php')
+  fetch('../BackEnd/listarPedidos.php')
     .then(r => r.json())
     .then(data => {
       if (!data.success) return;
@@ -199,27 +252,32 @@ function cargarPedidos() {
       pedidosContainer.innerHTML = '';
 
       pedidos.forEach(pedido => {
-        // Agrupar productos repetidos
-        const productosAgrupados = pedido.productos ? agruparProductos(pedido.productos) : [];
-
-        // Determinar la clase de estado para la tarjeta
-        const estadoClase = pedido.estado.toLowerCase().replace(/ /g, '_');
-
-        // Crear la tarjeta de pedido
+        const productosLista = Array.isArray(pedido.productos) ? pedido.productos : [];
+        const estadoClase = pedido.estado.toLowerCase().replace(/-/g, '_');
         const card = document.createElement('div');
         card.className = `pedido-card ${estadoClase}`;
 
-        // Crear el HTML de la tarjeta
+        // Botones de cambio de estado
+        let btnEstado = '';
+        if (pedido.estado === 'Listo') {
+          btnEstado = `<button class="btn-accion" onclick="cambiarEstadoPedido(${pedido.idPedido}, 'Entregado')">Entregar</button>`;
+        } else if (pedido.estado === 'Entregado') {
+          btnEstado = `<button class="btn-accion" onclick="abrirModalPago(${pedido.idPedido})">Pagar</button>`;
+        }
+
         card.innerHTML = `
           <div class="pedido-header">
             <div class="pedido-info">
               <h3 class="pedido-titulo">Pedido #${pedido.idPedido}</h3>
               <div class="pedido-meta">
                 <span title="Mesa">
-                  Mesa ${pedido.idMesa}
+                  <i class="fas fa-table"></i> Mesa ${pedido.idMesa}
                 </span>
-                <span title="Hora">
-                  ${formatearFechaHora(pedido.horaIngreso).split(', ')[1]}
+                <span title="Mozo">
+                  <i class="fas fa-user-tie"></i> ${pedido.nombreMozo || 'Sin asignar'}
+                </span>
+                <span title="Fecha">
+                  <i class="far fa-calendar-alt"></i> ${formatearFechaHora(pedido.fecha)}
                 </span>
               </div>
             </div>
@@ -230,19 +288,18 @@ function cargarPedidos() {
               <button class="btn-accion" title="Cancelar pedido" onclick="cancelarPedido(${pedido.idPedido})">
                 <i class="fas fa-times"></i>
               </button>
+              ${btnEstado}
             </div>
           </div>
-          
           <div class="pedido-body">
             <ul class="lista-productos">
-              ${productosAgrupados.map(producto => `
+              ${productosLista.map(producto => `
                 <li class="producto-item">
                   <span class="producto-nombre">${producto.nombre}</span>
-                  ${producto.cantidad > 1 ? `<span class="producto-cantidad">x${producto.cantidad}</span>` : ''}
+                  <span class="producto-cantidad">x${producto.contiene_cantidad || 1}</span>
                 </li>
               `).join('')}
             </ul>
-            
             ${pedido.especificacion ? `
               <div class="pedido-comentarios">
                 <h4>Notas:</h4>
@@ -250,24 +307,72 @@ function cargarPedidos() {
               </div>
             ` : ''}
           </div>
-          
           <div class="pedido-footer">
             <span class="estado-actual estado-${estadoClase}">
-              ${pedido.estado === 'pendiente' ? 'Pendiente' :
-            pedido.estado === 'en_preparacion' ? 'En preparacion' :
-              pedido.estado === 'listo' ? 'Listo' :
-                pedido.estado === 'entregado' ? 'Entregado' : 'Cancelado'}
+              ${pedido.estado === 'Pendiente' ? 'Pendiente' :
+            pedido.estado === 'En-Preparacion' ? 'En Preparacion' :
+              pedido.estado === 'Listo' ? 'Listo' :
+                pedido.estado === 'Entregado' ? 'Entregado' : pedido.estado === 'Pagado' ? 'Pagado' : 'Cancelado'}
             </span>
-            <span class="tiempo-transcurrido" title="${formatearFechaHora(pedido.horaIngreso)}">
-              ${calcularTiempoTranscurrido(pedido.horaIngreso)}
+            <span class="tiempo-transcurrido" title="${formatearFechaHora(pedido.fecha)}">
+              ${calcularTiempoTranscurrido(pedido.fecha)}
             </span>
           </div>
         `;
         pedidosContainer.appendChild(card);
-        console.log(pedido);
-
       });
       inicializarFiltros();
+
+
+window.cambiarEstadoPedido = function(idPedido, nuevoEstado) {
+  fetch('../BackEnd/cambiarEstado.php', {
+    method: 'POST',
+    body: new URLSearchParams({ idPedido, nuevoEstado })
+  })
+    .then(r => r.json())
+    .then(data => {
+      console.log('Response:', data); // Depuración
+      if (data.success) {
+        sendReload();
+        cargarPedidos();
+      } else {
+        alert(data.message || 'Error');
+      }
+    });
+}
+
+window.abrirModalPago = function(idPedido) {
+  const pedido = pedidos.find(p => p.idPedido == idPedido);
+  if (!pedido) return;
+  const modal = document.getElementById('modalPago');
+  document.getElementById('modalPagoMonto').textContent = pedido.monto || pedido.pedido_monto || '0';
+  modal.setAttribute('data-idPedido', idPedido);
+  modal.showModal();
+}
+
+window.confirmarPago = function() {
+  const modal = document.getElementById('modalPago');
+  const idPedido = modal.getAttribute('data-idPedido');
+  const metodoPago = document.querySelector('input[name="metodoPago"]:checked')?.value;
+  if (!metodoPago) {
+    alert('Seleccione método de pago');
+    return;
+  }
+  fetch('../BackEnd/cambiarEstado.php', {
+    method: 'POST',
+    body: new URLSearchParams({ idPedido, nuevoEstado: 'Pagado', metodoPago })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('modalPago').close();
+        sendReload();
+        cargarPedidos();
+      } else {
+        alert(data.message || 'Error');
+      }
+    });
+}
     });
 }
 
@@ -310,21 +415,7 @@ function inicializarFiltros() {
   });
 }
 
-function agruparProductos(productos) {
-  const agrupados = {};
-  productos.forEach(producto => {
-    if (agrupados[producto.nombre]) {
-      agrupados[producto.nombre].cantidad += 1;
-    } else {
-      agrupados[producto.nombre] = {
-        ...producto,
-        cantidad: 1
-      };
-    }
-  });
-
-  return Object.values(agrupados);
-}
+// (Se elimina la agrupación en front: las cantidades vienen desde Contiene)
 
 // Función para formatear la fecha y hora
 function formatearFechaHora(fechaHora) {
@@ -343,7 +434,6 @@ function calcularTiempoTranscurrido(fechaHora) {
   const ahora = new Date();
   const fechaPedido = new Date(fechaHora);
   const diferencia = Math.floor((ahora - fechaPedido) / 1000); // en segundos
-
   if (diferencia < 60) return 'Hace unos segundos';
   if (diferencia < 3600) return `Hace ${Math.floor(diferencia / 60)} min`;
   if (diferencia < 86400) return `Hace ${Math.floor(diferencia / 3600)} h`;
@@ -352,7 +442,7 @@ function calcularTiempoTranscurrido(fechaHora) {
 
 function cancelarPedido(idPedido) {
   if (!confirm('¿Cancelar este pedido?')) return;
-  fetch('BackEnd/cancelarPedido.php', {
+  fetch('../BackEnd/cancelarPedido.php', {
     method: 'POST',
     body: new URLSearchParams({ idPedido })
   })
@@ -364,8 +454,12 @@ function cancelarPedido(idPedido) {
 }
 
 function abrirModalEditarPedido(idPedido) {
+  console.log('Abriendo modal editar para pedido:', idPedido);
   const pedido = pedidos.find(p => p.idPedido == idPedido);
-  if (!pedido) return;
+  if (!pedido) {
+    console.error('Pedido no encontrado:', idPedido);
+    return;
+  }
 
   // Cargar mozos si no están ya cargados
   cargarMozos().then(() => {
@@ -382,8 +476,50 @@ function abrirModalEditarPedido(idPedido) {
     // Limpiar y cargar productos
     const cont = document.getElementById('editarProductosContainer');
     cont.innerHTML = '';
+    
     (pedido.productos || []).forEach(prod => {
-      agregarProductoInput('editarProductosContainer', productosDisponibles, true, prod.nombre);
+      const div = document.createElement('div');
+      div.className = 'producto-item-editar';
+      // Selector de producto
+      const select = document.createElement('select');
+      select.className = 'select-producto';
+      select.innerHTML = '<option value="">Seleccionar producto...</option>';
+      productosDisponibles.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.producto_id;
+        opt.textContent = p.producto_nombre;
+        if (String(prod.idProducto) === String(p.producto_id)) {
+          opt.selected = true;
+        }
+        select.appendChild(opt);
+      });
+      // Input cantidad
+      const inputCantidad = document.createElement('input');
+      inputCantidad.type = 'number';
+      inputCantidad.min = '1';
+      inputCantidad.className = 'input-cantidad';
+      inputCantidad.style.width = '60px';
+      inputCantidad.value = prod.contiene_cantidad || prod.cantidad || 1;
+      // Botón quitar
+      const btnQuitar = document.createElement('button');
+      btnQuitar.type = 'button';
+      btnQuitar.textContent = 'Quitar';
+      btnQuitar.onclick = () => div.remove();
+      div.appendChild(select);
+      div.appendChild(inputCantidad);
+      div.appendChild(btnQuitar);
+      cont.appendChild(div);
+    });
+    
+    // Limpiar y cargar clientes
+    const chipsContainer = document.getElementById('clientesChipsEditar');
+    chipsContainer.innerHTML = '';
+    (pedido.clientes || []).forEach(email => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.innerHTML = `<span>${email}</span> <button type="button" class="chip-remove">×</button>`;
+      chip.querySelector('.chip-remove').onclick = () => chip.remove();
+      chipsContainer.appendChild(chip);
     });
     
     // Mostrar el modal
@@ -396,27 +532,46 @@ function editarPedidoSubmit(e) {
   const idPedido = document.getElementById('editarIdPedido').value;
   const idMozo = document.getElementById('editarSelectMozo').value;
   const especificacion = document.getElementById('especificacionPedidoEditar').value || '';
-  const productos = obtenerProductosSeleccionados('div >.producto-item-editar', productosDisponibles);
+  
+  // Obtener productos seleccionados
+  const productos = Array.from(document.querySelectorAll('.producto-item-editar')).map(div => {
+    const select = div.querySelector('.select-producto');
+    const inputCantidad = div.querySelector('.input-cantidad');
+    
+    const productoId = select.value;
+    const cantidad = parseInt(inputCantidad.value) || 1;
+    
+    return {
+      idProducto: parseInt(productoId),
+      cantidad: cantidad,
+      nombre: select.selectedOptions[0]?.textContent || 'Producto desconocido'
+    };
+  }).filter(p => p.idProducto);
 
   // Validar que se haya seleccionado un mozo
   if (!idMozo) {
     alert('Por favor, seleccione un mozo.');
     return;
   }
-
   if (!productos.length) {
     alert('Debe seleccionar al menos un producto.');
     return;
   }
 
-  fetch('BackEnd/editarPedido.php', {
+  const params = new URLSearchParams({
+    idPedido,
+    idMozo,
+    especificacion,
+    productos: JSON.stringify(productos)
+  });
+  const clientesEdit = obtenerClientesDesdeChips('clientesChipsEditar');
+  if (clientesEdit.length) {
+    params.append('clientes', JSON.stringify(clientesEdit));
+  }
+
+  fetch('../BackEnd/editarPedido.php', {
     method: 'POST',
-    body: new URLSearchParams({
-      idPedido,
-      idMozo,
-      especificacion,
-      productos: JSON.stringify(productos)
-    })
+    body: params
   })
     .then(r => r.json())
     .then(data => {
@@ -430,3 +585,35 @@ function editarPedidoSubmit(e) {
       }
     });
 }
+
+// Helpers chips clientes
+function emailValido(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(String(email).toLowerCase());
+}
+
+function agregarClienteChip(inputId, chipsContainerId) {
+  const input = document.getElementById(inputId);
+  const cont = document.getElementById(chipsContainerId);
+  const email = (input.value || '').trim().toLowerCase();
+  if (!email) return;
+  if (!emailValido(email)) { alert('Email inválido'); return; }
+  // evitar duplicados
+  const existentes = Array.from(cont.querySelectorAll('.chip span')).map(s => s.textContent.toLowerCase());
+  if (existentes.includes(email)) { input.value=''; return; }
+
+  const chip = document.createElement('div');
+  chip.className = 'chip';
+  chip.innerHTML = `<span>${email}</span> <button type="button" class="chip-remove">×</button>`;
+  chip.querySelector('.chip-remove').onclick = () => chip.remove();
+  cont.appendChild(chip);
+  input.value = '';
+}
+
+function obtenerClientesDesdeChips(chipsContainerId) {
+  const cont = document.getElementById(chipsContainerId);
+  if (!cont) return [];
+  return Array.from(cont.querySelectorAll('.chip span')).map(s => s.textContent.trim().toLowerCase());
+}
+
+function pInt(v){ return parseInt(v, 10) || 0; }
