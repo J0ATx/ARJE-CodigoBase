@@ -1,11 +1,18 @@
 const subFavicon = document.getElementById('subir_favicon');
 const subLogo = document.getElementById('subir_logo');
-// const nombreEmpresa = document.getElementById('nombre_empresa');
-// const rfcEmpresa = document.getElementById('rfc_empresa');
-// const direccionEmpresa = document.getElementById('direccion_empresa');
-// const telefonoEmpresa = document.getElementById('telefono_empresa');
-// const emailEmpresa = document.getElementById('email_empresa');
-// const  = document.getElementById('guardar_cambios');
+const nomEmpresa = document.getElementById('cambiar_nombre');
+const misEmpresa = document.getElementById('cambiar_mision');
+const visEmpresa = document.getElementById('cambiar_vision');
+const whtsppEmpresa = document.getElementById('cambiar_whatsapp');
+const instagramEmpresa = document.getElementById('cambiar_instagram');
+const fcbkEmpresa = document.getElementById('cambiar_facebook');
+const emailEmpresa = document.getElementById('cambiar_email');
+const ubiEmpresa = document.getElementById('cambiar_ubicacion');
+const horEmpresa = document.getElementById('cambiar_horario');
+const addTel = document.getElementById('agregar_telefono');
+const delTel = document.getElementById('quitar_telefono');
+const addval = document.getElementById('agregar_valor');
+const delval = document.getElementById('quitar_valor');
 
 subFavicon.addEventListener('click', function (e) {
     const favicon = document.getElementById('favicon');
@@ -75,7 +82,35 @@ subLogo.addEventListener('click', function (e) {
     .catch(err => {
         document.getElementById('mensaje').textContent = 'Error al subir: ' + err;
     });
-
-    
 });
+
+// nomEmpresa.addEventListener('click', function (e) {
+//     const nombre = document.getElementById('nombre').value;
+//     if (!nombre) {
+//         alert('Por favor, ingresa un nombre de empresa.');
+//         return;
+//     }
+
+//     formdata = new FormData();
+//     formdata.append('nombre', nombre);
+
+//     fetch('../BackEnd/empresa.php', {
+//         method: 'POST',
+//         body: formdata
+//     })
+// });
+
+function actualizarCampo(campo, valor){
+    formdata = new FormData();
+    formdata.append('campo', campo);
+    formdata.append('valor', valor);
+
+    fetch('../BackEnd/empresa.php', {
+        method: 'POST',
+        body: formdata
+    })
+    .then(res => res.text())
+    .then(data => {})
+    .then(err)
+};
 
