@@ -13,13 +13,13 @@ function fetchReservas() {
     fetch('../BackEnd/visualizar.php')
         .then(response => response.json())
         .then(data => {
+            console.log(data)
             data.forEach(reserva => {
                 const row = tabla.insertRow();
-                row.insertCell(0).innerText = reserva.nombre + ' ' + reserva.apellido;
-                row.insertCell(1).innerText = reserva.idMesa;
-                row.insertCell(2).innerText = reserva.fecha;
-                row.insertCell(3).innerText = reserva.horaInicio;
-                // Create actions cell with dropdown menu
+                row.insertCell(0).innerText = reserva.cliente_id + ' ' + reserva.apellido;
+                row.insertCell(1).innerText = reserva.mesa_id;
+                row.insertCell(2).innerText = reserva.reserva_fecha + ' ' + reserva.reserva_inicio;
+                row.insertCell(3).innerText = reserva.reserva_cantidad_personas;
                 const actionsCell = row.insertCell(4);
                 
                 // Create actions container
@@ -40,13 +40,13 @@ function fetchReservas() {
                 const editOption = document.createElement('button');
                 editOption.className = 'opcion';
                 editOption.innerHTML = '<i class="bx bx-edit"></i> Editar';
-                editOption.onclick = () => editarReserva(reserva.idPedido);
+                editOption.onclick = () => editarReserva(reserva.reserva_id);
                 
                 // Delete option
                 const deleteOption = document.createElement('button');
                 deleteOption.className = 'opcion eliminar';
                 deleteOption.innerHTML = '<i class="bx bx-trash"></i> Eliminar';
-                deleteOption.onclick = () => eliminarReserva(reserva.idPedido);
+                deleteOption.onclick = () => eliminarReserva(reserva.reserva_id);
                 
                 // Add options to menu
                 menuDiv.appendChild(editOption);
@@ -68,15 +68,13 @@ function fetchReservas() {
 function eliminarReserva(idReserva) {
     const datos = new FormData();
     datos.append('idReserva', idReserva);
-
     fetch('../BackEnd/eliminar.php', {
         method: 'POST',
         body: datos
     })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(data => {
         fetchReservas();
-        console.log(data);
     }).catch(error => {
         console.error('Error:', error);
     });
