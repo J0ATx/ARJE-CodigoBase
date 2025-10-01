@@ -1,10 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
   background-color: #a7a7a7;
   font-family: sans-serif;
   position: relative;
-  overflow: hidden;
 }
 
 .fondo-svg {
@@ -27,75 +32,7 @@ body {
   display: block;
 }
 
-.logo {
-  width: 75px;
-  filter: contrast(0%);
-}
-
-.logo-container {
-  display: flex;
-  height: 100px;
-  align-items: center;
-  justify-content: center;
-  padding-top: 16px;
-  padding-bottom: 16px;
-}
-
-.logo-container p {
-  margin: 0;
-  margin-left: 10px;
-  font-size: 2.5rem;
-  font-weight: 1000;
-  color: #0A0B0A;
-  line-height: 32px;
-  font-family: 'Poppins', sans-serif;
-}
-
-nav {
-  grid-area: nav;
-  width: 300px;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: #F0F0F0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-nav ul li {
-  margin: 10px 0;
-  margin-inline: 8px;
-}
-
-nav ul li a {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  color: #434343;
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 6px;
-  transition: background-color 0.3s;
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-}
-
-nav ul li a:hover,
-nav ul li a.active {
-  background-color: #C3C3C3;
-}
-
-nav ul li a i {
-  margin-right: 10px;
-  width: 20px;
-  text-align: center;
-}
+/* Estilos del componente nav-admin eliminados - ahora están dentro del componente */
 
 .page {
   display: grid;

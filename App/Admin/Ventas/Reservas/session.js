@@ -1,11 +1,11 @@
 async function loadSVGLogo() {
     try {
-        const response = await fetch('../../../../Recursos/logo.svg');
+        const response = await fetch('/ARJE-CodigoBase/App/Recursos/logo.svg');
         const svgText = await response.text();
         const logoContainer = document.getElementById('logo-container');
         if (logoContainer) {
             logoContainer.innerHTML = svgText;
-            
+
             const svg = logoContainer.querySelector('svg');
             if (svg) {
                 svg.setAttribute('fill', 'currentColor');
@@ -30,12 +30,15 @@ async function checkSession() {
             window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
             return false;
         }
-        
+
         if (data.user.rol !== "Gerente-General" && data.user.rol !== "Camarero") {
             window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }
-        
+
+        // Actualizar información del usuario en el navbar
+        updateUserInfo(data.user);
+
         showContent();
         return true;
     } catch (error) {
@@ -45,12 +48,31 @@ async function checkSession() {
     }
 }
 
+function updateUserInfo(user) {
+    const userNameElements = document.querySelectorAll('#userName');
+    const userRolElements = document.querySelectorAll('#userRol');
+
+    const fullName = `${user.nombre} ${user.apellido}`;
+
+    userNameElements.forEach(element => {
+        if (element) {
+            element.textContent = fullName;
+        }
+    });
+
+    userRolElements.forEach(element => {
+        if (element) {
+            element.textContent = user.rol;
+        }
+    });
+}
+
 function showContent() {
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
         loadingScreen.style.display = 'none';
     }
-    
+
     const mainContent = document.getElementById('main-content');
     if (mainContent) {
         mainContent.classList.add('visible');

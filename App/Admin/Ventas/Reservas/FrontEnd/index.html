@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestión de Reservas</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/ARJE-CodigoBase/App/Recursos/favicon.ico">
     <link rel="stylesheet" href="style.css" />
     <script src="../session.js" type="module"></script>
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="/ARJE-CodigoBase/App/Componentes/JS/navAdmin.js"></script>
 </head>
 
 <body>
@@ -19,21 +19,7 @@
 
     <div id="main-content">
         <div class="page">
-            <nav>
-                <div class="logo-container">
-                    <img src="../../../../Recursos/logo.svg" alt="Logo de la empresa" class="logo" />
-                    <p>Los 3<br>Tanos</p>
-                </div>
-                <hr>
-                <ul>
-                    <li><a href="../../../Gerente/Empresa/FrontEnd/index.html">Panel de Administración</a></li>
-                    <li><a href="../../../Gerente/Usuarios/FrontEnd/index.html">Gestión de Usuarios</a></li>
-                    <li><a href="../../../Ventas/Reservas/FrontEnd/index.html">Gestión de Reservas</a></li>
-                    <li><a href="../../../Stock/FrontEnd/index.html">Gestión de Inventario</a></li>
-                    <li><a href="../../../Ventas/Productos/FrontEnd/index.html">Gestión de Productos</a></li>
-                    <li><a href="../../../../Client/Panel/FrontEnd/index.html">Panel Cliente</a></li>
-                </ul>
-            </nav>
+            <nav-admin></nav-admin>
             <main class="contenedor">
                 <h1>GESTIÓN DE RESERVAS</h1>
                 <div class="tabla-contenedor">

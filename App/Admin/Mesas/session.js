@@ -5,7 +5,7 @@ async function loadSVGLogo() {
         const logoContainer = document.getElementById('logo-container');
         if (logoContainer) {
             logoContainer.innerHTML = svgText;
-            
+
             const svg = logoContainer.querySelector('svg');
             if (svg) {
                 svg.setAttribute('fill', 'currentColor');
@@ -30,12 +30,15 @@ async function checkSession() {
             window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
             return false;
         }
-        
+
         if (data.user.rol !== "Gerente-General") {
             window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }
+
+        // Actualizar información del usuario en el navbar
         updateUserInfo(data.user);
+
         showContent();
         return true;
     } catch (error) {
@@ -46,6 +49,7 @@ async function checkSession() {
 }
 
 function updateUserInfo(user) {
+    // Buscar elementos del navbar en toda la página
     const userNameElements = document.querySelectorAll('#userName');
     const userRolElements = document.querySelectorAll('#userRol');
 
@@ -62,6 +66,23 @@ function updateUserInfo(user) {
             element.textContent = user.rol;
         }
     });
+
+    // También actualizar elementos específicos del módulo de mesas si existen
+    const mesasUserName = document.getElementById('mesas-userName');
+    const mesasUserRol = document.getElementById('mesas-userRol');
+
+    if (mesasUserName) mesasUserName.textContent = fullName;
+    if (mesasUserRol) mesasUserRol.textContent = user.rol;
+
+    // Guardar en sessionStorage para respaldo del navbar
+    try {
+        sessionStorage.setItem('userName', fullName);
+        sessionStorage.setItem('userRol', user.rol);
+    } catch (error) {
+        console.warn('No se pudo guardar información del usuario en sessionStorage:', error);
+    }
+
+    console.log('Usuario actualizado en navbar:', { nombre: fullName, rol: user.rol });
 }
 
 function showContent() {
@@ -69,7 +90,7 @@ function showContent() {
     if (loadingScreen) {
         loadingScreen.style.display = 'none';
     }
-    
+
     const mainContent = document.getElementById('main-content');
     if (mainContent) {
         mainContent.classList.add('visible');
