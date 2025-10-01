@@ -1,14 +1,19 @@
 <?php
     include_once '../../../../Control/Conexión/conexion.php';
 
-    $id_reserva = $_POST['idReserva'];
-
     try {
-        $sql = "DELETE FROM Pedido WHERE idPedido = ?";
+        $reserva_id = $_POST['idReserva'];
+        // Eliminar la reserva
+        $sql = "DELETE FROM Reserva WHERE reserva_id = ?";
         $stmt = $con->prepare($sql);
-        $stmt->execute([$id_reserva]);
+        $stmt->execute([$reserva_id]);
+        if ($stmt->rowCount() > 0) {
+            echo json_encode(array("success" => true, "message" => "Reserva eliminada correctamente."));
+        } else {
+            echo json_encode(array("error" => "No se encontro la reserva para eliminar."));
+        }
     } catch (\Throwable $th) {
-        JSON_encode(array("error" => "Error preparando la consulta: " . $th->getMessage()));
+        echo json_encode(array("error" => "Error preparando la consulta: " . $th->getMessage()));
         exit();
     }
 

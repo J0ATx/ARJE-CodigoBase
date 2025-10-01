@@ -67,15 +67,59 @@
                         <thead class="thead-personalizado">
                             <tr>
                                 <th>USUARIO</th>
-                                <th>UBICACIÓN</th>
+                                <th>MESA</th>
                                 <th>FECHA</th>
-                                <th>HORARIO</th>
+                                <th>CANT-PERSONAS</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
                     </table>
                 </div>
             </main>
+        </div>
+    </div>
+    <!-- Pestaña para editar reserva -->
+    <div id="modalEditarReserva" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:2rem; border-radius:8px; min-width:300px; max-width:90vw; position:relative;">
+            <h2>Editar Reserva</h2>
+            <form id="formEditarReserva">
+                <input type="hidden" id="edit_idReserva" name="idReserva">
+                <div>
+                    <label for="edit_reserva_cantidad_personas">Cantidad de Personas:</label>
+                    <input type="number" id="edit_reserva_cantidad_personas" name="reserva_cantidad_personas" required>
+                </div>
+                <div>
+                    <label for="edit_reserva_duracion">Duración:</label>
+                    <select id="edit_reserva_duracion" name="reserva_duracion" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="edit_reserva_fecha">Fecha:</label>
+                    <input type="date" id="edit_reserva_fecha" name="reserva_fecha" required>
+                </div>
+                <div>
+                    <label for="edit_reserva_inicio">Hora de Inicio:</label>
+                    <input type="time" id="edit_reserva_inicio" name="reserva_inicio" required>
+                </div>
+                <div>
+                    <label for="edit_cliente_id">Cliente ID:</label>
+                    <input type="text" id="edit_cliente_id" name="cliente_id" required>
+                </div>
+                <div>
+                    <label for="edit_mesa_id">Mesa ID:</label>
+                    <input type="number" id="edit_mesa_id" name="mesa_id" required>
+                </div>
+                <div style="margin-top:1rem;">
+                    <button type="submit">Guardar</button>
+                    <button type="button" onclick="cerrarModalEditarReserva()">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
     <script src="../control.js"></script>
