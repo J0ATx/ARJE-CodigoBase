@@ -1,6 +1,6 @@
 async function loadSVGLogo() {
     try {
-        const response = await fetch('../../../Recursos/logo.svg');
+        const response = await fetch('/ARJE-CodigoBase/App/Recursos/logo.svg');
         const svgText = await response.text();
         const logoContainer = document.getElementById('logo-container');
         if (logoContainer) {
@@ -35,7 +35,7 @@ async function checkSession() {
             window.location.href = '../../../Client/Panel/FrontEnd/index.html';
             return false;
         }
-        
+        updateUserInfo(data.user);
         showContent();
         return true;
     } catch (error) {
@@ -43,6 +43,25 @@ async function checkSession() {
         window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
         return false;
     }
+}
+
+function updateUserInfo(user) {
+    const userNameElements = document.querySelectorAll('#userName');
+    const userRolElements = document.querySelectorAll('#userRol');
+
+    const fullName = `${user.nombre} ${user.apellido}`;
+
+    userNameElements.forEach(element => {
+        if (element) {
+            element.textContent = fullName;
+        }
+    });
+
+    userRolElements.forEach(element => {
+        if (element) {
+            element.textContent = user.rol;
+        }
+    });
 }
 
 function showContent() {

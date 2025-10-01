@@ -5,22 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión Mesas</title>
+    <script src="/ARJE-CodigoBase/App/Componentes/JS/navAdmin.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="icon" type="image/png" sizes="32x32" href="/ARJE-CodigoBase/App/Recursos/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div id="loading-screen">
         <div id="logo-container" class="logo-loading"></div>
     </div>
-    <nav>
-        <ul>
-            <li><a href="../../../Gerente/Empresa/FrontEnd/index.html">Panel de Administración</a></li>
-            <li><a href="../../../Gerente/Usuarios/FrontEnd/index.html">Gestión de Usuarios</a></li>
-            <li><a href="../../../Ventas/Reservas/FrontEnd/index.html">Gestión de Reservas</a></li>
-            <li><a href="../../../Stock/FrontEnd/index.html">Gestión de Inventario</a></li>
-            <li><a href="../../../Ventas/Productos/FrontEnd/index.html">Gestión de Productos</a></li>
-            <li><a href="../../../../Client/Panel/FrontEnd/index.html">Panel Cliente</a></li>
-        </ul>
-    </nav>
+    <nav-admin></nav-admin>
     <div id="main-content">
         <div id="content">
             <h1>Gestión de Mesas</h1>
@@ -79,5 +74,6 @@
     </div>
     
 </body>
+<script src="../session.js"></script>
 <script src="../control.js"></script>
 </html>

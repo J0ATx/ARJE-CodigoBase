@@ -2,15 +2,23 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Pedidos</title>
+  <title>Pedidos - Mozo</title>
   <link rel="stylesheet" href="style.css">
+  <script src="/ARJE-CodigoBase/App/Componentes/JS/navAdmin.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+  <link rel="icon" type="image/png" sizes="32x32" href="/ARJE-CodigoBase/App/Recursos/favicon.ico">
 </head>
 <body>
-  <div class="kds-container">
-    <header class="kds-header">
-      <h1>Pedidos</h1>
-      <button id="btnAbrirNuevoPedido" class="btn-nuevo-pedido">+ Nuevo Pedido</button>
-    </header>
+    <div id="loading-screen">
+        <div id="logo-container" class="logo-loading"></div>
+    </div>
+    <nav-admin></nav-admin>
+    <div id="main-content">
+        <div class="kds-container">
+            <header class="kds-header">
+              <h1>Pedidos - Mozo</h1>
+              <button id="btnAbrirNuevoPedido" class="btn-nuevo-pedido">+ Nuevo Pedido</button>
+            </header>
     
     <div class="kds-filters">
       <div class="filter-options">
@@ -104,6 +112,7 @@
       </form>
     </dialog>
   </div>
+  <script src="../session.js"></script>
   <script src="../script.js"></script>
 </body>
 </html>
