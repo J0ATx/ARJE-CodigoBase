@@ -99,7 +99,7 @@ CREATE TABLE Reserva (
     reserva_id INT AUTO_INCREMENT NOT NULL,
     reserva_cantidad_personas INT (1),
     reserva_duracion ENUM ('1', '2', '3', '4', '5', '6'),
-    reserva_fecha DATETIME,
+    reserva_fecha DATE,
     reserva_inicio TIME,
     cliente_id VARCHAR (100),
     mesa_id INT,

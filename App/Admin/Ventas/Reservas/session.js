@@ -35,7 +35,7 @@ async function checkSession() {
             window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }
-        
+        updateUserInfo(data.user);
         showContent();
         return true;
     } catch (error) {
@@ -44,6 +44,26 @@ async function checkSession() {
         return false;
     }
 }
+function updateUserInfo(user) {
+    // Buscar elementos del navbar en toda la página
+    const userNameElements = document.querySelectorAll('#userName');
+    const userRolElements = document.querySelectorAll('#userRol');
+
+    const fullName = `${user.nombre} ${user.apellido}`;
+
+    userNameElements.forEach(element => {
+        if (element) {
+            element.textContent = fullName;
+        }
+    });
+
+    userRolElements.forEach(element => {
+        if (element) {
+            element.textContent = user.rol;
+        }
+    });
+}
+
 
 function showContent() {
     const loadingScreen = document.getElementById('loading-screen');

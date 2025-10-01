@@ -94,19 +94,6 @@ body {
     color: #EFE7D2;
 }
 
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#userIcon {
-    background: none;
-    border: none;
-    color: #EFE7D2;
-    cursor: pointer;
-    padding: 5px;
-}
 
 .dropdown-content {
     display: none;

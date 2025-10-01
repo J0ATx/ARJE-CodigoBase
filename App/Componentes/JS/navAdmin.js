@@ -8,7 +8,7 @@ class NavAdmin extends HTMLElement {
         <style>
             nav {
                 width: 300px;
-                height: 100vh;
+                height: calc(100vh - 80px);
                 background-color: #F5F5F5;
                 display: flex;
                 flex-direction: column;
@@ -55,6 +55,7 @@ class NavAdmin extends HTMLElement {
             }
 
             nav ul {
+                overflow-y: auto;
                 list-style: none;
                 padding: 0;
                 margin: 0;
@@ -207,7 +208,9 @@ class NavAdmin extends HTMLElement {
 
             /* Sección de usuario */
             nav .user-section {
-                margin-top: auto;
+                position:fixed;
+                bottom: 0;
+                width: 300px;
                 display: flex;
                 align-items: center;
                 padding: 16px;
@@ -367,7 +370,7 @@ class NavAdmin extends HTMLElement {
             const normalizedPath = path.toLowerCase();
 
             if (normalizedPath.includes('gerente/informes') || normalizedPath.includes('estadisticas')) return 'estadisticas';
-            if (normalizedPath.includes('ventas/pedidos/mozo') || normalizedPath.includes('pedidos')) return 'pedidos';
+            if (normalizedPath.includes('ventas/pedidos/mozo') || normalizedPath.includes('mozo')) return 'pedidos';
             if (normalizedPath.includes('ventas/reservas') || normalizedPath.includes('reservas')) return 'reservas';
             if (normalizedPath.includes('ventas/pedidos/cocina') || normalizedPath.includes('cocina')) return 'cocina';
             if (normalizedPath.includes('stock') || normalizedPath.includes('inventario')) return 'inventario';

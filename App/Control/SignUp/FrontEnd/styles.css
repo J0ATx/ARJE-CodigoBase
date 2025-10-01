@@ -139,8 +139,8 @@ p{
     display: flex;
     flex-direction: column;
     padding-inline: 64px;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    padding-top: 4vh;
+    padding-bottom: 0;
     justify-content: center;
     z-index: 1;
 }
@@ -319,11 +319,10 @@ form {
     font-size: 0.75rem;
     font-family: 'Poppins', sans-serif;
     color: #A4A4A4;
+    display:flex;
+    justify-content: end;
     text-align: left;
-    position: absolute;
-    right: 0;
-    top: 84px;
-    bottom: 0;
+    padding-top: 6px;
 }
 
 .login-btn {
@@ -569,4 +568,55 @@ form {
         padding-top: 12px;
         font-size: 12px;
     }
+}
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip-icon {
+    position: absolute;
+    font-family: sans-serif;
+    right: 55px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: default;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.tooltip-content {
+    position: absolute;
+    right: 30%;
+    top: calc(100% + 8px);
+    width: 250px;
+    background: #151515;
+    color: #ccc;
+    border: 1px solid rgba(239, 231, 210, 0.12);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .15s ease, visibility .15s ease, transform .15s ease;
+    transform: translateY(-4px);
+    z-index: 999;
+}
+
+.tooltip:hover .tooltip-content,
+.tooltip:focus-within .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }

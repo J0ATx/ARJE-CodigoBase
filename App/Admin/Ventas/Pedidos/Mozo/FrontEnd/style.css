@@ -556,28 +556,6 @@ body {
   display: block;
 }
 
-/* Estilos para el encabezado del usuario */
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.btn-logout {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 15px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.btn-logout:hover {
-  background-color: #c0392b;
-}
 
 /* Tiempo transcurrido */
 .tiempo-transcurrido {

@@ -27,12 +27,12 @@ async function checkSession() {
         const data = await response.json();
 
         if (!data.logged_in) {
-            window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
+            window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
             return false;
         }
 
         if (data.user.rol !== "Gerente-General") {
-            window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
+            window.location.href = '../../../Client/Panel/FrontEnd/index.html';
             return false;
         }
 
@@ -43,7 +43,7 @@ async function checkSession() {
         return true;
     } catch (error) {
         console.error('Error checking session:', error);
-        window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
+        window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
         return false;
     }
 }
@@ -66,23 +66,6 @@ function updateUserInfo(user) {
             element.textContent = user.rol;
         }
     });
-
-    // También actualizar elementos específicos del módulo de mesas si existen
-    const mesasUserName = document.getElementById('mesas-userName');
-    const mesasUserRol = document.getElementById('mesas-userRol');
-
-    if (mesasUserName) mesasUserName.textContent = fullName;
-    if (mesasUserRol) mesasUserRol.textContent = user.rol;
-
-    // Guardar en sessionStorage para respaldo del navbar
-    try {
-        sessionStorage.setItem('userName', fullName);
-        sessionStorage.setItem('userRol', user.rol);
-    } catch (error) {
-        console.warn('No se pudo guardar información del usuario en sessionStorage:', error);
-    }
-
-    console.log('Usuario actualizado en navbar:', { nombre: fullName, rol: user.rol });
 }
 
 function showContent() {
