@@ -15,7 +15,7 @@ body {
 }
 p{
     color: #696969;
-    font-size: 0.8rem;
+    font-size: clamp(0.75rem, 0.8rem, 0.9rem);
     font-family: 'Poppins', sans-serif;
     text-align: center;
 }
@@ -146,7 +146,6 @@ html {
 }
 
 .login-inputs {
-    width: 300px;
     height: 100%;
     margin-bottom: 24px;
     display: flex;
@@ -163,7 +162,7 @@ form{
 }
 
 .login-content h2 {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 2.5rem, 3rem);
     text-align: center;
     line-height: 1.2;
     margin-bottom: 16px;
@@ -173,7 +172,7 @@ form{
 
 .login-content h3 {
     text-wrap: nowrap;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 0.9rem, 1rem);
     text-align: center;
     line-height: 1.2;
     font-weight: 100;
@@ -183,10 +182,10 @@ form{
 
 .login-inputs input {
     width: 100%;
-    height: 50px;
+    height: clamp(45px, 50px, 55px);
     border-radius: 60px;
-    padding: 20px;
-    font-size: 0.8rem;
+    padding: clamp(15px, 20px, 25px);
+    font-size: clamp(0.75rem, 0.8rem, 0.9rem);
     font-family: 'Poppins', sans-serif;
     background-color: transparent;
     color: #EFE7D2;
@@ -249,7 +248,7 @@ form{
 }
 
 .login-inputs label {
-    font-size: 0.8rem;
+    font-size: clamp(0.75rem, 0.8rem, 0.9rem);
     font-family: 'Poppins', sans-serif;
     color: #A4A4A4;
     text-align: left;
@@ -258,7 +257,7 @@ form{
 }
 
 .login-inputs .forgot-pass {
-    font-size: 0.75rem;
+    font-size: clamp(0.7rem, 0.75rem, 0.8rem);
     font-family: 'Poppins', sans-serif;
     color: #A4A4A4;
     text-align: left;
@@ -275,10 +274,10 @@ form{
     background: linear-gradient(to right, #ffffff23, #ffffff02);
     width: 100%;
     color: white;
-    padding: 12px 24px;
+    padding: clamp(10px, 12px, 15px) clamp(20px, 24px, 30px);
     border: none;
     border-radius: 16px;
-    font-size: 16px;
+    font-size: clamp(14px, 16px, 18px);
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
     box-shadow: 0 0 1px #fff;
@@ -312,7 +311,7 @@ form{
     color: white;
     border: none;
     border-radius: 16px;
-    font-size: 13px;
+    font-size: clamp(11px, 13px, 15px);
     font-family: 'Poppins', sans-serif;
     justify-content: center;
     text-decoration: none;
@@ -323,7 +322,7 @@ form{
     text-wrap: pretty;
     word-wrap: break-word;
     color: #ff4040;
-    font-size: 15px;
+    font-size: clamp(13px, 15px, 17px);
     width: 300px;
     display: flex;
     align-items: center;
@@ -402,13 +401,13 @@ form{
     }
 
     .login-content h2 {
-        font-size: 1.8rem;
+        font-size: clamp(1.6rem, 1.8rem, 2rem);
         margin-bottom: 8px;
         margin-top: 0;
     }
 
     .login-content h3 {
-        font-size: 0.85rem;
+        font-size: clamp(0.75rem, 0.85rem, 0.95rem);
         text-wrap: wrap;
     }
 
@@ -421,23 +420,23 @@ form{
     }
 
     .login-inputs input {
-        height: 48px;
-        font-size: 0.9rem;
+        height: clamp(42px, 48px, 52px);
+        font-size: clamp(0.8rem, 0.9rem, 1rem);
     }
 
 
     .login-btn {
-        padding: 14px 24px;
-        font-size: 0.9rem;
+        padding: clamp(12px, 14px, 16px) clamp(20px, 24px, 28px);
+        font-size: clamp(0.8rem, 0.9rem, 1rem);
     }
 
     .signup-btn {
         margin-top: 12px;
-        font-size: 0.8rem;
+        font-size: clamp(0.75rem, 0.8rem, 0.9rem);
     }
     .mensajes{
         padding-top: 12px;
-        font-size: 13px;
+        font-size: clamp(11px, 13px, 15px);
     }
 }
 

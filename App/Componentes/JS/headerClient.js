@@ -16,22 +16,22 @@ class Header extends HTMLElement {
     padding-left: 0.5vw;
     background-color: #0A0B0A;
     width: fit-content;
-    border-radius: 1vw;
+    border-radius: clamp(1vw, 1vw, 2vw);
     z-index: 999;
     position: relative;
     overflow: visible;
 }
     
 header .logo {
-    max-width: 3vw;
-    max-height: 3vw;
+    max-width: clamp(2rem, 3vw, 4rem);
+    max-height: clamp(2rem, 3vw, 4rem);
     z-index: 999;
 }
 
 header svg,
 img {
     width: auto;
-    height: 3vw;
+    height: clamp(2rem, 3vw, 4rem);
     margin: 0;
     display: block;
     z-index: 999;
@@ -51,25 +51,26 @@ img {
     position: absolute;
     top: 130%;
     left: 0;
-    width: 200px;
+    width: clamp(180px, 200px, 220px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
     display: none;
     z-index: 1000;
     border-radius: 8px;
-    background-color: #e6e6e6;
+    background-color:rgb(27, 27, 27);
+    border: 1px solid rgba(245, 245, 245, 0.1);
 }
 
 .user-info {
-    padding: 15px;
+    padding: clamp(12px, 15px, 18px);
     
 }
 
 .user-info h3 {
     font-family: 'Poppins', sans-serif;
     font-weight: normal;
-    color: #000000;
+    color:rgb(224, 224, 224);
     margin: 0;
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 1.2rem, 1.4rem);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -79,9 +80,9 @@ img {
 .user-info h4 {
     font-family: 'Poppins', sans-serif;
     font-weight: normal;
-    color: #444444;
+    color:rgb(155, 155, 155);
     margin: 0;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1rem, 1.1rem);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -90,23 +91,24 @@ img {
 
 .dropdown-btn {
     width: 100%;
-    padding: 10px;
+    padding: clamp(8px, 10px, 12px);
     display: flex;
     align-items: center;
-    color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
     border: none;
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
-    font-size: 1rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: clamp(0.9rem, 1rem, 1.1rem);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background-color:rgb(32, 32, 32);
 }
 
 .dropdown-btn:hover {
-    background-color: #dddddd;
+    background-color:rgb(20, 20, 20);
 }
 
 .dropdown-btn a{
-    color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
     text-decoration: none;
     display: flex;
 }
@@ -116,9 +118,11 @@ img {
 }
 
 .dropdown-btn svg {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: clamp(1.2rem, 1.5rem, 1.8rem);
+    height: clamp(1.2rem, 1.5rem, 1.8rem);
     margin-right: 10px;
+    color: white;
+    fill: white;
 }
 
 .logout-btn {
@@ -143,16 +147,17 @@ img {
     font-family: 'Nesatho', sans-serif;
     color: #EFE7D2;
     z-index: 1;
-    font-size: 1.2vw;
+    font-size: clamp(0.8rem, 1.2vw, 1.5rem);
 }
     .logged{
     display:none;
 }
         </style>
+        
       <header>
                 <div class="user-dropdown" id="userDropdown">
                     <div class="user-icon" id="userIcon">
-                        <svg class="logged" width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="logged" width="clamp(35px, 4vw, 50px)" height="clamp(35px, 4vw, 50px)" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x=".101" y=".862" width="46" height="45.292" rx="22.646" fill="#181818"
                                 fill-opacity=".5" />
                             <rect x=".601" y="1.362" width="45" height="44.292" rx="22.146" stroke="#767676"
@@ -162,7 +167,7 @@ img {
                                 fill="#A4A4A4" />
                         </svg>
                         <a href="/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html" class="notlogged">
-                            <svg width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="clamp(35px, 4vw, 50px)" height="clamp(35px, 4vw, 50px)" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect x=".101" y=".862" width="46" height="45.292" rx="22.646" fill="#181818"
                                     fill-opacity=".5" />
                                 <rect x=".601" y="1.362" width="45" height="44.292" rx="22.146" stroke="rgba(118, 118, 118, 0.5)"
@@ -181,7 +186,7 @@ img {
                         <button class="dropdown-btn profile-btn" id="profileBtn">
                             <svg id='user-circle_24' width='24' height='24' viewBox='0 0 24 24'
                                 xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
-                                <rect width='24' height='24' stroke='none' fill='#000000' opacity='0' />
+                                <rect width='24' height='24' stroke='none' fill='white' opacity='0' />
                                 <g transform="matrix(1 0 0 1 12 12)">
                                     <g style="">
                                         <g transform="matrix(1 0 0 1 0 0)">
@@ -192,17 +197,17 @@ img {
                                         </g>
                                         <g transform="matrix(1 0 0 1 0 0)">
                                             <circle
-                                                style="stroke: rgb(33,33,33); stroke-width: 2; stroke-dasharray: none; stroke-linecap: round; stroke-dashoffset: 0; stroke-linejoin: round; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;"
+                                                style="stroke: white; stroke-width: 2; stroke-dasharray: none; stroke-linecap: round; stroke-dashoffset: 0; stroke-linejoin: round; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;"
                                                 cx="0" cy="0" r="9" />
                                         </g>
                                         <g transform="matrix(1 0 0 1 0 -2)">
                                             <circle
-                                                style="stroke: rgb(33,33,33); stroke-width: 2; stroke-dasharray: none; stroke-linecap: round; stroke-dashoffset: 0; stroke-linejoin: round; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;"
+                                                style="stroke: white; stroke-width: 2; stroke-dasharray: none; stroke-linecap: round; stroke-dashoffset: 0; stroke-linejoin: round; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;"
                                                 cx="0" cy="0" r="3" />
                                         </g>
                                         <g transform="matrix(1 0 0 1 0 5.43)">
                                             <path
-                                                style="stroke: rgb(33,33,33); stroke-width: 2; stroke-dasharray: none; stroke-linecap: round; stroke-dashoffset: 0; stroke-linejoin: round; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;"
+                                                style="stroke: white; stroke-width: 2; stroke-dasharray: none; stroke-linecap: round; stroke-dashoffset: 0; stroke-linejoin: round; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;"
                                                 transform=" translate(-12, -17.43)"
                                                 d="M 6.168 18.849 C 6.676237607775832 17.15745504037093 8.233752693994969 15.99947996713546 10.000000000000002 16 L 14 16 C 15.76863928839429 15.999389789459086 17.32772707883109 17.16036935171706 17.834 18.855"
                                                 stroke-linecap="round" />
@@ -215,11 +220,11 @@ img {
                         <button class="dropdown-btn dashboard-btn" id="dashboardBtn">
                             <a href="/ARJE-CodigoBase/App/Admin/Gerente/Empresa/FrontEnd/index.html">
                                 <svg id='Dashboard_Layout_24' width='24' height='24' viewBox='0 0 24 24'
-                                    xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
-                                    <rect width='24' height='24' stroke='none' fill='#000000' opacity='0' />
+                                    xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' fill="currentColor">
+                                    <rect width='24' height='24' stroke='none' fill='white' opacity='0' />
                                     <g transform="matrix(1 0 0 1 12 12)">
                                         <path
-                                            style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"
+                                            style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: white; fill-rule: nonzero; opacity: 1;"
                                             transform=" translate(-12, -12)"
                                             d="M 4 2 C 2.9069372 2 2 2.9069372 2 4 L 2 11 C 2 12.093063 2.9069372 13 4 13 L 9 13 C 10.093063 13 11 12.093063 11 11 L 11 4 C 11 2.9069372 10.093063 2 9 2 L 4 2 z M 15 2 C 13.906937 2 13 2.9069372 13 4 L 13 7 C 13 8.0930628 13.906937 9 15 9 L 20 9 C 21.093063 9 22 8.0930628 22 7 L 22 4 C 22 2.9069372 21.093063 2 20 2 L 15 2 z M 4 4 L 9 4 L 9 11 L 4 11 L 4 4 z M 15 4 L 20 4 L 20 7 L 15 7 L 15 4 z M 15 11 C 13.906937 11 13 11.906937 13 13 L 13 20 C 13 21.093063 13.906937 22 15 22 L 20 22 C 21.093063 22 22 21.093063 22 20 L 22 13 C 22 11.906937 21.093063 11 20 11 L 15 11 z M 15 13 L 20 13 L 20 20 L 15 20 L 15 13 z M 4 15 C 2.9069372 15 2 15.906937 2 17 L 2 20 C 2 21.093063 2.9069372 22 4 22 L 9 22 C 10.093063 22 11 21.093063 11 20 L 11 17 C 11 15.906937 10.093063 15 9 15 L 4 15 z M 4 17 L 9 17 L 9 20 L 4 20 L 4 17 z"
                                             stroke-linecap="round" />
@@ -231,10 +236,10 @@ img {
                         <button class="dropdown-btn help-btn" id="helpBtn">
                             <svg id='Help_24' width='24' height='24' viewBox='0 0 24 24'
                                 xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
-                                <rect width='24' height='24' stroke='none' fill='#000000' opacity='0' />
+                                <rect width='24' height='24' stroke='none' fill='white' opacity='0' />
                                 <g transform="matrix(0.83 0 0 0.83 12 12)">
                                     <path
-                                        style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"
+                                        style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: white; fill-rule: nonzero; opacity: 1;"
                                         transform=" translate(-16, -16)"
                                         d="M 16 4 C 9.382813 4 4 9.382813 4 16 C 4 22.617188 9.382813 28 16 28 C 22.617188 28 28 22.617188 28 16 C 28 9.382813 22.617188 4 16 4 Z M 16 6 C 21.535156 6 26 10.464844 26 16 C 26 21.535156 21.535156 26 16 26 C 10.464844 26 6 21.535156 6 16 C 6 10.464844 10.464844 6 16 6 Z M 16 10 C 13.800781 10 12 11.800781 12 14 L 14 14 C 14 12.882813 14.882813 12 16 12 C 17.117188 12 18 12.882813 18 14 C 18 14.765625 17.507813 15.445313 16.78125 15.6875 L 16.375 15.8125 C 15.558594 16.082031 15 16.863281 15 17.71875 L 15 19 L 17 19 L 17 17.71875 L 17.40625 17.59375 C 18.945313 17.082031 20 15.621094 20 14 C 20 11.800781 18.199219 10 16 10 Z M 15 20 L 15 22 L 17 22 L 17 20 Z"
                                         stroke-linecap="round" />

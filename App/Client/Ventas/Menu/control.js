@@ -24,24 +24,18 @@ function fetchProductos() {
             Object.keys(categorias).forEach(cat => {
                 const titulo = document.createElement('h2');
                 titulo.textContent = cat;
+                titulo.className = 'categoria-titulo';
                 contenedor.appendChild(titulo);
 
                 const divCategoria = document.createElement('div');
-                divCategoria.style.display = 'flex';
-                divCategoria.style.flexWrap = 'wrap';
-                divCategoria.style.gap = '10px';
+                divCategoria.className = 'categoria-contenedor';
 
                 categorias[cat].forEach(producto => {
                     const div = document.createElement('div');
                     div.className = 'producto-item';
-                    div.style.border = '1px solid #ccc';
-                    div.style.margin = '10px 0';
-                    div.style.padding = '10px';
-                    div.style.cursor = 'pointer';
-                    div.style.width = 'fit-content';
                     div.innerHTML = `
-                        <strong>${producto.producto_nombre}</strong><br>
-                        <span>Precio: $${producto.producto_precio}</span>
+                        <strong class="producto-nombre">${producto.producto_nombre}</strong><br>
+                        <span class="producto-precio">$${producto.producto_precio}</span>
                     `;
                     div.onclick = () => {
                         window.location.href = `detalle.html?id=${producto.producto_id}`;
@@ -74,8 +68,8 @@ function mostrarDetalleProducto() {
             const cont = document.getElementById('detalle-producto');
             cont.innerHTML = `
                 <ul>
-                    <li><strong>Nombre:</strong> ${producto.producto_nombre}</li>
-                    <li><strong>Precio:</strong> $${producto.producto_precio}</li>
+                    <li><strong class="producto-nombre">Nombre:</strong> ${producto.producto_nombre}</li>
+                    <li><strong class="producto-precio">Precio:</strong> $${producto.producto_precio}</li>
                     <li><strong>Tiempo de preparación:</strong> ${producto.producto_tiempo_preparacion}</li>
                     <li><strong>Categoría:</strong> ${producto.producto_categoria}</li>
                 </ul>
