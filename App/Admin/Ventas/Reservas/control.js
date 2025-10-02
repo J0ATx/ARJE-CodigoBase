@@ -83,7 +83,7 @@ function fetchReservas() {
                 <td>${reserva.reserva_fecha + ' ' + reserva.reserva_inicio|| 'N/A'}</td>
                 <td>${reserva.reserva_cantidad_personas || 'N/A'}</td>
                 <td class="acciones">
-                    <button class="btn-menu" onclick="editarReserva(${reserva.reserva_id})">⋮</button>
+                    <button class="btn-menu" onclick="document.querySelector('.menu-opciones').style.display = 'block'">⋮</button>
                     <div class="menu-opciones">
                         <div class="opcion" onclick="editarReserva(${reserva.reserva_id})">Editar</div>
                         <div class="opcion eliminar" onclick="eliminarReserva(${reserva.reserva_id})">Eliminar</div>
