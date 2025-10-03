@@ -1,12 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
     cargarMesas();
 
+    // Botón para abrir modal de crear mesa
+    document.getElementById('addMesaBtn').addEventListener('click', () => {
+        document.getElementById('formMesa').reset();
+        document.getElementById('modalCrear').style.display = 'flex';
+    });
+
     document.getElementById('formMesa').addEventListener('submit', async function (e) {
         e.preventDefault();
         await crearMesa();
     });
-
 });
+
+window.cerrarModalCrear = function () {
+    document.getElementById('modalCrear').style.display = 'none';
+};
 
 async function cargarMesas() {
     const tabla = document.getElementById('tablaMesas');
@@ -34,9 +43,22 @@ async function cargarMesas() {
             <td>${m.ubicacion}</td>
             <td>${m.tiempoUso || ''}</td>
             <td>${reservasHtml}</td>
-            <td>
-                <button onclick="editarMesa(${m.idMesa}, ${m.capacidad}, '${m.estadoActual}', '${m.ubicacion}')">Editar</button>
-                <button onclick="eliminarMesa(${m.idMesa})">Eliminar</button>
+            <td class="acciones">
+                <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
+                <div class="menu-opciones">
+                    <div class="opcion" onclick="editarMesa(${m.idMesa}, ${m.capacidad}, '${m.estadoActual}', '${m.ubicacion}')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                        </svg>
+                        Editar
+                    </div>
+                    <div class="opcion eliminar" onclick="eliminarMesa(${m.idMesa})">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+                        </svg>
+                        Eliminar
+                    </div>
+                </div>
             </td>
         </tr>
         `;
@@ -88,6 +110,7 @@ async function crearMesa() {
     if (res.ok) {
         cargarMesas();
         document.getElementById('formMesa').reset();
+        document.getElementById('modalCrear').style.display = 'none';
     } else {
         const error = await res.json();
         alert(error.error || "Error al crear mesa");
@@ -109,3 +132,21 @@ async function eliminarMesa(idMesa) {
         alert(error.error || "Error al eliminar mesa");
     }
 }
+
+// Función para manejar el menú de tres puntos
+function toggleMenu(btn) {
+    document.querySelectorAll('.menu-opciones').forEach(menu => {
+        if (menu !== btn.nextElementSibling) menu.style.display = 'none';
+    });
+
+    const menu = btn.nextElementSibling;
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.acciones')) {
+        document.querySelectorAll('.menu-opciones').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});

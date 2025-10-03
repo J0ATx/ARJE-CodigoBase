@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     addIngredientBtn.addEventListener('click', () => {
         document.getElementById('modalTitle').textContent = 'Agregar Lote';
         form.reset();
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
     });
 
     closeBtn.addEventListener('click', () => {
@@ -100,17 +100,22 @@ function renderIngredients(ingredientes) {
             <td>${ingrediente.nombre}</td>
             <td>${ingrediente.stock.toString().replace(/\./g, ',')} ${ingrediente.medida}</td>
             <td>${formatDate(ingrediente.caducidad)}</td>
-            <td class="action-icons">
-                <button class="edit-btn" onclick="editIngredient(${ingrediente.idIngrediente})">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                    </svg>
-                </button>
-                <button class="delete-btn" onclick="deleteIngredient(${ingrediente.idIngrediente})">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
-                    </svg>
-                </button>
+            <td class="acciones">
+                <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
+                <div class="menu-opciones">
+                    <div class="opcion" onclick="editIngredient(${ingrediente.idIngrediente})">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                        </svg>
+                        Editar
+                    </div>
+                    <div class="opcion eliminar" onclick="deleteIngredient(${ingrediente.idIngrediente})">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+                        </svg>
+                        Eliminar
+                    </div>
+                </div>
             </td>
         `;
         tableBody.appendChild(row);
@@ -138,7 +143,7 @@ async function editIngredient(id) {
             document.getElementById('medida').value = ingrediente.medida;
             document.getElementById('caducidad').value = ingrediente.caducidad;
             
-            document.getElementById('ingredientModal').style.display = 'block';
+            document.getElementById('ingredientModal').style.display = 'flex';
         } else {
             alert(data.message || 'Error al cargar el Lote');
         }
@@ -193,3 +198,21 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+
+// Función para manejar el menú de tres puntos
+function toggleMenu(btn) {
+    document.querySelectorAll('.menu-opciones').forEach(menu => {
+        if (menu !== btn.nextElementSibling) menu.style.display = 'none';
+    });
+
+    const menu = btn.nextElementSibling;
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('.acciones')) {
+        document.querySelectorAll('.menu-opciones').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});

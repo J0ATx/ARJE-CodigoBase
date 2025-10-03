@@ -1,17 +1,12 @@
-/* ESTILOS GENERALES BASE - Aplicar a todas las páginas */
-
-/* Reset básico */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
-/* Estilos del body */
 body {
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
+    background-color: #ffffff;
     font-family: 'Poppins', sans-serif;
     height: 100vh;
     display: grid;
@@ -21,7 +16,6 @@ body {
     overflow: hidden;
 }
 
-/* Layout principal */
 .page {
     display: grid;
     width: 100%;
@@ -77,13 +71,4 @@ body {
         stroke-dashoffset: 0;
         stroke-width: 0;
     }
-}
-
-/* Control de visibilidad del contenido principal */
-#main-content {
-    display: none;
-}
-
-#main-content.visible {
-    display: block;
 }

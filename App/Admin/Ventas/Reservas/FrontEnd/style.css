@@ -58,12 +58,12 @@ body {
 
 .contenedor::before {
   content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: fixed;
+  left: 50%;
+    transform: translate(-40%, 0);
   width: 100%;
   height: 100%;
-  background-image: url(../../../../Recursos/PageIcons/reservas.svg);
+  background-image: url(../../../../Componentes/svg/Reservas.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 70%;
@@ -153,6 +153,7 @@ td {
   padding: 14px 16px;
   border-bottom: 1px solid #d4d4d4;
   font-size: 14px;
+  vertical-align: middle;
 }
 
 td:last-child {
@@ -197,6 +198,15 @@ tr:nth-child(odd) {
   border: none;
   background: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-opciones .opcion svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .menu-opciones .opcion:hover {
@@ -222,6 +232,7 @@ tr:nth-child(odd) {
   align-items: center;
   justify-content: center;
   box-shadow: none;
+  line-height: 1;
 }
 
 .acciones {
@@ -418,10 +429,148 @@ tr:nth-child(odd) {
     }
 }
 
-#main-content {
+/* Modal */
+.modal {
   display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
 }
 
-#main-content.visible {
+.modal-content {
+  position: relative;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-content h2 {
+  color: #1c1c1c;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f1f1f1;
+}
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.close:hover {
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
   display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #d4d4d4;
+  background-color: #f8f8f8;
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #363636;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(54, 54, 54, 0.1);
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.submit-button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #363636;
+  color: #fff;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #1c1c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+.cancel-button {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.cancel-button:hover {
+  background-color: #f8f8f8;
+  border-color: #999;
 }

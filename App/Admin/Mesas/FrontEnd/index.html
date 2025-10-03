@@ -15,47 +15,46 @@
     <div id="loading-screen">
         <div id="logo-container" class="logo-loading"></div>
     </div>
-    <nav-admin></nav-admin>
     <div id="main-content">
-        <div id="content">
-            <h1>Gestión de Mesas</h1>
-        </div>
-        <main class="contenedor">
-            <form id="formMesa">
-                <div class="form-container">
-                    <input id="capacidad" placeholder="Capacidad" type="number" required>
-                    <select id="estadoActual">
-                        <option value="Libre">Libre</option>
-                        <option value="Ocupada">Ocupada</option>
-                        <option value="Inhabilitada">Inhabilitada</option>
-                    </select>
-                    <select id="ubicacion">
-                        <option value="Interior">Interior</option>
-                        <option value="Exterior">Exterior</option>
-                    </select>
-                    <button id="btnCrear" type="submit">Crear Mesa</button>
+        <div class="page">
+            <nav-admin></nav-admin>
+            <main class="contenedor">
+                <h1>GESTIÓN DE MESAS</h1>
+                <div class="tabla-contenedor">
+                    <div class="encabezado-tabla">
+                        <div class="buscador-con-icono">
+                            <input type="text" placeholder="Buscar" id="searchInput" class="buscador" />
+                            <span class="icono-lupa">
+                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M16.6 18L10.3 11.7C9.8 12.1 9.225 12.4167 8.575 12.65C7.925 12.8833 7.23333 13 6.5 13C4.68333 13 3.14583 12.3708 1.8875 11.1125C0.629167 9.85417 0 8.31667 0 6.5C0 4.68333 0.629167 3.14583 1.8875 1.8875C3.14583 0.629167 4.68333 0 6.5 0C8.31667 0 9.85417 0.629167 11.1125 1.8875C12.3708 3.14583 13 4.68333 13 6.5C13 7.23333 12.8833 7.925 12.65 8.575C12.4167 9.225 12.1 9.8 11.7 10.3L18 16.6L16.6 18ZM6.5 11C7.75 11 8.8125 10.5625 9.6875 9.6875C10.5625 8.8125 11 7.75 11 6.5C11 5.25 10.5625 4.1875 9.6875 3.3125C8.8125 2.4375 7.75 2 6.5 2C5.25 2 4.1875 2.4375 3.3125 3.3125C2.4375 4.1875 2 5.25 2 6.5C2 7.75 2.4375 8.8125 3.3125 9.6875C4.1875 10.5625 5.25 11 6.5 11Z"
+                                        fill="#A4A4A4" />
+                                </svg>
+                            </span>
+                        </div>
+                        <button id="addMesaBtn" class="action-button">+ Agregar Mesa</button>
+                    </div>
+                    <table id="mesasTable">
+                        <thead>
+                            <tr>
+                                <th>ID MESA</th>
+                                <th>CAPACIDAD</th>
+                                <th>ESTADO ACTUAL</th>
+                                <th>UBICACIÓN</th>
+                                <th>TIEMPO DE USO</th>
+                                <th>RESERVAS</th>
+                                <th>ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaMesas"></tbody>
+                    </table>
                 </div>
-            </form>
-            <div class="tabla-contenedor">
-                <table id="mesasTable">
-                    <thead>
-                        <tr>
-                            <th>ID Mesa</th>
-                            <th>Capacidad</th>
-                            <th>Estado Actual</th>
-                            <th>Ubicación</th>
-                            <th>Tiempo de uso</th>
-                            <th>Reservas</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaMesas"></tbody>
-                </table>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
-    <div id="modalEditar"
-        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
+    <div id="modalEditar">
+        <form>
             <h2>Editar Mesa</h2>
             <input id="edit_idMesa" type="hidden">
             <input id="edit_capacidad" placeholder="Capacidad" type="number" required>
@@ -71,6 +70,35 @@
             <input type="submit" value="Guardar cambios" onclick="guardarCambiosMesa()">
             <button type="button" onclick="cerrarModalEditar()">Cancelar</button>
         </form>
+    </div>
+
+    <div id="modalCrear" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModalCrear()">&times;</span>
+            <h2>Agregar Mesa</h2>
+            <form id="formMesa">
+                <div class="form-group">
+                    <label for="capacidad">Capacidad</label>
+                    <input id="capacidad" type="number" required>
+                </div>
+                <div class="form-group">
+                    <label for="estadoActual">Estado Actual</label>
+                    <select id="estadoActual">
+                        <option value="Libre">Libre</option>
+                        <option value="Ocupada">Ocupada</option>
+                        <option value="Inhabilitada">Inhabilitada</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ubicacion">Ubicación</label>
+                    <select id="ubicacion">
+                        <option value="Interior">Interior</option>
+                        <option value="Exterior">Exterior</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button">Crear Mesa</button>
+            </form>
+        </div>
     </div>
     
 </body>

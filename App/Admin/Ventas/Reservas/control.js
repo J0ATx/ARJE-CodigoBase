@@ -83,10 +83,20 @@ function fetchReservas() {
                 <td>${reserva.reserva_fecha + ' ' + reserva.reserva_inicio|| 'N/A'}</td>
                 <td>${reserva.reserva_cantidad_personas || 'N/A'}</td>
                 <td class="acciones">
-                    <button class="btn-menu" onclick="document.querySelector('.menu-opciones').style.display = 'block'">⋮</button>
+                    <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
                     <div class="menu-opciones">
-                        <div class="opcion" onclick="editarReserva(${reserva.reserva_id})">Editar</div>
-                        <div class="opcion eliminar" onclick="eliminarReserva(${reserva.reserva_id})">Eliminar</div>
+                        <div class="opcion" onclick="editarReserva(${reserva.reserva_id})">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                            </svg>
+                            Editar
+                        </div>
+                        <div class="opcion eliminar" onclick="eliminarReserva(${reserva.reserva_id})">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+                            </svg>
+                            Eliminar
+                        </div>
                     </div>
                 </td>
             `;

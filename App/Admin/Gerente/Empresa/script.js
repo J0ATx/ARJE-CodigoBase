@@ -45,7 +45,7 @@ subFavicon.addEventListener('click', function (e) {
         document.getElementById('favicon_img').src = data; // Actualiza la vista previa del favicon
     })
     .catch(err => {
-        document.getElementById('mensaje').textContent = 'Error al subir: ' + err;
+        console.log(err);
     });
 
     
