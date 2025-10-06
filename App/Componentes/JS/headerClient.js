@@ -21,7 +21,11 @@ class Header extends HTMLElement {
     position: relative;
     overflow: visible;
 }
-    
+
+a{
+    text-decoration: none;
+    }
+
 header .logo {
     max-width: clamp(2rem, 3vw, 4rem);
     max-height: clamp(2rem, 3vw, 4rem);
@@ -268,7 +272,7 @@ img {
                     <img src="/ARJE-CodigoBase/App/Recursos/logo.svg" alt="logo Los 3 Tanos">
                 </div>
                 </a>
-                <span class="btn-header">PEDÍ AHORA</span>
+                <a href="/ARJE-CodigoBase/App/Client/Ventas/Menu/FrontEnd/index.html"><span class="btn-header">PEDÍ AHORA</span></a>
             </header>
     `;
         async function logout() {

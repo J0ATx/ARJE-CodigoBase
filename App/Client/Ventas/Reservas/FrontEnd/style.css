@@ -5,10 +5,6 @@
         url('files/fonts/nesatho-webfont.woff2') format('woff2');
 }
 
-html {
-    overflow: hidden;
-}
-
 *,
 *::before,
 *::after {
@@ -21,7 +17,7 @@ html {
 body {
     background-color: #0A0B0A;
     color: #fff;
-    overflow: hidden;
+    overflow-y: auto;
 
 }
 
@@ -545,7 +541,7 @@ input[type=number] {
             "footer";
         grid-template-columns: 100%;
         grid-template-rows: 90% 10%;
-        padding: 10px;
+        padding: 1vw;
         gap: 10px;
         height: 100vh;
     }
@@ -557,9 +553,9 @@ input[type=number] {
     header {
         visibility: visible !important;
         position: fixed !important;
-        top: 16px !important;
-        left: 16px !important;
-        right: 16px !important;
+        top: 3vw !important;
+        left: 3vw !important;
+        right: 3vw !important;
         z-index: 10 !important;
     }
 
