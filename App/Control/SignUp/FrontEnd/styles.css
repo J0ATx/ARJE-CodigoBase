@@ -126,9 +126,9 @@ p{
     z-index: 100;
 }
 
-.login-image svg {
-    width: 400px;
-    height: 300px;
+.login-image img {
+    width: 200px;
+    height: 200px;
     border-radius: 60px;
 }
 
@@ -442,9 +442,9 @@ form {
         order: -1;
     }
 
-    .login-image svg {
-        width: 160px;
-        height: 160px;
+    .login-image img {
+        width: 80px;
+        height: 80px;
         border-radius: 0;
     }
 
