@@ -1,7 +1,7 @@
 <?php
 // cancelarPedido.php - Cancela un pedido si no está Entregado/Pagado (nueva BD)
 header('Content-Type: application/json');
-require_once '../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexión/conexion.php';
 
 $response = ["success" => false];
 

@@ -1,7 +1,7 @@
 <?php
 // listarPedidos.php - Lista todos los pedidos activos (no entregados)
 header('Content-Type: application/json');
-require_once '../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexión/conexion.php';
 
 // Consulta para obtener los pedidos activos en nueva BD
 $sql = "SELECT 

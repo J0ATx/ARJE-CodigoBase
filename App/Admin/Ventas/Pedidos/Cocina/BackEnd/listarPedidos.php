@@ -1,7 +1,7 @@
 <?php
 // listarPedidos.php - Lista todos los pedidos activos (no entregados) para cocina
 header('Content-Type: application/json');
-require_once '../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexión/conexion.php';
 
 $sql = "
     SELECT 

@@ -14,7 +14,7 @@
 
 // Configuración de encabezados para respuesta JSON
 header('Content-Type: application/json');
-require_once '../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexión/conexion.php';
 
 function responder($ok, $msg, $data = [])
 {
