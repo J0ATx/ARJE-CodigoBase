@@ -1,429 +1,227 @@
-drop database if exists losTresTanosDB;
-create database losTresTanosDB;
-use losTresTanosDB;
+DROP DATABASE IF EXISTS lostrestanosdb;
+CREATE DATABASE lostrestanosdb;
+USE lostrestanosdb;
 
-create table Usuario(
-    idUsuario int auto_increment,
-    nombre varchar (30) NOT NULL,
-    apellido varchar (30) NOT NULL,
-    contrasenia varchar (256) NOT NULL,
-    gmail varchar (100) UNIQUE NOT NULL,
-    calificacion int (2),
-    numTel int (9) UNIQUE,
-    primary key(idUsuario)
+CREATE TABLE Personal (
+    personal_id VARCHAR (100) NOT NULL,
+    personal_nombre VARCHAR (50),
+    personal_apellido VARCHAR (50),
+    personal_telefono INT (9),
+    personal_contrasenia VARCHAR (256),
+    personal_calificacion ENUM ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
+    personal_rol ENUM ('Cliente', 'Gerente-General', 'Gerente-Turno', 'Chef-Ejecutivo', 'Chef', 'Camarero'),
+    PRIMARY KEY(personal_id)
 );
 
-create table Cliente(
-    idUsuario int,
-    noShows int (3),
-    platilloFav varchar (40),
-    primary key(idUsuario),
-    foreign key(idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
+CREATE TABLE Camarero (
+    personal_id VARCHAR (100) NOT NULL,
+    PRIMARY KEY (personal_id),
+    FOREIGN KEY (personal_id) REFERENCES Personal (personal_id) ON DELETE CASCADE
 );
 
-create table Alergias(
-    idAlergia int auto_increment,
-    nombreAler varchar (40) UNIQUE NOT NULL,
-    primary key(idAlergia)
+CREATE TABLE Chef_Ejecutivo (
+    personal_id VARCHAR (100) NOT NULL,
+    PRIMARY KEY (personal_id),
+    FOREIGN KEY (personal_id) REFERENCES Personal (personal_id) ON DELETE CASCADE
 );
 
-create table ClienteAlergias(
-    idUsuario int,
-    idAlergia int,
-    primary key(idUsuario, idAlergia),
-    foreign key(idUsuario) REFERENCES Cliente(idUsuario) ON DELETE CASCADE,
-    foreign key(idAlergia) REFERENCES Alergias(idAlergia) ON DELETE CASCADE
+CREATE TABLE Gerente_General (
+    personal_id VARCHAR (100) NOT NULL,
+    PRIMARY KEY (personal_id),
+    FOREIGN KEY (personal_id) REFERENCES Personal (personal_id) ON DELETE CASCADE
 );
 
-create table Gerente(
-    idUsuario int,
-    fechContratacion date NOT NULL,
-    primary key(idUsuario),
-    foreign key(idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
+CREATE TABLE Cliente (
+    cliente_id VARCHAR (100) NOT NULL,
+    cliente_nombre VARCHAR (50),
+    cliente_apellido VARCHAR (50),
+    cliente_telefono INT (9),
+    cliente_contrasenia VARCHAR (256),
+    cliente_calificacion ENUM ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
+    cliente_platillo_favorito VARCHAR (150),
+    cliente_fidelizado BOOLEAN,
+    PRIMARY KEY (cliente_id)
 );
 
-create table TurnoGerente(
-    idTurno int auto_increment,
-    idUsuario int,
-    turnoAsignado varchar (20) NOT NULL,
-    horasSemanales int (3) NOT NULL,
-    inicioTurno time NOT NULL,
-    finTurno time NOT NULL,
-    primary key(idTurno),
-    foreign key(idUsuario) REFERENCES Gerente(idUsuario) ON DELETE CASCADE
+CREATE TABLE Cliente_Alergia (
+    cliente_id VARCHAR (100) NOT NULL,
+    cliente_alergia VARCHAR (100),
+    PRIMARY KEY (cliente_id),
+    FOREIGN KEY (cliente_id) REFERENCES Cliente (cliente_id) ON DELETE CASCADE
 );
 
-create table AreasResponsabilidad(
-    idArea int auto_increment,
-    nombreArea varchar (40) UNIQUE NOT NULL,
-    primary key(idArea)
+CREATE TABLE Empresa (
+    empresa_id INT AUTO_INCREMENT NOT NULL,
+    empresa_nombre VARCHAR (100),
+    empresa_mision VARCHAR (250),
+    empresa_vision VARCHAR (250),
+    empresa_whatsapp VARCHAR (100),
+    empresa_instagram VARCHAR (100),
+    empresa_facebook VARCHAR (100),
+    personal_id VARCHAR (100),
+    PRIMARY KEY (empresa_id),
+    FOREIGN KEY (personal_id) REFERENCES Personal (personal_id) ON DELETE CASCADE
 );
 
-create table TurnoGerenteArea(
-    idUsuario int,
-    idTurno int,
-    idArea int,
-    primary key(idUsuario, idTurno, idArea),
-    foreign key(idUsuario) REFERENCES Gerente(idUsuario) ON DELETE CASCADE,
-    foreign key(idTurno) REFERENCES TurnoGerente(idTurno) ON DELETE CASCADE,
-    foreign key(idArea) REFERENCES AreasResponsabilidad(idArea) ON DELETE CASCADE
+CREATE TABLE Empresa_Ubicacion (
+    empresa_id INT NOT NULL,
+    empresa_ciudad VARCHAR (100),
+    empresa_calle VARCHAR (100),
+    PRIMARY KEY (empresa_id),
+    FOREIGN KEY (empresa_id) REFERENCES Empresa (empresa_id) ON DELETE CASCADE
 );
 
-create table Chef(
-    idUsuario int,
-    fechContratacion date NOT NULL,
-    primary key(idUsuario),
-    foreign key(idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
+CREATE TABLE Empresa_Valor (
+    empresa_id INT NOT NULL,
+    empresa_valor VARCHAR (250),
+    PRIMARY KEY (empresa_id),
+    FOREIGN KEY (empresa_id) REFERENCES Empresa (empresa_id) ON DELETE CASCADE
 );
 
-create table TurnoChef(
-	idUsuario int,
-    idTurno int auto_increment,
-    turnoAsignado varchar (30) NOT NULL,
-    horasSemanales int (3) NOT NULL,
-    inicioTurno time NOT NULL,
-    finTurno time NOT NULL,
-    primary key(idTurno),
-    foreign key(idUsuario) REFERENCES Chef(idUsuario) ON DELETE CASCADE
+CREATE TABLE Empresa_Telefono (
+    empresa_id INT NOT NULL,
+    empresa_telefono INT (9),
+    PRIMARY KEY (empresa_id),
+    FOREIGN KEY (empresa_id) REFERENCES Empresa (empresa_id) ON DELETE CASCADE
 );
 
-create table Especialidades(
-	idEspecialidad int auto_increment,
-    nombreEspecialidad varchar (40) UNIQUE NOT NULL,
-    primary key(idEspecialidad)
+CREATE TABLE Mesa (
+    mesa_id INT AUTO_INCREMENT NOT NULL,
+    mesa_estado ENUM ('Libre', 'Ocupada', 'Inhabilitada'),
+    mesa_ubicacion ENUM ('Interior', 'Exterior'),
+    mesa_tiempo_uso TIME,
+    mesa_alcance INT (1),
+    mesa_creacion DATE,
+    PRIMARY KEY (mesa_id)
 );
 
-create table NivelEspecialidadChef(
-	idUsuario int,
-    idEspecialidad int,
-    nivelHabilidad int (2) NOT NULL,
-    aniosExperiencia int (3) NOT NULL,
-    primary key(idUsuario, idEspecialidad),
-    foreign key(idUsuario) REFERENCES Chef(idUsuario) ON DELETE CASCADE,
-    foreign key(idEspecialidad) REFERENCES Especialidades(idEspecialidad) ON DELETE CASCADE
+CREATE TABLE Reserva (
+    reserva_id INT AUTO_INCREMENT NOT NULL,
+    reserva_cantidad_personas INT (1),
+    reserva_duracion ENUM ('1', '2', '3', '4', '5', '6'),
+    reserva_fecha DATE,
+    reserva_inicio TIME,
+    cliente_id VARCHAR (100),
+    mesa_id INT,
+    PRIMARY KEY (reserva_id),
+    FOREIGN KEY (cliente_id) REFERENCES Cliente (cliente_id) ON DELETE CASCADE,
+    FOREIGN KEY (mesa_id) REFERENCES Mesa (mesa_id) ON DELETE CASCADE
 );
 
-create table TurnoChefEspecialidad(
-	idUsuario int,
-    idTurno int,
-    idEspecialidad int,
-    primary key(idUsuario, idTurno, idEspecialidad),
-    foreign key(idUsuario) REFERENCES Chef(idUsuario) ON DELETE CASCADE,
-    foreign key(idTurno) REFERENCES TurnoChef(idTurno) ON DELETE CASCADE,
-    foreign key(idEspecialidad) REFERENCES Especialidades(idEspecialidad) ON DELETE CASCADE
+CREATE TABLE Producto (
+    producto_id INT AUTO_INCREMENT NOT NULL,
+    producto_nombre VARCHAR (100),
+    producto_precio FLOAT,
+    producto_receta VARCHAR (900),
+    producto_tiempo_preparacion VARCHAR (50),
+    producto_creacion DATE,
+    producto_categoria VARCHAR (100),
+    producto_calificacion FLOAT,
+    personal_id VARCHAR (100) NOT NULL,
+    PRIMARY KEY (producto_id),
+    FOREIGN KEY (personal_id) REFERENCES Personal (personal_id) ON DELETE CASCADE
 );
 
-create table ChefEjecutivo(
-	idUsuario int,
-    fechPromocionEjec date NOT NULL,
-    presupuestoAnualCocina int (10) NOT NULL,
-    primary key(idUsuario),
-    foreign key(idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
+CREATE TABLE Producto_Criterio (
+    producto_id INT NOT NULL,
+    producto_criterio VARCHAR (100) NOT NULL,
+    PRIMARY KEY (producto_id),
+    FOREIGN KEY (producto_id) REFERENCES Producto (producto_id) ON DELETE CASCADE
 );
 
-create table TurnoChefEjec(
-	idUsuario int,
-    idTurno int auto_increment,
-    turnoAsignado varchar (30) NOT NULL,
-    horasSemanales int (3) NOT NULL,
-    inicioTurno time NOT NULL,
-    finTurno time NOT NULL,
-    primary key(idTurno),
-    foreign key(idUsuario) REFERENCES ChefEjecutivo(idUsuario) ON DELETE CASCADE
+CREATE TABLE Comentario (
+    comentario_id INT AUTO_INCREMENT NOT NULL,
+    producto_id INT,
+    cliente_id VARCHAR (100),
+    comentario_contenido VARCHAR (250),
+    comentario_calificacion ENUM ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
+    PRIMARY KEY (comentario_id, producto_id, cliente_id),
+    FOREIGN KEY (producto_id) REFERENCES Producto (producto_id) ON DELETE CASCADE,
+    FOREIGN KEY (cliente_id) REFERENCES Cliente (cliente_id) ON DELETE CASCADE
 );
 
-create table NivelEspecialidadChefEjec(
-	idUsuario int,
-    idEspecialidad int,
-    nivelHabilidad int (2) NOT NULL,
-    aniosExperiencia int (3) NOT NULL,
-    primary key(idUsuario, idEspecialidad),
-    foreign key(idUsuario) REFERENCES ChefEjecutivo(idUsuario) ON DELETE CASCADE,
-    foreign key(idEspecialidad) REFERENCES Especialidades(idEspecialidad) ON DELETE CASCADE
+CREATE TABLE Promocion (
+    promocion_id INT AUTO_INCREMENT NOT NULL,
+    promocion_nombre VARCHAR (100),
+    promocion_descripcion VARCHAR (100),
+    promocion_descuento FLOAT,
+    promocion_fidelizada BOOLEAN,
+    promocion_creacion DATE,
+    PRIMARY KEY (promocion_id)
 );
 
-create table TurnoChefEjecEspecialidad(
-	idUsuario int,
-    idTurno int,
-    idEspecialidad int,
-    primary key(idUsuario, idTurno, idEspecialidad),
-    foreign key(idUsuario) REFERENCES ChefEjecutivo(idUsuario) ON DELETE CASCADE,
-    foreign key(idTurno) REFERENCES TurnoChefEjec(idTurno) ON DELETE CASCADE,
-    foreign key(idEspecialidad) REFERENCES Especialidades(idEspecialidad) ON DELETE CASCADE
+CREATE TABLE Stock (
+    stock_id INT AUTO_INCREMENT NOT NULL,
+    stock_nombre VARCHAR (100),
+    stock_caducidad DATE,
+    PRIMARY KEY (stock_id)
 );
 
-create table Mozo(
-	idUsuario int,
-    fechContratacion date NOT NULL,
-    primary key(idUsuario),
-    foreign key(idUsuario) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
+CREATE TABLE Stock_Cantidad (
+    stock_id INT NOT NULL,
+    stock_cantidad DECIMAL(10,3) NOT NULL,
+    stock_medida VARCHAR (3),
+    PRIMARY KEY (stock_id, stock_cantidad, stock_medida),
+    FOREIGN KEY (stock_id) REFERENCES Stock (stock_id) ON DELETE CASCADE
 );
 
-create table TurnoMozo(
-	idUsuario int,
-    idTurno int auto_increment,
-    turnoAsignado varchar (30) NOT NULL,
-    horasSemanales int (3) NOT NULL,
-    inicioTurno time NOT NULL,
-    finTurno time NOT NULL,
-    primary key(idTurno),
-    foreign key(idUsuario) REFERENCES ChefEjecutivo(idUsuario) ON DELETE CASCADE
+CREATE TABLE Pedido (
+    pedido_id INT AUTO_INCREMENT NOT NULL,
+    pedido_estado ENUM ('Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado') DEFAULT 'Pendiente',
+    pedido_especificacion VARCHAR (250),
+    pedido_fecha DATETIME,
+    pedido_monto FLOAT,
+    pedido_pago ENUM ('Efectivo', 'Tarjeta'),
+    personal_id VARCHAR (100),
+    mesa_id INT,
+    PRIMARY KEY (pedido_id),
+    FOREIGN KEY (personal_id) REFERENCES Personal (personal_id) ON DELETE CASCADE,
+    FOREIGN KEY (mesa_id) REFERENCES Mesa (mesa_id) ON DELETE CASCADE
 );
 
-create table PedidosTotal(
-	idPedidosTotal int auto_increment,
-    totalPedidosAtendidos int (7) NOT NULL,
-    primary key(idPedidosTotal)
+CREATE TABLE Consume (
+    producto_id INT NOT NULL,
+    stock_id INT NOT NULL,
+    consume_cantidad FLOAT,
+    consume_medida VARCHAR (3),
+    PRIMARY KEY (producto_id, stock_id),
+    FOREIGN KEY (producto_id) REFERENCES Producto (producto_id) ON DELETE CASCADE,
+    FOREIGN KEY (stock_id) REFERENCES Stock (stock_id) ON DELETE CASCADE
 );
 
-create table TurnoMozoPedidosTotal(
-	idUsuario int,
-    idTurno int,
-    idPedidosTotal int,
-    primary key(idUsuario, idTurno, idPedidosTotal),
-    foreign key(idUsuario) REFERENCES Mozo(idUsuario) ON DELETE CASCADE,
-    foreign key(idTurno) REFERENCES TurnoMozo(idTurno) ON DELETE CASCADE,
-    foreign key(idPedidosTotal) REFERENCES PedidosTotal(idPedidosTotal) ON DELETE CASCADE
+CREATE TABLE Efectua (
+    pedido_id INT NOT NULL,
+    cliente_id VARCHAR (100) NOT NULL,
+    PRIMARY KEY (pedido_id, cliente_id),
+    FOREIGN KEY (pedido_id) REFERENCES Pedido (pedido_id) ON DELETE CASCADE,
+    FOREIGN KEY (cliente_id) REFERENCES Cliente (cliente_id) ON DELETE CASCADE
 );
 
-create table ClienteNormal(
-	idUsuario int,
-    cantPedidosRealizados int (6),
-    totalDineroGastado int (9),
-    fechUltimaCompra date,
-    primary key(idUsuario),
-    foreign key(idUsuario) REFERENCES Cliente(idUsuario) ON DELETE CASCADE
+CREATE TABLE Contiene (
+    pedido_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    contiene_cantidad INT NOT NULL,
+    PRIMARY KEY (pedido_id, producto_id),
+    FOREIGN KEY (pedido_id) REFERENCES Pedido (pedido_id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES Producto (producto_id) ON DELETE CASCADE
 );
 
-create table ClienteFidelizado(
-	idUsuario int,
-    cantPedidosRealizados int (6),
-    totalDineroGastado int (9),
-    fechInicioFidelidad date NOT NULL,
-    nivelFidelidad int (2) NOT NULL,
-    fechUltimaCompra date,
-    primary key(idUsuario),
-    foreign key(idUsuario) REFERENCES Cliente(idUsuario) ON DELETE CASCADE
+CREATE TABLE Posee (
+    promocion_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    pedido_id INT NOT NULL,
+    PRIMARY KEY (promocion_id, producto_id, pedido_id),
+    FOREIGN KEY (promocion_id) REFERENCES Promocion (promocion_id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES Producto (producto_id) ON DELETE CASCADE,
+    FOREIGN KEY (pedido_id) REFERENCES Pedido (pedido_id) ON DELETE CASCADE
 );
 
-create table Pedido(
-	idPedido int auto_increment,
-    estado ENUM('pendiente','en_preparacion','listo','entregado') DEFAULT 'pendiente',
-    montoTotal int (6) NOT NULL,
-    pagoPedido int (6) NOT NULL,
-    pagoPropina int (6) NOT NULL,
-    horaIngreso DATETIME DEFAULT CURRENT_TIMESTAMP,
-    horaFinalizacion DATETIME NULL,
-    primary key(idPedido)
-);
-
-create table Relaciona(
-	idUsuario int,
-    idPedido int,
-    primary key(idUsuario, idPedido),
-    foreign key(idUsuario) REFERENCES Cliente(idUsuario) ON DELETE CASCADE,
-    foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE
-);
-
-create table Especificaciones(
-	idEspecificacion int auto_increment,
-    especificacion varchar (100) UNIQUE NOT NULL,
-    primary key(idEspecificacion)
-);
-
-create table EspecificacionesPedido(
-	idEspecificacion int,
-    idPedido int,
-    primary key(idEspecificacion, idPedido),
-    foreign key(idEspecificacion) REFERENCES Especificaciones(idEspecificacion) ON DELETE CASCADE,
-    foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE
-);
-
-create table Mesas(
-	idMesa int auto_increment,
-    capacidad int (2) NOT NULL,
-    ubicacion varchar (30) NOT NULL,
-    estadoActual varchar (30) NOT NULL,
-    fechUsoOcupadoReservado datetime,
-    primary key(idMesa)
-);
-
-create table PedidoFisico(
-	idPedido int,
-    idMesa int,
-    idUsuario int,
-    primary key(idPedido),
-    foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE,
-    foreign key(idMesa) REFERENCES Mesas(idMesa) ON DELETE CASCADE,
-    foreign key(idUsuario) REFERENCES Mozo(idUsuario) ON DELETE CASCADE
-);
-
-create table ParaLlevar(
-	idPedido int,
-    horaRecogidaEstimada time NOT NULL,
-    primary key(idPedido),
-    foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE
-);
-
-create table Reserva(
-	idPedido int,
-    idMesa int,
-    idUsuario int,
-    fecha date NOT NULL,
-    horaInicio time NOT NULL,
-    duracion time NOT NULL, -- se guarda en TIME ya que cuando inicie la reserva, no va a durar mas de 24h
-    primary key(idPedido),
-    foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE,
-    foreign key(idMesa) REFERENCES Mesas(idMesa) ON DELETE CASCADE,
-    foreign key(idUsuario) REFERENCES Mozo(idUsuario) ON DELETE CASCADE
-);
-
-create table Delivery(
-	idPedido int,
-    personalAsig varchar (60) NOT NULL,
-    primary key(idPedido),
-    foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE
-);
-
-create table Ventas(
-	idVenta int auto_increment,
-    hora time NOT NULL,
-    fecha date NOT NULL,
-    primary key(idVenta)
-);
-
-create table Contiene(
-	idPedido int,
-    idVenta int,
-    primary key(idPedido, idVenta),
-    foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE,
-    foreign key(idVenta) REFERENCES Ventas(idVenta) ON DELETE CASCADE
-);
-
-create table Factura(
-	idVenta int,
-    division bool NOT NULL,
-    monto int (9) NOT NULL,
-    propina int (9) NOT NULL,
-    descuento decimal (3, 2), -- Permite hasta 4 decimales para el porcentaje, EJ: 0.20 = 20%
-    primary key(idVenta),
-    foreign key(idVenta) REFERENCES Ventas(idVenta) ON DELETE CASCADE
-);
-
-create table CuentasAsociadas(
-	idVenta int,
-    idUsuario int,
-    montoPorPersona int (9) NOT NULL,
-    metodoPago varchar (30) NOT NULL,
-    primary key(idVenta),
-    foreign key(idVenta) REFERENCES Ventas(idVenta) ON DELETE CASCADE,
-    foreign key(idUsuario) REFERENCES Cliente(idUsuario) ON DELETE CASCADE
-);
-
-create table Productos(
-	idProducto int auto_increment,
-    precio int (9) NOT NULL,
-    calificacionPromedio float,
-    nombre varchar (100) UNIQUE NOT NULL,
-    primary key(idProducto)
-);
-
-create table Tiene(
-    idTiene int auto_increment,
-    idPedido int,
-    idProducto int,
-    tiempoPrep time,
-    primary key(idTiene),
-    foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE,
-    foreign key(idProducto) REFERENCES Productos(idProducto) ON DELETE CASCADE
-);
-
-create table ProductosFactura(
-	idVenta int,
-    idProducto int,
-    cantidad int (6) NOT NULL,
-    precioUnitarioActual int (10) NOT NULL,
-    primary key(idVenta, idProducto),
-    foreign key(idVenta) REFERENCES Factura(idVenta) ON DELETE CASCADE,
-    foreign key(idProducto) REFERENCES Productos(idProducto) ON DELETE CASCADE
-);
-
-create table Criterios(
-	idCriterio int auto_increment,
-    criterio varchar (100) UNIQUE NOT NULL,
-    primary key(idCriterio)
-);
-
-create table CriterioProducto(
-	idCriterio int,
-    idProducto int,
-    primary key(idCriterio, idProducto),
-    foreign key(idCriterio) REFERENCES Criterios(idCriterio) ON DELETE CASCADE,
-    foreign key(idProducto) REFERENCES Productos(idProducto) ON DELETE CASCADE
-);
-
-create table Promociones(
-	idPromocion int auto_increment,
-    nombre varchar (100) UNIQUE NOT NULL,
-    descuento decimal (3, 2),
-    fidelizado bool NOT NULL,
-    primary key(idPromocion)
-);
-
-create table Incluyen(
-	idProducto int,
-    idPromocion int,
-    primary key(idProducto, idPromocion),
-    foreign key(idPromocion) REFERENCES Promociones(idPromocion) ON DELETE CASCADE,
-    foreign key(idProducto) REFERENCES Productos(idProducto) ON DELETE CASCADE
-);
-
-create table PedidoPromocion(
-	idPedido int,
-    idPromocion int,
-    primary key(idPedido, idPromocion),
-    foreign key(idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE,
-    foreign key(idPromocion) REFERENCES Promociones(idPromocion) ON DELETE CASCADE
-);
-
-create table Ingredientes(
-	idIngrediente int auto_increment,
-    nombre varchar (100) UNIQUE NOT NULL,
-    caducidad date NOT NULL,
-    stock int (10) NOT NULL,
-    medida varchar (10) NOT NULL,
-    primary key(idIngrediente)
-);
-
-create table Incluye(
-	idProducto int,
-    idIngrediente int,
-    cantidad int NOT NULL,
-    primary key(idProducto, idIngrediente),
-    foreign key(idProducto) REFERENCES Productos(idProducto) ON DELETE CASCADE,
-    foreign key(idIngrediente) REFERENCES Ingredientes(idIngrediente) ON DELETE CASCADE
-);
-
-create table Recetas(
-	idReceta int auto_increment,
-    idProducto int,
-    cantPasos int (3) NOT NULL,
-    primary key(idReceta),
-    foreign key(idProducto) REFERENCES Productos(idProducto) ON DELETE CASCADE
-);
-
-create table RecetasPasos(
-	idPaso int auto_increment,
-    idReceta int,
-    paso varchar (500) NOT NULL,
-    primary key(idPaso),
-    foreign key(idReceta) REFERENCES Recetas(idReceta) ON DELETE CASCADE
-);
-
-create table RecetasIngredientes(
-	idReceta int,
-    idIngrediente int,
-    primary key(idReceta, idIngrediente),
-    foreign key(idReceta) REFERENCES Recetas(idReceta) ON DELETE CASCADE,
-    foreign key(idIngrediente) REFERENCES Ingredientes(idIngrediente) ON DELETE CASCADE
+CREATE TABLE No_Show (
+    cliente_id VARCHAR (100) NOT NULL,
+    reserva_id INT NOT NULL,
+    no_show_fecha DATE,
+    no_show_hora TIME,
+    PRIMARY KEY (cliente_id, reserva_id),
+    FOREIGN KEY (cliente_id) REFERENCES Cliente (cliente_id) ON DELETE CASCADE,
+    FOREIGN KEY (reserva_id) REFERENCES Reserva (reserva_id) ON DELETE CASCADE
 );
