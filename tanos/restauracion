@@ -111,4 +111,4 @@ function init() {
     esac
 }
 
-# init "$@"
+init "$@"
