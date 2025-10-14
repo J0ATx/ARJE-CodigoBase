@@ -1,4 +1,3 @@
-DROP DATABASE IF EXISTS lostrestanosdb;
 CREATE DATABASE lostrestanosdb;
 USE lostrestanosdb;
 
