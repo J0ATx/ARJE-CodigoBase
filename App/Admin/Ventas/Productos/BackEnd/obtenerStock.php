@@ -5,13 +5,19 @@ $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        // stock_medida se almacena en la tabla Stock_Cantidad según NUEVA.sql
-        // Obtenemos una medida representativa por stock (si existen varias, tomamos la primera por orden alfabético)
+        // Obtener un stock_id representativo por cada ingrediente (nombre)
+        // El sistema FEFO consumirá de todos los lotes con ese nombre automáticamente
+        // Agrupamos por nombre y medida, tomando el stock_id más reciente de cada grupo
         $sql = "
-            SELECT s.stock_id, s.stock_nombre, MIN(sc.stock_medida) AS stock_medida
+            SELECT 
+                MAX(s.stock_id) as stock_id,
+                s.stock_nombre,
+                sc.stock_medida,
+                SUM(sc.stock_cantidad) as cantidad_total
             FROM Stock s
-            LEFT JOIN Stock_Cantidad sc ON sc.stock_id = s.stock_id
-            GROUP BY s.stock_id, s.stock_nombre
+            INNER JOIN Stock_Cantidad sc ON sc.stock_id = s.stock_id
+            WHERE sc.stock_cantidad > 0
+            GROUP BY s.stock_nombre, sc.stock_medida
             ORDER BY s.stock_nombre
         ";
         $stmt = $con->query($sql);

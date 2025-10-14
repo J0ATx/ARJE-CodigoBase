@@ -50,8 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.stock.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.stock_id;
-                    option.text = item.stock_nombre;
+                    // Mostrar nombre con cantidad total disponible y medida
+                    const cantidadTotal = parseFloat(item.cantidad_total || 0).toFixed(2);
+                    option.text = `${item.stock_nombre} (${cantidadTotal} ${item.stock_medida} disponibles)`;
                     option.dataset.medida = item.stock_medida;
+                    option.dataset.nombre = item.stock_nombre;
                     ingredientSelect.appendChild(option);
                 });
             }

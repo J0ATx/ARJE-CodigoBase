@@ -48,6 +48,7 @@ body {
     background-size: 70%;
     opacity: 0.1;
     z-index: -1;
+    pointer-events: none;
 }
 
 /* Pantalla de carga */
@@ -328,6 +329,7 @@ td:last-child {
         opacity: 0;
         transform: translateY(-50px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

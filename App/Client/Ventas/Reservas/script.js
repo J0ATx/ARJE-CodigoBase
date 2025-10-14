@@ -5,7 +5,32 @@ const modalCloseBtn = document.getElementById('modalCloseBtn');
 const btnCancelar = document.getElementById('cancelarReserva');
 const btnConfirmar = document.getElementById('confirmarReserva');
 
+// Establecer fecha mínima (2 días de antelación) al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    const fechaInput = document.getElementById('fecha');
+    const twoDaysLater = new Date();
+    twoDaysLater.setDate(twoDaysLater.getDate() + 2);
+    const minDate = twoDaysLater.toISOString().split('T')[0];
+    fechaInput.setAttribute('min', minDate);
 
+    // Manejar cambio de tipo de asignación
+    const radioButtons = document.querySelectorAll('input[name="tipoAsignacion"]');
+    const comentarioContainer = document.getElementById('comentarioContainer');
+    const comentarioTextarea = document.getElementById('comentario');
+
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'manual') {
+                comentarioContainer.style.display = 'block';
+                comentarioTextarea.required = true;
+            } else {
+                comentarioContainer.style.display = 'none';
+                comentarioTextarea.required = false;
+                comentarioTextarea.value = '';
+            }
+        });
+    });
+});
 
 formulario.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -15,6 +40,32 @@ formulario.addEventListener('submit', (e) => {
     const fecha = document.getElementById('fecha').value;
     const hora = document.getElementById('hora').value;
     const cantidad = document.getElementById('cantidad').value;
+
+    // Validar que la fecha sea al menos 2 días de antelación
+    const fechaSeleccionada = new Date(fecha + 'T00:00:00');
+    const twoDaysLater = new Date();
+    twoDaysLater.setDate(twoDaysLater.getDate() + 2);
+    twoDaysLater.setHours(0, 0, 0, 0);
+
+    if (fechaSeleccionada < twoDaysLater) {
+        let mensaje = document.createElement('div');
+        mensaje.className = 'alert';
+        mensaje.textContent = "Las reservas deben realizarse con al menos 2 días de antelación.";
+        mensajesAlerta.appendChild(mensaje);
+        return;
+    }
+
+    // Validar comentario si es asignación manual
+    const tipoAsignacion = document.querySelector('input[name="tipoAsignacion"]:checked').value;
+    const comentario = document.getElementById('comentario').value.trim();
+
+    if (tipoAsignacion === 'manual' && !comentario) {
+        let mensaje = document.createElement('div');
+        mensaje.className = 'alert';
+        mensaje.textContent = "Por favor, especifica tus preferencias para la asignación manual de mesa.";
+        mensajesAlerta.appendChild(mensaje);
+        return;
+    }
 
     // Completar resumen en el modal
     document.getElementById('resumen-ubicacion').textContent = ubicacion;
@@ -44,12 +95,18 @@ btnConfirmar.addEventListener('click', () => {
     const fecha = document.getElementById('fecha').value;
     const hora = document.getElementById('hora').value;
     const cantidad = document.getElementById('cantidad').value;
+    const tipoAsignacion = document.querySelector('input[name="tipoAsignacion"]:checked').value;
+    const comentario = document.getElementById('comentario').value.trim();
 
     const datos = new FormData();
     datos.append('ubicacion', ubicacion);
     datos.append('fecha', fecha);
     datos.append('hora', hora);
     datos.append('cantidad', cantidad);
+    datos.append('tipoAsignacion', tipoAsignacion);
+    if (tipoAsignacion === 'manual') {
+        datos.append('comentario', comentario);
+    }
 
     fetch('../BackEnd/registrar.php', {
         method: 'POST',
@@ -67,6 +124,9 @@ btnConfirmar.addEventListener('click', () => {
                         break;
                     case "date":
                         mensaje.textContent = "La fecha debe ser mayor o igual a la fecha actual.";
+                        break;
+                    case "advance_required":
+                        mensaje.textContent = "Las reservas deben realizarse con al menos 2 días de antelación.";
                         break;
                     case "success":
                         success.textContent = "Reserva realizada exitosamente!";
@@ -93,12 +153,15 @@ btnConfirmar.addEventListener('click', () => {
                         mensaje.textContent = "Error: " + data.error;
                 }
             } else {
-                success.textContent = data.success;
+                success.textContent = data.success || "Reserva creada exitosamente. Un gerente la confirmará pronto.";
                 ocultarModal();
                 document.getElementById('lugar').value = '';
                 document.getElementById('fecha').value = '';
                 document.getElementById('hora').value = '';
                 document.getElementById('cantidad').value = '';
+                document.getElementById('comentario').value = '';
+                document.querySelector('input[name="tipoAsignacion"][value="automatica"]').checked = true;
+                document.getElementById('comentarioContainer').style.display = 'none';
             }
 
             mensajesAlerta.appendChild(mensaje);

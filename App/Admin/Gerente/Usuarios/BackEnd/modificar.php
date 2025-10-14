@@ -110,6 +110,7 @@ try {
             case 'Chef-Ejecutivo':
                 $roleTable = 'Chef_Ejecutivo';
                 break;
+            case 'Camarero':
                 $roleTable = 'Camarero';
                 break;
                 // 'Chef' y 'Gerente-Turno' no tienen tablas específicas
@@ -176,7 +177,7 @@ try {
             ]);
         }
 
-        // Eliminar roles antiguos solo si el        // Insertar en la tabla específica según el rol (solo para roles que tienen tabla específica)
+        // Insertar/limpiar en tablas específicas según el rol
         if (!empty($roleTable)) {
             // Primero eliminar de cualquier otra tabla de roles
             $roles = ['Camarero', 'Chef_Ejecutivo', 'Gerente_General'];
@@ -199,6 +200,13 @@ try {
                 if (!$result) {
                     throw new Exception("Error al asignar el rol al usuario");
                 }
+            }
+        } else {
+            // Para roles sin tabla específica ('Chef', 'Gerente-Turno'), limpiar cualquier asignación previa
+            $roles = ['Camarero', 'Chef_Ejecutivo', 'Gerente_General'];
+            foreach ($roles as $tabla) {
+                $stmt = $con->prepare("DELETE FROM {$tabla} WHERE personal_id = ?");
+                $stmt->execute([$data['email']]);
             }
         }
     }

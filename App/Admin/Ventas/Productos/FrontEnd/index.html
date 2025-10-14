@@ -82,10 +82,13 @@
 
                     <div class="form-group">
                         <label>Ingredientes</label>
+                        <p class="info-text" style="font-size: 0.85em; color: #666; margin-bottom: 8px;">
+                            ℹ️ El sistema consume automáticamente los lotes más próximos a caducar (FEFO).
+                        </p>
                         <div class="ingredient-selector">
                             <select id="ingredientSelect">
                             </select>
-                            <input type="number" id="ingredientAmount" placeholder="Cantidad" min="0">
+                            <input type="number" id="ingredientAmount" placeholder="Cantidad" min="0" step="0.01">
                             <button type="button" class="add-ingredient-btn">Añadir</button>
                         </div>
                         <div id="ingredientsList">

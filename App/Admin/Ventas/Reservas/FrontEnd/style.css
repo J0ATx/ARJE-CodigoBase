@@ -3,6 +3,63 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+/* Estilos para badges de estado */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.estado-pendiente {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.estado-confirmada {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+/* Estilos para filtro de estado */
+.filtro-estado {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filtro-estado label {
+  font-weight: 500;
+  color: #333;
+}
+
+.select-estado {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: white;
+}
+
+.select-estado:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Estilo para opción confirmar */
+.opcion.confirmar {
+  color: #28a745;
+}
+
+.opcion.confirmar:hover {
+  background-color: #d4edda;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -60,7 +117,7 @@ body {
   content: "";
   position: fixed;
   left: 50%;
-    transform: translate(-40%, 0);
+  transform: translate(-40%, 0);
   width: 100%;
   height: 100%;
   background-image: url(../../../../Componentes/svg/Reservas.svg);
@@ -69,6 +126,7 @@ body {
   background-size: 70%;
   opacity: 0.1;
   z-index: -1;
+  pointer-events: none;
 }
 
 h1 {
@@ -247,186 +305,186 @@ tr:nth-child(odd) {
 
 /* Estilos para el dropdown de filtros */
 .filtro {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.3s;
-    font-size: 0.9rem;
-    color: #A4A4A4;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+  font-size: 0.9rem;
+  color: #A4A4A4;
 }
 
 .filtro:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .dropdown-filtro {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 200px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
-    z-index: 1000;
-    margin-top: 5px;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  margin-top: 5px;
 }
 
 .filtro:hover .dropdown-filtro,
 .dropdown-filtro:hover {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .dropdown-content {
-    padding: 8px 0;
+  padding: 8px 0;
 }
 
 .filtro-activo {
-    padding: 12px 16px;
-    background-color: #e8f4fd;
-    border-bottom: 1px solid #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+  padding: 12px 16px;
+  background-color: #e8f4fd;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .filtro-activo span {
-    font-size: 0.9rem;
-    color: #007bff;
+  font-size: 0.9rem;
+  color: #007bff;
 }
 
 .btn-limpiar {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 4px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: background-color 0.2s;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.2s;
 }
 
 .btn-limpiar:hover {
-    background-color: #c82333;
+  background-color: #c82333;
 }
 
 .checkbox-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-size: 0.9rem;
-    color: #434343;
-    position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+  color: #434343;
+  position: relative;
 }
 
 .checkbox-item:hover {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 .checkbox-item input[type="checkbox"] {
-    display: none;
+  display: none;
 }
 
 .checkbox-item .checkmark {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #ddd;
-    border-radius: 3px;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    position: relative;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ddd;
+  border-radius: 3px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
 }
 
-.checkbox-item input[type="checkbox"]:checked + .checkmark {
-    background-color: #007bff;
-    border-color: #007bff;
+.checkbox-item input[type="checkbox"]:checked+.checkmark {
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
-.checkbox-item input[type="checkbox"]:checked + .checkmark::after {
-    content: '';
-    width: 6px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    position: absolute;
+.checkbox-item input[type="checkbox"]:checked+.checkmark::after {
+  content: '';
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  position: absolute;
 }
 
-.checkbox-item input[type="checkbox"]:focus + .checkmark {
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+.checkbox-item input[type="checkbox"]:focus+.checkmark {
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 /* Desactivar otros checkboxes cuando uno está seleccionado */
-.checkbox-item input[type="checkbox"]:checked ~ .checkbox-item input[type="checkbox"] {
-    pointer-events: none;
+.checkbox-item input[type="checkbox"]:checked~.checkbox-item input[type="checkbox"] {
+  pointer-events: none;
 }
 
 /* Responsive para el dropdown de filtros */
 @media (max-width: 768px) {
-    .filtro {
-        position: static;
-    }
+  .filtro {
+    position: static;
+  }
 
-    .dropdown-filtro {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 0;
-        border: none;
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        visibility: hidden;
-        transform: scale(0.8);
-        transition: all 0.3s ease;
-    }
+  .dropdown-filtro {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 0;
+    border: none;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+  }
 
-    .dropdown-filtro.show {
-        opacity: 1;
-        visibility: visible;
-        transform: scale(1);
-    }
+  .dropdown-filtro.show {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
 
-    .dropdown-content {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        min-width: 280px;
-        max-width: 90vw;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
+  .dropdown-content {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    min-width: 280px;
+    max-width: 90vw;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
 
-    .checkbox-item {
-        padding: 12px 16px;
-        font-size: 1rem;
-    }
+  .checkbox-item {
+    padding: 12px 16px;
+    font-size: 1rem;
+  }
 
-    .checkbox-item .checkmark {
-        width: 20px;
-        height: 20px;
-        margin-right: 12px;
-    }
+  .checkbox-item .checkmark {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+  }
 }
 
 /* Modal */
@@ -461,6 +519,7 @@ tr:nth-child(odd) {
     opacity: 0;
     transform: translateY(-50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

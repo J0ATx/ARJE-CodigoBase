@@ -15,25 +15,44 @@
 
         $sql = "SELECT * FROM Reserva";
 
+        $whereConditions = [];
+        
         // Aplicar búsqueda si existe
         if (!empty($search)) {
-            $sql .= " WHERE cliente_id LIKE :search";
+            $whereConditions[] = "cliente_id LIKE :search";
+        }
+        
+        // Filtrar por estado si se especifica
+        $estadoFiltro = isset($_POST['estado']) ? $_POST['estado'] : '';
+        if (!empty($estadoFiltro) && in_array($estadoFiltro, ['Pendiente', 'Confirmada'])) {
+            $whereConditions[] = "reserva_estado = :estado";
+        }
+        
+        if (!empty($whereConditions)) {
+            $sql .= " WHERE " . implode(" AND ", $whereConditions);
         }
 
         // Aplicar ordenamiento si está especificado
         if (!empty($orden) && isset($campos_validos[$orden])) {
             $campo_orden = $campos_validos[$orden];
             $sql .= " ORDER BY $campo_orden";
+        } else {
+            // Ordenar por estado (Pendiente primero) y luego por fecha
+            $sql .= " ORDER BY FIELD(reserva_estado, 'Pendiente', 'Confirmada'), reserva_fecha DESC";
         }
 
         $sentencia = $con->prepare($sql);
 
-        // Ejecutar con parámetros si hay búsqueda
+        // Preparar parámetros para ejecutar
+        $params = [];
         if (!empty($search)) {
-            $sentencia->execute(['search' => '%' . $search . '%']);
-        } else {
-            $sentencia->execute();
+            $params['search'] = '%' . $search . '%';
         }
+        if (!empty($estadoFiltro) && in_array($estadoFiltro, ['Pendiente', 'Confirmada'])) {
+            $params['estado'] = $estadoFiltro;
+        }
+        
+        $sentencia->execute($params);
 
         $reservas = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 

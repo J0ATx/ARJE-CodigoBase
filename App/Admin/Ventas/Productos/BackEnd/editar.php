@@ -32,12 +32,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stockId = (int)$ing['stock_id'];
                 $cantidad = (float)$ing['cantidad'];
                 $medida = isset($ing['medida']) ? $ing['medida'] : null;
-                if ($medida === null) {
-                    $q = $con->prepare('SELECT stock_medida FROM Stock WHERE stock_id = ?');
-                    $q->execute([$stockId]);
-                    $row = $q->fetch(PDO::FETCH_ASSOC);
-                    $medida = $row ? $row['stock_medida'] : null;
+                
+                // Obtener medida del stock y validar
+                $q = $con->prepare('
+                    SELECT sc.stock_medida, s.stock_nombre 
+                    FROM Stock_Cantidad sc
+                    JOIN Stock s ON s.stock_id = sc.stock_id
+                    WHERE sc.stock_id = ?
+                    LIMIT 1
+                ');
+                $q->execute([$stockId]);
+                $stockRow = $q->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$stockRow) {
+                    throw new Exception('El ingrediente con ID ' . $stockId . ' no existe en el inventario');
                 }
+                
+                $stockMedida = $stockRow['stock_medida'];
+                $stockNombre = $stockRow['stock_nombre'];
+                
+                // Si no se especificó medida, usar la del stock
+                if ($medida === null) {
+                    $medida = $stockMedida;
+                }
+                
+                // Validar que la medida coincida con la del stock
+                if ($medida !== $stockMedida) {
+                    throw new Exception(
+                        "La medida especificada ({$medida}) para el ingrediente '{$stockNombre}' " .
+                        "no coincide con la medida del stock ({$stockMedida}). " .
+                        "Deben ser iguales."
+                    );
+                }
+                
                 $stmt = $con->prepare("INSERT INTO Consume (producto_id, stock_id, consume_cantidad, consume_medida) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$id, $stockId, $cantidad, $medida]);
             }

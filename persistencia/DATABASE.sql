@@ -102,6 +102,9 @@ CREATE TABLE Reserva (
     reserva_inicio TIME,
     cliente_id VARCHAR (100),
     mesa_id INT,
+    reserva_estado ENUM('Pendiente', 'Confirmada') DEFAULT 'Pendiente',
+    reserva_comentario TEXT NULL,
+    reserva_asignacion_tipo ENUM('Automatica', 'Manual') DEFAULT 'Automatica',
     PRIMARY KEY (reserva_id),
     FOREIGN KEY (cliente_id) REFERENCES Cliente (cliente_id) ON DELETE CASCADE,
     FOREIGN KEY (mesa_id) REFERENCES Mesa (mesa_id) ON DELETE CASCADE

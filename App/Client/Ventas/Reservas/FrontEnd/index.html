@@ -27,14 +27,15 @@
 
                     <h1 class="titulo">RESERVAS</h1>
                     <p class="subtitulo">Asegurá tu lugar en la mejor pizzería de Uruguay</p>
-
                     <form class="formulario" autocomplete="off" id="formulario">
                         <div class="datos-reserva">
                             <div class="fila">
-                                <div class="input-group">
+                                <div class="input-group tooltip">
                                     <label class="label" for="fecha">Fecha</label>
                                     <img src="files/svg/Group.svg" alt="Fecha" />
                                     <input type="date" name="fecha" id="fecha" required>
+                                    <span class="tooltip-icon" aria-label="Más información">?</span>
+                                    <div class="tooltip-content" role="tooltip">Las reservas deben realizarse con al menos 2 días de antelación</div>
                                 </div>
 
                                 <div class="input-group">
@@ -61,6 +62,27 @@
                                     <input type="number" name="cantidad" id="cantidad" min="1" max="6" placeholder="Comensales" required>
                                     <span class="tooltip-icon" aria-label="Más información">?</span>
                                     <div class="tooltip-content" role="tooltip">Para reservas de más de 6 personas, por favor <a href="/ARJE-CodigoBase/App/Client/Empresa/Contacto/index.html">contactanos.</a> </div>
+                                </div>
+                            </div>
+
+                            <div class="asignacion-mesa">
+                                <label class="label">Asignación de Mesa</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="tipoAsignacion" value="automatica" checked>
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-label">Asignación automática</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="tipoAsignacion" value="manual">
+                                        <span class="radio-custom"></span>
+                                        <span class="radio-label">Solicitar mesa con especificaciones</span>
+                                    </label>
+                                </div>
+                                <div id="comentarioContainer" style="display: none; margin-top: 1rem;">
+                                    <label class="label" for="comentario">Especificaciones de la mesa</label>
+                                    <textarea id="comentario" name="comentario" rows="3" placeholder="Ej: Preferimos mesa cerca de la ventana, necesitamos silla para bebé, etc."></textarea>
+                                    <small style="color: #666; font-size: 0.85em;">Un gerente revisará tu solicitud y asignará la mesa más adecuada.</small>
                                 </div>
                             </div>
                         </div>

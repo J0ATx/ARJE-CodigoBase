@@ -59,8 +59,12 @@
                 <form id="ingredientForm">
                     <input type="hidden" id="ingredientId">
                     <div class="form-group">
-                        <label for="nombre">Nombre del Lote</label>
-                        <input type="text" id="nombre" required>
+                        <label for="nombre">Nombre del Ingrediente</label>
+                        <input type="text" id="nombre" list="ingredientesExistentes" autocomplete="off" required>
+                        <datalist id="ingredientesExistentes"></datalist>
+                        <small style="color: #666; font-size: 0.85em;">
+                            Escribe para autocompletar con ingredientes existentes
+                        </small>
                     </div>
                     <div class="form-group">
                         <label for="stock">Cantidad</label>
@@ -69,18 +73,22 @@
                     <div class="form-group">
                         <label for="medida">Unidad de Medida</label>
                         <select id="medida" required>
+                            <option value="">Seleccione una medida</option>
                             <option value="g">Gramos (g)</option>
                             <option value="kg">Kilogramos (kg)</option>
                             <option value="ml">Mililitros (ml)</option>
                             <option value="L">Litros (L)</option>
                             <option value="u">Unidades (u)</option>
                         </select>
+                        <small id="medidaInfo">
+                            <span id="medidaInfoText"></span>
+                        </small>
                     </div>
                     <div class="form-group">
                         <label for="caducidad">Fecha de Caducidad</label>
                         <input type="date" id="caducidad" required>
                     </div>
-                    <button type="submit" class="submit-button">Guardar</button>
+                    <button type="submit" class="submit-button">Guardar Lote</button>
                 </form>
             </div>
         </div>

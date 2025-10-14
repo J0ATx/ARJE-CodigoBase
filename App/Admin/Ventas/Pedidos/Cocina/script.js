@@ -1,5 +1,4 @@
-// script.js - KDS Cocina
-
+const MainContent = document.querySelector("#main-content")
 document.addEventListener('DOMContentLoaded', () => {
     cargarComandas();
 });
@@ -219,13 +218,9 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
 function mostrarConfirmacion(mensaje) {
     return new Promise((resolve) => {
         const modal = document.createElement('div');
-        modal.className = 'modal fade show d-block';
-        modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
-        modal.tabIndex = '-1';
-        modal.role = 'dialog';
+        modal.className = 'modal-dialog';
 
         modal.innerHTML = `
-            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Confirmar acción</h5>
@@ -239,10 +234,10 @@ function mostrarConfirmacion(mensaje) {
                         <button type="button" class="btn btn-primary" id="confirmarSi">Aceptar</button>
                     </div>
                 </div>
-            </div>
         `;
 
         document.body.appendChild(modal);
+        console.log(modal)
 
         // Manejar clic en Aceptar
         modal.querySelector('#confirmarSi').addEventListener('click', () => {

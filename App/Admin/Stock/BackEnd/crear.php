@@ -6,32 +6,62 @@ $response = array();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $con->beginTransaction();
+        
+        $nombre = $_POST['nombre'];
+        $medida = $_POST['medida'];
+        $cantidad = $_POST['stock'];
+        $caducidad = $_POST['caducidad'];
+
+        // Validar que si ya existen lotes con este nombre, usen la misma medida
+        $checkStmt = $con->prepare("
+            SELECT DISTINCT sc.stock_medida 
+            FROM Stock s
+            INNER JOIN Stock_Cantidad sc ON s.stock_id = sc.stock_id
+            WHERE s.stock_nombre = ?
+        ");
+        $checkStmt->execute([$nombre]);
+        $medidasExistentes = $checkStmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        if (!empty($medidasExistentes)) {
+            // Ya existen lotes con este nombre
+            if (count($medidasExistentes) > 1) {
+                // Inconsistencia en la BD (no debería pasar con la nueva validación)
+                throw new Exception("Error: El ingrediente '{$nombre}' tiene lotes con diferentes medidas en la base de datos. Contacte al administrador.");
+            }
+            
+            $medidaExistente = $medidasExistentes[0];
+            if ($medida !== $medidaExistente) {
+                throw new Exception(
+                    "La medida seleccionada ({$medida}) no coincide con la medida de los lotes existentes de '{$nombre}' ({$medidaExistente}). " .
+                    "Todos los lotes del mismo ingrediente deben usar la misma unidad de medida."
+                );
+            }
+        }
 
         $stmtStock = $con->prepare("INSERT INTO Stock (stock_nombre, stock_caducidad) VALUES (?, ?)");
-        $stmtStock->execute([
-            $_POST['nombre'],
-            $_POST['caducidad']
-        ]);
+        $stmtStock->execute([$nombre, $caducidad]);
 
         $stockId = $con->lastInsertId();
 
         $stmtCantidad = $con->prepare("INSERT INTO Stock_Cantidad (stock_id, stock_cantidad, stock_medida) VALUES (?, ?, ?)");
-        $stmtCantidad->execute([
-            $stockId,
-            $_POST['stock'],
-            $_POST['medida']
-        ]);
+        $stmtCantidad->execute([$stockId, $cantidad, $medida]);
 
         $con->commit();
 
         $response['success'] = true;
-        $response['message'] = 'Stock creado con éxito';
+        $response['message'] = 'Lote creado con éxito';
     } catch (PDOException $e) {
         if ($con->inTransaction()) {
             $con->rollBack();
         }
         $response['success'] = false;
-        $response['message'] = 'Error al crear el stock: ' . $e->getMessage();
+        $response['message'] = 'Error al crear el lote: ' . $e->getMessage();
+    } catch (Exception $e) {
+        if ($con->inTransaction()) {
+            $con->rollBack();
+        }
+        $response['success'] = false;
+        $response['message'] = $e->getMessage();
     }
 } else {
     $response['success'] = false;

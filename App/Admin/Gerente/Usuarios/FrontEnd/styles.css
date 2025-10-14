@@ -44,6 +44,7 @@ body {
     background-size: 50%;
     opacity: 0.1;
     z-index: -1;
+    pointer-events:none;
 }
 
 /* Pantalla de carga */
