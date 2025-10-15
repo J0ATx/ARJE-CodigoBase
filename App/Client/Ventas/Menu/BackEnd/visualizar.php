@@ -1,5 +1,5 @@
 <?php
-    include_once '../../../../Control/Conexión/conexion.php';
+    include_once '../../../../Control/Conexion/clienteNoRegistrado.php';
 
     try {
         if (isset($_GET['id'])) {

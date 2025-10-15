@@ -3,7 +3,7 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST["email"];
     $contrasenia = $_POST["contrasenia"];
-    require_once "../../Conexión/conexion.php";
+    require_once "../../Conexion/clienteNoRegistrado.php";
     include "funLogin.php";
     $sql = "SELECT * FROM Cliente WHERE cliente_id = ?";
     $resultado = $con->prepare($sql);
@@ -15,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     
-
     if ($usuario && password_verify($contrasenia, $usuario['cliente_contrasenia'])) { //Compara la contraseña ingresada con la almacenada en hash
         iniciarSesion($usuario);
         echo json_encode([

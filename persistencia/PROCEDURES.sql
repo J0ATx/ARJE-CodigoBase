@@ -37,7 +37,7 @@ CREATE PROCEDURE Validar_SignUp_Personal (
     IN contrasenia VARCHAR (256),
     IN telefono VARCHAR (9),
     IN email VARCHAR(100),
-    IN rol VARCHAR (40)
+    IN rol VARCHAR (40),
     OUT usuario JSON,
     OUT mensaje VARCHAR(100)
 )

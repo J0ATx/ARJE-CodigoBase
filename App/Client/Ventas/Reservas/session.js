@@ -54,7 +54,7 @@ async function checkSession() {
         }
     } catch (error) {
         console.error('Error checking session:', error);
-        window.location.href = '../../../../../Control/SignIn/FrontEnd/index.html';
+        window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
     }
 }
 

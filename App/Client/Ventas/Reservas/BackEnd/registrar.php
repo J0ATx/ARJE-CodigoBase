@@ -6,8 +6,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
-// Incluir la conexión después de verificar la sesión
-include_once '../../../../Control/Conexión/conexion.php';
+include_once "../../../../Control/Conexion/clienteRegistrado.php";
 
 $fecha = isset($_POST['fecha']) ? $_POST['fecha'] : '';
 $hora = isset($_POST['hora']) ? $_POST['hora'] : '';

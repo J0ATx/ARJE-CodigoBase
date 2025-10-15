@@ -59,7 +59,7 @@ async function checkSession() {
             return true;
         }
     } catch (error) {
-        window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
+        window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
         return false;
     }
 }

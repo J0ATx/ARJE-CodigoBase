@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require_once "../../Conexión/conexion.php";
+require_once "../../Conexion/clienteNoRegistrado.php";
 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

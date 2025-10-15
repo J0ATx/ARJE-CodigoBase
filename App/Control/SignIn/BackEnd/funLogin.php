@@ -2,7 +2,7 @@
 <?php
 function iniciarSesion($usuario)
 {
-    include "../../Conexión/conexion.php";
+    require_once "../../Conexion/clienteNoRegistrado.php";
     if (session_status() === PHP_SESSION_ACTIVE) {
         session_destroy();
     }

@@ -2,13 +2,13 @@ USE lostrestanosdb;
 
 CREATE VIEW Ventas_Totales AS
 SELECT SUM(pedido_monto) AS total_ventas
-FROM Peiddo;
+FROM Pedido;
 
-CREATE VIEW Ventas_Por_Cliente AS
-SELECT cliente_id, cliente_nombre, SUM(pedido_monto)
-FROM  Pedido JOIN Efectua JOIN Cliente USING (pedido_id, cliente_id)
-WHERE pedido_estado = 'Pagado'
-GROUP BY cliente_id;
+-- CREATE VIEW Ventas_Por_Cliente AS
+-- SELECT cliente_id, cliente_nombre, SUM(pedido_monto)
+-- FROM  Pedido JOIN Efectua JOIN Cliente USING (pedido_id, cliente_id)
+-- WHERE pedido_estado = 'Pagado'
+-- GROUP BY cliente_id;
 
 CREATE VIEW Ventas_Por_Camarero AS
 SELECT personal_id, personal_nombre, SUM(pedido_monto)
@@ -16,11 +16,11 @@ FROM  Pedido JOIN Personal USING (personal_id)
 WHERE pedido_estado = 'Pagado'
 GROUP BY personal_id;
 
-CREATE VIEW Ventas_Por_Producto AS
-SELECT producto_id, producto_nombre, SUM(pedido_monto)
-FROM  Pedido JOIN Contiene JOIN Producto USING (pedido_id, producto_id)
-WHERE pedido_estado = 'Pagado'
-GROUP BY producto_id;
+-- CREATE VIEW Ventas_Por_Producto AS
+-- SELECT producto_id, producto_nombre, SUM(pedido_monto)
+-- FROM  Pedido JOIN Contiene JOIN Producto USING (pedido_id, producto_id)
+-- WHERE pedido_estado = 'Pagado'
+-- GROUP BY producto_id;
 
 CREATE VIEW Ventas_Por_Pago AS
 SELECT SUM(pedido_monto)
@@ -57,27 +57,23 @@ GROUP BY no_show_fecha;
 
 CREATE VIEW Datos_Usuarios AS
 SELECT
-    cliente_id AS usuario_id
-    cliente_nombre AS usuario_nombre
-    cliente_apellido AS usuario_apellido
-    cliente_telefono AS usuario_telefono
-    cliente_contrasenia AS usuario_contrasenia
-    cliente_calificacion AS usuario_calificacion
-    cliente_platillo_favorito AS usuario_platillo_favorito
-    cliente_fidelizado AS usuario_fidelizado
-    NULL AS usuario_rol
-    'Cliente' AS usuario_tipo
+    cliente_id AS usuario_id,
+    cliente_nombre AS usuario_nombre,
+    cliente_apellido AS usuario_apellido,
+    cliente_telefono AS usuario_telefono,
+    cliente_calificacion AS usuario_calificacion,
+    cliente_platillo_favorito AS usuario_platillo_favorito,
+    cliente_fidelizado AS usuario_fidelizado,
+    'Cliente' AS usuario_rol
 FROM Cliente
 UNION ALL
 SELECT
-    personal_id AS usuario_id
-    personal_nombre AS usuario_nombre
-    personal_apellido AS usuario_apellido
-    personal_telefono AS usuario_telefono
-    personal_contrasenia AS usuario_contrasenia
-    personal_calificacion AS usuario_calificacion
+    personal_id AS usuario_id,
+    personal_nombre AS usuario_nombre,
+    personal_apellido AS usuario_apellido,
+    personal_telefono AS usuario_telefono,
+    personal_calificacion AS usuario_calificacion,
+    NULL AS usuario_platillo_favorito,
+    NULL AS usuario_fidelizado,
     personal_rol AS usuario_rol
-    NULL AS usuario_platillo_favorito
-    NULL AS usuario_fidelizado
-    'Empleado' AS usuario_tipo
 FROM Personal;
