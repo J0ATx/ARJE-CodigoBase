@@ -1,5 +1,5 @@
 <?php
-include '../../../Control/Conexión/conexion.php';
+include '../../../Control/Conexion/empleado.php';
 
 try {
     // Obtener mesas y reservas asociadas con datos del cliente

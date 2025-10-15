@@ -3,10 +3,10 @@ DROP USER IF EXISTS 'empleado'@'localhost';
 DROP USER IF EXISTS 'cliente_registrado'@'localhost';
 DROP USER IF EXISTS 'cliente_no_registrado'@'localhost';
 
--- DROP PROCEDURE IF EXISTS Validar_SignUp_Cliente;
--- DROP PROCEDURE IF EXISTS Validar_SignUp_Personal;
--- DROP PROCEDURE IF EXISTS Validar_SignIn_Cliente;
--- DROP PROCEDURE IF EXISTS Validar_SignIn_Personal;
+DROP PROCEDURE IF EXISTS Validar_SignUp_Cliente;
+DROP PROCEDURE IF EXISTS Validar_SignUp_Personal;
+DROP PROCEDURE IF EXISTS Validar_SignIn_Cliente;
+DROP PROCEDURE IF EXISTS Validar_SignIn_Personal;
 
 -- DROP VIEW IF EXISTS Ventas_Totales;
 -- DROP VIEW IF EXISTS Ventas_Por_Cliente;

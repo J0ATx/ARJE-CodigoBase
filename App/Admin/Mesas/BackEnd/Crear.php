@@ -1,5 +1,5 @@
 <?php
-include '../../../Control/Conexión/conexion.php';
+include '../../../Control/Conexion/empleado.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 

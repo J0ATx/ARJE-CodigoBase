@@ -1,7 +1,6 @@
 <?php
-// listarPedidos.php - Lista todos los pedidos activos (no entregados)
 header('Content-Type: application/json');
-require_once '../../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexion/empleado.php';
 
 // Consulta para obtener los pedidos activos en nueva BD
 $sql = "SELECT 
@@ -11,6 +10,7 @@ $sql = "SELECT
             CONCAT(per.personal_nombre, ' ', per.personal_apellido) AS nombreMozo,
             p.pedido_estado AS estado,
             p.pedido_especificacion AS especificacion,
+            p.pedido_monto AS monto,
             p.pedido_fecha AS fecha
         FROM Pedido p
         LEFT JOIN Personal per ON p.personal_id = per.personal_id

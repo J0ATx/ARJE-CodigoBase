@@ -6,7 +6,7 @@ $response = [
 ];
 if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
     try {
-        require_once "../../../../Control/Conexion/clienteRegistrado.php";
+        require_once "../../../../Control/Conexion/clienteNoRegistrado.php";
         $sql = "SELECT * FROM datos_usuarios WHERE usuario_id = ?";
         $resultado = $con->prepare($sql);
         $resultado->execute([$_SESSION["usuario_id"]]);

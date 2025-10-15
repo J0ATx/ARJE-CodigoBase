@@ -1,23 +1,41 @@
+DROP USER IF EXISTS 'gerente'@'localhost';
+DROP USER IF EXISTS 'empleado'@'localhost';
+DROP USER IF EXISTS 'cliente_registrado'@'localhost';
+DROP USER IF EXISTS 'cliente_no_registrado'@'localhost';
 CREATE USER 'gerente'@'localhost' IDENTIFIED BY '0gGiOjvwsBRHnpdt';
 CREATE USER 'empleado'@'localhost' IDENTIFIED BY 'F3sycVEqp9rrdCjt';
 CREATE USER 'cliente_registrado'@'localhost' IDENTIFIED BY 'VApxJBYwnfHRuv43';
 CREATE USER 'cliente_no_registrado'@'localhost' IDENTIFIED BY 'lgfCaXeEgEarShYu';
 
 GRANT SELECT ON lostrestanosdb.Datos_Usuarios TO 'gerente'@'localhost';
-GRANT INSERT, UPDATE, DELETE ON lostrestanosdb.Cliente TO 'gerente'@'localhost';
-GRANT INSERT, UPDATE, DELETE ON lostrestanosdb.Personal TO 'gerente'@'localhost';
+GRANT SELECT ON lostrestanosdb.Cliente TO 'empleado'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Cliente TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Personal TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Camarero TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Chef_Ejecutivo TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Gerente_General TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Producto TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Stock TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Stock_Cantidad TO 'gerente'@'localhost';
+GRANT SELECT ON lostrestanosdb.Consume TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Mesa TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Reserva TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Pedido TO 'gerente'@'localhost';
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Pedido TO 'empleado'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Contiene TO 'empleado'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Efectua TO 'empleado'@'localhost';
+GRANT SELECT ON lostrestanosdb.Cliente_Alergia TO 'empleado'@'localhost';
+GRANT SELECT, DELETE, INSERT ON lostrestanosdb.Consume TO 'empleado'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Mesa TO 'empleado'@'localhost';
-GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Producto TO 'empleado'@'localhost';
-GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Reserva TO 'empleado'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Producto TO 'empleado'@'localhost';
+GRANT SELECT, UPDATE, DELETE, INSERT ON lostrestanosdb.Posee TO 'empleado'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Reserva TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Datos_Usuarios TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Stock TO 'empleado'@'localhost';
+GRANT SELECT, UPDATE ON lostrestanosdb.Stock_Cantidad TO 'empleado'@'localhost';
+GRANT SELECT ON lostrestanosdb.Camarero TO 'empleado'@'localhost';
+GRANT SELECT ON lostrestanosdb.Personal TO 'empleado'@'localhost';
 
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Reserva TO 'cliente_registrado'@'localhost';
@@ -31,5 +49,9 @@ GRANT SELECT ON lostrestanosdb.Datos_Usuarios TO 'cliente_no_registrado'@'localh
 GRANT SELECT, INSERT ON lostrestanosdb.Cliente TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Personal TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Producto TO 'cliente_no_registrado'@'localhost';
+GRANT EXECUTE ON PROCEDURE lostrestanosdb.Validar_SignUp_Cliente TO 'cliente_no_registrado'@'localhost';
+GRANT EXECUTE ON PROCEDURE lostrestanosdb.Validar_SignIn_Cliente TO 'cliente_no_registrado'@'localhost';
+GRANT EXECUTE ON PROCEDURE lostrestanosdb.Validar_SignIn_Personal TO 'cliente_no_registrado'@'localhost';
+
 
 FLUSH PRIVILEGES;

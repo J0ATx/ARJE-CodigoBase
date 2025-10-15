@@ -1,9 +1,8 @@
 <?php
-require_once '../../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexion/empleado.php';
 header('Content-Type: application/json');
 
 try {
-    // Nueva BD: mozos son 'Camarero' vinculados a 'Personal'
     $sql = "
         SELECT p.personal_id, p.personal_nombre, p.personal_apellido
         FROM Camarero c

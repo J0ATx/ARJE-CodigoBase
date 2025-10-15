@@ -53,20 +53,23 @@ if (!empty($errores)) {
 }
 
 $contraseniaHash = password_hash($contrasenia, PASSWORD_DEFAULT);
-$checkEmail = $con->prepare("SELECT COUNT(*) FROM Cliente WHERE cliente_id = ?");
-$checkEmail->execute([$email]);
-if ($checkEmail->fetchColumn() > 0) {
-    echo json_encode(["exito" => false, "errores" => ["El correo electrónico ya está registrado."]]);
+$sql1 = "CALL Validar_SignUp_Cliente(?, ?, ?, ?, @usuario, @mensaje);";
+$stmt1 = $con->prepare($sql1);
+$stmt1->execute([$nombre, $apellido, $contraseniaHash, $email]);
+
+$sql2 = "SELECT @usuario, @mensaje;";
+$stmt2 = $con->prepare($sql2);
+$stmt2->execute();
+$resultado = $stmt2->fetch(PDO::FETCH_ASSOC);
+$usuario_json = $resultado['@usuario'] ?? null;
+$mensaje = $resultado['@mensaje'] ?? null;
+$usuario = $usuario_json ? json_decode($usuario_json, true) : null;
+
+if ($usuario === null) {
+    echo json_encode(["exito" => false, "errores" => [$mensaje]]);
+    exit;
 } else {
-    $sql = "INSERT INTO Cliente(cliente_nombre, cliente_apellido, cliente_contrasenia, cliente_id) VALUES (?, ?, ?, ?)";
-    $stmt = $con->prepare($sql);
-    $stmt->execute([$nombre, $apellido, $contraseniaHash, $email]);
     include "../../SignIn/BackEnd/funLogin.php";
-    $sql = "SELECT * FROM Cliente WHERE cliente_id = ?";
-    
-    $stmt = $con->prepare($sql);
-    $stmt->execute([$email]);
-    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     iniciarSesion($usuario);
     echo json_encode(["exito" => true, "mensaje" => "Registro exitoso."]);
 }

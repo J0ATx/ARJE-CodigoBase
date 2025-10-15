@@ -1,7 +1,6 @@
 <?php
-// crearPedido.php - Crea un nuevo pedido con productos y comentario en nueva BD
 header('Content-Type: application/json');
-require_once '../../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexion/empleado.php';
 session_start();
 
 $response = ["success" => false];

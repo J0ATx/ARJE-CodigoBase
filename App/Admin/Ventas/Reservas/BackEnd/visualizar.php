@@ -1,5 +1,5 @@
 <?php
-    include_once '..\..\..\..\Control\Conexión\conexion.php';
+    include_once '..\..\..\..\Control\Conexion\empleado.php';
 
     try {
         $search = isset($_POST['search']) ? $_POST['search'] : '';

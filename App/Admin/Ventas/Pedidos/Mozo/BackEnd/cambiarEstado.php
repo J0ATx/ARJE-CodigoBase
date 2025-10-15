@@ -1,7 +1,6 @@
 <?php
-// Cambia el estado de un pedido y guarda método de pago si corresponde
 header('Content-Type: application/json');
-require_once '../../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexion/empleado.php';
 
 $response = ["success" => false];
 

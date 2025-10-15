@@ -1,24 +1,16 @@
-
 <?php
 function iniciarSesion($usuario)
 {
-    include "../../Conexión/conexion.php";
+    include "../../Conexion/clienteNoRegistrado.php"; 
     if (session_status() === PHP_SESSION_ACTIVE) {
         session_destroy();
     }
 
     session_start();
-    $_SESSION["usuario_id"] = $usuario["personal_id"];
-    $_SESSION["nombre"] = $usuario["personal_nombre"];
-    $_SESSION["apellido"] = $usuario["personal_apellido"];
-    $_SESSION["logged"] = true; // Para verficar si el usuario está logueado
-
-    // Verificar si el usuario es gerente
-    $sql_personal = "SELECT personal_rol FROM Personal WHERE personal_id = ?";
-    $resultado_personal = $con->prepare($sql_personal);
-    $resultado_personal->execute([$usuario["personal_id"]]);
-    $rol = $resultado_personal->fetch(PDO::FETCH_ASSOC);
-
-    $_SESSION["rol"] = $rol;
+    $_SESSION["usuario_id"] = $usuario["email"];
+    $_SESSION["nombre"] = $usuario["nombre"];
+    $_SESSION["apellido"] = $usuario["apellido"];
+    $_SESSION["logged"] = true; // Para verificar si el usuario está logueado
+    $_SESSION["rol"] = $usuario["rol"]; // El rol ya viene en el JSON del procedimiento
 }
 ?>

@@ -5,17 +5,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contrasenia = $_POST["contrasenia"];
     require_once "../../Conexion/clienteNoRegistrado.php";
     include "funLogin.php";
-    $sql = "SELECT * FROM Cliente WHERE cliente_id = ?";
-    $resultado = $con->prepare($sql);
-    $resultado->execute([$email]);
-    $usuario = $resultado->fetch(PDO::FETCH_ASSOC);
-    
-    if(!$usuario){
-        echo json_encode(["exito" => false, "errores" => ["Correo electrónico o contraseña incorrectos."]]);
+
+    $sql1 = "CALL Validar_SignIn_Cliente(?, ?, @usuario, @mensaje);";
+    $stmt1 = $con->prepare($sql1);
+    $stmt1->execute([$email, $contrasenia]);
+
+    $sql2 = "SELECT @usuario, @mensaje;";
+    $stmt2 = $con->prepare($sql2);
+    $stmt2->execute();
+
+    $resultado = $stmt2->fetch(PDO::FETCH_ASSOC);
+    $usuario_json = $resultado['@usuario'] ?? null;
+    $mensaje = $resultado['@mensaje'] ?? null;
+
+    $usuario = $usuario_json ? json_decode($usuario_json, true) : null;
+
+    if (!$usuario) {
+        echo json_encode(["exito" => false, "errores" => [$mensaje]]);
         exit;
     }
-    
-    if ($usuario && password_verify($contrasenia, $usuario['cliente_contrasenia'])) { //Compara la contraseña ingresada con la almacenada en hash
+
+    if (password_verify($contrasenia, $usuario['contrasenia'])) {
         iniciarSesion($usuario);
         echo json_encode([
             "exito" => true,
@@ -27,4 +37,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(["exito" => false, "errores" => ["Método no permitido"]]);
 }
+?>
 

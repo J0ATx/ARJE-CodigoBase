@@ -1,5 +1,5 @@
 <?php
-require_once '../../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexion/empleado.php';
 header('Content-Type: application/json');
 try {
     $stmt = $con->query('SELECT mesa_id FROM Mesa ORDER BY mesa_id');

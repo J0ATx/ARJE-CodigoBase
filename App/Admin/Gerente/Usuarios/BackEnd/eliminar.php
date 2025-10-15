@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-include '../../../../Control/Conexión/conexion.php';
+include '../../../../Control/Conexion/gerente.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 

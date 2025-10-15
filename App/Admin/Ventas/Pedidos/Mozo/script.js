@@ -331,7 +331,6 @@ window.cambiarEstadoPedido = function(idPedido, nuevoEstado) {
   })
     .then(r => r.json())
     .then(data => {
-      console.log('Response:', data); // Depuración
       if (data.success) {
         sendReload();
         cargarPedidos();
@@ -344,8 +343,9 @@ window.cambiarEstadoPedido = function(idPedido, nuevoEstado) {
 window.abrirModalPago = function(idPedido) {
   const pedido = pedidos.find(p => p.idPedido == idPedido);
   if (!pedido) return;
+  console.log(pedido)
   const modal = document.getElementById('modalPago');
-  document.getElementById('modalPagoMonto').textContent = pedido.monto || pedido.pedido_monto || '0';
+  document.getElementById('modalPagoMonto').textContent = pedido.monto;
   modal.setAttribute('data-idPedido', idPedido);
   modal.showModal();
 }
@@ -454,7 +454,6 @@ function cancelarPedido(idPedido) {
 }
 
 function abrirModalEditarPedido(idPedido) {
-  console.log('Abriendo modal editar para pedido:', idPedido);
   const pedido = pedidos.find(p => p.idPedido == idPedido);
   if (!pedido) {
     console.error('Pedido no encontrado:', idPedido);

@@ -1,7 +1,6 @@
 <?php
-// editarPedido.php - Edita productos y comentarios de un pedido (nueva BD)
 header('Content-Type: application/json');
-require_once '../../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexion/empleado.php';
 
 $response = ["success" => false];
 

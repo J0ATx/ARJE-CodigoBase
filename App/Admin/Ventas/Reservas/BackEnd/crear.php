@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once '../../../../Control/Conexión/conexion.php';
+include_once '../../../../Control/Conexion/empleado.php';
 
 try {
     $cliente_email = isset($_POST['cliente_email']) ? trim($_POST['cliente_email']) : '';

@@ -123,7 +123,7 @@ btnConfirmar.addEventListener('click', () => {
                         mensaje.textContent = "Por favor, complete todos los campos.";
                         break;
                     case "date":
-                        mensaje.textContent = "La fecha debe ser mayor o igual a la fecha actual.";
+                        mensaje.textContent = "La fecha debe ser mayor a la fecha actual (al menos 2 días de antelación).";
                         break;
                     case "advance_required":
                         mensaje.textContent = "Las reservas deben realizarse con al menos 2 días de antelación.";

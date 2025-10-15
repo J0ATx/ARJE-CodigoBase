@@ -8,9 +8,9 @@ function iniciarSesion($usuario)
     }
 
     session_start();
-    $_SESSION["usuario_id"] = $usuario["cliente_id"];
-    $_SESSION["nombre"] = $usuario["cliente_nombre"];
-    $_SESSION["apellido"] = $usuario["cliente_apellido"];
+    $_SESSION["usuario_id"] = $usuario["email"];
+    $_SESSION["nombre"] = $usuario["nombre"];
+    $_SESSION["apellido"] = $usuario["apellido"];
     $_SESSION["logged"] = true;
     $_SESSION["rol"] = "Cliente";
 }

@@ -9,13 +9,13 @@ CREATE PROCEDURE Validar_SignUp_Cliente (
     OUT mensaje VARCHAR(100)
 )
 BEGIN
-    IF (SELECT COUNT(*) FROM Cliente WHERE cliente_id = @email) > 0 THEN
-        SET @mensaje = 'El usuario ya existe';
-        SET @usuario = NULL;
+    IF (SELECT COUNT(*) FROM Cliente WHERE cliente_id = email) > 0 THEN
+        SET mensaje = 'El usuario ya existe';
+        SET usuario = NULL;
     ELSE
-        INSERT INTO Cliente(cliente_nombre, cliente_apellido, cliente_contrasenia, cliente_id) 
-        VALUES (@nombre, @apellido, @contrasenia, @email);
-        SET @usuario = (
+        INSERT INTO Cliente(cliente_nombre, cliente_apellido, cliente_contrasenia, cliente_id)
+        VALUES (nombre, apellido, contrasenia, email);
+        SET usuario = (
             SELECT JSON_OBJECT(
                 'nombre', cliente_nombre,
                 'apellido', cliente_apellido,
@@ -25,9 +25,9 @@ BEGIN
                 'platillo_favorito', cliente_platillo_favorito
             )
             FROM Cliente
-            WHERE cliente_id = @email
+            WHERE cliente_id = email
         );
-        SET @mensaje = 'Usuario creado exitosamente';
+        SET mensaje = 'Usuario creado exitosamente';
     END IF;
 END $$
 
@@ -42,13 +42,13 @@ CREATE PROCEDURE Validar_SignUp_Personal (
     OUT mensaje VARCHAR(100)
 )
 BEGIN
-    IF (SELECT COUNT(*) FROM Personal WHERE personal_id = @email) > 0 THEN
-        SET @mensaje = 'El usuario ya existe';
-        SET @usuario = NULL;
+    IF (SELECT COUNT(*) FROM Personal WHERE personal_id = email) > 0 THEN
+        SET mensaje = 'El usuario ya existe';
+        SET usuario = NULL;
     ELSE
         INSERT INTO Personal(personal_nombre, personal_apellido, personal_contrasenia, personal_rol, personal_id)
-        VALUES (@nombre, @apellido, @contrasenia, @email);
-        SET @usuario = (
+        VALUES (nombre, apellido, contrasenia, rol, email);
+        SET usuario = (
             SELECT JSON_OBJECT(
                 'nombre', personal_nombre,
                 'apellido', personal_apellido,
@@ -57,9 +57,9 @@ BEGIN
                 'rol', personal_rol
             )
             FROM Personal
-            WHERE personal_id = @email
+            WHERE personal_id = email
         );
-        SET @mensaje = 'Usuario creado exitosamente';
+        SET mensaje = 'Usuario creado exitosamente';
     END IF;
 END $$
 
@@ -70,20 +70,29 @@ CREATE PROCEDURE Validar_SignIn_Cliente (
     OUT mensaje VARCHAR(100)
 )
 BEGIN
-    IF (SELECT COUNT(*) FROM Cliente WHERE cliente_id = @email) = 1 THEN
-        SET @usuario = (
-            SELECT JSON_OBJECT(
-                'nombre', cliente_nombre,
-                'apellido', cliente_apellido,
-                'telefono', cliente_telefono,
-                'email', cliente_id,
-                'fidelizado', cliente_fidelizado,
-                'platillo_favorito', cliente_platillo_favorito
-            )
-            FROM Cliente
-            WHERE cliente_id = @email
-        );
-        SET @mensaje = 'Usuario creado exitosamente';
+    DECLARE usuario_encontrado INT DEFAULT 0;
+
+    SELECT COUNT(*) INTO usuario_encontrado
+    FROM Cliente
+    WHERE cliente_id = email;
+
+    IF usuario_encontrado > 0 THEN
+        SELECT JSON_OBJECT(
+            'nombre', cliente_nombre,
+            'apellido', cliente_apellido,
+            'telefono', cliente_telefono,
+            'email', cliente_id,
+            'fidelizado', cliente_fidelizado,
+            'platillo_favorito', cliente_platillo_favorito,
+            'contrasenia', cliente_contrasenia
+        ) INTO usuario
+        FROM Cliente
+        WHERE cliente_id = email;
+
+        SET mensaje = 'Usuario encontrado';
+    ELSE
+        SET usuario = NULL;
+        SET mensaje = 'Usuario no encontrado';
     END IF;
 END $$
 
@@ -94,19 +103,28 @@ CREATE PROCEDURE Validar_SignIn_Personal (
     OUT mensaje VARCHAR(100)
 )
 BEGIN
-    IF (SELECT COUNT(*) FROM Personal WHERE personal_id = @email) = 1 THEN
-        SET @usuario = (
-            SELECT JSON_OBJECT(
-                'nombre', personal_nombre,
-                'apellido', personal_apellido,
-                'telefono', personal_telefono,
-                'email', personal_id,
-                'rol', personal_rol
-            )
-            FROM Personal
-            WHERE personal_id = @email
-        );
-        SET @mensaje = 'Usuario creado exitosamente';
+    DECLARE usuario_encontrado INT DEFAULT 0;
+
+    SELECT COUNT(*) INTO usuario_encontrado
+    FROM Personal
+    WHERE personal_id = email;
+
+    IF usuario_encontrado > 0 THEN
+        SELECT JSON_OBJECT(
+            'nombre', personal_nombre,
+            'apellido', personal_apellido,
+            'telefono', personal_telefono,
+            'email', personal_id,
+            'rol', personal_rol,
+            'contrasenia', personal_contrasenia
+        ) INTO usuario
+        FROM Personal
+        WHERE personal_id = email;
+
+        SET mensaje = 'Usuario encontrado';
+    ELSE
+        SET usuario = NULL;
+        SET mensaje = 'Usuario no encontrado';
     END IF;
 END $$
 

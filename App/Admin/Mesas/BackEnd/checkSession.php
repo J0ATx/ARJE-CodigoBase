@@ -6,28 +6,17 @@ $response = [
 ];
 if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
     try {
-        require_once "../../../Control/Conexión/conexion.php";
-        $sql = "SELECT * FROM Cliente WHERE cliente_id = ?";
+        require_once "../../../Control/Conexion/empleado.php";
+        $sql = "SELECT * FROM datos_usuarios WHERE usuario_id = ?";
         $resultado = $con->prepare($sql);
         $resultado->execute([$_SESSION["usuario_id"]]);
         $usuario = $resultado->fetch(PDO::FETCH_ASSOC);
         if ($usuario) {
-            $_SESSION["nombre"] = $usuario["cliente_nombre"];
-            $_SESSION["apellido"] = $usuario["cliente_apellido"];
+            $_SESSION["nombre"] = $usuario["usuario_nombre"];
+            $_SESSION["apellido"] = $usuario["usuario_apellido"];
             $_SESSION["logged"] = true;
-            $_SESSION["rol"] = "Cliente";
+            $_SESSION["rol"] = $usuario["usuario_rol"];
         }
-        $sql_personal = "SELECT * FROM Personal WHERE personal_id = ?";
-        $resultado_personal = $con->prepare($sql_personal);
-        $resultado_personal->execute([$_SESSION["usuario_id"]]);
-        $personal = $resultado_personal->fetch(PDO::FETCH_ASSOC);
-        if ($personal) {
-            $_SESSION["nombre"] = $personal["personal_nombre"];
-            $_SESSION["apellido"] = $personal["personal_apellido"];
-            $_SESSION["logged"] = true;
-            $_SESSION["rol"] = $personal["personal_rol"];
-        }
-
         $response = [
             "logged_in" => isset($_SESSION["logged"]) && $_SESSION["logged"] === true,
             "user" => isset($_SESSION["usuario_id"]) ? [
@@ -44,4 +33,3 @@ if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
     }
 }
 echo json_encode($response);
-?>

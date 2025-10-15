@@ -1,19 +1,7 @@
 <?php
 
-/**
- * cambiarEstado.php
- * 
- * Maneja el cambio de estado de los pedidos en la cocina.
- * Verifica el stock de ingredientes al cambiar a 'en_preparacion'.
- * 
- * Estados permitidos:
- * - pendiente → en_preparacion (con verificación de stock)
- * - en_preparacion → listo
- * - listo → (sin más cambios permitidos desde cocina)
- */
-
 header('Content-Type: application/json');
-require_once '../../../../../Control/Conexión/conexion.php';
+require_once '../../../../../Control/Conexion/empleado.php';
 
 function responder($ok, $msg, $data = [])
 {
@@ -45,7 +33,6 @@ try {
     if (!$row) responder(false, 'Pedido no encontrado');
     $estadoActual = $row['pedido_estado'];
 
-    // Transiciones válidas
     $transiciones = [
         'Pendiente' => ['En-Preparacion'],
         'En-Preparacion' => ['Listo'],
@@ -55,22 +42,18 @@ try {
         responder(false, 'Transición de estado no permitida');
     }
 
-    // Al pasar a En-Preparacion: verificar y descontar stock usando FEFO
     if ($nuevoEstado === 'En-Preparacion') {
-        // Productos del pedido
         $stmt = $con->prepare('SELECT producto_id, contiene_cantidad FROM Contiene WHERE pedido_id = ?');
         $stmt->execute([$pedidoId]);
         $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if (empty($items)) responder(false, 'El pedido no tiene productos');
 
-        // Requerimientos por (ingrediente_nombre, medida) - FEFO
-        $req = []; // key: "ingrediente_nombre|medida" => cantidad
+        $req = [];
         foreach ($items as $it) {
             $productoId = (int)$it['producto_id'];
             $cantProd = (int)$it['contiene_cantidad'];
             if ($productoId <= 0 || $cantProd <= 0) continue;
 
-            // Obtener ingredientes de la receta (Consume)
             $q = $con->prepare('SELECT stock_id, consume_cantidad, consume_medida FROM Consume WHERE producto_id = ?');
             $q->execute([$productoId]);
             foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $c) {

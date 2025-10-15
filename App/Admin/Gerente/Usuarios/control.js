@@ -32,37 +32,93 @@ async function cargarUsuarios() {
         if (!data.success) {
             throw new Error(data.error || 'Error al cargar usuarios');
         }
+        // Clear the table first
+        tabla.innerHTML = '';
+
+        // Create document fragment for better performance
+        const fragment = document.createDocumentFragment();
+
         data.usuarios.forEach(u => {
+            const tr = document.createElement('tr');
             let telefonoHtml = '<td></td>';
-            if (u.telefono != null && u.telefono != '0') {
-                telefonoHtml = `<td>${u.telefono}</td>`;
+            let telefono = '';
+            if (u.usuario_telefono != null && u.usuario_telefono != '0') {
+                telefonoHtml = `<td>${u.usuario_telefono}</td>`;
+                telefono = u.usuario_telefono;
             }
-            console.log(u.telefono);
-            tabla.innerHTML += `
-            <tr>
-                <td>${u.email}</td>
-                <td>${u.nombre}</td>
-                <td>${u.apellido}</td>
+            
+            tr.innerHTML = `
+                <td>${u.usuario_id}</td>
+                <td>${u.usuario_nombre}</td>
+                <td>${u.usuario_apellido}</td>
                 ${telefonoHtml}
-                <td>${u.tipoUsuario}</td>
+                <td>${u.usuario_rol}</td>
                 <td class="acciones">
-                    <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
+                    <button class="btn-menu">⋮</button>
                     <div class="menu-opciones">
-                        <div class="opcion" onclick="editarUsuario('${u.email}', '${u.nombre}', '${u.apellido}', '${u.telefono}', '${u.tipoUsuario}')">
+                        <div class="opcion" data-action="editar" data-id="${u.usuario_id}" data-nombre="${u.usuario_nombre}" data-apellido="${u.usuario_apellido}" data-telefono="${telefono}" data-rol="${u.usuario_rol}">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
                             </svg>
                             Editar
                         </div>
-                        <div class="opcion eliminar" onclick="eliminarUsuario('${u.email}', '${u.tipoUsuario}')">
+                        <div class="opcion eliminar" data-action="eliminar" data-id="${u.usuario_id}" data-rol="${u.usuario_rol}">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
                             </svg>
                             Eliminar
                         </div>
+                    </div>
                 </td>
-            </tr>
             `;
+            
+            // Add event listeners to the buttons
+            const btnMenu = tr.querySelector('.btn-menu');
+            const menuOpciones = tr.querySelector('.menu-opciones');
+            
+            btnMenu.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Hide all other open menus
+                document.querySelectorAll('.menu-opciones').forEach(menu => {
+                    if (menu !== menuOpciones) menu.style.display = 'none';
+                });
+                // Toggle current menu
+                menuOpciones.style.display = menuOpciones.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Add click handler for edit/delete options
+            tr.querySelectorAll('.opcion').forEach(opcion => {
+                opcion.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const action = opcion.getAttribute('data-action');
+                    if (action === 'editar') {
+                        editarUsuario(
+                            opcion.getAttribute('data-id'),
+                            opcion.getAttribute('data-nombre'),
+                            opcion.getAttribute('data-apellido'),
+                            opcion.getAttribute('data-telefono'),
+                            opcion.getAttribute('data-rol')
+                        );
+                    } else if (action === 'eliminar') {
+                        eliminarUsuario(
+                            opcion.getAttribute('data-id'),
+                            opcion.getAttribute('data-rol')
+                        );
+                    }
+                    menuOpciones.style.display = 'none';
+                });
+            });
+            
+            fragment.appendChild(tr);
+        });
+
+        tabla.appendChild(fragment);
+
+        // Close menu when clicking outside
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.menu-opciones').forEach(menu => {
+                menu.style.display = 'none';
+            });
         });
     } catch (error) {
         console.error('Error:', error);
@@ -216,7 +272,7 @@ async function guardarCambiosUsuario() {
         });
 
         const data = await response.json();
-
+        console.log(data);
         if (data.success) {
             alert(data.mensaje || 'Usuario actualizado correctamente');
             document.getElementById('modalEditar').style.display = 'none';

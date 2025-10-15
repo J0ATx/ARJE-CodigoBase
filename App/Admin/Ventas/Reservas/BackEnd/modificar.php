@@ -1,5 +1,5 @@
 <?php
-    include_once '../../../../Control/Conexión/conexion.php';
+    include_once '../../../../Control/Conexion/empleado.php';
 
     try {
         $reserva_id = $_POST['idReserva'];
