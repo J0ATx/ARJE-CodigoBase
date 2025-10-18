@@ -99,6 +99,7 @@ CREATE TABLE Mesa (
     mesa_ubicacion ENUM ('Interior', 'Exterior'),
     mesa_tiempo_uso TIME,
     mesa_alcance INT (1),
+    mesa_reservable ENUM ('Si', 'No') DEFAULT 'No' NOT NULL,
     mesa_creacion DATE,
     PRIMARY KEY (mesa_id)
 );
