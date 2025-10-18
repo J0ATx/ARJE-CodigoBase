@@ -24,6 +24,18 @@
 
         // Si no tiene mesa asignada, asignarla
         if ($reserva['mesa_id'] === null && $mesa_id !== null) {
+            // Verificar que la mesa existe
+            $sqlMesaExiste = "SELECT mesa_id, mesa_reservable FROM Mesa WHERE mesa_id = ?";
+            $stmtMesaExiste = $con->prepare($sqlMesaExiste);
+            $stmtMesaExiste->execute([$mesa_id]);
+            $mesaExiste = $stmtMesaExiste->fetch(PDO::FETCH_ASSOC);
+
+            if (!$mesaExiste) {
+                $con->rollBack();
+                echo json_encode(["error" => "La mesa con ID $mesa_id no existe en el sistema"]);
+                exit();
+            }
+
             $sqlCheck = "
                 SELECT COUNT(*) as conflictos
                 FROM Reserva

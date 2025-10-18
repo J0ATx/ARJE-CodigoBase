@@ -238,6 +238,7 @@ function abrirModalConfirmarReserva(idReserva) {
                     <p><strong>Fecha:</strong> ${reserva.reserva_fecha} ${reserva.reserva_inicio}</p>
                     <p><strong>Personas:</strong> ${reserva.reserva_cantidad_personas}</p>
                     <p><strong>Duración:</strong> ${reserva.reserva_duracion} horas</p>
+                    <p><strong>Tipo de asignación:</strong> ${reserva.reserva_asignacion_tipo}</p>
             `;
             
             if (reserva.reserva_comentario) {

@@ -42,6 +42,7 @@
                                 <th>CAPACIDAD</th>
                                 <th>ESTADO ACTUAL</th>
                                 <th>UBICACIÓN</th>
+                                <th>RESERVABLE</th>
                                 <th>TIEMPO DE USO</th>
                                 <th>RESERVAS</th>
                                 <th>ACCIONES</th>
@@ -66,6 +67,10 @@
             <select id="edit_ubicacion">
                 <option value="Interior">Interior</option>
                 <option value="Exterior">Exterior</option>
+            </select>
+            <select id="edit_reservable">
+                <option value="Si">Sí</option>
+                <option value="No">No</option>
             </select>
             <input type="submit" value="Guardar cambios" onclick="guardarCambiosMesa()">
             <button type="button" onclick="cerrarModalEditar()">Cancelar</button>
@@ -94,6 +99,13 @@
                     <select id="ubicacion">
                         <option value="Interior">Interior</option>
                         <option value="Exterior">Exterior</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reservable">Reservable</label>
+                    <select id="reservable">
+                        <option value="Si" selected>Sí</option>
+                        <option value="No">No</option>
                     </select>
                 </div>
                 <button type="submit" class="submit-button">Crear Mesa</button>

@@ -80,10 +80,14 @@
                                     </label>
                                 </div>
                                 <div id="comentarioContainer" style="display: none; margin-top: 1rem;">
-                                    <label class="label" for="comentario">Especificaciones de la mesa</label>
-                                    <textarea id="comentario" name="comentario" rows="3" placeholder="Ej: Preferimos mesa cerca de la ventana, necesitamos silla para bebé, etc."></textarea>
-                                    <small style="color: #666; font-size: 0.85em;">Un gerente revisará tu solicitud y asignará la mesa más adecuada.</small>
+                                    <label class="label" for="comentario">Especificaciones de la mesa <span style="color: #e74c3c;">*</span></label>
+                                    <textarea id="comentario" name="comentario" rows="3" placeholder="Ej: Preferimos mesa cerca de la ventana, necesitamos silla para bebé, somos un grupo grande, etc." required></textarea>
+                                    <small style="color: #666; font-size: 0.85em;">Un gerente revisará tu solicitud y asignará la mesa más adecuada según tus necesidades específicas.</small>
                                 </div>
+                                <small style="color: #666; font-size: 0.8em; margin-top: 0.5rem; display: block;">
+                                    💡 <strong>Asignación automática:</strong> Te asignamos la mejor mesa disponible.<br>
+                                    💬 <strong>Solicitud manual:</strong> Puedes especificar preferencias y un gerente elegirá la mesa ideal para ti.
+                                </small>
                             </div>
                         </div>
                         <button type="submit" id="btn" class="btn-reservar">RESERVAR</button>
@@ -106,6 +110,7 @@
                             <li><strong>Hora:</strong> <span id="resumen-hora"></span></li>
                             <li><strong>Cantidad de personas:</strong> <span id="resumen-cantidad"></span></li>
                             <li><strong>Duración:</strong> 2 horas</li>
+                            <li id="resumen-asignacion-info"><strong>Asignación:</strong> <span id="resumen-asignacion"></span></li>
                         </ul>
                     </div>
                     <div class="modal-actions">

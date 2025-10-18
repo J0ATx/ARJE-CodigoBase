@@ -41,12 +41,13 @@ async function cargarMesas() {
             <td>${m.capacidad}</td>
             <td>${m.estadoActual}</td>
             <td>${m.ubicacion}</td>
+            <td><span class="badge ${m.reservable === 'Si' ? 'reservable-si' : 'reservable-no'}">${m.reservable}</span></td>
             <td>${m.tiempoUso || ''}</td>
             <td>${reservasHtml}</td>
             <td class="acciones">
                 <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
                 <div class="menu-opciones">
-                    <div class="opcion" onclick="editarMesa(${m.idMesa}, ${m.capacidad}, '${m.estadoActual}', '${m.ubicacion}')">
+                    <div class="opcion" onclick="editarMesa(${m.idMesa}, ${m.capacidad}, '${m.estadoActual}', '${m.ubicacion}', '${m.reservable}')">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
                         </svg>
@@ -65,11 +66,12 @@ async function cargarMesas() {
     });
 }
 
-window.editarMesa = function (idMesa, capacidad, estadoActual, ubicacion) {
+window.editarMesa = function (idMesa, capacidad, estadoActual, ubicacion, reservable) {
     document.getElementById('edit_idMesa').value = idMesa;
     document.getElementById('edit_capacidad').value = capacidad;
     document.getElementById('edit_estadoActual').value = estadoActual;
     document.getElementById('edit_ubicacion').value = ubicacion;
+    document.getElementById('edit_reservable').value = reservable;
     document.getElementById('modalEditar').style.display = 'flex';
 };
 
@@ -82,11 +84,12 @@ async function guardarCambiosMesa() {
     const capacidad = document.getElementById('edit_capacidad').value;
     const estadoActual = document.getElementById('edit_estadoActual').value;
     const ubicacion = document.getElementById('edit_ubicacion').value;
+    const reservable = document.getElementById('edit_reservable').value;
 
     const res = await fetch('../BackEnd/Modificar.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idMesa, capacidad, estadoActual, ubicacion })
+        body: JSON.stringify({ idMesa, capacidad, estadoActual, ubicacion, reservable })
     });
     if (res.ok) {
         cargarMesas();
@@ -101,11 +104,12 @@ async function crearMesa() {
     const capacidad = document.getElementById('capacidad').value;
     const estadoActual = document.getElementById('estadoActual').value;
     const ubicacion = document.getElementById('ubicacion').value;
+    const reservable = document.getElementById('reservable').value;
 
     const res = await fetch('../BackEnd/Crear.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ capacidad, estadoActual, ubicacion })
+        body: JSON.stringify({ capacidad, estadoActual, ubicacion, reservable })
     });
     if (res.ok) {
         cargarMesas();

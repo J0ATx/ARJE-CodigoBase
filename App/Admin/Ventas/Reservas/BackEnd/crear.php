@@ -50,6 +50,7 @@ try {
                 SELECT m.mesa_id, m.mesa_alcance
                 FROM Mesa m
                 WHERE m.mesa_ubicacion = ?
+                  AND m.mesa_reservable = 'Si'
                   AND NOT EXISTS (
                     SELECT 1
                     FROM Reserva r

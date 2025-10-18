@@ -481,3 +481,23 @@ tr:nth-child(odd) {
 td:last-child {
     text-align: right;
 }
+
+/* Estilos para badges de estado */
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.reservable-si {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.reservable-no {
+    background-color: #f8d7da;
+    color: #721c24;
+}

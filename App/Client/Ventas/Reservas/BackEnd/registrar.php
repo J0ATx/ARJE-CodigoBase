@@ -83,12 +83,13 @@ $fechReg = date("Y-m-d");
         $estado = 'Pendiente';
         $tipo_asignacion = ($tipoAsignacion === 'manual') ? 'Manual' : 'Automatica';
 
-        // Si es asignación automática, buscar mesa disponible
+        // Si es asignación automática, buscar mesa disponible y reservable
         if ($tipoAsignacion === 'automatica') {
             $sqlMesa = "
                 SELECT m.mesa_id, m.mesa_alcance
                 FROM Mesa m
                 WHERE m.mesa_ubicacion = ?
+                  AND m.mesa_reservable = 'Si'
                   AND NOT EXISTS (
                     SELECT 1
                     FROM Reserva r
@@ -117,7 +118,7 @@ $fechReg = date("Y-m-d");
                 exit();
             }
 
-            $mesa_id = (int)$mesaRow['mesa_id'];
+            $mesa_id = $mesaRow['mesa_id'];
         }
         // Si es asignación manual, mesa_id queda NULL y el gerente la asignará
 

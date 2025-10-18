@@ -73,6 +73,18 @@ formulario.addEventListener('submit', (e) => {
     document.getElementById('resumen-hora').textContent = hora;
     document.getElementById('resumen-cantidad').textContent = cantidad;
 
+    // Mostrar información de asignación
+    const asignacionInfo = document.getElementById('resumen-asignacion-info');
+    const asignacionText = document.getElementById('resumen-asignacion');
+
+    if (tipoAsignacion === 'automatica') {
+        asignacionText.textContent = 'Automática - Te asignaremos la mejor mesa disponible';
+        asignacionInfo.style.display = 'block';
+    } else {
+        asignacionText.textContent = 'Manual - Un gerente asignará la mesa según tus especificaciones';
+        asignacionInfo.style.display = 'block';
+    }
+
     // Mostrar modal
     overlay.hidden = false;
     overlay.setAttribute('aria-hidden', 'false');
@@ -81,6 +93,8 @@ formulario.addEventListener('submit', (e) => {
 function ocultarModal() {
     overlay.setAttribute('aria-hidden', 'true');
     overlay.hidden = true;
+    // Ocultar información de asignación
+    document.getElementById('resumen-asignacion-info').style.display = 'none';
 }
 
 modalCloseBtn.addEventListener('click', ocultarModal);
@@ -91,6 +105,8 @@ btnConfirmar.addEventListener('click', () => {
     // Mostrar modal
     overlay.hidden = true;
     overlay.setAttribute('aria-hidden', 'true');
+    // Ocultar información de asignación
+    document.getElementById('resumen-asignacion-info').style.display = 'none';
     const ubicacion = document.getElementById('lugar').value;
     const fecha = document.getElementById('fecha').value;
     const hora = document.getElementById('hora').value;
