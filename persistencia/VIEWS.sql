@@ -58,6 +58,7 @@ GROUP BY no_show_fecha;
 CREATE VIEW Datos_Usuarios AS
 SELECT
     cliente_id AS usuario_id,
+    cliente_id_img AS usuario_img,
     cliente_nombre AS usuario_nombre,
     cliente_apellido AS usuario_apellido,
     cliente_telefono AS usuario_telefono,
@@ -69,6 +70,7 @@ FROM Cliente
 UNION ALL
 SELECT
     personal_id AS usuario_id,
+    personal_id_img AS usuario_img,
     personal_nombre AS usuario_nombre,
     personal_apellido AS usuario_apellido,
     personal_telefono AS usuario_telefono,

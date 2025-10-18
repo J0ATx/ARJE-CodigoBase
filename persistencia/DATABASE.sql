@@ -1,9 +1,16 @@
 CREATE DATABASE lostrestanosdb;
 USE lostrestanosdb;
 
+CREATE TABLE IF NOT EXISTS image_id_sequence (
+    id INT AUTO_INCREMENT PRIMARY KEY
+);
+
+-- Insert initial value
+INSERT INTO image_id_sequence VALUES (0);
+
 CREATE TABLE Personal (
     personal_id VARCHAR (100) NOT NULL,
-    personal_id_img INT AUTO_INCREMENT NOT NULL UNIQUE,
+    personal_id_img INT NOT NULL UNIQUE,
     personal_nombre VARCHAR (50),
     personal_apellido VARCHAR (50),
     personal_telefono INT (9),
@@ -33,7 +40,7 @@ CREATE TABLE Gerente_General (
 
 CREATE TABLE Cliente (
     cliente_id VARCHAR (100) NOT NULL,
-    personal_id_img INT AUTO_INCREMENT NOT NULL,
+    cliente_id_img INT NOT NULL UNIQUE,
     cliente_nombre VARCHAR (50),
     cliente_apellido VARCHAR (50),
     cliente_telefono INT (9),

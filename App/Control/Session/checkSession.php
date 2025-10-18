@@ -6,13 +6,14 @@ $response = [
 ];
 if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
     try {
-        require_once "../../../../Control/Conexion/gerente.php";
+        require_once "../Conexion/clienteNoRegistrado.php";
         $sql = "SELECT * FROM datos_usuarios WHERE usuario_id = ?";
         $resultado = $con->prepare($sql);
         $resultado->execute([$_SESSION["usuario_id"]]);
         $usuario = $resultado->fetch(PDO::FETCH_ASSOC);
         if ($usuario) {
             $_SESSION["nombre"] = $usuario["usuario_nombre"];
+            $_SESSION["img"] = $usuario["usuario_img"];
             $_SESSION["apellido"] = $usuario["usuario_apellido"];
             $_SESSION["logged"] = true;
             $_SESSION["rol"] = $usuario["usuario_rol"];
@@ -21,6 +22,7 @@ if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
             "logged_in" => isset($_SESSION["logged"]) && $_SESSION["logged"] === true,
             "user" => isset($_SESSION["usuario_id"]) ? [
                 "id" => $_SESSION["usuario_id"],
+                "img" => $_SESSION["img"],
                 "nombre" => $_SESSION["nombre"],
                 "apellido" => $_SESSION["apellido"],
                 "rol" => $_SESSION["rol"]
@@ -33,3 +35,4 @@ if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
     }
 }
 echo json_encode($response);
+?>

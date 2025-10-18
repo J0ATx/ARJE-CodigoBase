@@ -20,7 +20,7 @@ async function loadSVGLogo() {
 
 async function checkSession() {
     try {
-        const response = await fetch('../BackEnd/checkSession.php', {
+        const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
             method: 'GET',
             credentials: 'same-origin'
         });
