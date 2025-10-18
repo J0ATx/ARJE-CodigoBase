@@ -30,7 +30,6 @@ try {
     }
 
     $con->beginTransaction();
-
     // Verificar que el cliente existe
     $sqlCliente = "SELECT cliente_id FROM Cliente WHERE cliente_id = ?";
     $stmtCliente = $con->prepare($sqlCliente);
@@ -45,52 +44,50 @@ try {
 
     $cliente_id = $cliente['cliente_id'];
 
-    // Si es asignación automática, buscar mesa
-    if ($tipoAsignacion === 'automatica' && $mesa_id === null) {
+    // Asignación automatica
+    if ($tipoAsignacion === 'automatica') {
         $sqlMesa = "
-            SELECT m.mesa_id, m.mesa_alcance
-            FROM Mesa m
-            WHERE m.mesa_ubicacion = ?
-              AND NOT EXISTS (
-                SELECT 1
-                FROM Reserva r
-                WHERE r.mesa_id = m.mesa_id
-                  AND r.reserva_fecha = ?
-                  AND r.reserva_estado = 'Confirmada'
-                  AND (
-                    TIME(?) < ADDTIME(r.reserva_inicio, MAKETIME(CAST(r.reserva_duracion AS UNSIGNED), 0, 0))
-                    AND ADDTIME(TIME(?), MAKETIME(?, 0, 0)) > r.reserva_inicio
+                SELECT m.mesa_id, m.mesa_alcance
+                FROM Mesa m
+                WHERE m.mesa_ubicacion = ?
+                  AND NOT EXISTS (
+                    SELECT 1
+                    FROM Reserva r
+                    WHERE r.mesa_id = m.mesa_id
+                      AND r.reserva_fecha = ?
+                      AND r.reserva_estado = 'Confirmada'
+                      AND (
+                        TIME(?) < ADDTIME(r.reserva_inicio, MAKETIME(CAST(r.reserva_duracion AS UNSIGNED), 0, 0))
+                        AND ADDTIME(TIME(?), MAKETIME(?, 0, 0)) > r.reserva_inicio
+                      )
                   )
-              )
-            ORDER BY
-              (m.mesa_alcance < ?) ASC,
-              CASE WHEN m.mesa_alcance < ? THEN m.mesa_alcance END DESC,
-              CASE WHEN m.mesa_alcance >= ? THEN m.mesa_alcance END ASC
-            LIMIT 1
-            FOR UPDATE;
-        ";
+                ORDER BY
+                  (m.mesa_alcance < ?) ASC,
+                  CASE WHEN m.mesa_alcance < ? THEN m.mesa_alcance END DESC,
+                  CASE WHEN m.mesa_alcance >= ? THEN m.mesa_alcance END ASC
+                LIMIT 1
+                FOR UPDATE;
+            ";
         $stmt = $con->prepare($sqlMesa);
         $stmt->execute([$ubicacion, $fecha, $hora, $hora, $duracion, $cantidad, $cantidad, $cantidad]);
         $mesaRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$mesaRow) {
+        if (!$mesaRow || $mesaRow['mesa_id'] == 0) {
             $con->rollBack();
             echo json_encode(["error" => "No hay mesas disponibles en ese horario y ubicación"]);
             exit();
         }
 
-        $mesa_id = (int)$mesaRow['mesa_id'];
+        $mesa_id = $mesaRow['mesa_id'];
     }
 
-    // Si es asignación manual con mesa_id especificada, verificar que existe y disponibilidad
+    // Asignación manual
     if ($tipoAsignacion === 'manual') {
         if ($mesa_id === null || $mesa_id <= 0) {
             $con->rollBack();
             echo json_encode(["error" => "Debe especificar un ID de mesa para asignación manual"]);
             exit();
         }
-
-        // Verificar que la mesa existe
         $sqlMesaExiste = "SELECT mesa_id FROM Mesa WHERE mesa_id = ?";
         $stmtMesaExiste = $con->prepare($sqlMesaExiste);
         $stmtMesaExiste->execute([$mesa_id]);
@@ -101,8 +98,6 @@ try {
             echo json_encode(["error" => "La mesa con ID $mesa_id no existe en el sistema"]);
             exit();
         }
-
-        // Verificar disponibilidad
         $sqlCheck = "
             SELECT COUNT(*) as conflictos
             FROM Reserva
@@ -125,14 +120,7 @@ try {
         }
     }
 
-    // Validar que tenemos un mesa_id válido antes de insertar
-    if ($mesa_id === null || $mesa_id <= 0) {
-        $con->rollBack();
-        echo json_encode(["error" => "No se pudo asignar una mesa. Por favor, intente con otra ubicación u horario, o especifique una mesa manualmente."]);
-        exit();
-    }
-
-    // Crear reserva directamente como Confirmada
+    // Crear reserva como Confirmada
     $sqlReserva = "
         INSERT INTO Reserva (
             reserva_cantidad_personas, 

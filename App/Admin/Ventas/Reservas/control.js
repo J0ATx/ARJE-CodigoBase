@@ -287,6 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(response => response.json())
             .then(data => {
+                console.log(data)
                 if (data.error) {
                     alert('Error: ' + data.error);
                 } else {

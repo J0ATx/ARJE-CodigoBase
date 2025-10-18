@@ -11,8 +11,6 @@
         }
 
         $con->beginTransaction();
-
-        // Obtener datos de la reserva
         $sqlReserva = "SELECT * FROM Reserva WHERE reserva_id = ?";
         $stmt = $con->prepare($sqlReserva);
         $stmt->execute([$reserva_id]);
@@ -26,7 +24,6 @@
 
         // Si no tiene mesa asignada, asignarla
         if ($reserva['mesa_id'] === null && $mesa_id !== null) {
-            // Verificar que la mesa esté disponible
             $sqlCheck = "
                 SELECT COUNT(*) as conflictos
                 FROM Reserva

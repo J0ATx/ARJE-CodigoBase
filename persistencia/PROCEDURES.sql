@@ -9,7 +9,7 @@ CREATE PROCEDURE Validar_SignUp_Cliente (
     OUT mensaje VARCHAR(100)
 )
 BEGIN
-    IF (SELECT COUNT(*) FROM Cliente WHERE cliente_id = email) > 0 THEN
+    IF (SELECT COUNT(*) FROM Datos_Usuarios WHERE usuario_id = email) > 0 THEN
         SET mensaje = 'El usuario ya existe';
         SET usuario = NULL;
     ELSE
@@ -42,7 +42,7 @@ CREATE PROCEDURE Validar_SignUp_Personal (
     OUT mensaje VARCHAR(100)
 )
 BEGIN
-    IF (SELECT COUNT(*) FROM Personal WHERE personal_id = email) > 0 THEN
+    IF (SELECT COUNT(*) FROM Datos_Usuarios WHERE usuario_id = email) > 0 THEN
         SET mensaje = 'El usuario ya existe';
         SET usuario = NULL;
     ELSE
