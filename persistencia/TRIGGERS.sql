@@ -1,6 +1,5 @@
--- Trigger para asignar ID de imagen al insertar en Personal
 DELIMITER $$
-CREATE TRIGGER before_personal_insert
+CREATE TRIGGER personal_img_setter
 BEFORE INSERT ON Personal
 FOR EACH ROW
 BEGIN
@@ -8,8 +7,7 @@ BEGIN
     SET NEW.personal_id_img = LAST_INSERT_ID();
 END $$
 
--- Trigger para asignar ID de imagen al insertar en Cliente
-CREATE TRIGGER before_cliente_insert
+CREATE TRIGGER cliente_img_setter
 BEFORE INSERT ON Cliente
 FOR EACH ROW
 BEGIN

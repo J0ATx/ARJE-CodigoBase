@@ -50,6 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$especificacion, $montoTotal, $idMozo, $mesaId]);
         $idPedido = (int)$con->lastInsertId();
 
+        // Actualizar estado de la mesa a "Ocupada"
+        $stmtMesa = $con->prepare('UPDATE Mesa SET mesa_estado = "Ocupada" WHERE mesa_id = ?');
+        $stmtMesa->execute([$mesaId]);
+
         // Insertar productos en Contiene con cantidad
         $stmtCont = $con->prepare('INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (?, ?, ?)');
         foreach ($productos as $prod) {
