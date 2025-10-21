@@ -187,7 +187,7 @@ img {
                             <h3 id="userName">Sin sesión</h3>
                             <h4 id="userRol">Sin sesión</h4>
                         </div>
-                        <button class="dropdown-btn profile-btn" id="profileBtn">
+                        <a href='/ARJE-CodigoBase/App/Client/MiUsuario/FrontEnd/index.html' class="dropdown-btn profile-btn" id="profileBtn">
                             <svg id='user-circle_24' width='24' height='24' viewBox='0 0 24 24'
                                 xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
                                 <rect width='24' height='24' stroke='none' fill='white' opacity='0' />
@@ -220,7 +220,8 @@ img {
                                 </g>
                             </svg>
                             Mi usuario
-                        </button>
+                        </a>
+
                         <button class="dropdown-btn dashboard-btn" id="dashboardBtn">
                             <a href="/ARJE-CodigoBase/App/Admin/Gerente/Empresa/FrontEnd/index.html">
                                 <svg id='Dashboard_Layout_24' width='24' height='24' viewBox='0 0 24 24'

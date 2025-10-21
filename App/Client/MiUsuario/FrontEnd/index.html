@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Usuario</title>
+    <style>
+        /* Modal styles */
+        #modalEditar {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        #modalEditar .modal-content {
+            background: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            position: relative;
+        }
+        #modalEditar .close {
+            position: absolute;
+            right: 10px; top: 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mi Usuario FrontEnd</h1>
+    <div id="datosUsuario">Cargando datos...</div>
+    <button id="btnModificar" style="margin-top:20px;">Modificar datos</button>
+
+    <div id="modalEditar">
+        <div class="modal-content">
+            <span class="close" id="cerrarModal">&times;</span>
+            <h3>Editar datos</h3>
+            <form id="formEditar">
+                <label>Gmail (ID):<br>
+                    <input type="text" id="editId" name="id" required>
+                </label><br><br>
+                <label>Nombre:<br>
+                    <input type="text" id="editNombre" name="nombre" required>
+                </label><br><br>
+                <label>Apellido:<br>
+                    <input type="text" id="editApellido" name="apellido" required>
+                </label><br><br>
+                <label>Teléfono:<br>
+                    <input type="text" id="editTelefono" name="telefono" required>
+                </label><br><br>
+                <label>Platillo Favorito:<br>
+                    <input type="text" id="editPlatillofav" name="platillofav">
+                </label><br><br>
+                <label>Contraseña:<br>
+                    <input type="password" id="editContrasenia" name="contrasenia" placeholder="Nueva contraseña">
+                </label><br><br>
+                <button type="submit">Guardar cambios</button>
+            </form>
+            <div id="msgEditar" style="color:green;margin-top:10px;"></div>
+        </div>
+    </div>
+    <script src="../control.js"></script>
+</body>     
+</html>
