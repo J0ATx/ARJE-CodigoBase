@@ -1,18 +1,153 @@
 const subFavicon = document.getElementById('subir_favicon');
 const subLogo = document.getElementById('subir_logo');
-const nomEmpresa = document.getElementById('cambiar_nombre');
-const misEmpresa = document.getElementById('cambiar_mision');
-const visEmpresa = document.getElementById('cambiar_vision');
-const whtsppEmpresa = document.getElementById('cambiar_whatsapp');
-const instagramEmpresa = document.getElementById('cambiar_instagram');
-const fcbkEmpresa = document.getElementById('cambiar_facebook');
-const emailEmpresa = document.getElementById('cambiar_email');
-const ubiEmpresa = document.getElementById('cambiar_ubicacion');
-const horEmpresa = document.getElementById('cambiar_horario');
+const cambiarInfo = document.getElementById('cambiar_informacion');
+const cambiarUbicacion = document.getElementById('cambiar_ubicacion');
+const addHorario = document.getElementById('agregar_horario');
 const addTel = document.getElementById('agregar_telefono');
-const delTel = document.getElementById('quitar_telefono');
-const addval = document.getElementById('agregar_valor');
-const delval = document.getElementById('quitar_valor');
+
+function cargarDatos() {
+    fetch('../BackEnd/cargarDatos.php', {
+        method: 'GET'
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('info').innerHTML = '';
+        document.getElementById('ubicacion').innerHTML = '';
+        document.getElementById('horarios').innerHTML = '';
+        document.getElementById('telefonos').innerHTML = '';
+
+        for (const [clave, valor] of Object.entries(data.info)) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = clave;
+            input.value = valor;
+            document.getElementById('info').appendChild(input);
+            document.getElementById('info').appendChild(document.createElement('br'));
+        }
+        for (const [clave, valor] of Object.entries(data.ubicacion)) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = clave;
+            input.value = valor;
+            document.getElementById('ubicacion').appendChild(input);
+        }
+
+        data.horarios.forEach(element => {
+            const dia = document.createElement('input');
+            dia.type = 'text';
+            dia.name = 'dias[]';
+            dia.id = element.empresa_dia;
+            dia.value = element.empresa_dia;
+            const hora = document.createElement('input');
+            hora.type = 'text';
+            hora.name = 'horas[]';
+            hora.id = element.empresa_hora;
+            hora.value = element.empresa_hora;
+            const btnQuitar = document.createElement('button');
+            btnQuitar.type = 'button';
+            btnQuitar.textContent = 'Quitar';
+            btnQuitar.id = 'quitar_horario';
+            btnQuitar.addEventListener('click', function() {
+                formdata = new FormData();
+                formdata.append('dia', element.empresa_dia);
+                formdata.append('hora', element.empresa_hora);
+
+                fetch('../BackEnd/delHorario.php', {
+                method: 'POST',
+                body: formdata
+                })
+                .then(res => res.text())
+                .then(data => {
+                    console.log(data);
+                    cargarDatos();
+                })
+            });
+            const btnEditar = document.createElement('button');
+            btnEditar.type = 'button';
+            btnEditar.textContent = 'Editar';
+            btnEditar.id = 'editar_horario';
+            btnEditar.addEventListener('click', function() {
+                const nuevoHorario = prompt('Ingrese el nuevo horario:', hora.value);
+                if (nuevoHorario !== null && nuevoHorario.trim() !== '') {
+                    formdata = new FormData();
+                    formdata.append('dia', element.empresa_dia);
+                    formdata.append('hora', nuevoHorario);
+                    formdata.append('anterior_horario', element.empresa_hora);
+
+                    fetch('../BackEnd/editHorario.php', {
+                    method: 'POST',
+                    body: formdata
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        console.log(data);
+                        cargarDatos();
+                    });
+                }
+            });
+            document.getElementById('horarios').appendChild(dia);
+            document.getElementById('horarios').appendChild(hora);
+            document.getElementById('horarios').appendChild(btnEditar);
+            document.getElementById('horarios').appendChild(btnQuitar);
+            document.getElementById('horarios').appendChild(document.createElement('br'));
+        });
+
+        data.telefonos.forEach(element => {
+            const tel = document.createElement('input');
+            tel.type = 'text';
+            tel.name = 'telefonos[]';
+            tel.id = element.empresa_telefono;
+            tel.value = element.empresa_telefono;
+            const btnQuitar = document.createElement('button');
+            btnQuitar.type = 'button';
+            btnQuitar.textContent = 'Quitar Telefono';
+            btnQuitar.id = element.empresa_telefono;
+            btnQuitar.addEventListener('click', function() {
+                formdata = new FormData();
+                formdata.append('telefono', element.empresa_telefono);
+
+                fetch('../BackEnd/delTel.php', {
+                method: 'POST',
+                body: formdata
+                })
+                .then(res => res.text())
+                .then(data => {
+                    console.log(data);
+                    cargarDatos();
+                })
+            });
+            const btnEditar = document.createElement('button');
+            btnEditar.type = 'button';
+            btnEditar.textContent = 'Editar Telefono';
+            btnEditar.id = element.empresa_telefono;
+            btnEditar.addEventListener('click', function() {
+                const nuevoTel = prompt('Ingrese el nuevo número de teléfono:', tel.value);
+                if (nuevoTel !== null && nuevoTel.trim() !== '') {
+                    formdata = new FormData();
+                    formdata.append('nuevo_telefono', nuevoTel);
+                    formdata.append('anterior_telefono', element.empresa_telefono);
+
+                    fetch('../BackEnd/editTel.php', {
+                    method: 'POST',
+                    body: formdata
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        console.log(data);
+                        cargarDatos();
+                    });
+                }
+            });
+            document.getElementById('telefonos').appendChild(tel);
+            document.getElementById('telefonos').appendChild(btnEditar);
+            document.getElementById('telefonos').appendChild(btnQuitar);
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    cargarDatos();
+});
 
 subFavicon.addEventListener('click', function (e) {
     const favicon = document.getElementById('favicon');
@@ -84,33 +219,74 @@ subLogo.addEventListener('click', function (e) {
     });
 });
 
-// nomEmpresa.addEventListener('click', function (e) {
-//     const nombre = document.getElementById('nombre').value;
-//     if (!nombre) {
-//         alert('Por favor, ingresa un nombre de empresa.');
-//         return;
-//     }
-
-//     formdata = new FormData();
-//     formdata.append('nombre', nombre);
-
-//     fetch('../BackEnd/empresa.php', {
-//         method: 'POST',
-//         body: formdata
-//     })
-// });
-
-function actualizarCampo(campo, valor){
+cambiarInfo.addEventListener('click', function(e){
+    e.preventDefault();
     formdata = new FormData();
-    formdata.append('campo', campo);
-    formdata.append('valor', valor);
+    formdata.append('nombre', document.getElementById('empresa_nombre').value);
+    formdata.append('mision', document.getElementById('empresa_mision').value);
+    formdata.append('vision', document.getElementById('empresa_vision').value);
+    formdata.append('valores', document.getElementById('empresa_valores').value);
+    formdata.append('whatsapp', document.getElementById('empresa_whatsapp').value);
+    formdata.append('instagram', document.getElementById('empresa_instagram').value);
+    formdata.append('facebook', document.getElementById('empresa_facebook').value);
 
-    fetch('../BackEnd/empresa.php', {
-        method: 'POST',
-        body: formdata
+    fetch('../BackEnd/cambiarInfo.php', {
+    method: 'POST',
+    body: formdata
     })
     .then(res => res.text())
-    .then(data => {})
-    .then(err)
-};
+    .then(data => {
+        console.log(data);
+        cargarDatos();
+    })
+});
 
+cambiarUbicacion.addEventListener('click', function(e){
+    e.preventDefault();
+    formdata = new FormData();
+    formdata.append('ciudad', document.getElementById('empresa_ciudad').value);
+    formdata.append('calles', document.getElementById('empresa_calle').value);
+
+    fetch('../BackEnd/cambiarUbicacion.php', {
+    method: 'POST',
+    body: formdata
+    })
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+        cargarDatos();
+    })
+});
+
+addHorario.addEventListener('click', function(e){
+    e.preventDefault();
+    formdata = new FormData();
+    formdata.append('dia', document.getElementById('dia').value);
+    formdata.append('hora', document.getElementById('hora').value);
+
+    fetch('../BackEnd/addHorario.php', {
+    method: 'POST',
+    body: formdata
+    })
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+        cargarDatos();
+    })
+});
+
+addTel.addEventListener('click', function(e){
+    e.preventDefault();
+    formdata = new FormData();
+    formdata.append('telefono', document.getElementById('tel').value);
+
+    fetch('../BackEnd/addTel.php', {
+    method: 'POST',
+    body: formdata
+    })
+    .then(res => res.text())
+    .then(data => {
+        console.log(data);
+        cargarDatos();
+    })
+});
