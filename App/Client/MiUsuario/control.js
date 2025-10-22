@@ -26,25 +26,26 @@ function cargarDatosUsuario() {
 }
 
 function inicializarEventos() {
-    // Botones para abrir/cerrar el modal de edición
     document.getElementById('btnModificar')?.addEventListener('click', abrirModalEdicion);
+    document.getElementById('btnCambiarFoto')?.addEventListener('click', abrirModalFoto);
     document.getElementById('cerrarModal')?.addEventListener('click', cerrarModal);
-    
-    // Cerrar modal al hacer clic fuera de él
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('modalEditar');
-        if (event.target === modal) {
+
+    window.addEventListener('click', function (event) {
+        const modalEdit = document.getElementById('modalEditar');
+        if (event.target === modalEdit) {
+            cerrarModal();
+        }
+        const modalFoto = document.getElementById('modalFoto');
+        if (event.target === modalFoto) {
             cerrarModal();
         }
     });
-    
-    // Manejar envío del formulario de datos
+
     const formEditar = document.getElementById('formEditar');
     if (formEditar) {
         formEditar.addEventListener('submit', enviarDatosUsuario);
     }
-    
-    // Manejar envío del formulario de foto de perfil
+
     const formFoto = document.getElementById('formFotoPerfil');
     if (formFoto) {
         formFoto.addEventListener('submit', enviarFotoPerfil);
@@ -53,158 +54,166 @@ function inicializarEventos() {
 
 function abrirModalEdicion() {
     if (!usuarioActual) return;
-    
+
     document.getElementById('editId').value = usuarioActual.id || '';
     document.getElementById('editNombre').value = usuarioActual.nombre || '';
     document.getElementById('editApellido').value = usuarioActual.apellido || '';
     document.getElementById('editTelefono').value = usuarioActual.telefono || '';
     document.getElementById('editPlatillofav').value = usuarioActual.platillofav || '';
     document.getElementById('editContrasenia').value = '';
-    
+
     document.getElementById('msgEditar').innerText = '';
     document.getElementById('msgEditar').style.color = '';
-    
+
     document.getElementById('modalEditar').style.display = 'block';
+}
+function abrirModalFoto() {
+    document.getElementById('modalFoto').style.display = 'block';
 }
 
 function cerrarModal() {
     document.getElementById('modalEditar').style.display = 'none';
+    document.getElementById('modalFoto').style.display = 'none';
     document.getElementById('fotoPerfil').value = '';
 }
 
 function enviarDatosUsuario(e) {
     e.preventDefault();
-    
+
     const formData = new FormData();
-    
+
     formData.append('nombre', document.getElementById('editNombre').value.trim());
     formData.append('apellido', document.getElementById('editApellido').value.trim());
     formData.append('telefono', document.getElementById('editTelefono').value.trim());
-    
+
     const platillofav = document.getElementById('editPlatillofav')?.value.trim();
     if (platillofav) {
         formData.append('platillofav', platillofav);
     }
-    
+
     const contrasenia = document.getElementById('editContrasenia').value;
     if (contrasenia) {
         formData.append('contrasenia', contrasenia);
     }
-    
+
     const btnSubmit = document.querySelector('#formEditar button[type="submit"]');
     const btnText = btnSubmit.textContent;
     btnSubmit.disabled = true;
     btnSubmit.textContent = 'Guardando...';
-    
+
     fetch('../BackEnd/modificar.php', {
         method: 'POST',
         body: formData,
         credentials: 'same-origin'
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor');
-        }
-        return response.json();
-    })
-    .then(resp => {
-        if (resp.success) {
-            mostrarMensaje('Datos actualizados correctamente', 'success');
-            if (resp.user) {
-                usuarioActual = { ...usuarioActual, ...resp.user };
-                mostrarDatosUsuario(usuarioActual);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
             }
-            setTimeout(cerrarModal, 1000);
-        } else {
-            throw new Error(resp.error || 'Error al actualizar los datos');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        mostrarMensaje(error.message || 'Error al actualizar los datos', 'error');
-    })
-    .finally(() => {
-        btnSubmit.disabled = false;
-        btnSubmit.textContent = btnText;
-    });
+            return response.json();
+        })
+        .then(resp => {
+            if (resp.success) {
+                mostrarMensaje('Datos actualizados correctamente', 'success');
+                if (resp.user) {
+                    usuarioActual = { ...usuarioActual, ...resp.user };
+                    mostrarDatosUsuario(usuarioActual);
+                }
+                setTimeout(cerrarModal, 1000);
+            } else {
+                throw new Error(resp.error || 'Error al actualizar los datos');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarMensaje(error.message || 'Error al actualizar los datos', 'error');
+        })
+        .finally(() => {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = btnText;
+        });
 }
+
+
 
 function enviarFotoPerfil(e) {
     e.preventDefault();
-    
+
     const formData = new FormData();
     const fotoPerfil = document.getElementById('fotoPerfil').files[0];
-    
+
     if (!fotoPerfil) {
         mostrarMensaje('Por favor, selecciona una imagen', 'error');
         return;
     }
-    
+
     formData.append('fotoPerfil', fotoPerfil);
-    
+
     const btnSubmit = e.target.querySelector('button[type="submit"]');
     const btnText = btnSubmit.textContent;
     btnSubmit.disabled = true;
     btnSubmit.textContent = 'Subiendo...';
-    
+
     fetch('../BackEnd/actualizar_foto.php', {
         method: 'POST',
         body: formData,
         credentials: 'same-origin'
     })
-    .then(response => {
-        if (!response.ok) throw new Error('Error en la respuesta del servidor');
-        return response.json();
-    })
-    .then(resp => {
-        if (resp.success) {
-            mostrarMensaje('Foto de perfil actualizada correctamente', 'success');
-            // Recargar los datos del usuario para actualizar la imagen
-            cargarDatosUsuario();
-            // Cerrar el modal si es necesario
-            const modal = document.getElementById('modalEditar');
-            if (modal) {
-                modal.style.display = 'none';
+        .then(response => {
+            if (!response.ok) throw new Error('Error en la respuesta del servidor');
+            return response.json();
+        })
+        .then(resp => {
+            if (resp.success) {
+                mostrarMensaje('Foto de perfil actualizada correctamente', 'success');
+                cargarDatosUsuario();
+                const modal = document.getElementById('modalEditar');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            } else {
+                throw new Error(resp);
             }
-        } else {
-            throw new Error(resp.error || 'Error al actualizar la foto de perfil');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        mostrarMensaje(error.message || 'Error al actualizar la foto de perfil', 'error');
-    })
-    .finally(() => {
-        btnSubmit.disabled = false;
-        btnSubmit.textContent = btnText;
-    });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarMensaje(error.message || 'Error al actualizar la foto de perfil', 'error');
+        })
+        .finally(() => {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = btnText;
+        });
 }
 
 function mostrarMensaje(mensaje, tipo = 'info') {
     const msgElement = document.getElementById('msgEditar');
     if (!msgElement) return;
-    
+
     msgElement.innerText = mensaje;
-    msgElement.style.color = tipo === 'error' ? '#dc3545' : 
-                           tipo === 'success' ? '#28a745' : 
-                           '#17a2b8';
+    msgElement.style.color = tipo === 'error' ? '#dc3545' :
+        tipo === 'success' ? '#28a745' :
+            '#17a2b8';
 }
 
-function mostrarDatosUsuario(usuario) {
+async function mostrarDatosUsuario(usuario) {
+
     if (!usuario) return;
-    
+
     const contenedor = document.getElementById('datosUsuario');
     if (!contenedor) return;
-    
+
     const fidelizado = usuario.cliente_fidelizado ? 'Sí' : 'No';
-    const avatarPath = usuario.avatar ? 
-        `../BackEnd/mostrar_avatar.php?id=${usuario.avatar}` : 
-        '../BackEnd/mostrar_avatar.php?id=default';
-    
+
+    const res = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+        method: 'GET',
+        credentials: 'same-origin'
+    });
+    const avatar = await res.json();
+
     contenedor.innerHTML = `
         <div class="perfil-container">
             <div class="avatar-container">
-                <img src="${avatarPath}" alt="Foto de perfil" class="avatar">
+                <img src="/ARJE-CodigoBase/App/Recursos/avatars/${avatar.avatar}" alt="Foto de perfil" class="avatar" id="avatar">
             </div>
             <div class="datos-container">
                 <ul class="datos-lista">

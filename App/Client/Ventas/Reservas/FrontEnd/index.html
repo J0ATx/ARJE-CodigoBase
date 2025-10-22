@@ -20,8 +20,8 @@
         <div class="page">
             <div class="left-side">
                 <client-header></client-header>
+                <div id="panorama"></div>
             </div>
-
             <div class="right-side">
                 <div class="form-box">
 
@@ -35,7 +35,8 @@
                                     <img src="files/svg/Group.svg" alt="Fecha" />
                                     <input type="date" name="fecha" id="fecha" required>
                                     <span class="tooltip-icon" aria-label="Más información">?</span>
-                                    <div class="tooltip-content" role="tooltip">Las reservas deben realizarse con al menos 2 días de antelación</div>
+                                    <div class="tooltip-content" role="tooltip">Las reservas deben realizarse con al
+                                        menos 2 días de antelación</div>
                                 </div>
 
                                 <div class="input-group">
@@ -59,9 +60,13 @@
                                 <div class="input-group tooltip">
                                     <label class="label" for="cantidad">Comensales</label>
                                     <img src="files/svg/Guess.svg" alt="Cantidad de personas" />
-                                    <input type="number" name="cantidad" id="cantidad" min="1" max="6" placeholder="Comensales" required>
+                                    <input type="number" name="cantidad" id="cantidad" min="1" max="6"
+                                        placeholder="Comensales" required>
                                     <span class="tooltip-icon" aria-label="Más información">?</span>
-                                    <div class="tooltip-content" role="tooltip">Para reservas de más de 6 personas, por favor <a href="/ARJE-CodigoBase/App/Client/Empresa/Contacto/index.html">contactanos.</a> </div>
+                                    <div class="tooltip-content" role="tooltip">Para reservas de más de 6 personas, por
+                                        favor <a
+                                            href="/ARJE-CodigoBase/App/Client/Empresa/Contacto/index.html">contactanos.</a>
+                                    </div>
                                 </div>
                             </div>
 
@@ -80,13 +85,18 @@
                                     </label>
                                 </div>
                                 <div id="comentarioContainer" style="display: none; margin-top: 1rem;">
-                                    <label class="label" for="comentario">Especificaciones de la mesa <span style="color: #e74c3c;">*</span></label>
-                                    <textarea id="comentario" name="comentario" rows="3" placeholder="Ej: Preferimos mesa cerca de la ventana, necesitamos silla para bebé, somos un grupo grande, etc." required></textarea>
-                                    <small style="color: #666; font-size: 0.85em;">Un gerente revisará tu solicitud y asignará la mesa más adecuada según tus necesidades específicas.</small>
+                                    <label class="label" for="comentario">Especificaciones de la mesa <span
+                                            style="color: #e74c3c;">*</span></label>
+                                    <textarea id="comentario" name="comentario" rows="3"
+                                        placeholder="Ej: Preferimos mesa cerca de la ventana, necesitamos silla para bebé, somos un grupo grande, etc."
+                                        required></textarea>
+                                    <small style="color: #666; font-size: 0.85em;">Un gerente revisará tu solicitud y
+                                        asignará la mesa más adecuada según tus necesidades específicas.</small>
                                 </div>
                                 <small style="color: #666; font-size: 0.8em; margin-top: 0.5rem; display: block;">
-                                    💡 <strong>Asignación automática:</strong> Te asignamos la mejor mesa disponible.<br>
-                                    💬 <strong>Solicitud manual:</strong> Puedes especificar preferencias y un gerente elegirá la mesa ideal para ti.
+                                    <strong>Asignación automática:</strong> Te asignamos la mejor mesa disponible.<br>
+                                    <strong>Solicitud manual:</strong> Puedes especificar preferencias y un gerente
+                                    elegirá la mesa ideal para ti.
                                 </small>
                             </div>
                         </div>
@@ -110,7 +120,8 @@
                             <li><strong>Hora:</strong> <span id="resumen-hora"></span></li>
                             <li><strong>Cantidad de personas:</strong> <span id="resumen-cantidad"></span></li>
                             <li><strong>Duración:</strong> 2 horas</li>
-                            <li id="resumen-asignacion-info"><strong>Asignación:</strong> <span id="resumen-asignacion"></span></li>
+                            <li id="resumen-asignacion-info"><strong>Asignación:</strong> <span
+                                    id="resumen-asignacion"></span></li>
                         </ul>
                     </div>
                     <div class="modal-actions">

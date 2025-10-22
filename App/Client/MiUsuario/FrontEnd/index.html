@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Usuario</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h1>Mi Usuario FrontEnd</h1>
     <div class="container">
         <h1>Mi Perfil</h1>
-        
+
         <div id="datosUsuario">
-            <!-- Los datos del usuario se cargarán aquí dinámicamente -->
+
         </div>
-        
+
         <div class="botones-accion">
             <button id="btnModificar" class="btn btn-editar">Editar Datos</button>
             <button id="btnCambiarFoto" class="btn btn-foto">Cambiar Foto de Perfil</button>
@@ -22,60 +24,61 @@
         </div>
     </div>
 
-    <!-- Modal para editar datos del usuario -->
     <div id="modalEditar">
         <div class="modal-content">
             <span class="cerrar" id="cerrarModal">&times;</span>
-            
-            <!-- Formulario para editar datos -->
+
             <form id="formEditar" class="formulario">
                 <h2>Editar Perfil</h2>
                 <div id="msgEditar"></div>
-                
+
                 <input type="hidden" id="editId" name="id">
-                
+
                 <div class="form-group">
                     <label for="editNombre">Nombre:</label>
                     <input type="text" id="editNombre" name="nombre" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="editApellido">Apellido:</label>
                     <input type="text" id="editApellido" name="apellido" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="editTelefono">Teléfono:</label>
                     <input type="tel" id="editTelefono" name="telefono">
                 </div>
-                
+
                 <div id="platilloFavContainer" class="form-group" style="display: none;">
                     <label for="editPlatillofav">Platillo Favorito:</label>
                     <input type="text" id="editPlatillofav" name="platillofav">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="editContrasenia">Nueva Contraseña (dejar en blanco para no cambiar):</label>
                     <input type="password" id="editContrasenia" name="contrasenia">
                 </div>
-                
+
                 <div class="form-actions">
                     <button type="submit" class="btn-guardar">Guardar Cambios</button>
                     <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
                 </div>
             </form>
-            
-            <!-- Formulario para cambiar foto de perfil -->
-            <form id="formFotoPerfil" class="formulario" enctype="multipart/form-data" style="display: none;">
+
+        </div>
+    </div>
+    <div id="modalFoto">
+        <div class="modal-content">
+            <form id="formFotoPerfil" class="formulario">
                 <h2>Cambiar Foto de Perfil</h2>
                 <div id="msgFoto"></div>
-                
+
                 <div class="form-group">
                     <label for="fotoPerfil">Seleccionar imagen:</label>
                     <input type="file" id="fotoPerfil" name="fotoPerfil" accept="image/*" required>
                     <small>Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 2MB</small>
                 </div>
-                
+
                 <div class="form-actions">
                     <button type="submit" class="btn-guardar">Subir Foto</button>
                     <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
@@ -85,5 +88,7 @@
     </div>
 
     <script src="../control.js"></script>
-</body>     
+    <script src="../session.js"></script>
+</body>
+
 </html>

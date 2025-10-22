@@ -35,21 +35,19 @@ try {
     }
 
     
-    $stmt = $con->prepare("SELECT usuario_img FROM Datos_Usuarios WHERE usuario_id = ?");
-    $stmt->execute([$_SESSION["usuario_id"]]);
-    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-    $rutaDestino = $config['avatar']['dir'] . $usuario['usuario_img'];
-    array_map('unlink', glob($config['avatar']['dir'] . $usuario['usuario_img'] . '.*'));
+    $rutaDestino = $config['avatar']['dir'] . $_SESSION['img'] . "." . $fileExt;
+    array_map('unlink', glob($config['avatar']['dir'] . $_SESSION['img'] . '.*'));
     
     if (!move_uploaded_file($file['tmp_name'], $rutaDestino)) {
-        throw new Exception("Error al guardar la imagen de perfil");
+        echo json_encode([$file['tmp_name']]);
     }
 
 
     echo json_encode([
         'success' => true,
         'message' => 'Foto de perfil actualizada correctamente',
-        'avatar' => $usuario['usuario_img']
+        'avatar' => $_SESSION['img'] . "." . $fileExt,
+        'name' => $file['tmp_name']
     ]);
     
 } catch (Exception $e) {

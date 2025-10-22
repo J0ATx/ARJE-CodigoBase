@@ -20,7 +20,7 @@ async function loadSVGLogo() {
 
 async function checkSession() {
     try {
-        const response = await fetch('../BackEnd/checkSession.php', {
+        const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
             method: 'GET',
             credentials: 'same-origin'
         });
@@ -50,6 +50,12 @@ async function checkSession() {
             if (data.user.rol === "Gerente-General") {
                 dashboardBtnElement.style.display = 'flex';
             }
+            const resposnseAvatar = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+            const avatar = await resposnseAvatar.json();
+            document.getElementById('avatar').src = "/ARJE-CodigoBase/App/Recursos/avatars/" + avatar.avatar
             showContent();
         }
     } catch (error) {

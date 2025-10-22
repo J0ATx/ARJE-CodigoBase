@@ -25,13 +25,19 @@ async function checkSession() {
             credentials: 'same-origin'
         });
         const data = await response.json();
-        console.log(data);
         const userNameElement = document.getElementById('userName');
         const userRolElement = document.getElementById('userRol');
         const dashboardBtnElement = document.getElementById('dashboardBtn');
         const notLoggedCards = document.querySelectorAll('.notlogged');
         const loggedCards = document.querySelectorAll('.logged');
         const userIcon = document.querySelector('.user-icon');
+
+        const resposnseAvatar = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+        const avatar = await resposnseAvatar.json();
+        document.getElementById('avatar').src = "/ARJE-CodigoBase/App/Recursos/avatars/" + avatar.avatar
         showContent();
 
         if (!data.logged_in) {

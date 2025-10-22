@@ -60,6 +60,7 @@ CREATE TABLE Empresa (
     empresa_nombre VARCHAR (100),
     empresa_mision VARCHAR (250),
     empresa_vision VARCHAR (250),
+    empresa_valores VARCHAR (500),
     empresa_whatsapp VARCHAR (100),
     empresa_instagram VARCHAR (100),
     empresa_facebook VARCHAR (100),
@@ -76,17 +77,18 @@ CREATE TABLE Empresa_Ubicacion (
     FOREIGN KEY (empresa_id) REFERENCES Empresa (empresa_id) ON DELETE CASCADE
 );
 
-CREATE TABLE Empresa_Valor (
-    empresa_id INT NOT NULL,
-    empresa_valor VARCHAR (250),
-    PRIMARY KEY (empresa_id),
-    FOREIGN KEY (empresa_id) REFERENCES Empresa (empresa_id) ON DELETE CASCADE
-);
-
 CREATE TABLE Empresa_Telefono (
     empresa_id INT NOT NULL,
     empresa_telefono INT (9),
-    PRIMARY KEY (empresa_id),
+    PRIMARY KEY (empresa_id, empresa_telefono),
+    FOREIGN KEY (empresa_id) REFERENCES Empresa (empresa_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Empresa_Horario (
+	empresa_id INT NOT NULL,
+    empresa_dia VARCHAR (40),
+    empresa_hora VARCHAR (50),
+    PRIMARY KEY (empresa_id, empresa_dia, empresa_hora),
     FOREIGN KEY (empresa_id) REFERENCES Empresa (empresa_id) ON DELETE CASCADE
 );
 
