@@ -1,37 +1,49 @@
 version: '3.8'
 
 services:
-  app:
+  web:
     build:
       context: ./App
       dockerfile: Dockerfile
     ports:
       - "80:80"
+    volumes:
+      - ./App:/var/www/html
     depends_on:
       - db
+    networks:
+      - arje-network
 
-  maitre_sari:
+  maitre:
     build:
       context: ./maitre_sari
       dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
+    volumes:
+      - ./maitre_sari:/app
     depends_on:
       - db
+    networks:
+      - arje-network
 
   db:
     build:
       context: ./persistencia
       dockerfile: Dockerfile
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydatabase
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: mypassword
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - arje-network
+    environment:
+      MYSQL_DATABASE: arje
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: arje_user
+      MYSQL_PASSWORD: arje_password
+
+networks:
+  arje-network:
+    driver: bridge
 
 volumes:
   db_data:

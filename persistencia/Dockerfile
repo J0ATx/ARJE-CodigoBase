@@ -1,10 +1,17 @@
 FROM mysql:8.0
 
-# Set environment variables (change as needed)
-ENV MYSQL_ROOT_PASSWORD=rootpassword
-ENV MYSQL_DATABASE=mydatabase
-ENV MYSQL_USER=myuser
-ENV MYSQL_PASSWORD=mypassword
+# Set environment variables
+ENV MYSQL_DATABASE=arje
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_USER=arje_user
+ENV MYSQL_PASSWORD=arje_password
 
-# Expose MySQL port
+# Copy SQL files
+COPY *.sql /docker-entrypoint-initdb.d/
+
+# Set default charset and collation
+RUN echo "[mysqld]" >> /etc/mysql/conf.d/docker.cnf \
+    && echo "character-set-server=utf8mb4" >> /etc/mysql/conf.d/docker.cnf \
+    && echo "collation-server=utf8mb4_unicode_ci" >> /etc/mysql/conf.d/docker.cnf
+
 EXPOSE 3306
