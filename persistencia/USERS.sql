@@ -40,7 +40,8 @@ GRANT SELECT ON lostrestanosdb.Personal TO 'empleado'@'localhost';
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Reserva TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Mesa TO 'cliente_registrado'@'localhost';
-GRANT UPDATE ON lostrestanosdb.Cliente TO 'cliente_registrado'@'localhost';
+GRANT UPDATE, SELECT ON lostrestanosdb.Cliente TO 'cliente_registrado'@'localhost';
+GRANT UPDATE, SELECT ON lostrestanosdb.Personal TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Datos_Usuarios TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Producto TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Pedido TO 'cliente_registrado'@'localhost';

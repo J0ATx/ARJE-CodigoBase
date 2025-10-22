@@ -18,7 +18,6 @@ VALUES
   ('diego@example.com',  'Diego',  'Fernández')
 ON DUPLICATE KEY UPDATE cliente_nombre = VALUES(cliente_nombre), cliente_apellido = VALUES(cliente_apellido);
 
--- (Opcional) Alergias de clientes. Ejecuta sólo si querés probar este vínculo.
 INSERT INTO Cliente_Alergia (cliente_id, cliente_alergia)
 VALUES
   ('ana@example.com',   'GLU'),

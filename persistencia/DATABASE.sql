@@ -5,9 +5,6 @@ CREATE TABLE IF NOT EXISTS image_id_sequence (
     id INT AUTO_INCREMENT PRIMARY KEY
 );
 
--- Insert initial value
-INSERT INTO image_id_sequence VALUES (0);
-
 CREATE TABLE Personal (
     personal_id VARCHAR (100) NOT NULL,
     personal_id_img INT NOT NULL UNIQUE,
@@ -47,7 +44,7 @@ CREATE TABLE Cliente (
     cliente_contrasenia VARCHAR (256),
     cliente_calificacion ENUM ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
     cliente_platillo_favorito VARCHAR (150),
-    cliente_fidelizado BOOLEAN,
+    cliente_fidelizado BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (cliente_id)
 );
 

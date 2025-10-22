@@ -17,6 +17,10 @@ if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
             $_SESSION["apellido"] = $usuario["usuario_apellido"];
             $_SESSION["logged"] = true;
             $_SESSION["rol"] = $usuario["usuario_rol"];
+            $_SESSION["telefono"] = $usuario["usuario_telefono"];
+            $_SESSION["calificacion"] = $usuario["usuario_calificacion"];
+            $_SESSION["platillofav"] = $usuario["usuario_platillo_favorito"];
+            $_SESSION["fidelizado"] = $usuario["usuario_fidelizado"];
         }
         $response = [
             "logged_in" => isset($_SESSION["logged"]) && $_SESSION["logged"] === true,
@@ -25,7 +29,11 @@ if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
                 "img" => $_SESSION["img"],
                 "nombre" => $_SESSION["nombre"],
                 "apellido" => $_SESSION["apellido"],
-                "rol" => $_SESSION["rol"]
+                "rol" => $_SESSION["rol"],
+                "telefono" => $_SESSION["telefono"],
+                "calificacion" => $_SESSION["calificacion"],
+                "platillofav" => $_SESSION["platillofav"],
+                "fidelizado" => $_SESSION["fidelizado"]
             ] : null
         ];
     } catch (Exception $e) {

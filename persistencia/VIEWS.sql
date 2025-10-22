@@ -76,6 +76,6 @@ SELECT
     personal_telefono AS usuario_telefono,
     personal_calificacion AS usuario_calificacion,
     NULL AS usuario_platillo_favorito,
-    NULL AS usuario_fidelizado,
+    FALSE AS usuario_fidelizado,
     personal_rol AS usuario_rol
 FROM Personal;
