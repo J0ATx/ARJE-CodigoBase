@@ -15,6 +15,7 @@ BEGIN
     SET NEW.cliente_id_img = LAST_INSERT_ID();
 END $$
 
+<<<<<<< HEAD
 
 CREATE TRIGGER actualizar_promedio_calificacion_insert
 AFTER INSERT ON Comentario
@@ -63,3 +64,6 @@ BEGIN
 END $$
 
 DELIMITER ;
+=======
+DELIMITER ;
+>>>>>>> b854374d271f74f8fb653c39cccbdd6dfeed8880
