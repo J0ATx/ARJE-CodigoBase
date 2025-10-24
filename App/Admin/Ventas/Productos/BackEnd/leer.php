@@ -30,12 +30,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $productos = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // Obtener la imagen del producto si existe
+            $imagePath = null;
+            $imageDir = '../../../../Recursos/productos/';
+            $files = glob($imageDir . $row['producto_id'] . '.*');
+            if (!empty($files)) {
+                $imagePath = str_replace('', '', $files[0]);
+            }
+            
             $producto = array(
                 'producto_id' => (int)$row['producto_id'],
                 'producto_nombre' => $row['producto_nombre'],
                 'producto_precio' => (float)$row['producto_precio'],
                 'producto_calificacion' => isset($row['producto_calificacion']) ? (float)$row['producto_calificacion'] : null,
                 'producto_categoria' => $row['producto_categoria'],
+                'imagen_url' => $imagePath,
                 'ingredientes' => []
             );
 

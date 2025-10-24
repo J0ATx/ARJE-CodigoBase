@@ -13,7 +13,7 @@ $config = [
     'avatar' => [
         'dir' => '../../../Recursos/avatars/',
         'max_size' => 2 * 1024 * 1024,
-        'allowed_types' => ['jpg', 'jpeg', 'png', 'gif']
+        'allowed_types' => ['jpg', 'jpeg', 'png']
     ]
 ];
 

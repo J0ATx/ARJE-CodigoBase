@@ -60,7 +60,7 @@ INSERT INTO Stock (stock_id, stock_nombre, stock_caducidad) VALUES
 (11, 'Tomate', DATE_ADD(CURDATE(), INTERVAL 15 DAY)),
 (12, 'Morrón', DATE_ADD(CURDATE(), INTERVAL 20 DAY)),
 (13, 'Aceitunas', DATE_ADD(CURDATE(), INTERVAL 45 DAY)),
-(14, 'Salchicha tipo Schneck', DATE_ADD(CURDATE(), INTERVAL 40 DAY)),
+(14, 'Panchos (Schneck)', DATE_ADD(CURDATE(), INTERVAL 40 DAY)),
 (15, 'Panceta', DATE_ADD(CURDATE(), INTERVAL 30 DAY)),
 (16, 'Ricotta', DATE_ADD(CURDATE(), INTERVAL 15 DAY)),
 (17, 'Espinaca', DATE_ADD(CURDATE(), INTERVAL 7 DAY)),
@@ -135,7 +135,7 @@ INSERT INTO Producto (producto_id, producto_nombre, producto_precio, producto_re
 (4, 'Rabas', 420.00, 'Anillos de calamar rebozados y fritos.', '12 min', CURDATE(), 'Para Picar', 'chefejecutivo@prueba.com'),
 (5, 'Nuggets (16 Unidades)', 440.00, 'Porción de 16 nuggets de pollo fritos.', '10 min', CURDATE(), 'Para Picar', 'chefejecutivo@prueba.com'),
 (6, 'Aritos de Cebolla', 400.00, 'Aros de cebolla empanizados y fritos.', '10 min', CURDATE(), 'Para Picar', 'chefejecutivo@prueba.com'),
-(7, 'Miniaturas (16 unidades)', 460.00, 'Variedad de pequeñas porciones fritas, típicas para picar.', '15 min', CURDATE(), 'Para Picar', 'chefejecutivo@prueba.com'),
+(7, 'Miniaturas (16 unidades)', 460.00, 'Una picada con pescados y mariscos', '15 min', CURDATE(), 'Para Picar', 'chefejecutivo@prueba.com'),
 (8, 'Sándwich Caliente', 290.00, 'Sandwich caliente clásico con fiambre y pan.', '5 min', CURDATE(), 'Sándwiches', 'chefejecutivo@prueba.com'),
 (9, 'Sándwich Caliente con Mozzarella', 340.00, 'Sandwich caliente con fiambre y mozzarella.', '7 min', CURDATE(), 'Sándwiches', 'chefejecutivo@prueba.com'),
 (10, 'Sándwich Tropical', 380.00, 'Sandwich con jamón, queso, y rodajas de piña.', '8 min', CURDATE(), 'Sándwiches', 'chefejecutivo@prueba.com'),
@@ -165,7 +165,7 @@ INSERT INTO Producto (producto_id, producto_nombre, producto_precio, producto_re
 (34, 'Hamburguesa con fritas (lechuga/tomate)', 320.00, 'Hamburguesa clásica con lechuga y tomate con papas fritas.', '10 min', CURDATE(), 'Hamburguesas', 'chefejecutivo@prueba.com'),
 (35, 'Hamburguesa completa al plato con fritas', 400.00, 'Hamburguesa con ingredientes adicionales servida en plato con fritas.', '15 min', CURDATE(), 'Hamburguesas', 'chefejecutivo@prueba.com'),
 (36, 'Hamburguesa completa al pan con fritas', 400.00, 'Hamburguesa completa servida en pan con papas fritas.', '15 min', CURDATE(), 'Hamburguesas', 'chefejecutivo@prueba.com'),
-(37, 'Asado de tira (x kg), 1 chorizo + guarnición', 680.00, 'Corte de carne asada con chorizo y guarnición a la plancha.', '30 min', CURDATE(), 'Asados', 'chefejecutivo@prueba.com'),
+(37, 'Asado de tira, 1 chorizo + guarnición', 680.00, 'Corte de carne asada con chorizo y guarnición a la plancha.', '30 min', CURDATE(), 'Asados', 'chefejecutivo@prueba.com'),
 (38, 'Entrecot grillé con guarnición', 550.00, 'Entrecot a la parrilla con guarnición.', '25 min', CURDATE(), 'Asados', 'chefejecutivo@prueba.com'),
 (39, 'Entrecot grillé con guarnición y salsa', 650.00, 'Entrecot a la parrilla con guarnición y salsa.', '25 min', CURDATE(), 'Asados', 'chefejecutivo@prueba.com'),
 (40, 'Suprema grillé con guarnición', 550.00, 'Suprema de pollo a la parrilla con guarnición.', '20 min', CURDATE(), 'Asados', 'chefejecutivo@prueba.com'),
@@ -189,14 +189,12 @@ INSERT INTO Producto (producto_id, producto_nombre, producto_precio, producto_re
 (58, 'Pizzeta con mozzarella con gusto', 590.00, 'Pizza pequeña con mozzarella y un gusto extra.', '20 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
 (59, '1/2 metro de mozzarella', 580.00, 'Medio metro de pizza con mozzarella.', '20 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
 (60, '1/4 metro de mozzarella con gusto', 450.00, 'Cuarto de metro de pizza con mozzarella y un gusto.', '15 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
-(61, '1/2 metro de mozzarella (precio 2)', 580.00, 'Medio metro de pizza con mozzarella.', '20 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
-(62, '1/2 metro de mozzarella con gusto (precio 2)', 750.00, 'Medio metro de pizza con mozzarella y gusto extra.', '22 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
-(63, 'Metro de mozzarella', 990.00, 'Un metro de pizza con mozzarella.', '25 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
-(64, 'Metro de mozzarella con gusto', 1290.00, 'Un metro de pizza con mozzarella y un gusto extra.', '28 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
-(65, 'Porción de fainá', 150.00, 'Porción de fainá simple.', '10 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
-(66, 'Porción de fainá con mozzarella', 210.00, 'Porción de fainá con mozzarella.', '12 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
-(67, 'Porción figazza', 210.00, 'Porción de pizza figazza (cebolla).', '10 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
-(68, 'Porción de fugazzeta', 280.00, 'Porción de fugazzeta (cebolla y queso).', '10 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com');
+(61, 'Metro de mozzarella', 990.00, 'Un metro de pizza con mozzarella.', '25 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
+(62, 'Metro de mozzarella con gusto', 1290.00, 'Un metro de pizza con mozzarella y un gusto extra.', '28 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
+(63, 'Porción de fainá', 150.00, 'Porción de fainá simple.', '10 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
+(64, 'Porción de fainá con mozzarella', 210.00, 'Porción de fainá con mozzarella.', '12 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
+(65, 'Porción figazza', 210.00, 'Porción de pizza figazza (cebolla).', '10 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
+(66, 'Porción de fugazzeta', 280.00, 'Porción de fugazzeta (cebolla y queso).', '10 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com');
 
 INSERT INTO Consume (producto_id, stock_id, consume_cantidad, consume_medida) VALUES
 -- Para Picar (1-7)
@@ -278,11 +276,9 @@ INSERT INTO Consume (producto_id, stock_id, consume_cantidad, consume_medida) VA
 (58, 37, 0.200, 'kg'), (58, 38, 0.050, 'kg'), (58, 5, 0.250, 'kg'), (58, 3, 0.050, 'kg'), -- Pizzeta con mozzarella con gusto
 (59, 37, 0.400, 'kg'), (59, 38, 0.100, 'kg'), (59, 5, 0.500, 'kg'), -- 1/2 metro de mozzarella
 (60, 37, 0.200, 'kg'), (60, 38, 0.050, 'kg'), (60, 5, 0.250, 'kg'), (60, 11, 0.050, 'kg'), -- 1/4 metro con gusto
-(61, 37, 0.400, 'kg'), (61, 38, 0.100, 'kg'), (61, 5, 0.500, 'kg'), -- 1/2 metro de mozzarella (precio 2)
-(62, 37, 0.400, 'kg'), (62, 38, 0.100, 'kg'), (62, 5, 0.500, 'kg'), (62, 12, 0.100, 'kg'), -- 1/2 metro con gusto
-(63, 37, 0.800, 'kg'), (63, 38, 0.200, 'kg'), (63, 5, 1.000, 'kg'), -- Metro de mozzarella
-(64, 37, 0.800, 'kg'), (64, 38, 0.200, 'kg'), (64, 5, 1.000, 'kg'), (64, 13, 0.050, 'kg'), -- Metro con gusto
-(65, 33, 0.100, 'kg'), (65, 4, 0.010, 'kg'), -- Porción de fainá
-(66, 33, 0.100, 'kg'), (66, 4, 0.010, 'kg'), (66, 5, 0.050, 'kg'), -- Fainá con mozzarella
-(67, 37, 0.100, 'kg'), (67, 4, 0.050, 'kg'), -- Porción figazza
-(68, 37, 0.100, 'kg'), (68, 4, 0.050, 'kg'), (68, 5, 0.080, 'kg'); -- Porción de fugazzeta
+(61, 37, 0.800, 'kg'), (61, 38, 0.200, 'kg'), (61, 5, 1.000, 'kg'), -- Metro de mozzarella
+(62, 37, 0.800, 'kg'), (62, 38, 0.200, 'kg'), (62, 5, 1.000, 'kg'), (62, 13, 0.050, 'kg'), -- Metro con gusto
+(63, 33, 0.100, 'kg'), (63, 4, 0.010, 'kg'), -- Porción de fainá
+(64, 33, 0.100, 'kg'), (64, 4, 0.010, 'kg'), (64, 5, 0.050, 'kg'), -- Fainá con mozzarella
+(65, 37, 0.100, 'kg'), (65, 4, 0.050, 'kg'), -- Porción figazza
+(66, 37, 0.100, 'kg'), (66, 4, 0.050, 'kg'), (66, 5, 0.080, 'kg'); -- Porción de fugazzeta
