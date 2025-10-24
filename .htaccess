@@ -1,0 +1,10 @@
+# RewriteEngine On
+# RewriteBase /
+
+# 1. Mapea la solicitud de la raíz al archivo de inicio real
+# Cuando el usuario pide /, internamente se carga la ruta completa
+# RewriteRule ^$ ARJE-CodigoBase/App/Client/Panel/FrontEnd/index.html [L]
+
+# 2. (Opcional pero recomendado) Si alguien intenta acceder directamente al archivo,
+# se le redirige a la raíz para mantener la URL limpia.
+# RewriteRule ^ARJE-CodigoBase/App/Client/Panel/FrontEnd/index.html$ / [R=301,L]

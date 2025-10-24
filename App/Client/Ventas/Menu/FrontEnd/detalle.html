@@ -2,12 +2,39 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Detalle del Producto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href "../../../../Recursos/favicon.ico">
+    <title>Los 3 Tanos - Detalle del Producto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="../../../../Componentes/JS/headerClient.js"></script>
 </head>
 <body>
-    <h1>Detalle del Producto</h1>
-    <div id="detalle-producto"></div>
-    <button><a href="index.html">Volver</a></button>
-    <script src="../control.js"></script>
+    <div class="main-container">
+        <div class="page">
+            <div class="left-side">
+                <client-header></client-header>
+            </div>
+            <div class="right-side">
+                <div class="form-box">
+                    <div class="back-button">
+                        <button onclick="window.history.back()" class="btn-volver">
+                            ← Volver al Menú
+                        </button>
+                    </div>
+                    <div id="detalle-producto" class="detalle-producto-container"></div>
+                </div>
+            </div>
+            <footer class="footer">
+                <a href="#">Los 3 Tanos Pizzería</a>
+                <a href="#">Contacto</a>
+                <p>Las Toscas M. Ferreira y Central</p>
+            </footer>
+        </div>
+    </div>
+    <script src="../detalles.js"></script>
+    <script src="../session.js"></script>
 </body>
 </html>

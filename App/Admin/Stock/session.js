@@ -5,7 +5,7 @@ async function loadSVGLogo() {
         const logoContainer = document.getElementById('logo-container');
         if (logoContainer) {
             logoContainer.innerHTML = svgText;
-            
+
             const svg = logoContainer.querySelector('svg');
             if (svg) {
                 svg.setAttribute('fill', 'currentColor');
@@ -27,20 +27,27 @@ async function checkSession() {
         const data = await response.json();
 
         if (!data.logged_in) {
-            window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
+            window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
             return false;
         }
-        
-        if (data.user.rol !== "Gerente-General" && data.user.rol !== "Chef-Ejecutivo") {
-            window.location.href = '../../../Client/Panel/FrontEnd/index.html';
+
+        if (data.user.rol !== "Gerente-General") {
+            window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }
+        const resposnseAvatar = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+        const userIcon = document.querySelector('.user-icon');
+        const avatar = await resposnseAvatar.json();
+        userIcon.innerHTML += `<img src="/ARJE-CodigoBase/App/Recursos/avatars/${avatar.avatar}" id="avatar" class="logged" alt="Foto de perfíl">`
         updateUserInfo(data.user);
         showContent();
         return true;
     } catch (error) {
         console.error('Error checking session:', error);
-        window.location.href = '../../../Control/SignIn/FrontEnd/index.html';
+        window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
         return false;
     }
 }
@@ -69,7 +76,7 @@ function showContent() {
     if (loadingScreen) {
         loadingScreen.style.display = 'none';
     }
-    
+
     const mainContent = document.getElementById('main-content');
     if (mainContent) {
         mainContent.classList.add('visible');

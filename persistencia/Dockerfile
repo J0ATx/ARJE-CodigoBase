@@ -1,7 +1,7 @@
 FROM mysql:8.0
 
 # Set environment variables
-ENV MYSQL_DATABASE=arje
+ENV MYSQL_DATABASE=lostrestanosdb
 ENV MYSQL_ROOT_PASSWORD=root
 ENV MYSQL_USER=arje_user
 ENV MYSQL_PASSWORD=arje_password

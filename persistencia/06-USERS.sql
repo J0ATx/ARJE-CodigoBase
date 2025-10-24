@@ -47,6 +47,8 @@ GRANT UPDATE, SELECT ON lostrestanosdb.Personal TO 'cliente_registrado'@'localho
 GRANT SELECT ON lostrestanosdb.Mesa TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Datos_Usuarios TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Producto TO 'cliente_registrado'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Comentario TO 'cliente_registrado'@'localhost';
+GRANT EXECUTE ON PROCEDURE lostrestanosdb.Verificar_Comentario_Existente TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Pedido TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Ubicacion TO 'cliente_registrado'@'localhost';
@@ -56,6 +58,7 @@ GRANT SELECT ON lostrestanosdb.Empresa_Horario TO 'cliente_registrado'@'localhos
 GRANT SELECT, INSERT ON lostrestanosdb.Cliente TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Personal TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Producto TO 'cliente_no_registrado'@'localhost';
+GRANT SELECT ON lostrestanosdb.Comentario TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Datos_Usuarios TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Ubicacion TO 'cliente_no_registrado'@'localhost';

@@ -6,12 +6,17 @@ $response = array();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['productId'])) {
     try {
         $productId = $_POST['productId'];
-        
-        // Fetch product core fields
+
+
         $stmt = $con->prepare("SELECT * FROM Producto WHERE producto_id = ?");
         $stmt->execute([$productId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        $imagePath = null;
+        $imageDir = '../../../../Recursos/productos/';
+        $files = glob($imageDir . $row['producto_id'] . '.*');
+        if (!empty($files)) {
+            $imagePath = str_replace('', '', $files[0]);
+        }
         if ($row) {
             $producto = array(
                 'producto_id' => (int)$row['producto_id'],
@@ -21,10 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['productId'])) {
                 'producto_categoria' => $row['producto_categoria'],
                 'producto_receta' => $row['producto_receta'],
                 'producto_tiempo_preparacion' => $row['producto_tiempo_preparacion'],
-                'ingredientes' => []
+                'ingredientes' => [],
+                'imagen_url' => $imagePath
             );
 
-            // Fetch ingredients from Consume + Stock
             $stmt = $con->prepare("SELECT s.stock_nombre, c.consume_cantidad, c.consume_medida
                                    FROM Consume c JOIN Stock s ON c.stock_id = s.stock_id
                                    WHERE c.producto_id = ?");

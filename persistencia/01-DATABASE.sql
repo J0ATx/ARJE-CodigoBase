@@ -1,4 +1,4 @@
-CREATE DATABASE lostrestanosdb;
+CREATE DATABASE IF NOT EXISTS lostrestanosdb;
 USE lostrestanosdb;
 
 CREATE TABLE IF NOT EXISTS image_id_sequence (
@@ -127,7 +127,7 @@ CREATE TABLE Producto (
     producto_tiempo_preparacion VARCHAR (50),
     producto_creacion DATE,
     producto_categoria VARCHAR (100),
-    producto_calificacion FLOAT,
+    producto_calificacion DECIMAL(2,1),
     personal_id VARCHAR (100) NOT NULL,
     PRIMARY KEY (producto_id),
     FOREIGN KEY (personal_id) REFERENCES Personal (personal_id) ON DELETE CASCADE
@@ -145,7 +145,7 @@ CREATE TABLE Comentario (
     producto_id INT,
     cliente_id VARCHAR (100),
     comentario_contenido VARCHAR (250),
-    comentario_calificacion ENUM ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
+    comentario_calificacion DECIMAL(2,1),
     PRIMARY KEY (comentario_id, producto_id, cliente_id),
     FOREIGN KEY (producto_id) REFERENCES Producto (producto_id) ON DELETE CASCADE,
     FOREIGN KEY (cliente_id) REFERENCES Cliente (cliente_id) ON DELETE CASCADE

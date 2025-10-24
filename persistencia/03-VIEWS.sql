@@ -4,11 +4,12 @@ CREATE VIEW Ventas_Totales AS
 SELECT SUM(pedido_monto) AS total_ventas
 FROM Pedido;
 
--- CREATE VIEW Ventas_Por_Cliente AS
--- SELECT cliente_id, cliente_nombre, SUM(pedido_monto)
--- FROM  Pedido JOIN Efectua JOIN Cliente USING (pedido_id, cliente_id)
--- WHERE pedido_estado = 'Pagado'
--- GROUP BY cliente_id;
+CREATE VIEW Ventas_Por_Cliente AS
+SELECT cliente_id, cliente_nombre, SUM(pedido_monto)
+FROM  Pedido JOIN Efectua USING (pedido_id)
+JOIN Cliente USING (cliente_id)
+WHERE pedido_estado = 'Pagado'
+GROUP BY cliente_id;
 
 CREATE VIEW Ventas_Por_Camarero AS
 SELECT personal_id, personal_nombre, SUM(pedido_monto)
@@ -79,3 +80,15 @@ SELECT
     FALSE AS usuario_fidelizado,
     personal_rol AS usuario_rol
 FROM Personal;
+
+CREATE VIEW ProductosConCalificaciones AS
+SELECT
+    p.producto_id,
+    p.producto_nombre,
+    p.producto_precio,
+    p.producto_categoria,
+    p.producto_calificacion,
+    COUNT(c.comentario_id) AS total_comentarios
+FROM Producto p
+LEFT JOIN Comentario c ON p.producto_id = c.producto_id
+GROUP BY p.producto_id, p.producto_nombre, p.producto_precio, p.producto_categoria, p.producto_calificacion;
