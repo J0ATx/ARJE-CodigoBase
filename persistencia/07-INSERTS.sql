@@ -13,13 +13,13 @@ INSERT INTO Chef_Ejecutivo (personal_id) VALUES
 ('chefejecutivo@prueba.com');
 
 insert into Empresa (empresa_nombre, empresa_mision, empresa_vision, empresa_whatsapp, empresa_instagram, empresa_facebook, personal_id) VALUES ("Los 3 Tanos", "Vender buena comida", "Vender MÁS buena comida", "092412772", "los3tanos_pizzeria", "Pizzeria Los 3 Tanos | Atlántida", "gerente@prueba.com");
-UPDATE empresa SET
+UPDATE Empresa SET
            empresa_valores = "no comer, no matar"
             WHERE empresa_id = 1;
-insert into empresa_telefono (empresa_id, empresa_telefono) VALUES ("1", "43729333");
-insert into empresa_ubicacion (empresa_id, empresa_ciudad, empresa_calle) 
+insert into Empresa_Telefono (empresa_id, empresa_telefono) VALUES ("1", "43729333");
+insert into Empresa_Ubicacion (empresa_id, empresa_ciudad, empresa_calle) 
 VALUES ("1", "Las Toscas", "M. Ferreira y Central");
-INSERT INTO empresa_horario (empresa_id, empresa_dia, empresa_hora) 
+INSERT INTO Empresa_Horario (empresa_id, empresa_dia, empresa_hora) 
 VALUES 
 	("1", "Martes", "19:00 - 00:00"), 
 	("1", "Miércoles", "19:00 - 00:00"), 
