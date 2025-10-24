@@ -33,9 +33,17 @@ function fetchProductos() {
                 categorias[cat].forEach(producto => {
                     const div = document.createElement('div');
                     div.className = 'producto-item';
+                    
+                    // Crear contenedor de imagen con imagen por defecto si no hay imagen
+                    const defaultImage = '/ARJE-CodigoBase/App/Recursos/productos/logo.png'; // Ruta a una imagen por defecto
+                    const imageUrl = producto.imagen_url || defaultImage;
+                    
                     div.innerHTML = `
-                        <strong class="producto-nombre">${producto.producto_nombre}</strong><br>
-                        <span class="producto-precio">$${producto.producto_precio}</span>
+                        <div class="producto-imagen" style="background-image: url('${imageUrl}');"></div>
+                        <div class="producto-info">
+                            <strong class="producto-nombre">${producto.producto_nombre}</strong>
+                            <span class="producto-precio">$${producto.producto_precio}</span>
+                        </div>
                     `;
                     div.onclick = () => {
                         window.location.href = `detalle.html?id=${producto.producto_id}`;
@@ -66,13 +74,58 @@ function mostrarDetalleProducto() {
                 return;
             }
             const cont = document.getElementById('detalle-producto');
+            const imageUrl = producto.imagen_url || '';
+            
             cont.innerHTML = `
-                <ul>
-                    <li><strong class="producto-nombre">Nombre:</strong> ${producto.producto_nombre}</li>
-                    <li><strong class="producto-precio">Precio:</strong> $${producto.producto_precio}</li>
-                    <li><strong>Tiempo de preparación:</strong> ${producto.producto_tiempo_preparacion}</li>
-                    <li><strong>Categoría:</strong> ${producto.producto_categoria}</li>
-                </ul>
+                <div class="detalle-contenedor">
+                    <div class="detalle-imagen" style="background-image: url('${imageUrl}');"></div>
+                    <div class="detalle-info">
+                        <h2>${producto.producto_nombre}</h2>
+                        <p class="precio">$${producto.producto_precio}</p>
+                        ${producto.producto_tiempo_preparacion ? `<p><strong>Tiempo de preparación:</strong> ${producto.producto_tiempo_preparacion}</p>` : ''}
+                        ${producto.producto_categoria ? `<p><strong>Categoría:</strong> ${producto.producto_categoria}</p>` : ''}
+                        ${producto.producto_receta ? `<div class="receta"><h3>Receta:</h3><p>${producto.producto_receta.replace(/\n/g, '<br>')}</p></div>` : ''}
+                    </div>
+                </div>
+                <style>
+                    .detalle-contenedor {
+                        display: flex;
+                        gap: 2rem;
+                        max-width: 900px;
+                        margin: 0 auto;
+                    }
+                    .detalle-imagen {
+                        width: 300px;
+                        height: 300px;
+                        background-size: cover;
+                        background-position: center;
+                        border-radius: 8px;
+                        flex-shrink: 0;
+                    }
+                    .detalle-info {
+                        flex-grow: 1;
+                    }
+                    .precio {
+                        font-size: 1.5rem;
+                        color: #d32f2f;
+                        font-weight: bold;
+                        margin: 1rem 0;
+                    }
+                    .receta {
+                        margin-top: 2rem;
+                        padding-top: 1rem;
+                        border-top: 1px solid #eee;
+                    }
+                    @media (max-width: 768px) {
+                        .detalle-contenedor {
+                            flex-direction: column;
+                        }
+                        .detalle-imagen {
+                            width: 100%;
+                            height: 250px;
+                        }
+                    }
+                </style>
             `;
         })
         .catch(() => {

@@ -102,12 +102,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         
         const id = document.getElementById('productId').value;
+        const imageInput = document.getElementById('productImage');
+        
+        // Add basic form data
         formData.append('nombre', document.getElementById('nombre').value);
         formData.append('precio', document.getElementById('precio').value);
         formData.append('categoria', document.getElementById('categoria').value || '');
         formData.append('tiempo_preparacion', document.getElementById('tiempo_preparacion').value || '');
         formData.append('receta', document.getElementById('receta').value || '');
 
+        // Add ingredients
         const ingredientes = [];
         document.querySelectorAll('.ingredient-item').forEach(item => {
             ingredientes.push({
@@ -124,13 +128,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         formData.append('ingredientes', JSON.stringify(ingredientes));
 
+        // Add image file if selected
+        if (imageInput.files.length > 0) {
+            const file = imageInput.files[0];
+            if (file.size > 2 * 1024 * 1024) {
+                alert('La imagen no debe pesar más de 2MB');
+                return;
+            }
+            formData.append('imagen', file);
+        }
+
         let endpoint = id ? '../BackEnd/editar.php' : '../BackEnd/crear.php';
         if (id) formData.append('id', id);
 
         try {
             const response = await fetch(endpoint, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                // Don't set Content-Type header, let the browser set it with the boundary
             });
 
             const data = await response.json();
@@ -176,9 +191,16 @@ function renderProducts(productos) {
     tableBody.innerHTML = '';
 
     productos.forEach(producto => {
+        const imageUrl = producto.imagen_url || '';
+        
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${producto.producto_nombre}</td>
+            <td>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="producto-imagen" style="width: 40px; height: 40px; border-radius: 4px; background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>
+                    <span>${producto.producto_nombre}</span>
+                </div>
+            </td>
             <td>$${producto.producto_precio}</td>
             <td>${producto.producto_calificacion ?? 'Sin calificaciones'}</td>
             <td class="acciones">
