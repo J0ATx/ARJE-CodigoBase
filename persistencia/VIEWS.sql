@@ -4,11 +4,12 @@ CREATE VIEW Ventas_Totales AS
 SELECT SUM(pedido_monto) AS total_ventas
 FROM Pedido;
 
--- CREATE VIEW Ventas_Por_Cliente AS
--- SELECT cliente_id, cliente_nombre, SUM(pedido_monto)
--- FROM  Pedido JOIN Efectua JOIN Cliente USING (pedido_id, cliente_id)
--- WHERE pedido_estado = 'Pagado'
--- GROUP BY cliente_id;
+CREATE VIEW Ventas_Por_Cliente AS
+SELECT cliente_id, cliente_nombre, SUM(pedido_monto)
+FROM  Pedido JOIN Efectua USING (pedido_id)
+JOIN Cliente USING (cliente_id)
+WHERE pedido_estado = 'Pagado'
+GROUP BY cliente_id;
 
 CREATE VIEW Ventas_Por_Camarero AS
 SELECT personal_id, personal_nombre, SUM(pedido_monto)
