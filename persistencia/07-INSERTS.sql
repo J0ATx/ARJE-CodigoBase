@@ -1,5 +1,4 @@
--- Por si acaso para el Docker
-USE lostrestanosdb
+USE lostrestanosdb;
 
 -- Email: gerente@prueba.com
 -- Contraseña: gerente123 (hasheada correctamente con password_hash)

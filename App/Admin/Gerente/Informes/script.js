@@ -1,45 +1,57 @@
-const fechaInicio = document.getElementById('fechaInicio');
-const fechaFin = document.getElementById('fechaFin');
-const generarInformeBtn = document.getElementById('generarInforme');
-const previsualizarDoc = document.getElementById('previsualizar');
-const doc = document.getElementById('doc');
-
-generarInformeBtn.addEventListener('click', () => {
-    previsualizarDoc.innerHTML = '';
-    let formData = new FormData();
-
-    formData.append('inicio', fechaInicio.value);
-    formData.append('fin', fechaFin.value);
-
-    fetch('../Backend/generarInforme.php', {
-        method: 'POST',
-        body: formData
-    }).then(res => res.json())
-    .then(data => {
-        // doc.innerHTML = data;
-        // previsualizarDoc.appendChild(doc);
-        // let descargar = document.createElement('button');
-        // descargar.id = 'descargarPDF';
-        // descargar.textContent = 'Descargar a PDF';
-        // previsualizarDoc.appendChild(descargar);
-        
-        // descargar.addEventListener('click', () => {
-        //     let datos = "hola";
-
-        //     fetch('../Backend/descargar.php', {
-        //         method: 'POST',
-        //         body: datos
-        //     })
-        // });
-        if (data.mensaje) {
-            console.log('Mensaje:', data.mensaje);
-        } else if (data.error) {
-            console.error('Error:', data.error);
-        } else {
-            console.log('Respuesta desconocida:', data);
-        }
+function cargarDatos() {
+    fetch('../BackEnd/cargarInfo.php', {
+        method: 'POST'
     })
-    .catch(error => {
-        console.log('Error:', error);
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('informes').innerHTML = '';
+        document.getElementById('informes').innerHTML = JSON.stringify(data);
+
+        for (const [clave, valor] of Object.entries(data.ventasPorCliente)) {
+            // const input = document.createElement('');
+            // input.type = 'text';
+            // input.id = clave;
+            // input.value = valor;
+            // document.getElementById('info').appendChild(input);
+            // document.getElementById('info').appendChild(document.createElement('br'));
+            const info = document.createElement('p');
+            info.value = valor;
+        }
+        
+        data.horarios.forEach(element => {
+            const dia = document.createElement('input');
+            dia.type = 'text';
+            dia.name = 'dias[]';
+            dia.id = element.empresa_dia;
+            dia.value = element.empresa_dia;
+            const hora = document.createElement('input');
+            hora.type = 'text';
+            hora.name = 'horas[]';
+            hora.id = element.empresa_hora;
+            hora.value = element.empresa_hora;
+            const btnQuitar = document.createElement('button');
+            btnQuitar.type = 'button';
+            btnQuitar.textContent = 'Quitar';
+            btnQuitar.id = 'quitar_horario';
+            btnQuitar.addEventListener('click', function() {
+                formdata = new FormData();
+                formdata.append('dia', element.empresa_dia);
+                formdata.append('hora', element.empresa_hora);
+
+                fetch('../BackEnd/delHorario.php', {
+                method: 'POST',
+                body: formdata
+                })
+                .then(res => res.text())
+                .then(data => {
+                    console.log(data);
+                    cargarDatos();
+                })
+            });
+        });
     });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    cargarDatos();
 });

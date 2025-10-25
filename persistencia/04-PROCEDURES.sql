@@ -1,3 +1,5 @@
+USE lostrestanosdb;
+
 DELIMITER $$
 
 CREATE PROCEDURE Validar_SignUp_Cliente (
@@ -129,14 +131,3 @@ BEGIN
 END $$
 
 DELIMITER ;
-
--- Llamadas
-
--- CALL Validar_SignUp_Cliente();
--- SELECT @usuario, @mensaje;
--- CALL Validar_SignUp_Personal();
--- SELECT @usuario, @mensaje;
--- CALL Validar_SignIn_Cliente();
--- SELECT @usuario, @mensaje;
--- CALL Validar_SignIn_Personal();
--- SELECT @usuario, @mensaje;

@@ -1,3 +1,5 @@
+USE lostrestanosdb;
+
 DELIMITER $$
 CREATE TRIGGER personal_img_setter
 BEFORE INSERT ON Personal

@@ -1,6 +1,6 @@
+USE lostrestanosdb;
 
 SET GLOBAL event_scheduler = ON;
-
 
 DELIMITER $$
 
