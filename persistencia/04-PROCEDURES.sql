@@ -130,4 +130,15 @@ BEGIN
     END IF;
 END $$
 
+CREATE PROCEDURE Verificar_Comentario_Existente(
+    IN p_producto_id INT,
+    IN p_cliente_id VARCHAR(100),
+    OUT existe BOOLEAN
+)
+BEGIN
+    SELECT COUNT(*) > 0 INTO existe
+    FROM Comentario
+    WHERE producto_id = p_producto_id AND cliente_id = p_cliente_id;
+END $$
+
 DELIMITER ;

@@ -30,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $productos = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // Obtener la imagen del producto si existe
             $imagePath = null;
             $imageDir = '../../../../Recursos/productos/';
             $files = glob($imageDir . $row['producto_id'] . '.*');

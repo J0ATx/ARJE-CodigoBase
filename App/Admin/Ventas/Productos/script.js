@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('../BackEnd/obtenerStock.php');
             const data = await response.json();
-            
+
             if (data.success) {
                 ingredientSelect.innerHTML = '<option value="">Seleccione un insumo...</option>';
                 data.stock.forEach(item => {
@@ -100,10 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
     productForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        
+
         const id = document.getElementById('productId').value;
         const imageInput = document.getElementById('productImage');
-        
+
         // Add basic form data
         formData.append('nombre', document.getElementById('nombre').value);
         formData.append('precio', document.getElementById('precio').value);
@@ -175,7 +175,7 @@ async function loadProducts(searchTerm = '') {
             body: formData
         });
         const data = await response.json();
-        
+
         if (data.success) {
             renderProducts(data.productos);
         } else {
@@ -192,7 +192,7 @@ function renderProducts(productos) {
 
     productos.forEach(producto => {
         const imageUrl = producto.imagen_url || '';
-        
+
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>
@@ -262,7 +262,7 @@ async function editProduct(id) {
             body: formData
         });
         const data = await response.json();
-        
+
         if (data.success) {
             const producto = data.producto;
             document.getElementById('modalTitle').textContent = 'Editar Producto';
@@ -272,9 +272,9 @@ async function editProduct(id) {
             document.getElementById('categoria').value = producto.producto_categoria || '';
             document.getElementById('tiempo_preparacion').value = producto.producto_tiempo_preparacion || '';
             document.getElementById('receta').value = producto.producto_receta || '';
-            
+
             clearDynamicElements();
-            
+
             producto.ingredientes.forEach(ingrediente => addIngredientToList(ingrediente));
             document.getElementById('productModal').style.display = 'flex';
         } else {
@@ -297,9 +297,9 @@ async function deleteProduct(id) {
             method: 'POST',
             body: formData
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             loadProducts();
             alert('Producto eliminado con éxito');
@@ -334,21 +334,21 @@ function debounce(func, wait) {
 async function viewProductDetails(productId) {
     const formData = new FormData();
     formData.append('productId', productId);
-    
+
     try {
         const response = await fetch('../BackEnd/obtenerDetalles.php', {
             method: 'POST',
             body: formData
         });
         const data = await response.json();
-        
+
         if (data.success) {
             const producto = data.producto;
-            
+            console.log(producto);
             const detailsModal = document.createElement('div');
             detailsModal.className = 'modal';
             detailsModal.id = 'detailsModal';
-            
+
             const content = `
                 <div class="modal-content">
                     <span class="close">&times;</span>
@@ -376,20 +376,21 @@ async function viewProductDetails(productId) {
                             <h3>Receta</h3>
                             <pre style="white-space: pre-wrap;">${(producto.producto_receta || '').trim() || '—'}</pre>
                         </div>
+                        <img src="${producto.imagen_url}" alt="Foto producto">
                     </div>
                 </div>
             `;
-            
+
             detailsModal.innerHTML = content;
             document.body.appendChild(detailsModal);
-            
+
             detailsModal.style.display = 'flex';
             const closeBtn = detailsModal.querySelector('.close');
-            closeBtn.onclick = function() {
+            closeBtn.onclick = function () {
                 detailsModal.remove();
             }
-            
-            window.onclick = function(event) {
+
+            window.onclick = function (event) {
                 if (event.target == detailsModal) {
                     detailsModal.remove();
                 }

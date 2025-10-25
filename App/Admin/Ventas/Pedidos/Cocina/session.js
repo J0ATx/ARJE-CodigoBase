@@ -27,23 +27,27 @@ async function checkSession() {
         const data = await response.json();
 
         if (!data.logged_in) {
-            window.location.href = '../../../../../Control/SignIn/FrontEnd/index.html';
+            window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
             return false;
         }
 
-        if (data.user.rol !== "Gerente-General" && data.user.rol !== "Cocina") {
-            window.location.href = '../../../../../Client/Panel/FrontEnd/index.html';
+        if (data.user.rol !== "Gerente-General") {
+            window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }
-
-        // Actualizar información del usuario en el navbar
+        const resposnseAvatar = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+        const userIcon = document.querySelector('.user-icon');
+        const avatar = await resposnseAvatar.json();
+        userIcon.innerHTML += `<img src="/ARJE-CodigoBase/App/Recursos/avatars/${avatar.avatar}" id="avatar" class="logged" alt="Foto de perfíl">`
         updateUserInfo(data.user);
-
         showContent();
         return true;
     } catch (error) {
         console.error('Error checking session:', error);
-        window.location.href = '../../../../../Control/SignIn/FrontEnd/index.html';
+        window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
         return false;
     }
 }
@@ -76,12 +80,6 @@ function showContent() {
     const mainContent = document.getElementById('main-content');
     if (mainContent) {
         mainContent.classList.add('visible');
-    }
-
-    // Para cocina, mostrar el contenido específico
-    const kdsContainer = document.querySelector('.kds-cocina-container');
-    if (kdsContainer) {
-        kdsContainer.style.display = 'block';
     }
 }
 

@@ -1,16 +1,13 @@
 <?php
 include_once '../../../../Control/Conexion/clienteNoRegistrado.php';
 
-// Función para obtener la ruta de la imagen del producto
 function getProductImagePath($productId)
 {
     $imageDir = '../../../../Recursos/productos/';
     $imagePath = null;
 
-    // Buscar archivos con el formato {id_producto}.*
     $files = glob($imageDir . $productId . '.*');
     if (!empty($files)) {
-        // Tomar el primer archivo que coincida (debería haber solo uno)
         $imagePath = str_replace('', '', $files[0]);
     }
 
@@ -19,24 +16,45 @@ function getProductImagePath($productId)
 
 try {
     if (isset($_GET['id'])) {
-        $sql = "SELECT * FROM Producto WHERE producto_id = ?";
+        $sql = "SELECT p.producto_id,
+                       p.producto_nombre,
+                       p.producto_precio,
+                       p.producto_receta,
+                       p.producto_tiempo_preparacion,
+                       p.producto_creacion,
+                       p.producto_categoria,
+                       p.producto_calificacion,
+                       COUNT(c.comentario_id) as total_comentarios
+                FROM Producto p
+                LEFT JOIN Comentario c ON p.producto_id = c.producto_id
+                WHERE p.producto_id = ?
+                GROUP BY p.producto_id, p.producto_nombre, p.producto_precio, p.producto_receta, p.producto_tiempo_preparacion, p.producto_creacion, p.producto_categoria, p.producto_calificacion";
         $sentencia = $con->prepare($sql);
         $sentencia->execute([$_GET['id']]);
         $producto = $sentencia->fetch(PDO::FETCH_ASSOC);
         if ($producto) {
-            // Agregar ruta de imagen al producto
             $producto['imagen_url'] = getProductImagePath($producto['producto_id']);
             echo json_encode($producto);
         } else {
             echo json_encode(['error' => 'Producto no encontrado.']);
         }
     } else {
-        $sql = "SELECT * FROM Producto";
+        $sql = "SELECT p.producto_id,
+                       p.producto_nombre,
+                       p.producto_precio,
+                       p.producto_receta,
+                       p.producto_tiempo_preparacion,
+                       p.producto_creacion,
+                       p.producto_categoria,
+                       p.producto_calificacion,
+                       COUNT(c.comentario_id) as total_comentarios
+                FROM Producto p
+                LEFT JOIN Comentario c ON p.producto_id = c.producto_id
+                GROUP BY p.producto_id, p.producto_nombre, p.producto_precio, p.producto_receta, p.producto_tiempo_preparacion, p.producto_creacion, p.producto_categoria, p.producto_calificacion";
         $sentencia = $con->prepare($sql);
         $sentencia->execute();
         $productos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
-        // Agregar ruta de imagen a cada producto
         foreach ($productos as &$producto) {
             $producto['imagen_url'] = getProductImagePath($producto['producto_id']);
         }

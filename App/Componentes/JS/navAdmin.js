@@ -17,7 +17,7 @@ class NavAdmin extends HTMLElement {
 
             nav .logo {
                 width: 75px;
-                filter: contrast(0%);
+                filter: drop-shadow(0 0 1px black);
             }
 
             nav .logo-container {
@@ -232,6 +232,17 @@ class NavAdmin extends HTMLElement {
                 display: flex;
                 flex-direction: column;
             }
+            .user-icon img{
+                border-radius: 100%;
+                border: 1px solid #767676c0;
+                width: 47px;
+                height: 47px;
+                margin: 0;
+                display: block;
+                z-index: 999;
+                aspect-ratio: 1/1;
+                object-fit: cover;
+            }
 
             nav .user-name {
                 font-size: 0.9rem;
@@ -309,17 +320,8 @@ class NavAdmin extends HTMLElement {
             <!-- Sección de información del usuario -->
             <div class="user-section">
                 <div class="user-avatar">
-                    <i class="user-icon">
-                    <svg class="logged" width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x=".101" y=".862" width="46" height="45.292" rx="22.646" fill="#181818"
-                                fill-opacity=".5" />
-                            <rect x=".601" y="1.362" width="45" height="44.292" rx="22.146" stroke="#767676"
-                                stroke-opacity=".7" />
-                            <path
-                                d="M23 23.362q-2.337 0-4.002-1.714t-1.665-4.12 1.665-4.12T23 11.696t4.002 1.713 1.665 4.12-1.665 4.12T23 23.362M11.667 35.028v-4.083q0-1.24.62-2.279a4.2 4.2 0 0 1 1.646-1.586 20.7 20.7 0 0 1 4.463-1.695A19 19 0 0 1 23 24.82q2.337 0 4.604.565 2.267.566 4.463 1.695a4.2 4.2 0 0 1 1.647 1.586q.62 1.04.62 2.279v4.083zm2.833-2.916h17v-1.167q0-.4-.195-.73a1.4 1.4 0 0 0-.513-.51 18 18 0 0 0-3.86-1.476A16 16 0 0 0 23 27.737a16 16 0 0 0-3.931.492q-1.949.492-3.86 1.476a1.4 1.4 0 0 0-.514.51 1.4 1.4 0 0 0-.195.73zM23 20.445q1.17 0 2.001-.857a2.85 2.85 0 0 0 .832-2.06 2.85 2.85 0 0 0-.832-2.06q-.832-.856-2.001-.856t-2.001.856a2.85 2.85 0 0 0-.832 2.06q0 1.203.832 2.06.833.857 2.001.857"
-                                fill="#A4A4A4" />
-                        </svg>
-                    </i>
+                    <div class="user-icon">
+                    </div>
                 </div>
                 <div class="user-info">
                     <div id="userName" class="user-name">Cargando...</div>
@@ -355,10 +357,8 @@ class NavAdmin extends HTMLElement {
             const activePage = this.getCurrentPage(currentPath);
             const navLinks = this.querySelectorAll('.nav-link');
 
-            // Remover active de todos
             navLinks.forEach(link => link.classList.remove('active'));
 
-            // Agregar active al correcto
             navLinks.forEach(link => {
                 if (link.getAttribute('data-page') === activePage) {
                     link.classList.add('active');
@@ -382,16 +382,13 @@ class NavAdmin extends HTMLElement {
 
         addEventListeners() {
             const navLinks = this.querySelectorAll('.nav-link');
-
             navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
-                    // Actualizar el enlace activo al hacer clic
                     setTimeout(() => this.updateActiveLink(), 100);
                 });
             });
         }
 
-        // Métodos públicos para control externo
         setActiveLink(linkName) {
             const navLinks = this.querySelectorAll('.nav-link');
 
@@ -409,7 +406,6 @@ class NavAdmin extends HTMLElement {
 
 customElements.define('nav-admin', NavAdmin);
 
-// Función global para logout
 function logout() {
     fetch('/ARJE-CodigoBase/App/Control/Panel/BackEnd/logout.php', {
         method: 'POST',
@@ -418,7 +414,6 @@ function logout() {
         window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
     }).catch(error => {
         console.error('Error durante logout:', error);
-        // Forzar redirección incluso si hay error
         window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
     });
 }
