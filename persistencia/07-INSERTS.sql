@@ -1,4 +1,3 @@
--- Por si acaso para el Docker
 USE lostrestanosdb;
 
 -- Email: gerente@prueba.com

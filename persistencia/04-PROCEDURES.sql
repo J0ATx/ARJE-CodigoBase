@@ -1,3 +1,5 @@
+USE lostrestanosdb;
+
 DELIMITER $$
 
 CREATE PROCEDURE Validar_SignUp_Cliente (

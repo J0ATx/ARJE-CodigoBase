@@ -8,3 +8,14 @@
 # 2. (Opcional pero recomendado) Si alguien intenta acceder directamente al archivo,
 # se le redirige a la raíz para mantener la URL limpia.
 # RewriteRule ^ARJE-CodigoBase/App/Client/Panel/FrontEnd/index.html$ / [R=301,L]
+
+# bloquear ips
+# protección de directorios
+# paginas de error
+# restriccion de accesos a archivos
+# forzado https
+# compresión y mejora de rendimientos
+
+# <head>
+#     <base href="/ARJE-CodigoBase/App/Client/Panel/FrontEnd/">
+# </head>

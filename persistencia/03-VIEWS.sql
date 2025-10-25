@@ -17,11 +17,12 @@ FROM  Pedido JOIN Personal USING (personal_id)
 WHERE pedido_estado = 'Pagado'
 GROUP BY personal_id;
 
--- CREATE VIEW Ventas_Por_Producto AS
--- SELECT producto_id, producto_nombre, SUM(pedido_monto)
--- FROM  Pedido JOIN Contiene JOIN Producto USING (pedido_id, producto_id)
--- WHERE pedido_estado = 'Pagado'
--- GROUP BY producto_id;
+CREATE VIEW Ventas_Por_Producto AS
+SELECT producto_id, producto_nombre, SUM(pedido_monto)
+FROM  Pedido JOIN Contiene USING (pedido_id)
+JOIN Producto USING (producto_id)
+WHERE pedido_estado = 'Pagado'
+GROUP BY producto_id;
 
 CREATE VIEW Ventas_Por_Pago AS
 SELECT SUM(pedido_monto)
@@ -48,13 +49,6 @@ CREATE VIEW No_Show_Por_Fecha AS
 SELECT COUNT(*) AS no_show_count
 FROM No_Show
 GROUP BY no_show_fecha;
-
--- CREATE VIEW Registros_Por_Fecha AS
--- SELECT COUNT(*) AS total_registros, DATE(cliente_fecha_registro) AS fecha
--- FROM Cliente
--- GROUP BY cliente_fecha_registro;
-
--- porcentaje de inactividad, se regsitro y no hizo nada
 
 CREATE VIEW Datos_Usuarios AS
 SELECT

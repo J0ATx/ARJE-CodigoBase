@@ -1,3 +1,5 @@
+USE lostrestanosdb;
+
 DELIMITER $$
 CREATE TRIGGER personal_img_setter
 BEFORE INSERT ON Personal
@@ -14,8 +16,6 @@ BEGIN
     INSERT INTO image_id_sequence VALUES (NULL);
     SET NEW.cliente_id_img = LAST_INSERT_ID();
 END $$
-
-<<<<<<< HEAD
 
 CREATE TRIGGER actualizar_promedio_calificacion_insert
 AFTER INSERT ON Comentario
@@ -64,6 +64,3 @@ BEGIN
 END $$
 
 DELIMITER ;
-=======
-DELIMITER ;
->>>>>>> b854374d271f74f8fb653c39cccbdd6dfeed8880
