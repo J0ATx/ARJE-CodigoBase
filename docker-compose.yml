@@ -14,17 +14,6 @@ services:
     networks:
       - arje-network
 
-  maitre:
-    build:
-      context: ./maitre_sari
-      dockerfile: Dockerfile
-    volumes:
-      - ./maitre_sari:/app
-    depends_on:
-      - db
-    networks:
-      - arje-network
-
   db:
     build:
       context: ./persistencia
@@ -36,7 +25,7 @@ services:
     networks:
       - arje-network
     environment:
-      MYSQL_DATABASE: arje
+      MYSQL_DATABASE: lostrestanosdb
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: arje_user
       MYSQL_PASSWORD: arje_password
