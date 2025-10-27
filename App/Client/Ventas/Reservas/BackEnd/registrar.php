@@ -1,6 +1,5 @@
 <?php
 session_start();
-// Verificar si hay sesión iniciada
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(["error" => "empty"]);
     exit();
@@ -10,23 +9,23 @@ include_once "../../../../Control/Conexion/clienteRegistrado.php";
 
 $fecha = isset($_POST['fecha']) ? $_POST['fecha'] : '';
 $hora = isset($_POST['hora']) ? $_POST['hora'] : '';
-$ubicacion = isset($_POST['ubicacion']) ? $_POST['ubicacion'] : '';
 $cantidad = isset($_POST['cantidad']) ? $_POST['cantidad'] : '';
-$tipoAsignacion = isset($_POST['tipoAsignacion']) ? $_POST['tipoAsignacion'] : 'automatica';
-$comentario = isset($_POST['comentario']) ? trim($_POST['comentario']) : null;
+$mesa_id = isset($_POST['mesa_id']) ? (int)$_POST['mesa_id'] : null;
 $duracion = 2;
 
 $id_cliente = $_SESSION["usuario_id"];
-$fechReg = date("Y-m-d");
 
 
-    // Validar existencia de fecha y hora
-    if (empty($fecha) || empty($hora)) {
+    if (empty($fecha) || empty($hora) || empty($cantidad)) {
         echo json_encode(["error" => "empty"]);
         exit();
     }
 
-    // Validar que la fecha sea al menos 2 días después de hoy (antelación de 2 días)
+    if ($mesa_id === null || $mesa_id <= 0) {
+        echo json_encode(["error" => "missing_table"]);
+        exit();
+    }
+
     $fecha_actual = date("Y-m-d");
     $fecha_minima = date("Y-m-d", strtotime($fecha_actual . " +2 days"));
     
@@ -34,42 +33,25 @@ $fechReg = date("Y-m-d");
         echo json_encode(["error" => "advance_required"]);
         exit();
     }
-    
-    // Validar comentario si es asignación manual
-    if ($tipoAsignacion === 'manual' && empty($comentario)) {
-        echo json_encode(["error" => "missing_comment"]);
-        exit();
-    }
 
-    // Validar formato de fecha (YYYY-MM-DD)
     if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
         echo json_encode(["error" => "invalid date"]);
         exit();
     }
 
-    // Validar formato de hora (HH:MM)
     if (!preg_match('/^(?:[01]\d|2[0-3]):[0-5]\d$/', $hora)) {
         echo json_encode(["error" => "invalid hour"]);
         exit();
     }
 
-    // Normalizar hora a HH:MM:SS
     if (strlen($hora) === 5) {
         $hora .= ':00';
     }
 
-    if (!in_array($ubicacion, ['Interior', 'Exterior'], true)) {
-        echo json_encode(["error" => "invalid ubicacion"]);
-        exit();
-    }
-
-    // Validar cantidad (1..6)
     if (!preg_match('/^[1-6]$/', (string)$cantidad)) {
         echo json_encode(["error" => "invalid cantidad"]);
         exit();
     }
-
-    $duracion = 2;
 
     if($_SESSION["rol"] !== "Cliente") {
         echo json_encode(["error" => "not client"]);
@@ -79,48 +61,42 @@ $fechReg = date("Y-m-d");
     try {
         $con->beginTransaction();
 
-        $mesa_id = null;
-        $estado = 'Pendiente';
-        $tipo_asignacion = ($tipoAsignacion === 'manual') ? 'Manual' : 'Automatica';
+        $sqlVerificarMesa = "SELECT mesa_id, mesa_reservable FROM Mesa WHERE mesa_id = ?";
+        $stmtVerificar = $con->prepare($sqlVerificarMesa);
+        $stmtVerificar->execute([$mesa_id]);
+        $mesaExiste = $stmtVerificar->fetch(PDO::FETCH_ASSOC);
 
-        // Si es asignación automática, buscar mesa disponible y reservable
-        if ($tipoAsignacion === 'automatica') {
-            $sqlMesa = "
-                SELECT m.mesa_id, m.mesa_alcance
-                FROM Mesa m
-                WHERE m.mesa_ubicacion = ?
-                  AND m.mesa_reservable = 'Si'
-                  AND NOT EXISTS (
-                    SELECT 1
-                    FROM Reserva r
-                    WHERE r.mesa_id = m.mesa_id
-                      AND r.reserva_fecha = ?
-                      AND r.reserva_estado = 'Confirmada'
-                      AND (
-                        TIME(?) < ADDTIME(r.reserva_inicio, MAKETIME(CAST(r.reserva_duracion AS UNSIGNED), 0, 0))
-                        AND ADDTIME(TIME(?), MAKETIME(?, 0, 0)) > r.reserva_inicio
-                      )
-                  )
-                ORDER BY
-                  (m.mesa_alcance < ?) ASC,
-                  CASE WHEN m.mesa_alcance < ? THEN m.mesa_alcance END DESC,
-                  CASE WHEN m.mesa_alcance >= ? THEN m.mesa_alcance END ASC
-                LIMIT 1
-                FOR UPDATE;
-            ";
-            $stmt = $con->prepare($sqlMesa);
-            $stmt->execute([$ubicacion, $fecha, $hora, $hora, (int)$duracion, (int)$cantidad, (int)$cantidad, (int)$cantidad]);
-            $mesaRow = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$mesaRow) {
-                $con->rollBack();
-                echo json_encode(["error" => "no availability"]);
-                exit();
-            }
-
-            $mesa_id = $mesaRow['mesa_id'];
+        if (!$mesaExiste) {
+            $con->rollBack();
+            echo json_encode(["error" => "invalid_table"]);
+            exit();
         }
-        // Si es asignación manual, mesa_id queda NULL y el gerente la asignará
+
+        if ($mesaExiste['mesa_reservable'] !== 'Si') {
+            $con->rollBack();
+            echo json_encode(["error" => "table_not_reservable"]);
+            exit();
+        }
+
+        $sqlCheckDisponibilidad = "
+            SELECT COUNT(*) as conflictos
+            FROM Reserva
+            WHERE mesa_id = ?
+              AND reserva_fecha = ?
+              AND (
+                TIME(?) < ADDTIME(reserva_inicio, MAKETIME(CAST(reserva_duracion AS UNSIGNED), 0, 0))
+                AND ADDTIME(TIME(?), MAKETIME(?, 0, 0)) > reserva_inicio
+              )
+        ";
+        $stmtCheck = $con->prepare($sqlCheckDisponibilidad);
+        $stmtCheck->execute([$mesa_id, $fecha, $hora, $hora, (int)$duracion]);
+        $result = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+        if ($result['conflictos'] > 0) {
+            $con->rollBack();
+            echo json_encode(["error" => "table_unavailable"]);
+            exit();
+        }
 
         $sqlReserva = "
             INSERT INTO Reserva (
@@ -129,12 +105,9 @@ $fechReg = date("Y-m-d");
                 reserva_fecha, 
                 reserva_inicio, 
                 cliente_id, 
-                mesa_id, 
-                reserva_estado, 
-                reserva_comentario, 
-                reserva_asignacion_tipo
+                mesa_id
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?)
         ";
         $stmt = $con->prepare($sqlReserva);
         $stmt->execute([
@@ -143,24 +116,16 @@ $fechReg = date("Y-m-d");
             $fecha, 
             $hora, 
             $id_cliente, 
-            $mesa_id, 
-            $estado, 
-            $comentario, 
-            $tipo_asignacion
+            $mesa_id
         ]);
 
         $con->commit();
+        echo json_encode(["success" => "Reserva creada exitosamente"]);
     } catch (\Throwable $th) {
         if ($con && $con->inTransaction()) {
             $con->rollBack();
         }
-        echo json_encode(array("error" => "error " . $th->getMessage()));
+        echo json_encode(["error" => $th->getMessage()]);
         exit();
     }
-
-    $mensaje = ($tipoAsignacion === 'manual') 
-        ? "Reserva creada. Un gerente revisará tu solicitud y asignará la mesa según tus preferencias." 
-        : "Reserva creada exitosamente. Un gerente la confirmará pronto.";
-    
-    echo json_encode(["success" => $mensaje]);
 ?>

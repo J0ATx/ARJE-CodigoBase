@@ -1,22 +1,28 @@
-function getEstrellasCalificacion(calificacion) {
-    if (!calificacion) return '';
-
-    const calif = parseFloat(calificacion);
-    const estrellasLlenas = Math.round(calif);
-    const estrellasTotales = 10;
-
-    let html = '';
-
-    for (let i = 0; i < estrellasTotales; i++) {
-        if (i < estrellasLlenas) {
-            html += '★';
-        } else {
-            html += '☆';
-        }
+// Rating configuration
+const RATING = {
+    MIN: 1,
+    MAX: 5,
+    STAR: '★',
+    EMPTY: '☆',
+    
+    // Get star display for a given rating (1-5)
+    getStars: function(rating) {
+        if (!rating) return this.EMPTY.repeat(this.MAX);
+        const stars = Math.min(this.MAX, Math.max(this.MIN, Math.round(rating)));
+        return this.STAR.repeat(stars) + this.EMPTY.repeat(this.MAX - stars);
+    },
+    
+    // Format rating as text (e.g., "3/5")
+    format: function(rating) {
+        return rating ? `${Math.round(rating)}/${this.MAX}` : '';
+    },
+    
+    // Validate if a rating is within range
+    isValid: function(rating) {
+        const num = Number(rating);
+        return !isNaN(num) && num >= this.MIN && num <= this.MAX;
     }
-
-    return html;
-}
+};
 
 document.addEventListener('DOMContentLoaded', async () => {
     await mostrarDetalleProducto();
@@ -49,9 +55,9 @@ async function mostrarDetalleProducto() {
                     ${producto.producto_calificacion ? `
                         <div class="producto-calificacion">
                             <div class="estrellas-display">
-                                ${getEstrellasCalificacion(producto.producto_calificacion)}
+                                ${RATING.getStars(producto.producto_calificacion)}
                             </div>
-                            <span class="calificacion-numero">${producto.producto_calificacion}/10</span>
+                            <span class="calificacion-numero">${RATING.format(producto.producto_calificacion)}</span>
                             ${producto.total_comentarios ? `<span class="total-comentarios">(${producto.total_comentarios} comentarios)</span>` : ''}
                         </div>
                     ` : ''}
@@ -139,8 +145,8 @@ async function mostrarComentarios(comentarios) {
                     <strong>${comentario.cliente_nombre} ${comentario.cliente_apellido}</strong>
                 </div>
                     <div class="comentario-calificacion">
-                        <span class="estrellas">${getEstrellasCalificacion(comentario.comentario_calificacion)}</span>
-                        <span class="calificacion-numero">${parseFloat(comentario.comentario_calificacion).toFixed(1)}/10</span>
+                        <span class="estrellas">${RATING.getStars(comentario.comentario_calificacion)}</span>
+                        <span class="calificacion-numero">${RATING.format(comentario.comentario_calificacion)}</span>
                     </div>
                 </div>
                 ${comentario.comentario_contenido ? `<p class="comentario-contenido">${comentario.comentario_contenido}</p>` : ''}
@@ -170,7 +176,7 @@ function actualizarPromedio(producto) {
         const comentariosSpan = calificacionDiv.querySelector('.total-comentarios');
 
         if (promedioSpan) {
-            promedioSpan.textContent = `${parseFloat(producto.producto_calificacion).toFixed(1)}/10`;
+            promedioSpan.textContent = `${parseInt(producto.producto_calificacion)}/5`;
         }
         if (comentariosSpan) {
             comentariosSpan.textContent = `(${producto.total_comentarios} comentarios)`;
@@ -206,11 +212,6 @@ async function mostrarFormularioComentario(productoId) {
                     <span class="estrella" data-value="3" role="radio" aria-label="3 estrellas" tabindex="0">☆</span>
                     <span class="estrella" data-value="4" role="radio" aria-label="4 estrellas" tabindex="0">☆</span>
                     <span class="estrella" data-value="5" role="radio" aria-label="5 estrellas" tabindex="0">☆</span>
-                    <span class="estrella" data-value="6" role="radio" aria-label="6 estrellas" tabindex="0">☆</span>
-                    <span class="estrella" data-value="7" role="radio" aria-label="7 estrellas" tabindex="0">☆</span>
-                    <span class="estrella" data-value="8" role="radio" aria-label="8 estrellas" tabindex="0">☆</span>
-                    <span class="estrella" data-value="9" role="radio" aria-label="9 estrellas" tabindex="0">☆</span>
-                    <span class="estrella" data-value="10" role="radio" aria-label="10 estrellas" tabindex="0">☆</span>
                 </div>
                 <input type="hidden" id="calificacion" name="calificacion" required>
                 <div class="calificacion-texto" id="calificacion-texto">Selecciona una calificación</div>
@@ -242,20 +243,62 @@ function configurarEstrellas() {
 
     let calificacionSeleccionada = 0;
 
-    // Configurar navegación por teclado
+    // Configurar atributos ARIA
+    estrellasInput.setAttribute('aria-valuemin', '1');
+    estrellasInput.setAttribute('aria-valuemax', '5');
+    estrellasInput.setAttribute('aria-valuenow', '0');
+    estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
+
+    // Función para actualizar la visualización de las estrellas
+    function actualizarEstrellas(valor, esHover = false) {
+        estrellas.forEach((estrella, index) => {
+            const valorEstrella = parseInt(estrella.getAttribute('data-value'));
+            if (valorEstrella <= valor) {
+                estrella.textContent = '★';
+                if (!esHover) {
+                    estrella.classList.add('seleccionada');
+                    estrella.setAttribute('aria-checked', 'true');
+                } else {
+                    estrella.classList.add('preview');
+                }
+            } else {
+                estrella.textContent = '☆';
+                if (!esHover) {
+                    estrella.classList.remove('seleccionada');
+                    estrella.setAttribute('aria-checked', 'false');
+                } else {
+                    estrella.classList.remove('preview');
+                }
+            }
+        });
+
+        if (!esHover && valor > 0) {
+            calificacionSeleccionada = valor;
+            calificacionHidden.value = valor;
+            calificacionTexto.textContent = `Calificación: ${valor}/5`;
+            estrellasInput.setAttribute('aria-valuenow', valor.toString());
+            estrellasInput.setAttribute('aria-valuetext', `${valor} de 5`);
+        } else if (valor === 0) {
+            calificacionTexto.textContent = 'Selecciona una calificación';
+            estrellasInput.setAttribute('aria-valuenow', '0');
+            estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
+        }
+    }
+
+    // Configurar eventos para cada estrella
     estrellas.forEach((estrella, index) => {
         const valor = index + 1;
 
         // Click para seleccionar
         estrella.addEventListener('click', () => {
-            seleccionarCalificacion(valor);
+            actualizarEstrellas(valor);
         });
 
         // Navegación por teclado
         estrella.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                seleccionarCalificacion(valor);
+                actualizarEstrellas(valor);
             } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
                 e.preventDefault();
                 const siguienteIndex = (index + 1) % estrellas.length;
@@ -282,42 +325,6 @@ function configurarEstrellas() {
             }
         });
     });
-
-    function seleccionarCalificacion(valor) {
-        calificacionSeleccionada = valor;
-        calificacionHidden.value = valor;
-        calificacionTexto.textContent = `Calificación: ${valor} estrella${valor !== 1 ? 's' : ''}`;
-        actualizarEstrellas(valor, false);
-
-        // Anunciar a lectores de pantalla
-        estrellasInput.setAttribute('aria-valuenow', valor);
-        estrellasInput.setAttribute('aria-valuetext', `${valor} estrella${valor !== 1 ? 's' : ''}`);
-    }
-
-    function actualizarEstrellas(calificacion, isPreview = false) {
-        estrellas.forEach((estrella, index) => {
-            const valor = index + 1;
-
-            if (calificacion >= valor) {
-                estrella.textContent = '★';
-                estrella.classList.add('seleccionada');
-                estrella.classList.remove('preview');
-            } else {
-                estrella.textContent = '☆';
-                estrella.classList.remove('seleccionada', 'preview');
-            }
-
-            if (isPreview) {
-                estrella.classList.add('preview');
-            }
-        });
-    }
-
-    // Configurar atributos ARIA iniciales
-    estrellasInput.setAttribute('aria-valuemin', '1');
-    estrellasInput.setAttribute('aria-valuemax', '10');
-    estrellasInput.setAttribute('aria-valuenow', '0');
-    estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
 }
 
 function enviarComentario(productoId, usuario) {
@@ -438,121 +445,123 @@ function configurarModalComentarios(productoId) {
 }
 
 function configurarEstrellasModal() {
-    const estrellasInput = document.getElementById('estrellas-input-modal');
-    const calificacionHidden = document.getElementById('calificacion-modal');
-    const calificacionTexto = document.getElementById('calificacion-texto-modal');
-    const estrellas = estrellasInput.querySelectorAll('.estrella');
+    const container = document.getElementById('estrellas-input-modal');
+    const stars = Array.from(container.querySelectorAll('.estrella'));
+    const ratingInput = document.getElementById('calificacion-modal');
+    const ratingText = document.getElementById('calificacion-texto-modal');
+    
+    let selectedRating = 0;
+    let hoverRating = 0;
 
-    let calificacionSeleccionada = 0;
-
-    // Configurar navegación por teclado
-    estrellas.forEach((estrella, index) => {
-        const valor = index + 1;
-
-        // Click para seleccionar
-        estrella.addEventListener('click', () => {
-            seleccionarCalificacionModal(valor);
+    // Update star display based on current state
+    const updateStars = () => {
+        const displayRating = hoverRating || selectedRating;
+        
+        stars.forEach((star, index) => {
+            const starValue = index + 1;
+            star.textContent = starValue <= displayRating ? RATING.STAR : RATING.EMPTY;
+            star.classList.toggle('seleccionada', starValue <= selectedRating);
+            star.classList.toggle('preview', hoverRating > 0 && starValue <= hoverRating);
         });
 
-        // Navegación por teclado
-        estrella.addEventListener('keydown', (e) => {
+        // Update rating text
+        if (selectedRating > 0) {
+            ratingText.textContent = `Calificación: ${selectedRating} estrella${selectedRating !== 1 ? 's' : ''}`;
+        } else if (hoverRating > 0) {
+            ratingText.textContent = `${hoverRating} estrella${hoverRating !== 1 ? 's' : ''}`;
+        } else {
+            ratingText.textContent = 'Selecciona una calificación';
+        }
+
+        // Update ARIA attributes
+        container.setAttribute('aria-valuenow', selectedRating);
+        container.setAttribute('aria-valuetext', 
+            selectedRating ? `${selectedRating} estrella${selectedRating !== 1 ? 's' : ''}` : 'Sin calificación'
+        );
+    };
+
+    // Set up event listeners for each star
+    stars.forEach((star, index) => {
+        const starValue = index + 1;
+        
+        // Click to select rating
+        star.addEventListener('click', () => {
+            selectedRating = selectedRating === starValue ? 0 : starValue;
+            ratingInput.value = selectedRating;
+            updateStars();
+        });
+
+        // Keyboard navigation
+        star.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                seleccionarCalificacionModal(valor);
+                selectedRating = selectedRating === starValue ? 0 : starValue;
+                ratingInput.value = selectedRating;
+                updateStars();
             } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
                 e.preventDefault();
-                const siguienteIndex = (index + 1) % estrellas.length;
-                estrellas[siguienteIndex].focus();
+                const nextIndex = (index + 1) % stars.length;
+                stars[nextIndex].focus();
             } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
                 e.preventDefault();
-                const anteriorIndex = (index - 1 + estrellas.length) % estrellas.length;
-                estrellas[anteriorIndex].focus();
+                const prevIndex = (index - 1 + stars.length) % stars.length;
+                stars[prevIndex].focus();
             }
         });
 
-        // Hover para preview visual
-        estrella.addEventListener('mouseenter', () => {
-            if (calificacionSeleccionada === 0) {
-                actualizarEstrellasModal(valor, true);
-                calificacionTexto.textContent = `${valor} estrella${valor !== 1 ? 's' : ''}`;
-            }
+        // Hover effects
+        star.addEventListener('mouseenter', () => {
+            hoverRating = starValue;
+            updateStars();
         });
 
-        estrella.addEventListener('mouseleave', () => {
-            if (calificacionSeleccionada === 0) {
-                actualizarEstrellasModal(0, true);
-                calificacionTexto.textContent = 'Selecciona una calificación';
-            }
+        star.addEventListener('mouseleave', () => {
+            hoverRating = 0;
+            updateStars();
         });
     });
 
-    function seleccionarCalificacionModal(valor) {
-        calificacionSeleccionada = valor;
-        calificacionHidden.value = valor;
-        calificacionTexto.textContent = `Calificación: ${valor} estrella${valor !== 1 ? 's' : ''}`;
-        actualizarEstrellasModal(valor, false);
-
-        // Anunciar a lectores de pantalla
-        estrellasInput.setAttribute('aria-valuenow', valor);
-        estrellasInput.setAttribute('aria-valuetext', `${valor} estrella${valor !== 1 ? 's' : ''}`);
-    }
-
-    function actualizarEstrellasModal(calificacion, isPreview = false) {
-        estrellas.forEach((estrella, index) => {
-            const valor = index + 1;
-
-            if (calificacion >= valor) {
-                estrella.textContent = '★';
-                estrella.classList.add('seleccionada');
-                estrella.classList.remove('preview');
-            } else {
-                estrella.textContent = '☆';
-                estrella.classList.remove('seleccionada', 'preview');
-            }
-
-            if (isPreview) {
-                estrella.classList.add('preview');
-            }
-        });
-    }
+    // Initialize
+    container.setAttribute('role', 'radiogroup');
+    container.setAttribute('aria-label', 'Calificación del producto');
+    updateStars();
 
     estrellasInput.setAttribute('aria-valuemin', '1');
-    estrellasInput.setAttribute('aria-valuemax', '10');
+    estrellasInput.setAttribute('aria-valuemax', '5');
     estrellasInput.setAttribute('aria-valuenow', '0');
     estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
 }
 
 function resetModalForm() {
     const form = document.getElementById('form-comentario-modal');
-    const calificacionTexto = document.getElementById('calificacion-texto-modal');
-    const estrellas = document.querySelectorAll('#estrellas-input-modal .estrella');
+    const ratingText = document.getElementById('calificacion-texto-modal');
+    const stars = document.querySelectorAll('#estrellas-input-modal .estrella');
 
-    // Resetear formulario
+    // Reset form
     form.reset();
 
-    // Resetear estrellas
-    estrellas.forEach(estrella => {
-        estrella.textContent = '☆';
-        estrella.classList.remove('seleccionada', 'preview');
+    // Reset stars display
+    stars.forEach(star => {
+        star.textContent = RATING.EMPTY;
+        star.classList.remove('seleccionada', 'preview');
     });
 
-    // Resetear texto de calificación
-    calificacionTexto.textContent = 'Selecciona una calificación';
+    // Reset rating text
+    ratingText.textContent = 'Selecciona una calificación';
 
-    // Resetear ARIA
-    const estrellasInput = document.getElementById('estrellas-input-modal');
-    estrellasInput.setAttribute('aria-valuenow', '0');
-    estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
+    // Reset ARIA attributes
+    const container = document.getElementById('estrellas-input-modal');
+    container.setAttribute('aria-valuenow', '0');
+    container.setAttribute('aria-valuetext', 'Sin calificación');
 }
 
 function enviarComentarioModal(productoId) {
     const form = document.getElementById('form-comentario-modal');
     const formData = new FormData(form);
 
-    // Verificar que se haya seleccionado una calificación
     const calificacion = parseFloat(formData.get('calificacion'));
-    if (!calificacion || calificacion < 1 || calificacion > 10) {
-        alert('Por favor selecciona una calificación antes de enviar el comentario.');
+    if (!validateRating(calificacion)) {
+        alert(`Por favor selecciona una calificación válida (${RATING.MIN}-${RATING.MAX}).`);
         return;
     }
 
@@ -608,6 +617,8 @@ function editarComentario(comentarioId, contenidoActual, calificacionActual) {
     const comentarioContenido = comentarioItem.querySelector('.comentario-contenido');
     const comentarioAcciones = comentarioItem.querySelector('.comentario-acciones');
 
+    const calificacionMostrada = parseInt(calificacionActual);
+    
     const formEdicion = document.createElement('div');
     formEdicion.className = 'form-edicion-comentario';
     formEdicion.innerHTML = `
@@ -619,14 +630,9 @@ function editarComentario(comentarioId, contenidoActual, calificacionActual) {
                 <span class="estrella" data-value="3" role="radio" aria-label="3 estrellas" tabindex="0">★</span>
                 <span class="estrella" data-value="4" role="radio" aria-label="4 estrellas" tabindex="0">★</span>
                 <span class="estrella" data-value="5" role="radio" aria-label="5 estrellas" tabindex="0">★</span>
-                <span class="estrella" data-value="6" role="radio" aria-label="6 estrellas" tabindex="0">★</span>
-                <span class="estrella" data-value="7" role="radio" aria-label="7 estrellas" tabindex="0">★</span>
-                <span class="estrella" data-value="8" role="radio" aria-label="8 estrellas" tabindex="0">★</span>
-                <span class="estrella" data-value="9" role="radio" aria-label="9 estrellas" tabindex="0">★</span>
-                <span class="estrella" data-value="10" role="radio" aria-label="10 estrellas" tabindex="0">★</span>
             </div>
             <input type="hidden" id="calificacion-editar-${comentarioId}" value="${calificacionActual}">
-            <div class="calificacion-texto">Calificación actual: ${calificacionActual}</div>
+            <div class="calificacion-texto">Calificación actual: ${calificacionMostrada}/5</div>
         </div>
         <div class="form-group">
             <label>Comentario:</label>
@@ -655,17 +661,27 @@ function configurarEstrellasEdicion(comentarioId, calificacionActual) {
     const calificacionTexto = estrellasInput.parentNode.querySelector('.calificacion-texto');
     const estrellas = estrellasInput.querySelectorAll('.estrella');
 
+    let calificacionMostrada = parseInt(calificacionActual);
+    calificacionMostrada = Math.min(5, Math.max(1, calificacionMostrada));
+    
+    calificacionHidden.value = calificacionActual;
+    
+    // Actualizar el texto de calificación
+    calificacionTexto.textContent = `Calificación actual: ${calificacionMostrada}/5`;
+
     let hoverPreview = 0;
 
-    actualizarEstrellasEdicion(calificacionActual);
+    // Inicializar las estrellas con la calificación actual
+    actualizarEstrellasEdicion(calificacionMostrada);
 
     estrellas.forEach((estrella, index) => {
         const valor = index + 1;
 
         estrella.addEventListener('click', () => {
+            calificacionMostrada = valor;
             calificacionActual = valor;
-            calificacionHidden.value = valor;
-            calificacionTexto.textContent = `Nueva calificación: ${valor} estrella${valor !== 1 ? 's' : ''}`;
+            calificacionHidden.value = calificacionActual;
+            calificacionTexto.textContent = `Nueva calificación: ${valor}/5`;
             actualizarEstrellasEdicion(valor);
             hoverPreview = 0;
         });
@@ -673,32 +689,37 @@ function configurarEstrellasEdicion(comentarioId, calificacionActual) {
         estrella.addEventListener('mouseenter', () => {
             hoverPreview = valor;
             actualizarEstrellasEdicion(valor, true);
-            calificacionTexto.textContent = `Preview: ${valor} estrella${valor !== 1 ? 's' : ''}`;
+            calificacionTexto.textContent = `${valor}/5 estrellas`;
         });
 
         estrella.addEventListener('mouseleave', () => {
             hoverPreview = 0;
-            actualizarEstrellasEdicion(calificacionActual, true);
-            calificacionTexto.textContent = `Calificación actual: ${calificacionActual}`;
+            actualizarEstrellasEdicion(calificacionMostrada);
+            calificacionTexto.textContent = `Calificación actual: ${calificacionMostrada}/5`;
         });
     });
 
     function actualizarEstrellasEdicion(calificacion, isPreview = false) {
         estrellas.forEach((estrella, index) => {
             const valor = index + 1;
+            const estaSeleccionada = valor <= calificacion;
+            const esPreview = isPreview && valor <= calificacion;
 
-            if (calificacion >= valor) {
-                estrella.textContent = '★';
-                estrella.classList.add('seleccionada');
-            } else {
-                estrella.textContent = '☆';
-                estrella.classList.remove('seleccionada');
-            }
-
+            // Actualizar el símbolo de la estrella
+            estrella.textContent = estaSeleccionada ? '★' : '☆';
+            
+            // Actualizar las clases según el estado
             if (isPreview) {
-                estrella.classList.add('preview');
+                if (esPreview) {
+                    estrella.classList.add('preview');
+                    estrella.classList.remove('seleccionada');
+                } else {
+                    estrella.classList.remove('preview');
+                    estrella.classList.toggle('seleccionada', valor <= calificacionMostrada);
+                }
             } else {
                 estrella.classList.remove('preview');
+                estrella.classList.toggle('seleccionada', estaSeleccionada);
             }
         });
     }
@@ -722,23 +743,30 @@ function cancelarEdicion(comentarioId, contenidoOriginal, calificacionOriginal) 
     }
 }
 
-function guardarComentario(comentarioId) {
+async function guardarComentario(comentarioId) {
     const comentarioItem = document.querySelector(`[data-comentario-id="${comentarioId}"]`);
     const nuevoContenido = comentarioItem.querySelector('.comentario-editar').value;
     const nuevaCalificacion = parseFloat(document.getElementById(`calificacion-editar-${comentarioId}`).value);
 
-    // Obtener información del usuario actual
-    const usuarioAutenticado = localStorage.getItem('usuario') || sessionStorage.getItem('usuario');
-    if (!usuarioAutenticado) {
-        alert('Debes iniciar sesión para editar comentarios');
-        return;
-    }
 
-    const usuario = JSON.parse(usuarioAutenticado);
+    let usuarioActual = null;
+    try {
+        const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+        const sessionData = await response.json();
+
+        if (sessionData.logged_in && sessionData.user) {
+            usuarioActual = sessionData.user;
+        }
+    } catch (error) {
+        console.error('Error al verificar sesión:', error);
+    }
 
     const comentarioData = {
         comentario_id: comentarioId,
-        cliente_id: usuario.id,
+        cliente_id: usuarioActual.id,
         comentario_contenido: nuevoContenido,
         comentario_calificacion: nuevaCalificacion
     };

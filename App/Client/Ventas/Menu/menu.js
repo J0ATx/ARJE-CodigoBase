@@ -1,21 +1,25 @@
-function getEstrellasCalificacion(calificacion) {
+const RATING = {
+    MIN: 1,
+    MAX: 5,
+    STAR_FILLED: '★',
+    STAR_EMPTY: '☆'
+};
+
+function getStarRating(calificacion) {
     if (!calificacion) return '';
+    const normalizedRating = Math.min(RATING.MAX, Math.max(RATING.MIN, Math.round(parseFloat(calificacion))));
+    return RATING.STAR_FILLED.repeat(normalizedRating) + 
+           RATING.STAR_EMPTY.repeat(RATING.MAX - normalizedRating);
+}
 
-    const calif = parseFloat(calificacion);
-    const estrellasLlenas = Math.round(calif);
-    const estrellasTotales = 10;
+function getRatingText(calificacion) {
+    if (!calificacion) return '';
+    return `${Math.round(parseFloat(calificacion))}/${RATING.MAX}`;
+}
 
-    let html = '';
-
-    for (let i = 0; i < estrellasTotales; i++) {
-        if (i < estrellasLlenas) {
-            html += '★';
-        } else {
-            html += '☆';
-        }
-    }
-
-    return html;
+function validateRating(calificacion) {
+    const rating = parseFloat(calificacion);
+    return !isNaN(rating) && rating >= RATING.MIN && rating <= RATING.MAX;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -263,9 +267,9 @@ function mostrarProductos(productos) {
                     ${producto.producto_calificacion ? `
                         <div class="producto-calificacion">
                             <div class="estrellas-display">
-                                ${getEstrellasCalificacion(producto.producto_calificacion)}
+                                ${getStarRating(producto.producto_calificacion)}
                             </div>
-                            <span class="calificacion-numero">${parseFloat(producto.producto_calificacion).toFixed(1)}/10</span>
+                            <span class="calificacion-numero">${getRatingText(producto.producto_calificacion)}</span>
                             ${producto.total_comentarios ? `<span class="total-comentarios">(${producto.total_comentarios} comentarios)</span>` : ''}
                         </div>
                     ` : ''}
