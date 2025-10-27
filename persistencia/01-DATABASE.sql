@@ -124,6 +124,7 @@ CREATE TABLE Producto (
     producto_nombre VARCHAR (100),
     producto_precio FLOAT,
     producto_receta VARCHAR (900),
+    producto_descripcion VARCHAR (900),
     producto_tiempo_preparacion VARCHAR (50),
     producto_creacion DATE,
     producto_categoria VARCHAR (100),

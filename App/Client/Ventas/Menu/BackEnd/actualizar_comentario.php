@@ -4,7 +4,6 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: PUT, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Manejar preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -26,8 +25,8 @@ try {
     if (!$comentario_id || !$cliente_id || !$comentario_calificacion) {
         throw new Exception('Datos incompletos: comentario_id, cliente_id y comentario_calificacion son requeridos');
     }
-    if ($comentario_calificacion < 1 || $comentario_calificacion > 5) {
-        throw new Exception('La calificación debe estar entre 1 y 5');
+    if ($comentario_calificacion < 1 || $comentario_calificacion > 10) {
+        throw new Exception('La calificación debe estar entre 1 y 10');
     }
 
     $sql_verificar_cliente = "SELECT COUNT(*) as existe FROM Cliente WHERE cliente_id = ?";

@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" sizes="32x32" href "../../../../Recursos/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
     <title>Los 3 Tanos - Detalle del Producto</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
     <script src="../../../../Componentes/JS/headerClient.js"></script>
 </head>
+
 <body>
     <div class="main-container">
         <div class="page">
@@ -20,9 +24,9 @@
             <div class="right-side">
                 <div class="form-box">
                     <div class="back-button">
-                        <button onclick="window.history.back()" class="btn-volver">
-                            ← Volver al Menú
-                        </button>
+                        <a href="index.html" class="btn-volver">
+                            Volver al Menú
+                        </a>
                     </div>
                     <div id="detalle-producto" class="detalle-producto-container"></div>
                 </div>
@@ -34,7 +38,65 @@
             </footer>
         </div>
     </div>
+
+    <!-- Modal de Comentarios -->
+    <div id="modal-comentarios" class="modal-comentarios">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h3>Escribir Comentario</h3>
+                <button id="btn-cerrar-modal-comentarios" class="btn-cerrar-modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="login-prompt-modal" id="login-prompt-modal" style="display: none;">
+                    <p>Debes <a href="/ARJE-CodigoBase/App/Control/SignUp/FrontEnd/index.html">iniciar sesión</a> para comentar.</p>
+                </div>
+
+                <form id="form-comentario-modal" class="form-comentario" style="display: none;">
+                    <div class="form-group">
+                        <label for="calificacion-modal">Calificación:</label>
+                        <div class="estrellas-input" id="estrellas-input-modal" role="radiogroup"
+                            aria-label="Calificación del producto">
+                            <span class="estrella" data-value="1" role="radio" aria-label="1 estrella"
+                                tabindex="0">☆</span>
+                            <span class="estrella" data-value="2" role="radio" aria-label="2 estrellas"
+                                tabindex="0">☆</span>
+                            <span class="estrella" data-value="3" role="radio" aria-label="3 estrellas"
+                                tabindex="0">☆</span>
+                            <span class="estrella" data-value="4" role="radio" aria-label="4 estrellas"
+                                tabindex="0">☆</span>
+                            <span class="estrella" data-value="5" role="radio" aria-label="5 estrellas"
+                                tabindex="0">☆</span>
+                            <span class="estrella" data-value="6" role="radio" aria-label="6 estrellas"
+                                tabindex="0">☆</span>
+                            <span class="estrella" data-value="7" role="radio" aria-label="7 estrellas"
+                                tabindex="0">☆</span>
+                            <span class="estrella" data-value="8" role="radio" aria-label="8 estrellas"
+                                tabindex="0">☆</span>
+                            <span class="estrella" data-value="9" role="radio" aria-label="9 estrellas"
+                                tabindex="0">☆</span>
+                            <span class="estrella" data-value="10" role="radio" aria-label="10 estrellas"
+                                tabindex="0">☆</span>
+                        </div>
+                        <input type="hidden" id="calificacion-modal" name="calificacion" required>
+                        <div class="calificacion-texto" id="calificacion-texto-modal">Selecciona una calificación</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="comentario-modal">Comentario (opcional):</label>
+                        <textarea id="comentario-modal" name="comentario" rows="3" maxlength="250"
+                            placeholder="Comparte tu experiencia con este producto..."></textarea>
+                    </div>
+                    <div class="comentario-modal-actions">
+                        <button type="button" id="btn-cancelar-comentario" class="btn-cancelar-modal">Cancelar</button>
+                        <button type="submit" class="btn-publicar-comentario">Publicar Comentario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="../detalles.js"></script>
     <script src="../session.js"></script>
 </body>
+
 </html>

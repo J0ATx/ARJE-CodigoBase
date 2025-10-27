@@ -24,6 +24,7 @@ try {
                        p.producto_creacion,
                        p.producto_categoria,
                        p.producto_calificacion,
+                       p.producto_descripcion,
                        COUNT(c.comentario_id) as total_comentarios
                 FROM Producto p
                 LEFT JOIN Comentario c ON p.producto_id = c.producto_id
@@ -47,6 +48,7 @@ try {
                        p.producto_creacion,
                        p.producto_categoria,
                        p.producto_calificacion,
+                       p.producto_descripcion,
                        COUNT(c.comentario_id) as total_comentarios
                 FROM Producto p
                 LEFT JOIN Comentario c ON p.producto_id = c.producto_id

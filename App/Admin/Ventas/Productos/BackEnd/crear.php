@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nombre = $_POST['nombre'];
         $precio = $_POST['precio'];
         $categoria = isset($_POST['categoria']) ? $_POST['categoria'] : null;
+        $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : null;
         $receta = isset($_POST['receta']) ? $_POST['receta'] : null;
         $tiempoPrep = isset($_POST['tiempo_preparacion']) ? $_POST['tiempo_preparacion'] : null;
         $personalId = isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : null;
@@ -45,10 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insertar el producto en la base de datos
         $stmt = $con->prepare("INSERT INTO Producto (
-            producto_nombre, producto_precio, producto_receta, producto_tiempo_preparacion, 
+            producto_nombre, producto_precio, producto_receta, producto_tiempo_preparacion, producto_descripcion, 
             producto_creacion, producto_categoria, producto_calificacion, personal_id
-        ) VALUES (?, ?, ?, ?, CURDATE(), ?, NULL, ?)");
-        $stmt->execute([$nombre, $precio, $receta, $tiempoPrep, $categoria, $personalId]);
+        ) VALUES (?, ?, ?, ?, ?, CURDATE(), ?, NULL, ?)");
+        $stmt->execute([$nombre, $precio, $receta, $tiempoPrep, $descripcion, $categoria, $personalId]);
         
         $idProducto = (int)$con->lastInsertId();
         

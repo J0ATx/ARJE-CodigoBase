@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,13 @@
     <title>Los 3 Tanos - Menú</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
     <script src="../../../../Componentes/JS/headerClient.js"></script>
 </head>
+
 <body>
     <div class="main-container">
         <div class="page">
@@ -19,6 +23,17 @@
             </div>
             <div class="right-side">
                 <div class="form-box">
+                    <h2 class="titulo">Menú</h2>
+
+                    <div class="busqueda-principal">
+                        <div class="barra-busqueda">
+                            <input type="text" id="busqueda-texto" placeholder="Buscar productos..."
+                                class="input-busqueda">
+                            <button id="btn-limpiar-busqueda" class="btn-limpiar">✕</button>
+                            <button id="btn-abrir-filtros" class="btn-filtros">Filtros</button>
+                        </div>
+                    </div>
+
                     <div id="menu-listado" class="menu-contenedor"></div>
                 </div>
             </div>
@@ -29,7 +44,74 @@
             </footer>
         </div>
     </div>
+
+    <!-- Modal de Filtros -->
+    <div id="modal-filtros" class="modal-filtros">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h3>Filtros de Búsqueda</h3>
+                <button id="btn-cerrar-modal" class="btn-cerrar-modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="filtros-modal">
+                    <div class="filtro-grupo">
+                        <label for="modal-filtro-categoria">Categoría:</label>
+                        <select id="modal-filtro-categoria" class="filtro-select">
+                            <option value="">Todas las categorías</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro-grupo">
+                        <label for="modal-filtro-precio">Precio máximo:</label>
+                        <select id="modal-filtro-precio" class="filtro-select">
+                            <option value="">Sin límite</option>
+                            <option value="50">$50</option>
+                            <option value="100">$100</option>
+                            <option value="200">$200</option>
+                            <option value="500">$500</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro-grupo">
+                        <label for="modal-filtro-calificacion">Calificación mínima:</label>
+                        <select id="modal-filtro-calificacion" class="filtro-select">
+                            <option value="">Cualquier calificación</option>
+                            <option value="1">1+ estrellas</option>
+                            <option value="2">2+ estrellas</option>
+                            <option value="3">3+ estrellas</option>
+                            <option value="4">4+ estrellas</option>
+                            <option value="5">5+ estrellas</option>
+                            <option value="6">6+ estrellas</option>
+                            <option value="7">7+ estrellas</option>
+                            <option value="8">8+ estrellas</option>
+                            <option value="9">9+ estrellas</option>
+                            <option value="10">10 estrellas</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro-grupo">
+                        <label for="modal-ordenar">Ordenar por:</label>
+                        <select id="modal-ordenar" class="filtro-select">
+                            <option value="nombre">Nombre</option>
+                            <option value="precio-asc">Precio (menor a mayor)</option>
+                            <option value="precio-desc">Precio (mayor a menor)</option>
+                            <option value="calificacion">Calificación</option>
+                            <option value="categoria">Categoría</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="btn-limpiar-todos-modal" class="btn-limpiar-filtros">Limpiar Filtros</button>
+                    <button id="btn-aplicar-filtros" class="btn-aplicar-filtros">Aplicar Filtros</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="../menu.js"></script>
     <script src="../session.js"></script>
 </body>
+
 </html>

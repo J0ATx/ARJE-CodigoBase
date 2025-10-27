@@ -2,16 +2,13 @@ function getEstrellasCalificacion(calificacion) {
     if (!calificacion) return '';
 
     const calif = parseFloat(calificacion);
-    const estrellasLlenas = Math.floor(calif);
-    const mediaEstrella = calif % 1 >= 0.5;
-    const estrellasTotales = 5;
+    const estrellasLlenas = Math.round(calif);
+    const estrellasTotales = 10;
 
     let html = '';
 
     for (let i = 0; i < estrellasTotales; i++) {
         if (i < estrellasLlenas) {
-            html += '★';
-        } else if (i === estrellasLlenas && mediaEstrella) {
             html += '★';
         } else {
             html += '☆';
@@ -49,33 +46,33 @@ async function mostrarDetalleProducto() {
                 <div class="detalle-info">
                     <h2>${producto.producto_nombre}</h2>
                     <p class="precio">$${producto.producto_precio}</p>
-                    ${producto.producto_tiempo_preparacion ? `<p><strong>Tiempo de preparación:</strong> ${producto.producto_tiempo_preparacion}</p>` : ''}
-                    ${producto.producto_categoria ? `<p><strong>Categoría:</strong> ${producto.producto_categoria}</p>` : ''}
                     ${producto.producto_calificacion ? `
                         <div class="producto-calificacion">
-                            <h3>Calificación</h3>
-                            <div class="estrellas">
+                            <div class="estrellas-display">
                                 ${getEstrellasCalificacion(producto.producto_calificacion)}
                             </div>
-                            <span class="calificacion-numero">${producto.producto_calificacion}/5</span>
+                            <span class="calificacion-numero">${producto.producto_calificacion}/10</span>
                             ${producto.total_comentarios ? `<span class="total-comentarios">(${producto.total_comentarios} comentarios)</span>` : ''}
                         </div>
                     ` : ''}
-                    ${producto.producto_receta ? `<div class="receta"><h3>Receta:</h3><p>${producto.producto_receta.replace(/\n/g, '<br>')}</p></div>` : ''}
+                    ${producto.producto_descripcion ? `<div class="descripcion-detalle"><h3>Descripción:</h3><p>${producto.producto_descripcion.replace(/\n/g, '<br>')}</p></div>` : ''}
                 </div>
             </div>
             <div class="comentarios-seccion">
-                <h3>Comentarios y Reseñas</h3>
-                <div id="formulario-comentario" class="formulario-comentario">
+                <div class="comentarios-header">
+                    <h3>Comentarios y Reseñas</h3>
+                    <button id="btn-abrir-comentarios" class="btn-comentar-principal">Comentar</button>
                 </div>
                 <div id="lista-comentarios" class="lista-comentarios">
                 </div>
             </div>
         `;
 
-        // Cargar comentarios y formulario después de mostrar el producto
+        // Cargar comentarios después de mostrar el producto
         cargarComentarios(producto.producto_id);
-        await mostrarFormularioComentario(producto.producto_id);
+
+        // Configurar funcionalidad del modal de comentarios
+        configurarModalComentarios(producto.producto_id);
     } catch (error) {
         console.error('Error:', error);
         document.getElementById('detalle-producto').textContent = 'Error al cargar el producto.';
@@ -86,7 +83,6 @@ function cargarComentarios(productoId) {
     fetch(`../BackEnd/obtener_comentarios.php?producto_id=${productoId}`)
         .then(response => response.json())
         .then(async data => {
-            console.log(data);
             if (data.success) {
                 await mostrarComentarios(data.comentarios);
                 if (data.producto) {
@@ -104,13 +100,12 @@ async function mostrarComentarios(comentarios) {
     if (!contenedor) return;
 
     if (comentarios.length === 0) {
-        contenedor.innerHTML = '<p class="sin-comentarios">No hay comentarios aún. ¡Sé el primero en comentar!</p>';
+        contenedor.innerHTML = '<p class="sin-comentarios">No hay comentarios aún.</p>';
         return;
     }
 
-    // Obtener información del usuario actual desde la sesión
     let usuarioActual = null;
-
+    let avatar = null;
     try {
         const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
             method: 'GET',
@@ -120,26 +115,15 @@ async function mostrarComentarios(comentarios) {
 
         if (sessionData.logged_in && sessionData.user) {
             usuarioActual = sessionData.user;
-            // También actualizar sessionStorage para mantener consistencia
-            sessionStorage.setItem('usuario', JSON.stringify(sessionData.user));
-        } else {
-            // Si no hay sesión, verificar localStorage como respaldo
-            const usuarioAutenticado = localStorage.getItem('usuario') || sessionStorage.getItem('usuario');
-            if (usuarioAutenticado) {
-                usuarioActual = JSON.parse(usuarioAutenticado);
-            }
+            const responseAvatar = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+            avatar = await responseAvatar.json();
         }
     } catch (error) {
         console.error('Error verificando sesión:', error);
-        // Fallback a localStorage/sessionStorage
-        const usuarioAutenticado = localStorage.getItem('usuario') || sessionStorage.getItem('usuario');
-        if (usuarioAutenticado) {
-            try {
-                usuarioActual = JSON.parse(usuarioAutenticado);
-            } catch (e) {
-                console.error('Error parsing user data:', e);
-            }
-        }
+        avatar = { avatar: 'default.png' };
     }
 
     const comentariosHTML = comentarios.map(comentario => {
@@ -150,10 +134,13 @@ async function mostrarComentarios(comentarios) {
         return `
             <div class="comentario-item" data-comentario-id="${comentario.comentario_id}">
                 <div class="comentario-header">
+                <div class="comentario-user">    
+                <img src="/ARJE-CodigoBase/App/Recursos/avatars/${avatar?.avatar || 'default.png'}" id="avatar" class="logged" alt="Foto de perfíl">
                     <strong>${comentario.cliente_nombre} ${comentario.cliente_apellido}</strong>
+                </div>
                     <div class="comentario-calificacion">
                         <span class="estrellas">${getEstrellasCalificacion(comentario.comentario_calificacion)}</span>
-                        <span class="calificacion-numero">${parseFloat(comentario.comentario_calificacion).toFixed(1)}/5</span>
+                        <span class="calificacion-numero">${parseFloat(comentario.comentario_calificacion).toFixed(1)}/10</span>
                     </div>
                 </div>
                 ${comentario.comentario_contenido ? `<p class="comentario-contenido">${comentario.comentario_contenido}</p>` : ''}
@@ -183,7 +170,7 @@ function actualizarPromedio(producto) {
         const comentariosSpan = calificacionDiv.querySelector('.total-comentarios');
 
         if (promedioSpan) {
-            promedioSpan.textContent = `${parseFloat(producto.producto_calificacion).toFixed(1)}/5`;
+            promedioSpan.textContent = `${parseFloat(producto.producto_calificacion).toFixed(1)}/10`;
         }
         if (comentariosSpan) {
             comentariosSpan.textContent = `(${producto.total_comentarios} comentarios)`;
@@ -195,10 +182,10 @@ async function mostrarFormularioComentario(productoId) {
     const contenedor = document.getElementById('formulario-comentario');
     if (!contenedor) return;
     const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
-            method: 'GET',
-            credentials: 'same-origin'
-        });
-        const data = await response.json();
+        method: 'GET',
+        credentials: 'same-origin'
+    });
+    const data = await response.json();
 
     if (!data.logged_in) {
         contenedor.innerHTML = `
@@ -213,12 +200,17 @@ async function mostrarFormularioComentario(productoId) {
         <form id="form-comentario" class="form-comentario">
             <div class="form-group">
                 <label for="calificacion">Calificación:</label>
-                <div class="estrellas-input" id="estrellas-input">
-                    <span class="estrella" data-value="1">☆</span>
-                    <span class="estrella" data-value="2">☆</span>
-                    <span class="estrella" data-value="3">☆</span>
-                    <span class="estrella" data-value="4">☆</span>
-                    <span class="estrella" data-value="5">☆</span>
+                <div class="estrellas-input" id="estrellas-input" role="radiogroup" aria-label="Calificación del producto">
+                    <span class="estrella" data-value="1" role="radio" aria-label="1 estrella" tabindex="0">☆</span>
+                    <span class="estrella" data-value="2" role="radio" aria-label="2 estrellas" tabindex="0">☆</span>
+                    <span class="estrella" data-value="3" role="radio" aria-label="3 estrellas" tabindex="0">☆</span>
+                    <span class="estrella" data-value="4" role="radio" aria-label="4 estrellas" tabindex="0">☆</span>
+                    <span class="estrella" data-value="5" role="radio" aria-label="5 estrellas" tabindex="0">☆</span>
+                    <span class="estrella" data-value="6" role="radio" aria-label="6 estrellas" tabindex="0">☆</span>
+                    <span class="estrella" data-value="7" role="radio" aria-label="7 estrellas" tabindex="0">☆</span>
+                    <span class="estrella" data-value="8" role="radio" aria-label="8 estrellas" tabindex="0">☆</span>
+                    <span class="estrella" data-value="9" role="radio" aria-label="9 estrellas" tabindex="0">☆</span>
+                    <span class="estrella" data-value="10" role="radio" aria-label="10 estrellas" tabindex="0">☆</span>
                 </div>
                 <input type="hidden" id="calificacion" name="calificacion" required>
                 <div class="calificacion-texto" id="calificacion-texto">Selecciona una calificación</div>
@@ -249,112 +241,83 @@ function configurarEstrellas() {
     const estrellas = estrellasInput.querySelectorAll('.estrella');
 
     let calificacionSeleccionada = 0;
-    let hoverPreview = 0;
 
+    // Configurar navegación por teclado
     estrellas.forEach((estrella, index) => {
-        // Click para seleccionar estrellas completas
-        estrella.addEventListener('click', (e) => {
-            const rect = estrella.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const isLeftHalf = clickX < rect.width / 2;
+        const valor = index + 1;
 
-            if (calificacionSeleccionada === index + 1) {
-                // Si ya está seleccionada, alternar entre completa y media
-                if (isLeftHalf) {
-                    calificacionSeleccionada = index + 0.5;
-                    calificacionTexto.textContent = `${calificacionSeleccionada} estrella${calificacionSeleccionada !== 1 ? 's' : ''}`;
-                } else {
-                    calificacionSeleccionada = index + 1;
-                    calificacionTexto.textContent = `${calificacionSeleccionada} estrella${calificacionSeleccionada !== 1 ? 's' : ''}`;
-                }
-            } else if (calificacionSeleccionada === index + 0.5) {
-                // Si está en media, convertir a completa
-                calificacionSeleccionada = index + 1;
-                calificacionTexto.textContent = `${calificacionSeleccionada} estrella${calificacionSeleccionada !== 1 ? 's' : ''}`;
-            } else {
-                // Seleccionar nueva estrella
-                calificacionSeleccionada = index + 1;
-                calificacionTexto.textContent = `${calificacionSeleccionada} estrella${calificacionSeleccionada !== 1 ? 's' : ''}`;
-            }
-
-            actualizarEstrellas(calificacionSeleccionada);
-            calificacionHidden.value = calificacionSeleccionada;
-            hoverPreview = 0; // Limpiar preview después del click
+        // Click para seleccionar
+        estrella.addEventListener('click', () => {
+            seleccionarCalificacion(valor);
         });
 
-        // Hover para preview mejorado
-        estrella.addEventListener('mouseenter', (e) => {
-            const rect = estrella.getBoundingClientRect();
-            const hoverX = e.clientX - rect.left;
-            const isLeftHalf = hoverX < rect.width / 2;
+        // Navegación por teclado
+        estrella.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                seleccionarCalificacion(valor);
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const siguienteIndex = (index + 1) % estrellas.length;
+                estrellas[siguienteIndex].focus();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const anteriorIndex = (index - 1 + estrellas.length) % estrellas.length;
+                estrellas[anteriorIndex].focus();
+            }
+        });
 
-            // Solo mostrar preview si no hay selección actual
+        // Hover para preview visual
+        estrella.addEventListener('mouseenter', () => {
             if (calificacionSeleccionada === 0) {
-                hoverPreview = isLeftHalf ? index + 0.5 : index + 1;
-                actualizarEstrellas(hoverPreview, true);
-                calificacionTexto.textContent = `${hoverPreview} estrella${hoverPreview !== 1 ? 's' : ''}`;
-
-                // Actualizar tooltip según la posición
-                estrella.setAttribute('data-tooltip', `${hoverPreview} estrella${hoverPreview !== 1 ? 's' : ''}`);
+                actualizarEstrellas(valor, true);
+                calificacionTexto.textContent = `${valor} estrella${valor !== 1 ? 's' : ''}`;
             }
         });
 
-        // Mouse leave para restaurar
         estrella.addEventListener('mouseleave', () => {
             if (calificacionSeleccionada === 0) {
-                hoverPreview = 0;
                 actualizarEstrellas(0, true);
                 calificacionTexto.textContent = 'Selecciona una calificación';
-
-                // Limpiar tooltip
-                estrella.removeAttribute('data-tooltip');
-            }
-        });
-
-        // Mousemove para actualizar preview en tiempo real
-        estrella.addEventListener('mousemove', (e) => {
-            if (calificacionSeleccionada === 0) {
-                const rect = estrella.getBoundingClientRect();
-                const hoverX = e.clientX - rect.left;
-                const isLeftHalf = hoverX < rect.width / 2;
-                const newPreview = isLeftHalf ? index + 0.5 : index + 1;
-
-                if (newPreview !== hoverPreview) {
-                    hoverPreview = newPreview;
-                    actualizarEstrellas(hoverPreview, true);
-                    calificacionTexto.textContent = `${hoverPreview} estrella${hoverPreview !== 1 ? 's' : ''}`;
-
-                    // Actualizar tooltip en tiempo real
-                    estrella.setAttribute('data-tooltip', `${hoverPreview} estrella${hoverPreview !== 1 ? 's' : ''}`);
-                }
             }
         });
     });
 
+    function seleccionarCalificacion(valor) {
+        calificacionSeleccionada = valor;
+        calificacionHidden.value = valor;
+        calificacionTexto.textContent = `Calificación: ${valor} estrella${valor !== 1 ? 's' : ''}`;
+        actualizarEstrellas(valor, false);
+
+        // Anunciar a lectores de pantalla
+        estrellasInput.setAttribute('aria-valuenow', valor);
+        estrellasInput.setAttribute('aria-valuetext', `${valor} estrella${valor !== 1 ? 's' : ''}`);
+    }
+
     function actualizarEstrellas(calificacion, isPreview = false) {
         estrellas.forEach((estrella, index) => {
-            const estrellaValue = index + 1;
+            const valor = index + 1;
 
-            if (calificacion >= estrellaValue) {
+            if (calificacion >= valor) {
                 estrella.textContent = '★';
                 estrella.classList.add('seleccionada');
-                estrella.classList.remove('media');
-            } else if (calificacion >= index + 0.5) {
-                estrella.textContent = '★';
-                estrella.classList.add('media');
-                estrella.classList.remove('seleccionada');
+                estrella.classList.remove('preview');
             } else {
                 estrella.textContent = '☆';
-                estrella.classList.remove('seleccionada', 'media');
+                estrella.classList.remove('seleccionada', 'preview');
             }
 
             if (isPreview) {
                 estrella.classList.add('preview');
-            } else {
-                estrella.classList.remove('preview');
             }
         });
     }
+
+    // Configurar atributos ARIA iniciales
+    estrellasInput.setAttribute('aria-valuemin', '1');
+    estrellasInput.setAttribute('aria-valuemax', '10');
+    estrellasInput.setAttribute('aria-valuenow', '0');
+    estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
 }
 
 function enviarComentario(productoId, usuario) {
@@ -375,29 +338,269 @@ function enviarComentario(productoId, usuario) {
         },
         body: JSON.stringify(comentarioData)
     })
-    .then(response => response.json())
-    .then(async data => {
-        if (data.success) {
-            alert('¡Comentario publicado exitosamente!');
-            form.reset();
-            // Resetear estrellas
-            const calificacionTexto = document.getElementById('calificacion-texto');
-            calificacionTexto.textContent = 'Selecciona una calificación';
-            // Recargar comentarios y actualizar promedio
-            await cargarComentarios(productoId);
-        } else {
-            alert('Error: ' + data.error);
-        }
+        .then(response => response.json())
+        .then(async data => {
+            if (data.success) {
+                alert('¡Comentario publicado exitosamente!');
+                form.reset();
+                // Resetear estrellas
+                const calificacionTexto = document.getElementById('calificacion-texto');
+                calificacionTexto.textContent = 'Selecciona una calificación';
+                // Recargar comentarios y actualizar promedio
+                await cargarComentarios(productoId);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al publicar el comentario');
+        });
+}
+
+function configurarModalComentarios(productoId) {
+    const btnAbrirModal = document.getElementById('btn-abrir-comentarios');
+    const modalComentarios = document.getElementById('modal-comentarios');
+    const btnCerrarModal = document.getElementById('btn-cerrar-modal-comentarios');
+    const btnCancelar = document.getElementById('btn-cancelar-comentario');
+    const formModal = document.getElementById('form-comentario-modal');
+    const loginPrompt = document.getElementById('login-prompt-modal');
+    const formComentario = document.getElementById('form-comentario-modal');
+
+    // Verificar si el usuario está logueado
+    fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+        method: 'GET',
+        credentials: 'same-origin'
     })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al publicar el comentario');
+        .then(response => response.json())
+        .then(data => {
+            if (data.logged_in && data.user) {
+                // Usuario logueado - mostrar formulario
+                loginPrompt.style.display = 'none';
+                formComentario.style.display = 'block';
+            } else {
+                // Usuario no logueado - mostrar prompt de login
+                loginPrompt.style.display = 'block';
+                formComentario.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error verificando sesión:', error);
+            loginPrompt.style.display = 'block';
+            formComentario.style.display = 'none';
+        });
+
+    // Event listeners para el modal
+    btnAbrirModal.addEventListener('click', () => {
+        modalComentarios.classList.add('active');
+        configurarEstrellasModal();
+
+        // Enfocar el primer elemento del formulario si está disponible
+        setTimeout(() => {
+            const firstEstrella = document.querySelector('#estrellas-input-modal .estrella');
+            if (firstEstrella) {
+                firstEstrella.focus();
+            }
+        }, 100);
+    });
+
+    btnCerrarModal.addEventListener('click', () => {
+        modalComentarios.classList.remove('active');
+        resetModalForm();
+    });
+
+    btnCancelar.addEventListener('click', () => {
+        modalComentarios.classList.remove('active');
+        resetModalForm();
+    });
+
+    // Cerrar modal al hacer click fuera
+    modalComentarios.addEventListener('click', (e) => {
+        if (e.target === modalComentarios) {
+            modalComentarios.classList.remove('active');
+            resetModalForm();
+        }
+    });
+
+    // Enviar formulario del modal
+    formModal.addEventListener('submit', (e) => {
+        e.preventDefault();
+        enviarComentarioModal(productoId);
+    });
+
+    // Cerrar modal con Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalComentarios.classList.contains('active')) {
+            modalComentarios.classList.remove('active');
+            resetModalForm();
+        }
     });
 }
 
-function mostrarLogin() {
-    // Esta función debería redirigir al login o mostrar un modal de login
-    alert('Redirigiendo al login...');
+function configurarEstrellasModal() {
+    const estrellasInput = document.getElementById('estrellas-input-modal');
+    const calificacionHidden = document.getElementById('calificacion-modal');
+    const calificacionTexto = document.getElementById('calificacion-texto-modal');
+    const estrellas = estrellasInput.querySelectorAll('.estrella');
+
+    let calificacionSeleccionada = 0;
+
+    // Configurar navegación por teclado
+    estrellas.forEach((estrella, index) => {
+        const valor = index + 1;
+
+        // Click para seleccionar
+        estrella.addEventListener('click', () => {
+            seleccionarCalificacionModal(valor);
+        });
+
+        // Navegación por teclado
+        estrella.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                seleccionarCalificacionModal(valor);
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const siguienteIndex = (index + 1) % estrellas.length;
+                estrellas[siguienteIndex].focus();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const anteriorIndex = (index - 1 + estrellas.length) % estrellas.length;
+                estrellas[anteriorIndex].focus();
+            }
+        });
+
+        // Hover para preview visual
+        estrella.addEventListener('mouseenter', () => {
+            if (calificacionSeleccionada === 0) {
+                actualizarEstrellasModal(valor, true);
+                calificacionTexto.textContent = `${valor} estrella${valor !== 1 ? 's' : ''}`;
+            }
+        });
+
+        estrella.addEventListener('mouseleave', () => {
+            if (calificacionSeleccionada === 0) {
+                actualizarEstrellasModal(0, true);
+                calificacionTexto.textContent = 'Selecciona una calificación';
+            }
+        });
+    });
+
+    function seleccionarCalificacionModal(valor) {
+        calificacionSeleccionada = valor;
+        calificacionHidden.value = valor;
+        calificacionTexto.textContent = `Calificación: ${valor} estrella${valor !== 1 ? 's' : ''}`;
+        actualizarEstrellasModal(valor, false);
+
+        // Anunciar a lectores de pantalla
+        estrellasInput.setAttribute('aria-valuenow', valor);
+        estrellasInput.setAttribute('aria-valuetext', `${valor} estrella${valor !== 1 ? 's' : ''}`);
+    }
+
+    function actualizarEstrellasModal(calificacion, isPreview = false) {
+        estrellas.forEach((estrella, index) => {
+            const valor = index + 1;
+
+            if (calificacion >= valor) {
+                estrella.textContent = '★';
+                estrella.classList.add('seleccionada');
+                estrella.classList.remove('preview');
+            } else {
+                estrella.textContent = '☆';
+                estrella.classList.remove('seleccionada', 'preview');
+            }
+
+            if (isPreview) {
+                estrella.classList.add('preview');
+            }
+        });
+    }
+
+    estrellasInput.setAttribute('aria-valuemin', '1');
+    estrellasInput.setAttribute('aria-valuemax', '10');
+    estrellasInput.setAttribute('aria-valuenow', '0');
+    estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
+}
+
+function resetModalForm() {
+    const form = document.getElementById('form-comentario-modal');
+    const calificacionTexto = document.getElementById('calificacion-texto-modal');
+    const estrellas = document.querySelectorAll('#estrellas-input-modal .estrella');
+
+    // Resetear formulario
+    form.reset();
+
+    // Resetear estrellas
+    estrellas.forEach(estrella => {
+        estrella.textContent = '☆';
+        estrella.classList.remove('seleccionada', 'preview');
+    });
+
+    // Resetear texto de calificación
+    calificacionTexto.textContent = 'Selecciona una calificación';
+
+    // Resetear ARIA
+    const estrellasInput = document.getElementById('estrellas-input-modal');
+    estrellasInput.setAttribute('aria-valuenow', '0');
+    estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
+}
+
+function enviarComentarioModal(productoId) {
+    const form = document.getElementById('form-comentario-modal');
+    const formData = new FormData(form);
+
+    // Verificar que se haya seleccionado una calificación
+    const calificacion = parseFloat(formData.get('calificacion'));
+    if (!calificacion || calificacion < 1 || calificacion > 10) {
+        alert('Por favor selecciona una calificación antes de enviar el comentario.');
+        return;
+    }
+
+    // Obtener información del usuario actual
+    fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+        method: 'GET',
+        credentials: 'same-origin'
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.logged_in || !data.user) {
+                alert('Debes iniciar sesión para comentar.');
+                return;
+            }
+
+            const comentarioData = {
+                producto_id: productoId,
+                cliente_id: data.user.id,
+                comentario_contenido: formData.get('comentario') || '',
+                comentario_calificacion: calificacion
+            };
+
+            return fetch('../BackEnd/comentarios.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(comentarioData)
+            });
+        })
+        .then(response => response ? response.json() : null)
+        .then(data => {
+            if (data && data.success) {
+                alert('¡Comentario publicado exitosamente!');
+                // Cerrar modal y resetear
+                const modal = document.getElementById('modal-comentarios');
+                modal.classList.remove('active');
+                resetModalForm();
+                // Recargar comentarios
+                cargarComentarios(productoId);
+            } else if (data) {
+                alert('Error: ' + (data.error || 'Error desconocido'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al publicar el comentario');
+        });
 }
 
 function editarComentario(comentarioId, contenidoActual, calificacionActual) {
@@ -405,18 +608,22 @@ function editarComentario(comentarioId, contenidoActual, calificacionActual) {
     const comentarioContenido = comentarioItem.querySelector('.comentario-contenido');
     const comentarioAcciones = comentarioItem.querySelector('.comentario-acciones');
 
-    // Crear formulario de edición
     const formEdicion = document.createElement('div');
     formEdicion.className = 'form-edicion-comentario';
     formEdicion.innerHTML = `
         <div class="form-group">
             <label>Calificación:</label>
-            <div class="estrellas-input-edicion" id="estrellas-editar-${comentarioId}">
-                <span class="estrella" data-value="1">★</span>
-                <span class="estrella" data-value="2">★</span>
-                <span class="estrella" data-value="3">★</span>
-                <span class="estrella" data-value="4">★</span>
-                <span class="estrella" data-value="5">★</span>
+            <div class="estrellas-input-edicion" id="estrellas-editar-${comentarioId}" role="radiogroup" aria-label="Calificación del producto">
+                <span class="estrella" data-value="1" role="radio" aria-label="1 estrella" tabindex="0">★</span>
+                <span class="estrella" data-value="2" role="radio" aria-label="2 estrellas" tabindex="0">★</span>
+                <span class="estrella" data-value="3" role="radio" aria-label="3 estrellas" tabindex="0">★</span>
+                <span class="estrella" data-value="4" role="radio" aria-label="4 estrellas" tabindex="0">★</span>
+                <span class="estrella" data-value="5" role="radio" aria-label="5 estrellas" tabindex="0">★</span>
+                <span class="estrella" data-value="6" role="radio" aria-label="6 estrellas" tabindex="0">★</span>
+                <span class="estrella" data-value="7" role="radio" aria-label="7 estrellas" tabindex="0">★</span>
+                <span class="estrella" data-value="8" role="radio" aria-label="8 estrellas" tabindex="0">★</span>
+                <span class="estrella" data-value="9" role="radio" aria-label="9 estrellas" tabindex="0">★</span>
+                <span class="estrella" data-value="10" role="radio" aria-label="10 estrellas" tabindex="0">★</span>
             </div>
             <input type="hidden" id="calificacion-editar-${comentarioId}" value="${calificacionActual}">
             <div class="calificacion-texto">Calificación actual: ${calificacionActual}</div>
@@ -431,17 +638,14 @@ function editarComentario(comentarioId, contenidoActual, calificacionActual) {
         </div>
     `;
 
-    // Reemplazar contenido y acciones con formulario de edición
     if (comentarioContenido) {
         comentarioContenido.style.display = 'none';
     }
     comentarioAcciones.style.display = 'none';
 
-    // Insertar formulario después del header
     const comentarioHeader = comentarioItem.querySelector('.comentario-header');
     comentarioHeader.insertAdjacentElement('afterend', formEdicion);
 
-    // Configurar estrellas para edición
     configurarEstrellasEdicion(comentarioId, calificacionActual);
 }
 
@@ -453,91 +657,42 @@ function configurarEstrellasEdicion(comentarioId, calificacionActual) {
 
     let hoverPreview = 0;
 
-    // Establecer estado inicial
     actualizarEstrellasEdicion(calificacionActual);
 
     estrellas.forEach((estrella, index) => {
-        estrella.addEventListener('click', (e) => {
-            const rect = estrella.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const isLeftHalf = clickX < rect.width / 2;
+        const valor = index + 1;
 
-            let nuevaCalificacion;
-            if (calificacionActual === index + 1) {
-                // Si ya está seleccionada, alternar entre completa y media
-                nuevaCalificacion = isLeftHalf ? index + 0.5 : index + 1;
-            } else if (calificacionActual === index + 0.5) {
-                // Si está en media, convertir a completa
-                nuevaCalificacion = index + 1;
-            } else {
-                // Seleccionar nueva estrella
-                nuevaCalificacion = index + 1;
-            }
-
-            calificacionActual = nuevaCalificacion;
-            calificacionHidden.value = nuevaCalificacion;
-            calificacionTexto.textContent = `Nueva calificación: ${nuevaCalificacion}`;
-            actualizarEstrellasEdicion(nuevaCalificacion);
-            hoverPreview = 0; // Limpiar preview después del click
+        estrella.addEventListener('click', () => {
+            calificacionActual = valor;
+            calificacionHidden.value = valor;
+            calificacionTexto.textContent = `Nueva calificación: ${valor} estrella${valor !== 1 ? 's' : ''}`;
+            actualizarEstrellasEdicion(valor);
+            hoverPreview = 0;
         });
 
-        // Hover para preview mejorado
-        estrella.addEventListener('mouseenter', (e) => {
-            const rect = estrella.getBoundingClientRect();
-            const hoverX = e.clientX - rect.left;
-            const isLeftHalf = hoverX < rect.width / 2;
-
-            hoverPreview = isLeftHalf ? index + 0.5 : index + 1;
-            actualizarEstrellasEdicion(hoverPreview, true);
-            calificacionTexto.textContent = `Preview: ${hoverPreview} estrella${hoverPreview !== 1 ? 's' : ''}`;
-
-            // Actualizar tooltip según la posición
-            estrella.setAttribute('data-tooltip', `${hoverPreview} estrella${hoverPreview !== 1 ? 's' : ''}`);
+        estrella.addEventListener('mouseenter', () => {
+            hoverPreview = valor;
+            actualizarEstrellasEdicion(valor, true);
+            calificacionTexto.textContent = `Preview: ${valor} estrella${valor !== 1 ? 's' : ''}`;
         });
 
-        // Mouse leave para restaurar
         estrella.addEventListener('mouseleave', () => {
             hoverPreview = 0;
             actualizarEstrellasEdicion(calificacionActual, true);
             calificacionTexto.textContent = `Calificación actual: ${calificacionActual}`;
-
-            // Limpiar tooltip
-            estrella.removeAttribute('data-tooltip');
-        });
-
-        // Mousemove para actualizar preview en tiempo real
-        estrella.addEventListener('mousemove', (e) => {
-            const rect = estrella.getBoundingClientRect();
-            const hoverX = e.clientX - rect.left;
-            const isLeftHalf = hoverX < rect.width / 2;
-            const newPreview = isLeftHalf ? index + 0.5 : index + 1;
-
-            if (newPreview !== hoverPreview) {
-                hoverPreview = newPreview;
-                actualizarEstrellasEdicion(hoverPreview, true);
-                calificacionTexto.textContent = `Preview: ${hoverPreview} estrella${hoverPreview !== 1 ? 's' : ''}`;
-
-                // Actualizar tooltip en tiempo real
-                estrella.setAttribute('data-tooltip', `${hoverPreview} estrella${hoverPreview !== 1 ? 's' : ''}`);
-            }
         });
     });
 
     function actualizarEstrellasEdicion(calificacion, isPreview = false) {
         estrellas.forEach((estrella, index) => {
-            const estrellaValue = index + 1;
+            const valor = index + 1;
 
-            if (calificacion >= estrellaValue) {
+            if (calificacion >= valor) {
                 estrella.textContent = '★';
                 estrella.classList.add('seleccionada');
-                estrella.classList.remove('media');
-            } else if (calificacion >= index + 0.5) {
-                estrella.textContent = '★';
-                estrella.classList.add('media');
-                estrella.classList.remove('seleccionada');
             } else {
                 estrella.textContent = '☆';
-                estrella.classList.remove('seleccionada', 'media');
+                estrella.classList.remove('seleccionada');
             }
 
             if (isPreview) {
@@ -553,12 +708,9 @@ function cancelarEdicion(comentarioId, contenidoOriginal, calificacionOriginal) 
     const comentarioItem = document.querySelector(`[data-comentario-id="${comentarioId}"]`);
     const formEdicion = comentarioItem.querySelector('.form-edicion-comentario');
 
-    // Remover formulario de edición
     if (formEdicion) {
         formEdicion.remove();
     }
-
-    // Restaurar visibilidad del contenido y acciones
     const comentarioContenido = comentarioItem.querySelector('.comentario-contenido');
     const comentarioAcciones = comentarioItem.querySelector('.comentario-acciones');
 
@@ -598,41 +750,44 @@ function guardarComentario(comentarioId) {
         },
         body: JSON.stringify(comentarioData)
     })
-    .then(response => response.json())
-    .then(async data => {
-        if (data.success) {
-            alert('¡Comentario actualizado exitosamente!');
-            // Recargar comentarios para ver los cambios
-            const urlParams = new URLSearchParams(window.location.search);
-            const productoId = urlParams.get('id');
-            await cargarComentarios(productoId);
-        } else {
-            alert('Error: ' + data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al actualizar el comentario');
-    });
+        .then(response => response.json())
+        .then(async data => {
+            if (data.success) {
+                alert('¡Comentario actualizado exitosamente!');
+                const urlParams = new URLSearchParams(window.location.search);
+                const productoId = urlParams.get('id');
+                await cargarComentarios(productoId);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al actualizar el comentario');
+        });
 }
 
-function eliminarComentario(comentarioId) {
+async function eliminarComentario(comentarioId) {
     if (!confirm('¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.')) {
         return;
     }
+    const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+        method: 'GET',
+        credentials: 'same-origin'
+    });
+    const sessionData = await response.json();
 
-    // Obtener información del usuario actual
-    const usuarioAutenticado = localStorage.getItem('usuario') || sessionStorage.getItem('usuario');
-    if (!usuarioAutenticado) {
+    if (sessionData.logged_in && sessionData.user) {
+        usuarioActual = sessionData.user;
+    }
+    if (!usuarioActual) {
         alert('Debes iniciar sesión para eliminar comentarios');
         return;
     }
 
-    const usuario = JSON.parse(usuarioAutenticado);
-
     const comentarioData = {
         comentario_id: comentarioId,
-        cliente_id: usuario.id
+        cliente_id: usuarioActual.id
     };
 
     fetch('../BackEnd/eliminar_comentario.php', {
@@ -642,20 +797,20 @@ function eliminarComentario(comentarioId) {
         },
         body: JSON.stringify(comentarioData)
     })
-    .then(response => response.json())
-    .then(async data => {
-        if (data.success) {
-            alert('¡Comentario eliminado exitosamente!');
-            // Recargar comentarios para ver los cambios
-            const urlParams = new URLSearchParams(window.location.search);
-            const productoId = urlParams.get('id');
-            await cargarComentarios(productoId);
-        } else {
-            alert('Error: ' + data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al eliminar el comentario');
-    });
+        .then(response => response.json())
+        .then(async data => {
+            if (data.success) {
+                alert('¡Comentario eliminado exitosamente!');
+                // Recargar comentarios para ver los cambios
+                const urlParams = new URLSearchParams(window.location.search);
+                const productoId = urlParams.get('id');
+                await cargarComentarios(productoId);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al eliminar el comentario');
+        });
 }

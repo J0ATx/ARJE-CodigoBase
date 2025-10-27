@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('precio', document.getElementById('precio').value);
         formData.append('categoria', document.getElementById('categoria').value || '');
         formData.append('tiempo_preparacion', document.getElementById('tiempo_preparacion').value || '');
+        formData.append('descripcion', document.getElementById('descripcion').value || '');
         formData.append('receta', document.getElementById('receta').value || '');
 
         // Add ingredients
