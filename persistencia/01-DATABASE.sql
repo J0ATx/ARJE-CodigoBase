@@ -109,6 +109,7 @@ CREATE TABLE Reserva (
     reserva_duracion ENUM ('1', '2', '3', '4', '5', '6'),
     reserva_fecha DATE,
     reserva_inicio TIME,
+    reserva_estado ENUM ('Pendiente', 'Confirmada', 'Finalizada', 'Cancelada', 'No-Show') DEFAULT 'Pendiente',
     cliente_id VARCHAR (100),
     mesa_id INT,
     PRIMARY KEY (reserva_id),

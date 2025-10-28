@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.stock.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.stock_id;
-                    // Mostrar nombre con cantidad total disponible y medida
                     const cantidadTotal = parseFloat(item.cantidad_total || 0).toFixed(2);
                     option.text = `${item.stock_nombre} (${cantidadTotal} ${item.stock_medida} disponibles)`;
                     option.dataset.medida = item.stock_medida;
@@ -104,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const id = document.getElementById('productId').value;
         const imageInput = document.getElementById('productImage');
 
-        // Add basic form data
         formData.append('nombre', document.getElementById('nombre').value);
         formData.append('precio', document.getElementById('precio').value);
         formData.append('categoria', document.getElementById('categoria').value || '');
@@ -112,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('descripcion', document.getElementById('descripcion').value || '');
         formData.append('receta', document.getElementById('receta').value || '');
 
-        // Add ingredients
         const ingredientes = [];
         document.querySelectorAll('.ingredient-item').forEach(item => {
             ingredientes.push({
@@ -129,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         formData.append('ingredientes', JSON.stringify(ingredientes));
 
-        // Add image file if selected
         if (imageInput.files.length > 0) {
             const file = imageInput.files[0];
             if (file.size > 2 * 1024 * 1024) {
@@ -146,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(endpoint, {
                 method: 'POST',
                 body: formData,
-                // Don't set Content-Type header, let the browser set it with the boundary
             });
 
             const data = await response.json();
@@ -404,7 +399,6 @@ async function viewProductDetails(productId) {
     }
 }
 
-// Función para manejar el menú de tres puntos
 function toggleMenu(btn) {
     document.querySelectorAll('.menu-opciones').forEach(menu => {
         if (menu !== btn.nextElementSibling) menu.style.display = 'none';

@@ -19,7 +19,6 @@ try {
     if ($data['tipoUsuario'] === 'Cliente') {
         $stmt = $con->prepare("DELETE FROM Cliente WHERE cliente_id = ?");
     } else {
-        // Primero eliminar de la tabla específica
         switch ($data['tipoUsuario'] || $data['tipoUsuario'] === 'Gerente-General' || $data['tipoUsuario'] === 'Chef-Ejecutivo' || $data['tipoUsuario'] === 'Camarero') {
             case 'Gerente-General':
                 $stmt = $con->prepare("DELETE FROM Gerente_General WHERE personal_id = ?");
@@ -33,7 +32,6 @@ try {
         }
         $stmt->execute([$data['email']]);
 
-        // Luego eliminar de Personal
         $stmt = $con->prepare("DELETE FROM Personal WHERE personal_id = ?");
     }
 

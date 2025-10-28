@@ -29,6 +29,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Mesa TO 'empleado'@'local
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Producto TO 'empleado'@'localhost';
 GRANT SELECT, UPDATE, DELETE, INSERT ON lostrestanosdb.Posee TO 'empleado'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Reserva TO 'empleado'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.No_Show TO 'empleado'@'localhost';
 GRANT SELECT, DELETE, INSERT ON lostrestanosdb.Consume TO 'empleado'@'localhost';
 GRANT SELECT, UPDATE ON lostrestanosdb.Stock_Cantidad TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Camarero TO 'empleado'@'localhost';
@@ -54,6 +55,7 @@ GRANT SELECT ON lostrestanosdb.Empresa TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Ubicacion TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Telefono TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Horario TO 'cliente_registrado'@'localhost';
+GRANT SELECT ON lostrestanosdb.No_Show TO 'cliente_registrado'@'localhost';
 
 GRANT SELECT, INSERT ON lostrestanosdb.Cliente TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Personal TO 'cliente_no_registrado'@'localhost';

@@ -4,7 +4,6 @@ include '../../../../Control/Conexion/gerente.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Validar datos requeridos
 if (!isset($data['email'], $data['nombre'], $data['apellido'], $data['telefono'], $data['tipoUsuario'])) {
     http_response_code(400);
     echo json_encode([
@@ -14,7 +13,6 @@ if (!isset($data['email'], $data['nombre'], $data['apellido'], $data['telefono']
     exit;
 }
 
-// Validar formato de email
 if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
     http_response_code(400);
     echo json_encode([
@@ -24,7 +22,6 @@ if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-// Validar longitud del teléfono
 if (strlen($data['telefono']) > 9) {
     http_response_code(400);
     echo json_encode([
@@ -37,7 +34,6 @@ if (strlen($data['telefono']) > 9) {
 try {
     $con->beginTransaction();
 
-    // Verificar si el usuario es un cliente que se está convirtiendo a personal
     $esCliente = false;
     $stmt = $con->prepare("SELECT 1 FROM Cliente WHERE cliente_id = ?");
     $stmt->execute([$data['email']]);
@@ -47,7 +43,6 @@ try {
 
     if ($data['tipoUsuario'] === 'Cliente') {
         if ($esCliente) {
-            // Actualizar datos del cliente existente
             $stmt = $con->prepare("UPDATE Cliente SET 
                 cliente_nombre = :nombre,
                 cliente_apellido = :apellido,
@@ -60,15 +55,12 @@ try {
                 ':email' => $data['email']
             ]);
         } else {
-            // Convertir de personal a cliente
-            // Primero eliminar de tablas de personal
             $roles = ['Camarero', 'Chef_Ejecutivo', 'Gerente_General'];
             foreach ($roles as $tabla) {
                 $stmt = $con->prepare("DELETE FROM {$tabla} WHERE personal_id = ?");
                 $stmt->execute([$data['email']]);
             }
 
-            // Actualizar rol en Personal
             $stmt = $con->prepare("UPDATE Personal SET 
                 personal_nombre = :nombre,
                 personal_apellido = :apellido,
@@ -82,7 +74,6 @@ try {
                 ':email' => $data['email']
             ]);
 
-            // Insertar en Cliente
             $stmt = $con->prepare("INSERT INTO Cliente 
                 (cliente_id, cliente_nombre, cliente_apellido, cliente_telefono) 
                 VALUES (:email, :nombre, :apellido, :telefono)");
@@ -94,7 +85,6 @@ try {
             ]);
         }
     } else {
-        // Validar el rol primero
         $roleTable = '';
         $validRoles = ['Gerente-General', 'Chef-Ejecutivo', 'Camarero', 'Chef', 'Gerente-Turno'];
 
@@ -102,7 +92,6 @@ try {
             throw new Exception('Rol no válido');
         }
 
-        // Solo estos roles tienen tablas específicas
         switch ($data['tipoUsuario']) {
             case 'Gerente-General':
                 $roleTable = 'Gerente_General';
@@ -113,19 +102,15 @@ try {
             case 'Camarero':
                 $roleTable = 'Camarero';
                 break;
-                // 'Chef' y 'Gerente-Turno' no tienen tablas específicas
         }
 
-        // Si es un cliente convirtiéndose a personal, Primero verificar si ya existe en Personal
         if ($esCliente) {
-            // Verificar si ya existe en Personal (por si acaso)
             $checkStmt = $con->prepare("SELECT COUNT(*) as count FROM Personal WHERE personal_id = :email");
             $checkStmt->execute([':email' => $data['email']]);
             $result = $checkStmt->fetch(PDO::FETCH_ASSOC);
             $existeEnPersonal = ($result['count'] > 0);
             
             if (!$existeEnPersonal) {
-                // Insertar en Personal solo si no existe
                 $stmt = $con->prepare("INSERT INTO Personal 
                     (personal_id, personal_nombre, personal_apellido, personal_telefono, personal_rol) 
                     VALUES (:email, :nombre, :apellido, :telefono, :rol)");
@@ -141,7 +126,6 @@ try {
                     throw new Exception("Error al convertir el cliente a personal");
                 }
             } else {
-                // Si ya existe en Personal, solo actualizar los datos
                 $stmt = $con->prepare("UPDATE Personal SET 
                     personal_nombre = :nombre,
                     personal_apellido = :apellido,
@@ -157,11 +141,9 @@ try {
                 ]);
             }
             
-            // Finalmente, eliminar de Cliente
             $stmt = $con->prepare("DELETE FROM Cliente WHERE cliente_id = ?");
             $stmt->execute([$data['email']]);
         } else {
-            // Actualizar datos del personal existente
             $stmt = $con->prepare("UPDATE Personal SET 
                 personal_nombre = :nombre,
                 personal_apellido = :apellido,
@@ -177,9 +159,7 @@ try {
             ]);
         }
 
-        // Insertar/limpiar en tablas específicas según el rol
         if (!empty($roleTable)) {
-            // Primero eliminar de cualquier otra tabla de roles
             $roles = ['Camarero', 'Chef_Ejecutivo', 'Gerente_General'];
             foreach ($roles as $tabla) {
                 if ($tabla !== $roleTable) {
@@ -188,12 +168,10 @@ try {
                 }
             }
 
-            // Verificar si ya existe en la tabla de roles
             $checkStmt = $con->prepare("SELECT COUNT(*) as count FROM {$roleTable} WHERE personal_id = :email");
             $checkStmt->execute([':email' => $data['email']]);
             $result = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
-            // Insertar solo si no existe
             if ($result['count'] == 0) {
                 $stmt = $con->prepare("INSERT INTO {$roleTable} (personal_id) VALUES (:email)");
                 $result = $stmt->execute([':email' => $data['email']]);
@@ -202,7 +180,6 @@ try {
                 }
             }
         } else {
-            // Para roles sin tabla específica ('Chef', 'Gerente-Turno'), limpiar cualquier asignación previa
             $roles = ['Camarero', 'Chef_Ejecutivo', 'Gerente_General'];
             foreach ($roles as $tabla) {
                 $stmt = $con->prepare("DELETE FROM {$tabla} WHERE personal_id = ?");

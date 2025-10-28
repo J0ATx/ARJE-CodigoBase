@@ -5,7 +5,6 @@
         $search = isset($_POST['search']) ? $_POST['search'] : '';
         $orden = isset($_POST['orden']) ? $_POST['orden'] : '';
 
-        // Mapeo de campos válidos para ordenamiento
         $campos_validos = [
             'usuario' => 'cliente_id',
             'mesa' => 'mesa_id',

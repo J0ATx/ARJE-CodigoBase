@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     try {
-        // Validar que el pedido existe
         $stmt = $con->prepare('SELECT pedido_id FROM Pedido WHERE pedido_id = ?');
         $stmt->execute([$idPedido]);
         if (!$stmt->fetchColumn()) {
@@ -27,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         
-        // Validar que el mozo existe
         $stmt = $con->prepare('SELECT 1 FROM Personal WHERE personal_id = ?');
         $stmt->execute([$idMozo]);
         if (!$stmt->fetchColumn()) {
@@ -38,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $con->beginTransaction();
 
-        // Calcular monto total sumando precios de productos
         $montoTotal = 0;
         if (!empty($productos)) {
             foreach ($productos as $prod) {
@@ -53,11 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Actualizar especificación, mozo y monto en el pedido
         $stmt = $con->prepare('UPDATE Pedido SET pedido_especificacion = ?, personal_id = ?, pedido_monto = ? WHERE pedido_id = ?');
         $stmt->execute([$especificacion, $idMozo, $montoTotal, $idPedido]);
 
-        // Reemplazar productos en Contiene con cantidad
         $con->prepare('DELETE FROM Contiene WHERE pedido_id = ?')->execute([$idPedido]);
         if (!empty($productos)) {
             $stmtIns = $con->prepare('INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (?, ?, ?)');
@@ -70,9 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Si se envió lista de clientes, reemplazar Efectua
         if (is_array($clientes)) {
-            // normalizar emails
             $norm = [];
             $alergiasClientes = []; // Para almacenar alergias únicas
             
@@ -82,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($email !== '' && !in_array($email, $norm, true)) {
                     $norm[] = $email;
                     
-                    // Obtener alergias del cliente
                     $stmtAler = $con->prepare('SELECT DISTINCT cliente_alergia FROM Cliente_Alergia WHERE cliente_id = ?');
                     $stmtAler->execute([$email]);
                     while ($alergia = $stmtAler->fetchColumn()) {
@@ -93,18 +85,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             
-            // Si hay alergias, agregarlas a las especificaciones
             if (!empty($alergiasClientes)) {
                 $alergiasTexto = "\n\nAlergias: " . implode(', ', $alergiasClientes);
                 $especificacion = $especificacion . $alergiasTexto;
                 
-                // Actualizar la especificación en la base de datos
                 $stmtUpdate = $con->prepare('UPDATE Pedido SET pedido_especificacion = ? WHERE pedido_id = ?');
                 $stmtUpdate->execute([$especificacion, $idPedido]);
             }
 
             if (!empty($norm)) {
-                // validar existencia
                 $faltantes = [];
                 $chk = $con->prepare('SELECT 1 FROM Cliente WHERE cliente_id = ?');
                 foreach ($norm as $email) {
@@ -118,14 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
 
-                // reemplazar Efectua
                 $con->prepare('DELETE FROM Efectua WHERE pedido_id = ?')->execute([$idPedido]);
                 $insEf = $con->prepare('INSERT INTO Efectua (pedido_id, cliente_id) VALUES (?, ?)');
                 foreach ($norm as $email) {
                     $insEf->execute([$idPedido, $email]);
                 }
             } else {
-                // si array vacío, limpiar Efectua
                 $con->prepare('DELETE FROM Efectua WHERE pedido_id = ?')->execute([$idPedido]);
             }
         }

@@ -19,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE producto_id = ?");
         $stmt->execute([$nombre, $precio, $categoria, $receta, $tiempoPrep, $id]);
 
-        // Reemplazar ingredientes en Consume
         $stmt = $con->prepare("DELETE FROM Consume WHERE producto_id = ?");
         $stmt->execute([$id]);
         
@@ -33,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $cantidad = (float)$ing['cantidad'];
                 $medida = isset($ing['medida']) ? $ing['medida'] : null;
                 
-                // Obtener medida del stock y validar
                 $q = $con->prepare('
                     SELECT sc.stock_medida, s.stock_nombre 
                     FROM Stock_Cantidad sc
@@ -51,12 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stockMedida = $stockRow['stock_medida'];
                 $stockNombre = $stockRow['stock_nombre'];
                 
-                // Si no se especificó medida, usar la del stock
                 if ($medida === null) {
                     $medida = $stockMedida;
                 }
                 
-                // Validar que la medida coincida con la del stock
                 if ($medida !== $stockMedida) {
                     throw new Exception(
                         "La medida especificada ({$medida}) para el ingrediente '{$stockNombre}' " .

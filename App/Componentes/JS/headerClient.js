@@ -30,6 +30,11 @@ header .logo {
     max-width: clamp(2rem, 3vw, 4rem);
     max-height: clamp(2rem, 3vw, 4rem);
     z-index: 999;
+    transition: transform 0.3s ease;
+}
+
+header .logo:hover img{
+    opacity: 0.8;
 }
 
 header svg,
@@ -165,6 +170,19 @@ img {
     z-index: 1;
     font-size: clamp(0.8rem, 1.2vw, 1.5rem);
 }
+
+.btn-header:hover {
+    color: #EFE7D2;
+    text-decoration: underline;
+    text-decoration-color: #EFE7D2;
+    text-decoration-thickness: 2px;
+    text-decoration-style: solid;
+    text-decoration-offset: 2px;
+    text-decoration-color: #EFE7D2;
+    text-decoration-thickness: 2px;
+    text-decoration-style: solid;
+    text-decoration-offset: 2px;
+}
     .logged{
     display:none;
 }
@@ -265,7 +283,7 @@ img {
                     <img src="/ARJE-CodigoBase/App/Recursos/logo.svg" alt="logo Los 3 Tanos">
                 </div>
                 </a>
-                <a href="/ARJE-CodigoBase/App/Client/Ventas/Menu/FrontEnd/index.html"><span class="btn-header">PEDÍ AHORA</span></a>
+                <a href="/ARJE-CodigoBase/App/Client/Ventas/Menu/FrontEnd/index.html" class="btn-header">PEDÍ AHORA</a>
             </header>
     `;
         async function logout() {

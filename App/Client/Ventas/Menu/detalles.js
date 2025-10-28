@@ -1,23 +1,19 @@
-// Rating configuration
 const RATING = {
     MIN: 1,
     MAX: 5,
     STAR: '★',
     EMPTY: '☆',
     
-    // Get star display for a given rating (1-5)
     getStars: function(rating) {
         if (!rating) return this.EMPTY.repeat(this.MAX);
         const stars = Math.min(this.MAX, Math.max(this.MIN, Math.round(rating)));
         return this.STAR.repeat(stars) + this.EMPTY.repeat(this.MAX - stars);
     },
     
-    // Format rating as text (e.g., "3/5")
     format: function(rating) {
         return rating ? `${Math.round(rating)}/${this.MAX}` : '';
     },
     
-    // Validate if a rating is within range
     isValid: function(rating) {
         const num = Number(rating);
         return !isNaN(num) && num >= this.MIN && num <= this.MAX;
@@ -74,10 +70,8 @@ async function mostrarDetalleProducto() {
             </div>
         `;
 
-        // Cargar comentarios después de mostrar el producto
         cargarComentarios(producto.producto_id);
 
-        // Configurar funcionalidad del modal de comentarios
         configurarModalComentarios(producto.producto_id);
     } catch (error) {
         console.error('Error:', error);
@@ -227,7 +221,6 @@ async function mostrarFormularioComentario(productoId) {
 
     configurarEstrellas();
 
-    // Agregar event listener al formulario
     const form = document.getElementById('form-comentario');
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -236,20 +229,19 @@ async function mostrarFormularioComentario(productoId) {
 }
 
 function configurarEstrellas() {
-    const estrellasInput = document.getElementById('estrellas-input');
+    const estrellasInput = document.getElementById('estrellas-input-modal');
+    console.log(estrellasInput)
     const calificacionHidden = document.getElementById('calificacion');
     const calificacionTexto = document.getElementById('calificacion-texto');
     const estrellas = estrellasInput.querySelectorAll('.estrella');
-
     let calificacionSeleccionada = 0;
 
-    // Configurar atributos ARIA
+
     estrellasInput.setAttribute('aria-valuemin', '1');
     estrellasInput.setAttribute('aria-valuemax', '5');
     estrellasInput.setAttribute('aria-valuenow', '0');
     estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
 
-    // Función para actualizar la visualización de las estrellas
     function actualizarEstrellas(valor, esHover = false) {
         estrellas.forEach((estrella, index) => {
             const valorEstrella = parseInt(estrella.getAttribute('data-value'));
@@ -285,16 +277,13 @@ function configurarEstrellas() {
         }
     }
 
-    // Configurar eventos para cada estrella
     estrellas.forEach((estrella, index) => {
         const valor = index + 1;
 
-        // Click para seleccionar
         estrella.addEventListener('click', () => {
             actualizarEstrellas(valor);
         });
 
-        // Navegación por teclado
         estrella.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -310,7 +299,6 @@ function configurarEstrellas() {
             }
         });
 
-        // Hover para preview visual
         estrella.addEventListener('mouseenter', () => {
             if (calificacionSeleccionada === 0) {
                 actualizarEstrellas(valor, true);
@@ -350,10 +338,8 @@ function enviarComentario(productoId, usuario) {
             if (data.success) {
                 alert('¡Comentario publicado exitosamente!');
                 form.reset();
-                // Resetear estrellas
                 const calificacionTexto = document.getElementById('calificacion-texto');
                 calificacionTexto.textContent = 'Selecciona una calificación';
-                // Recargar comentarios y actualizar promedio
                 await cargarComentarios(productoId);
             } else {
                 alert('Error: ' + data.error);
@@ -374,7 +360,6 @@ function configurarModalComentarios(productoId) {
     const loginPrompt = document.getElementById('login-prompt-modal');
     const formComentario = document.getElementById('form-comentario-modal');
 
-    // Verificar si el usuario está logueado
     fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
         method: 'GET',
         credentials: 'same-origin'
@@ -382,11 +367,9 @@ function configurarModalComentarios(productoId) {
         .then(response => response.json())
         .then(data => {
             if (data.logged_in && data.user) {
-                // Usuario logueado - mostrar formulario
                 loginPrompt.style.display = 'none';
                 formComentario.style.display = 'block';
             } else {
-                // Usuario no logueado - mostrar prompt de login
                 loginPrompt.style.display = 'block';
                 formComentario.style.display = 'none';
             }
@@ -397,12 +380,10 @@ function configurarModalComentarios(productoId) {
             formComentario.style.display = 'none';
         });
 
-    // Event listeners para el modal
     btnAbrirModal.addEventListener('click', () => {
         modalComentarios.classList.add('active');
         configurarEstrellasModal();
 
-        // Enfocar el primer elemento del formulario si está disponible
         setTimeout(() => {
             const firstEstrella = document.querySelector('#estrellas-input-modal .estrella');
             if (firstEstrella) {
@@ -421,7 +402,6 @@ function configurarModalComentarios(productoId) {
         resetModalForm();
     });
 
-    // Cerrar modal al hacer click fuera
     modalComentarios.addEventListener('click', (e) => {
         if (e.target === modalComentarios) {
             modalComentarios.classList.remove('active');
@@ -429,13 +409,11 @@ function configurarModalComentarios(productoId) {
         }
     });
 
-    // Enviar formulario del modal
     formModal.addEventListener('submit', (e) => {
         e.preventDefault();
         enviarComentarioModal(productoId);
     });
 
-    // Cerrar modal con Escape
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modalComentarios.classList.contains('active')) {
             modalComentarios.classList.remove('active');
@@ -453,7 +431,6 @@ function configurarEstrellasModal() {
     let selectedRating = 0;
     let hoverRating = 0;
 
-    // Update star display based on current state
     const updateStars = () => {
         const displayRating = hoverRating || selectedRating;
         
@@ -464,7 +441,6 @@ function configurarEstrellasModal() {
             star.classList.toggle('preview', hoverRating > 0 && starValue <= hoverRating);
         });
 
-        // Update rating text
         if (selectedRating > 0) {
             ratingText.textContent = `Calificación: ${selectedRating} estrella${selectedRating !== 1 ? 's' : ''}`;
         } else if (hoverRating > 0) {
@@ -473,25 +449,21 @@ function configurarEstrellasModal() {
             ratingText.textContent = 'Selecciona una calificación';
         }
 
-        // Update ARIA attributes
         container.setAttribute('aria-valuenow', selectedRating);
         container.setAttribute('aria-valuetext', 
             selectedRating ? `${selectedRating} estrella${selectedRating !== 1 ? 's' : ''}` : 'Sin calificación'
         );
     };
 
-    // Set up event listeners for each star
     stars.forEach((star, index) => {
         const starValue = index + 1;
         
-        // Click to select rating
         star.addEventListener('click', () => {
             selectedRating = selectedRating === starValue ? 0 : starValue;
             ratingInput.value = selectedRating;
             updateStars();
         });
 
-        // Keyboard navigation
         star.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -509,7 +481,6 @@ function configurarEstrellasModal() {
             }
         });
 
-        // Hover effects
         star.addEventListener('mouseenter', () => {
             hoverRating = starValue;
             updateStars();
@@ -521,15 +492,9 @@ function configurarEstrellasModal() {
         });
     });
 
-    // Initialize
     container.setAttribute('role', 'radiogroup');
     container.setAttribute('aria-label', 'Calificación del producto');
     updateStars();
-
-    estrellasInput.setAttribute('aria-valuemin', '1');
-    estrellasInput.setAttribute('aria-valuemax', '5');
-    estrellasInput.setAttribute('aria-valuenow', '0');
-    estrellasInput.setAttribute('aria-valuetext', 'Sin calificación');
 }
 
 function resetModalForm() {
@@ -537,19 +502,15 @@ function resetModalForm() {
     const ratingText = document.getElementById('calificacion-texto-modal');
     const stars = document.querySelectorAll('#estrellas-input-modal .estrella');
 
-    // Reset form
     form.reset();
 
-    // Reset stars display
     stars.forEach(star => {
         star.textContent = RATING.EMPTY;
         star.classList.remove('seleccionada', 'preview');
     });
 
-    // Reset rating text
     ratingText.textContent = 'Selecciona una calificación';
 
-    // Reset ARIA attributes
     const container = document.getElementById('estrellas-input-modal');
     container.setAttribute('aria-valuenow', '0');
     container.setAttribute('aria-valuetext', 'Sin calificación');
@@ -560,12 +521,7 @@ function enviarComentarioModal(productoId) {
     const formData = new FormData(form);
 
     const calificacion = parseFloat(formData.get('calificacion'));
-    if (!validateRating(calificacion)) {
-        alert(`Por favor selecciona una calificación válida (${RATING.MIN}-${RATING.MAX}).`);
-        return;
-    }
 
-    // Obtener información del usuario actual
     fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
         method: 'GET',
         credentials: 'same-origin'
@@ -596,11 +552,9 @@ function enviarComentarioModal(productoId) {
         .then(data => {
             if (data && data.success) {
                 alert('¡Comentario publicado exitosamente!');
-                // Cerrar modal y resetear
                 const modal = document.getElementById('modal-comentarios');
                 modal.classList.remove('active');
                 resetModalForm();
-                // Recargar comentarios
                 cargarComentarios(productoId);
             } else if (data) {
                 alert('Error: ' + (data.error || 'Error desconocido'));
@@ -666,12 +620,10 @@ function configurarEstrellasEdicion(comentarioId, calificacionActual) {
     
     calificacionHidden.value = calificacionActual;
     
-    // Actualizar el texto de calificación
     calificacionTexto.textContent = `Calificación actual: ${calificacionMostrada}/5`;
 
     let hoverPreview = 0;
 
-    // Inicializar las estrellas con la calificación actual
     actualizarEstrellasEdicion(calificacionMostrada);
 
     estrellas.forEach((estrella, index) => {
@@ -705,10 +657,8 @@ function configurarEstrellasEdicion(comentarioId, calificacionActual) {
             const estaSeleccionada = valor <= calificacion;
             const esPreview = isPreview && valor <= calificacion;
 
-            // Actualizar el símbolo de la estrella
             estrella.textContent = estaSeleccionada ? '★' : '☆';
             
-            // Actualizar las clases según el estado
             if (isPreview) {
                 if (esPreview) {
                     estrella.classList.add('preview');
@@ -829,7 +779,6 @@ async function eliminarComentario(comentarioId) {
         .then(async data => {
             if (data.success) {
                 alert('¡Comentario eliminado exitosamente!');
-                // Recargar comentarios para ver los cambios
                 const urlParams = new URLSearchParams(window.location.search);
                 const productoId = urlParams.get('id');
                 await cargarComentarios(productoId);

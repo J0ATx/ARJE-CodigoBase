@@ -31,7 +31,7 @@
     </div>
 
     <div id="pedidosList" class="pedidos-grid">
-      <!-- Las tarjetas de pedidos se insertarán aquí dinámicamente -->
+      
     </div>
     <dialog id="modalNuevoPedido">
       <form id="formPedido" method="dialog">
@@ -108,6 +108,24 @@
         <div style="margin-top:1em;">
           <button type="button" onclick="confirmarPago()">Confirmar</button>
           <button type="button" onclick="document.getElementById('modalPago').close()">Cancelar</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="modalReservaActiva">
+      <form method="dialog" style="min-width:400px">
+        <h3>⚠️ Reserva Detectada</h3>
+        <div id="reservaInfo">
+          <p><strong>Cliente:</strong> <span id="reservaCliente"></span></p>
+          <p><strong>Personas:</strong> <span id="reservaCantidad"></span></p>
+          <p><strong>Hora:</strong> <span id="reservaHora"></span></p>
+        </div>
+        <div class="form-group" id="emailReservaContainer" style="margin: 1em 0;">
+          <label>Verificar email del cliente:</label>
+          <input type="email" id="emailReserva" placeholder="email@dominio.com" style="width: 100%; padding: 8px; margin-top: 5px;" />
+        </div>
+        <div style="margin-top:1em; display:flex; gap:10px;">
+          <button type="button" onclick="confirmarReservaActiva()" style="background-color: #4CAF50; color: white; flex: 1;">✓ Confirmar Reserva</button>
+          <button type="button" onclick="rechazarReservaActiva()" style="background-color: #f44336; color: white; flex: 1;">✗ No es esta Reserva</button>
         </div>
       </form>
     </dialog>

@@ -206,7 +206,6 @@ class NavAdmin extends HTMLElement {
             }
 
 
-            /* Sección de usuario */
             nav .user-section {
                 position:fixed;
                 bottom: 0;
@@ -317,7 +316,6 @@ class NavAdmin extends HTMLElement {
                 </li>
             </ul>
 
-            <!-- Sección de información del usuario -->
             <div class="user-section">
                 <div class="user-avatar">
                     <div class="user-icon">

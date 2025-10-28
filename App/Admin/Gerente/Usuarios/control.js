@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     await cargarUsuarios();
 
-    // Botón para abrir modal de crear usuario
     document.getElementById('addUserBtn').addEventListener('click', () => {
         document.getElementById('formUsuario').reset();
         document.getElementById('modalCrear').style.display = 'flex';
@@ -32,10 +31,8 @@ async function cargarUsuarios() {
         if (!data.success) {
             throw new Error(data.error || 'Error al cargar usuarios');
         }
-        // Clear the table first
         tabla.innerHTML = '';
 
-        // Create document fragment for better performance
         const fragment = document.createDocumentFragment();
 
         data.usuarios.forEach(u => {
@@ -72,21 +69,17 @@ async function cargarUsuarios() {
                 </td>
             `;
             
-            // Add event listeners to the buttons
             const btnMenu = tr.querySelector('.btn-menu');
             const menuOpciones = tr.querySelector('.menu-opciones');
             
             btnMenu.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // Hide all other open menus
                 document.querySelectorAll('.menu-opciones').forEach(menu => {
                     if (menu !== menuOpciones) menu.style.display = 'none';
                 });
-                // Toggle current menu
                 menuOpciones.style.display = menuOpciones.style.display === 'block' ? 'none' : 'block';
             });
             
-            // Add click handler for edit/delete options
             tr.querySelectorAll('.opcion').forEach(opcion => {
                 opcion.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -114,7 +107,6 @@ async function cargarUsuarios() {
 
         tabla.appendChild(fragment);
 
-        // Close menu when clicking outside
         document.addEventListener('click', () => {
             document.querySelectorAll('.menu-opciones').forEach(menu => {
                 menu.style.display = 'none';
@@ -286,7 +278,6 @@ async function guardarCambiosUsuario() {
     }
 }
 
-// Función para manejar el menú de tres puntos
 function toggleMenu(btn) {
     document.querySelectorAll('.menu-opciones').forEach(menu => {
         if (menu !== btn.nextElementSibling) menu.style.display = 'none';

@@ -2,7 +2,6 @@
 include '../../../Control/Conexion/empleado.php';
 
 try {
-    // Obtener mesas y reservas asociadas con datos del cliente
     $sql = "
         SELECT 
             m.mesa_id,
@@ -23,7 +22,6 @@ try {
     $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Agrupar por mesa
     $mesas = [];
     foreach ($rows as $row) {
         $id = (int)$row['mesa_id'];
@@ -48,7 +46,6 @@ try {
         }
     }
 
-    // Reindexar para devolver como array
     echo json_encode(array_values($mesas));
 } catch (Exception $e) {
     http_response_code(500);

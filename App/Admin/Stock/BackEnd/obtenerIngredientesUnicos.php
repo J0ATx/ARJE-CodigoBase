@@ -5,7 +5,6 @@ $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        // Obtener ingredientes únicos con su medida más común
         $sql = "
             SELECT 
                 s.stock_nombre as nombre,
@@ -19,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $stmt = $con->query($sql);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        // Agrupar por nombre y tomar la medida más usada
         $ingredientes = [];
         foreach ($rows as $row) {
             $nombre = $row['nombre'];

@@ -1,10 +1,8 @@
 <?php
-// Simple WebSocket server for chat between user1 and user2
 set_time_limit(0);
 $address = '0.0.0.0';
 $port = 8080;
 $clients = [];
-// Store clients as ['conn' => resource, 'type' => 'chat'|'notifs'|'jsondataA'|'jsondataB']
 
 $server = stream_socket_server("tcp://$address:$port", $errno, $errstr);
 if (!$server) {
@@ -51,10 +49,8 @@ while (true) {
     if (stream_select($read, $write, $except, 0, 10) > 0) {
         if (in_array($server, $read)) {
             $client = stream_socket_accept($server);
-            // Peek at the first request to determine protocol
             $peek = fread($client, 2048);
             if (strpos($peek, 'GET') === 0 && strpos($peek, 'Upgrade: websocket') !== false) {
-                // WebSocket handshake
                 preg_match("/Sec-WebSocket-Key: (.*)\r\n/", $peek, $matches);
                 $key = trim($matches[1]);
                 $accept = base64_encode(pack('H*', sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
@@ -63,7 +59,6 @@ while (true) {
                     "Connection: Upgrade\r\n" .
                     "Sec-WebSocket-Accept: $accept\r\n\r\n";
                 fwrite($client, $response);
-                // Determine client type from URL (chat, notifs, jsondataA, jsondataB)
                 $type = 'chat';
                 if (strpos($peek, 'GET /notifs') !== false) {
                     $type = 'notifs';
@@ -74,14 +69,10 @@ while (true) {
                 }
                 $clients[] = ['conn' => $client, 'type' => $type];
             } else if (strpos($peek, 'POST') === 0) {
-                // Basic HTTP handshake for integration
-                // Example: Accept POST /handshake with token
                 preg_match('/POST \/handshake HTTP\/[0-9.]+\r\n/', $peek, $matches);
                 if ($matches) {
-                    // Parse token from body (simple example)
                     $body = explode("\r\n\r\n", $peek, 2)[1] ?? '';
                     $token = trim($body);
-                    // Respond with 200 OK and echo token
                     $response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " . strlen($token) . "\r\n\r\n" . $token;
                     fwrite($client, $response);
                 }
@@ -100,28 +91,23 @@ while (true) {
                     unset($clients[$key]);
                     continue;
                 }
-                // Only handle WebSocket frames
                 $decoded = decode($data);
                 $opcode = $decoded['opcode'];
                 $msg = $decoded['text'];
                 if ($opcode === 8) { // Close frame
-                    // Send close frame back
                     $closeFrame = chr(136) . chr(0);
                     fwrite($client, $closeFrame);
                     fclose($client);
                     unset($clients[$key]);
                     continue;
                 }
-                // Broadcast logic
                 if ($ctype === 'chat' || $ctype === 'notifs') {
-                    // Chat/notifs: broadcast as antes
                     foreach ($clients as $sendClientInfo) {
                         if ($sendClientInfo['conn'] !== $client && ($sendClientInfo['type'] === 'chat' || $sendClientInfo['type'] === 'notifs')) {
                             fwrite($sendClientInfo['conn'], encode($msg));
                         }
                     }
                 } else if ($ctype === 'jsondataA' || $ctype === 'jsondataB') {
-                    // JSON modules: validate JSON, bidirectional entre A y B
                     $isJson = false;
                     if (!empty($msg)) {
                         json_decode($msg);
@@ -136,7 +122,6 @@ while (true) {
                             }
                         }
                     } else {
-                        // Enviar error al cliente
                         $error = json_encode(['error' => 'Invalid JSON']);
                         fwrite($client, encode($error));
                     }

@@ -27,14 +27,12 @@ function debounce(func, wait) {
 }
 
 function handleFilterChange() {
-    // Deseleccionar otros checkboxes cuando uno se selecciona
     filterCheckboxes.forEach(checkbox => {
         if (checkbox !== this) {
             checkbox.checked = false;
         }
     });
 
-    // Hacer fetch con el nuevo orden
     fetchReservas();
 }
 
@@ -67,7 +65,6 @@ function fetchReservas() {
             return;
         }
 
-        // Limpiar tabla excepto el encabezado
         while (tabla.rows.length > 1) {
             tabla.deleteRow(1);
         }
@@ -76,6 +73,26 @@ function fetchReservas() {
             const fila = tabla.insertRow();
             
             const mesaDisplay = reserva.mesa_id || '<span style="color: #999;">Sin asignar</span>';
+            
+            function getEstadoInfo(estado) {
+                switch(estado) {
+                    case 'Pendiente':
+                        return { color: '#ffc107', texto: 'Pendiente' };
+                    case 'Confirmada':
+                        return { color: '#28a745', texto: 'Confirmada' };
+                    case 'Finalizada':
+                        return { color: '#17a2b8', texto: 'Finalizada' };
+                    case 'Cancelada':
+                        return { color: '#dc3545', texto: 'Cancelada' };
+                    case 'No-Show':
+                        return { color: '#6c757d', texto: 'No Show' };
+                    default:
+                        return { color: '#6c757d', texto: 'Sin estado' };
+                }
+            }
+            
+            const estadoInfo = getEstadoInfo(reserva.reserva_estado);
+            const estadoDisplay = `<span style="background-color: ${estadoInfo.color}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 600;">${estadoInfo.texto}</span>`;
             
             let opcionesMenu = `
                 <div class="opcion" onclick="editarReserva(${reserva.reserva_id})">
@@ -97,6 +114,7 @@ function fetchReservas() {
                 <td>${mesaDisplay}</td>
                 <td>${reserva.reserva_fecha + ' ' + reserva.reserva_inicio|| 'N/A'}</td>
                 <td>${reserva.reserva_cantidad_personas || 'N/A'}</td>
+                <td>${estadoDisplay}</td>
                 <td class="acciones">
                     <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
                     <div class="menu-opciones">
@@ -139,6 +157,7 @@ function editarReserva(idReserva) {
             document.getElementById('edit_reserva_inicio').value = reserva.reserva_inicio;
             document.getElementById('edit_cliente_id').value = reserva.cliente_id;
             document.getElementById('edit_mesa_id').value = reserva.mesa_id;
+            document.getElementById('edit_reserva_estado').value = reserva.reserva_estado || 'Pendiente';
             abrirModalEditarReserva();
         });
 }

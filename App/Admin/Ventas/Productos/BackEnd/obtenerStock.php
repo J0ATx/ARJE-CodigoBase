@@ -5,9 +5,6 @@ $response = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        // Obtener un stock_id representativo por cada ingrediente (nombre)
-        // El sistema FEFO consumirá de todos los lotes con ese nombre automáticamente
-        // Agrupamos por nombre y medida, tomando el stock_id más reciente de cada grupo
         $sql = "
             SELECT 
                 MAX(s.stock_id) as stock_id,

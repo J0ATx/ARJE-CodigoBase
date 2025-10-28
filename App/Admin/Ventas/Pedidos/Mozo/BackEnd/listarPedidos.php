@@ -2,7 +2,6 @@
 header('Content-Type: application/json');
 require_once '../../../../../Control/Conexion/empleado.php';
 
-// Consulta para obtener los pedidos activos en nueva BD
 $sql = "SELECT 
             p.pedido_id AS idPedido,
             p.mesa_id AS idMesa,
@@ -20,7 +19,6 @@ $sql = "SELECT
 $stmt = $con->query($sql);
 $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Para cada pedido, obtener los productos desde Contiene + Producto (con contiene_cantidad)
 foreach ($pedidos as &$pedido) {
     $sqlProd = "SELECT c.producto_id, pr.producto_nombre, c.contiene_cantidad
                 FROM Contiene c
@@ -41,7 +39,6 @@ foreach ($pedidos as &$pedido) {
     
     $pedido['productos'] = $productos;
 
-    // Obtener clientes asociados al pedido
     $sqlClientes = "SELECT cliente_id FROM Efectua WHERE pedido_id = ?";
     $stmtClientes = $con->prepare($sqlClientes);
     $stmtClientes->execute([$pedido['idPedido']]);

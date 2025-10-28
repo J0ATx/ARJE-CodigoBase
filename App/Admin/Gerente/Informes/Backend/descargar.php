@@ -5,10 +5,8 @@
     $archivo = fopen($nom, 'w');
 
     if ($archivo) {
-    // Escribir el contenido en el archivo
     fwrite($archivo, $contenido);
     
-    // Cerrar el archivo
     fclose($archivo);
     
     } else {

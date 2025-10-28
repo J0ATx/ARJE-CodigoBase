@@ -9,17 +9,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $id = (int)$_POST['id'];
 
-        // Eliminar consumos (ingredientes)
         $stmt = $con->prepare("DELETE FROM Consume WHERE producto_id = ?");
         $stmt->execute([$id]);
 
-        // Eliminar referencias en Contiene / Posee si existieran
         $stmt = $con->prepare("DELETE FROM Contiene WHERE producto_id = ?");
         $stmt->execute([$id]);
         $stmt = $con->prepare("DELETE FROM Posee WHERE producto_id = ?");
         $stmt->execute([$id]);
 
-        // Eliminar producto
         $stmt = $con->prepare("DELETE FROM Producto WHERE producto_id = ?");
         $stmt->execute([$id]);
         

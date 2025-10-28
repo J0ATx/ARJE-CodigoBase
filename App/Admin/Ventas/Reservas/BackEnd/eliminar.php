@@ -3,7 +3,6 @@
 
     try {
         $reserva_id = $_POST['idReserva'];
-        // Eliminar la reserva
         $sql = "DELETE FROM Reserva WHERE reserva_id = ?";
         $stmt = $con->prepare($sql);
         $stmt->execute([$reserva_id]);

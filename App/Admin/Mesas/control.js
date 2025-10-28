@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     cargarMesas();
 
-    // Botón para abrir modal de crear mesa
     document.getElementById('addMesaBtn').addEventListener('click', () => {
         document.getElementById('formMesa').reset();
         document.getElementById('modalCrear').style.display = 'flex';
@@ -137,7 +136,6 @@ async function eliminarMesa(idMesa) {
     }
 }
 
-// Función para manejar el menú de tres puntos
 function toggleMenu(btn) {
     document.querySelectorAll('.menu-opciones').forEach(menu => {
         if (menu !== btn.nextElementSibling) menu.style.display = 'none';

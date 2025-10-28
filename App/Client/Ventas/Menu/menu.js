@@ -258,7 +258,7 @@ function mostrarProductos(productos) {
 
             div.innerHTML = `
                 <div class="producto-header">
-                    <img class="producto-imagen" src="${imageUrl}" alt="${producto.producto_nombre}" onerror="this.src='${defaultImage}'">
+                    <img class="producto-imagen" src="${imageUrl}" alt="${producto.producto_nombre}">
                     <strong class="producto-nombre">${producto.producto_nombre}</strong>
                     <span class="producto-precio">$${producto.producto_precio}</span>
                 </div>

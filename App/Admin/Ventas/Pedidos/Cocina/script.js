@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarComandas();
 });
 
-// Variable global para WebSocket
 let ws;
 
 window.onload = function () {
@@ -28,7 +27,6 @@ window.onload = function () {
     };
 };
 
-// Mapa de estados con sus estilos
 const ESTADOS = {
     Pendiente: { clase: 'bg-warning', texto: 'Pendiente' },
     'En-Preparacion': { clase: 'bg-info', texto: 'En preparación' },
@@ -36,7 +34,6 @@ const ESTADOS = {
     Entregado: { clase: 'bg-secondary', texto: 'Entregado' }
 };
 
-// Transiciones de estado permitidas
 const TRANSICIONES = {
     Pendiente: ['En-Preparacion'],
     'En-Preparacion': ['Listo'],
@@ -60,20 +57,16 @@ async function cargarComandas() {
 
         contenedor.innerHTML = '';
 
-        // Ordenar por estado y hora de ingreso
         data.data.sort((a, b) => {
-            // Primero por estado (pendiente > en_preparacion > listo)
             const ordenEstados = { 'Pendiente': 1, 'En_Preparacion': 2, 'Listo': 3 };
             const ordenA = ordenEstados[a.estado] || 4;
             const ordenB = ordenEstados[b.estado] || 4;
 
             if (ordenA !== ordenB) return ordenA - ordenB;
 
-            // Luego por hora de ingreso (más antiguo primero)
             return new Date(a.fecha) - new Date(b.fecha);
         });
 
-        // Crear tarjetas para cada pedido
         data.data.forEach(pedido => {
             contenedor.appendChild(crearTarjetaPedido(pedido));
         });
@@ -91,12 +84,10 @@ function crearTarjetaPedido(pedido) {
     card.className = 'card mb-3';
     card.dataset.estado = pedido.estado;
 
-    // Procesar productos únicos
     const productos = pedido.nombres_productos
         ? [...new Set(pedido.nombres_productos.split(',').map(p => p.trim()))]
         : [];
 
-    // Crear el HTML de la tarjeta
     card.innerHTML = `
         <div class="card-header d-flex justify-content-between align-items-center">
             <div>
@@ -129,12 +120,10 @@ function crearTarjetaPedido(pedido) {
  * Crea el selector de estados para un pedido
  */
 function crearSelectEstado(idPedido, estadoActual) {
-    // Si no hay transiciones posibles, mostrar solo el estado actual
     if (!TRANSICIONES[estadoActual]?.length) {
         return `<div class="form-control">${ESTADOS[estadoActual]?.texto || estadoActual}</div>`;
     }
 
-    // Crear opciones disponibles
     let opcionesHTML = '<option value="" selected disabled>Cambiar estado...</option>';
 
     TRANSICIONES[estadoActual].forEach(estado => {
@@ -155,7 +144,6 @@ function crearSelectEstado(idPedido, estadoActual) {
  */
 async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
 
-    // Validaciones básicas
     if (!idPedido || !nuevoEstado) {
         console.error('Faltan parámetros requeridos');
         return;
@@ -166,7 +154,6 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
         return;
     }
 
-    // Mostrar confirmación
     const mensaje = `¿Cambiar estado del pedido #${idPedido} a "${ESTADOS[nuevoEstado]?.texto || nuevoEstado}"?`;
     const confirmado = await mostrarConfirmacion(mensaje);
     if (!confirmado) {
@@ -176,7 +163,6 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
     }
 
     try {
-        // Enviar solicitud al servidor
         const formData = new FormData();
         formData.append('idPedido', idPedido);
         formData.append('nuevoEstado', nuevoEstado);
@@ -193,7 +179,6 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
         const data = await response.json();
 
         if (data.success) {
-            // Recargar la lista de comandas
             cargarComandas();
         } else {
             throw new Error(data.message || 'Error al actualizar el estado');
@@ -202,9 +187,7 @@ async function actualizarEstadoPedido(idPedido, estadoActual, nuevoEstado) {
     } catch (error) {
         console.error('Error al actualizar estado:', error);
 
-        // Mostrar mensaje de error
 
-        // Restaurar el selector de estado
         if (contenedor) {
             contenedor.innerHTML = crearSelectEstado(idPedido, estadoActual);
         }
@@ -239,19 +222,16 @@ function mostrarConfirmacion(mensaje) {
         document.body.appendChild(modal);
         console.log(modal)
 
-        // Manejar clic en Aceptar
         modal.querySelector('#confirmarSi').addEventListener('click', () => {
             document.body.removeChild(modal);
             resolve(true);
         });
 
-        // Manejar clic en Cancelar
         modal.querySelector('#confirmarNo').addEventListener('click', () => {
             document.body.removeChild(modal);
             resolve(false);
         });
 
-        // Manejar clic fuera del modal
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 document.body.removeChild(modal);
@@ -259,7 +239,6 @@ function mostrarConfirmacion(mensaje) {
             }
         });
 
-        // Manejar tecla Escape
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') {
                 document.body.removeChild(modal);
@@ -272,7 +251,6 @@ function mostrarConfirmacion(mensaje) {
     });
 }
 
-// Función para recargar la lista de comandas
 function sendReload() {
     if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ action: 'reload' }));

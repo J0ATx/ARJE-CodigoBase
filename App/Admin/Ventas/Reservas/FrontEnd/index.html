@@ -80,6 +80,7 @@
                                 <th>MESA</th>
                                 <th>FECHA</th>
                                 <th>CANT-PERSONAS</th>
+                                <th>ESTADO</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
@@ -89,7 +90,7 @@
         </div>
     </div>
 
-    <!-- Modal para editar reserva -->
+    
     <div id="modalEditarReserva" class="modal">
         <div class="modal-content">
             <span class="close" onclick="cerrarModalEditarReserva()">&times;</span>
@@ -126,6 +127,16 @@
                 <div class="form-group">
                     <label for="edit_mesa_id">Mesa ID:</label>
                     <input type="number" id="edit_mesa_id" name="mesa_id">
+                </div>
+                <div class="form-group">
+                    <label for="edit_reserva_estado">Estado:</label>
+                    <select id="edit_reserva_estado" name="reserva_estado" required>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Confirmada">Confirmada</option>
+                        <option value="Finalizada">Finalizada</option>
+                        <option value="Cancelada">Cancelada</option>
+                        <option value="No-Show">No-Show</option>
+                    </select>
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="submit-button">Guardar Cambios</button>

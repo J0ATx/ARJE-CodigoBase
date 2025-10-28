@@ -24,7 +24,7 @@ try {
     $comentario_calificacion = $input['comentario_calificacion'] ?? null;
 
     if (!$producto_id || !$cliente_id || !$comentario_calificacion) {
-        throw new Exception('Datos incompletos: producto_id, cliente_id y comentario_calificacion son requeridos');
+        throw new Exception('Ingresa una calificación del 1 al 5');
     }
     if ($comentario_calificacion < 1 || $comentario_calificacion > 5) {
         throw new Exception('La calificación debe estar entre 1 y 5');

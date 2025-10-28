@@ -79,7 +79,6 @@ async function checkSession() {
             return true;
         }
     } catch (error) {
-        //window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
         return false;
     }
 }

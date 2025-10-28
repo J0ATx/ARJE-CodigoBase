@@ -206,7 +206,6 @@ class NavAdmin extends HTMLElement {
             }
 
 
-            /* Sección de usuario */
             nav .user-section {
                 position:fixed;
                 bottom: 0;
@@ -306,7 +305,6 @@ class NavAdmin extends HTMLElement {
                 </li>
             </ul>
 
-            <!-- Sección de información del usuario -->
             <div class="user-section">
                 <div class="user-avatar">
                     <i class="user-icon">
@@ -355,10 +353,8 @@ class NavAdmin extends HTMLElement {
             const activePage = this.getCurrentPage(currentPath);
             const navLinks = this.querySelectorAll('.nav-link');
 
-            // Remover active de todos
             navLinks.forEach(link => link.classList.remove('active'));
 
-            // Agregar active al correcto
             navLinks.forEach(link => {
                 if (link.getAttribute('data-page') === activePage) {
                     link.classList.add('active');
@@ -385,13 +381,11 @@ class NavAdmin extends HTMLElement {
 
             navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
-                    // Actualizar el enlace activo al hacer clic
                     setTimeout(() => this.updateActiveLink(), 100);
                 });
             });
         }
 
-        // Métodos públicos para control externo
         setActiveLink(linkName) {
             const navLinks = this.querySelectorAll('.nav-link');
 
@@ -409,7 +403,6 @@ class NavAdmin extends HTMLElement {
 
 customElements.define('nav-admin', NavAdmin);
 
-// Función global para logout
 function logout() {
     fetch('/ARJE-CodigoBase/App/Control/Panel/BackEnd/logout.php', {
         method: 'POST',
@@ -418,7 +411,6 @@ function logout() {
         window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
     }).catch(error => {
         console.error('Error durante logout:', error);
-        // Forzar redirección incluso si hay error
         window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
     });
 }

@@ -8,12 +8,6 @@ function cargarDatos() {
         document.getElementById('informes').innerHTML = JSON.stringify(data);
 
         for (const [clave, valor] of Object.entries(data.ventasPorCliente)) {
-            // const input = document.createElement('');
-            // input.type = 'text';
-            // input.id = clave;
-            // input.value = valor;
-            // document.getElementById('info').appendChild(input);
-            // document.getElementById('info').appendChild(document.createElement('br'));
             const info = document.createElement('p');
             info.value = valor;
         }

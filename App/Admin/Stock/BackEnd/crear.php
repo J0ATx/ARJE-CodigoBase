@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cantidad = $_POST['stock'];
         $caducidad = $_POST['caducidad'];
 
-        // Validar que si ya existen lotes con este nombre, usen la misma medida
         $checkStmt = $con->prepare("
             SELECT DISTINCT sc.stock_medida 
             FROM Stock s
@@ -23,9 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $medidasExistentes = $checkStmt->fetchAll(PDO::FETCH_COLUMN);
         
         if (!empty($medidasExistentes)) {
-            // Ya existen lotes con este nombre
             if (count($medidasExistentes) > 1) {
-                // Inconsistencia en la BD (no debería pasar con la nueva validación)
                 throw new Exception("Error: El ingrediente '{$nombre}' tiene lotes con diferentes medidas en la base de datos. Contacte al administrador.");
             }
             

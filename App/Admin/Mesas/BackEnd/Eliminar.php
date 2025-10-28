@@ -12,7 +12,6 @@ if (!isset($data['idMesa'])) {
 try {
     $mesaId = (int)$data['idMesa'];
 
-    // 1) Bloquear si existen pedidos para esta mesa
     $stmt = $con->prepare("SELECT COUNT(*) FROM Pedido WHERE mesa_id = ?");
     $stmt->execute([$mesaId]);
     if ((int)$stmt->fetchColumn() > 0) {
@@ -21,7 +20,6 @@ try {
         exit;
     }
 
-    // 2) Obtener ubicacion y alcance de la mesa a eliminar
     $stmtMesa = $con->prepare("SELECT mesa_ubicacion, mesa_alcance FROM Mesa WHERE mesa_id = ?");
     $stmtMesa->execute([$mesaId]);
     $mesaInfo = $stmtMesa->fetch(PDO::FETCH_ASSOC);
@@ -33,14 +31,12 @@ try {
 
     $ubicacion = $mesaInfo['mesa_ubicacion'];
 
-    // 3) Traer reservas asociadas a la mesa
     $stmtRes = $con->prepare("SELECT reserva_id, reserva_cantidad_personas FROM Reserva WHERE mesa_id = ?");
     $stmtRes->execute([$mesaId]);
     $reservas = $stmtRes->fetchAll(PDO::FETCH_ASSOC);
 
     $con->beginTransaction();
 
-    // 4) Reasignar cada reserva a una mesa Libre con misma ubicacion y alcance suficiente
     foreach ($reservas as $res) {
         $minAlcance = (int)$res['reserva_cantidad_personas'];
 
@@ -60,12 +56,10 @@ try {
             exit;
         }
 
-        // Actualizar reserva a la mesa candidata
         $stmtUpdRes = $con->prepare("UPDATE Reserva SET mesa_id = ? WHERE reserva_id = ?");
         $stmtUpdRes->execute([(int)$candidata['mesa_id'], (int)$res['reserva_id']]);
     }
 
-    // 5) Eliminar la mesa
     $stmtDel = $con->prepare("DELETE FROM Mesa WHERE mesa_id = ?");
     $stmtDel->execute([$mesaId]);
 

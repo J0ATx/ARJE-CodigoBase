@@ -92,7 +92,7 @@ btnConfirmar.addEventListener('click', () => {
                         success.textContent = "Reserva realizada exitosamente!";
                         break;
                     case "invalid date":
-                        mensaje.textContent = "Formato de fecha inválido. Debe ser YYYY-MM-DD.";
+                        mensaje.textContent = "Formato de fecha inválido. Debe ser DD-MM-YYYY.";
                         break;
                     case "invalid hour":
                         mensaje.textContent = "Formato de hora inválido. Debe ser HH:MM.";
@@ -107,7 +107,7 @@ btnConfirmar.addEventListener('click', () => {
                         mensaje.textContent = "Por favor, ingresa el ID de la mesa.";
                         break;
                     case "invalid_table":
-                        mensaje.textContent = "La mesa ingresada no existe en el sistema.";
+                        mensaje.textContent = "No existe esa mesa.";
                         break;
                     case "table_not_reservable":
                         mensaje.textContent = "La mesa seleccionada no está disponible para reservas.";

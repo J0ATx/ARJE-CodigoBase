@@ -1,5 +1,3 @@
-// script.js - KDS Mozo
-
 let ws;
 let productosDisponibles = [];
 let pedidos = [];
@@ -16,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     agregarProductoInput('productosContainer', productosDisponibles);
   });
   document.getElementById('formPedido').addEventListener('submit', crearPedido);
-  // chips: agregar clientes (crear)
   const btnAgregarCliente = document.getElementById('agregarCliente');
   if (btnAgregarCliente) {
     btnAgregarCliente.addEventListener('click', () => agregarClienteChip('clienteEmail', 'clientesChips'));
@@ -27,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     agregarProductoInput('editarProductosContainer', productosDisponibles, true);
   });
   document.getElementById('formEditarPedido').addEventListener('submit', editarPedidoSubmit);
-  // chips: agregar clientes (editar)
   const btnAgregarClienteEditar = document.getElementById('agregarClienteEditar');
   if (btnAgregarClienteEditar) {
     btnAgregarClienteEditar.addEventListener('click', () => agregarClienteChip('clienteEmailEditar', 'clientesChipsEditar'));
@@ -63,11 +59,9 @@ function cargarMozos() {
   return fetch('../BackEnd/listarMozos.php')
     .then(r => r.json())
     .then(data => {
-      // Actualizar select de nuevo pedido
       const selectNuevo = document.getElementById('selectMozo');
       selectNuevo.innerHTML = '';
       
-      // Agregar opción por defecto al select de nuevo pedido
       const defaultOption = document.createElement('option');
       defaultOption.value = '';
       defaultOption.textContent = 'Seleccione un mozo';
@@ -75,32 +69,27 @@ function cargarMozos() {
       defaultOption.selected = true;
       selectNuevo.appendChild(defaultOption);
       
-      // Actualizar select de edición
       const selectEditar = document.getElementById('editarSelectMozo');
       selectEditar.innerHTML = '';
       
-      // Agregar opción por defecto al select de edición
       const defaultOptionEditar = defaultOption.cloneNode(true);
       selectEditar.appendChild(defaultOptionEditar);
       
-      // Agregar mozos a ambos selects
       data.forEach(mozo => {
-        // Para nuevo pedido
         const optNuevo = document.createElement('option');
         optNuevo.value = mozo.personal_id;
         optNuevo.textContent = `${mozo.personal_apellido}, ${mozo.personal_nombre}`;
         selectNuevo.appendChild(optNuevo);
         
-        // Para edición
         const optEditar = optNuevo.cloneNode(true);
         selectEditar.appendChild(optEditar);
       });
       
-      return data; // Devolver los datos para usar en la cadena de promesas
+      return data;
     })
     .catch(error => {
       console.error('Error al cargar los mozos:', error);
-      throw error; // Propagar el error para manejarlo en las llamadas posteriores
+      throw error;
     });
 }
 
@@ -109,7 +98,6 @@ function agregarProductoInput(containerId, productos, editar = false, valor = ''
   const div = document.createElement('div');
   div.className = editar ? 'producto-item-editar' : 'producto-item';
 
-  // Selector de producto
   const select = document.createElement('select');
   select.className = 'select-producto';
   select.innerHTML = '<option value="">Seleccionar producto...</option>';
@@ -121,7 +109,6 @@ function agregarProductoInput(containerId, productos, editar = false, valor = ''
     select.appendChild(opt);
   });
 
-  // Input cantidad
   const inputCantidad = document.createElement('input');
   inputCantidad.type = 'number';
   inputCantidad.min = 1;
@@ -129,14 +116,11 @@ function agregarProductoInput(containerId, productos, editar = false, valor = ''
   inputCantidad.className = 'input-cantidad';
   inputCantidad.style.width = '60px';
 
-  // Si valor viene de edición, buscar cantidad
   if (editar && valor) {
-    // Buscar el producto en productosDisponibles y setear cantidad si existe
     const prod = productos.find(p => p.producto_nombre === valor);
     if (prod && prod.contiene_cantidad) inputCantidad.value = prod.contiene_cantidad;
   }
 
-  // Botón quitar
   const btnQuitar = document.createElement('button');
   btnQuitar.type = 'button';
   btnQuitar.textContent = 'Quitar';
@@ -163,7 +147,6 @@ function crearPedido(e) {
   const idMozo = document.getElementById('selectMozo').value;
   const especificacion = document.getElementById('especificacionPedido').value || '';
   
-  // Validar que se haya seleccionado un mozo
   if (!idMozo) {
     alert('Por favor, seleccione un mozo.');
     return;
@@ -175,12 +158,47 @@ function crearPedido(e) {
     return;
   }
 
+  consultarReservaActiva(idMesa, idMozo, especificacion, productos);
+}
+
+let pedidoData = null;
+let reservaActivaData = null;
+
+function consultarReservaActiva(idMesa, idMozo, especificacion, productos) {
+  const formData = new FormData();
+  formData.append('mesa_id', idMesa);
+
+  fetch('../BackEnd/consultarReservaActiva.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(data => {
+      if (data.tiene_reserva) {
+        reservaActivaData = data.reserva;
+        document.getElementById('reservaCliente').textContent = data.reserva.cliente_id;
+        document.getElementById('reservaCantidad').textContent = data.reserva.reserva_cantidad_personas;
+        document.getElementById('reservaHora').textContent = data.reserva.reserva_inicio;
+        document.getElementById('modalReservaActiva').showModal();
+        
+        pedidoData = {
+          idMesa, idMozo, especificacion, productos
+        };
+      } else {
+        procederCrearPedido(idMesa, idMozo, especificacion, productos);
+      }
+    })
+    .catch(error => {
+      console.error('Error al consultar reserva:', error);
+      alert('Error al verificar reserva. Continuando...');
+      procederCrearPedido(idMesa, idMozo, especificacion, productos);
+    });
+}
+
+function procederCrearPedido(idMesa, idMozo, especificacion, productos) {
   const formData = new FormData();
   formData.append('idMesa', idMesa);
   formData.append('idMozo', idMozo);
   formData.append('especificacion', especificacion);
   formData.append('productos', JSON.stringify(productos));
-  // Adjuntar clientes si hay chips
+  
   const clientes = obtenerClientesDesdeChips('clientesChips');
   if (clientes.length) {
     formData.append('clientes', JSON.stringify(clientes));
@@ -201,8 +219,78 @@ function crearPedido(e) {
     });
 }
 
+function confirmarReservaActiva() {
+  const emailCliente = document.getElementById('emailReserva').value;
+  
+  if (!emailCliente) {
+    alert('Por favor ingrese el email del cliente para confirmar.');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('reserva_id', reservaActivaData.reserva_id);
+  formData.append('accion', 'confirmar');
+  formData.append('email_cliente', emailCliente);
+
+  fetch('../BackEnd/confirmarReserva.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('modalReservaActiva').close();
+      
+      if (data.success) {
+        alert('Reserva confirmada. Creando pedido...');
+        procederCrearPedido(
+          pedidoData.idMesa, 
+          pedidoData.idMozo, 
+          pedidoData.especificacion, 
+          pedidoData.productos
+        );
+      } else {
+        alert(data.message || 'Error al confirmar reserva');
+        pedidoData = null;
+        reservaActivaData = null;
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Error al confirmar reserva');
+      pedidoData = null;
+      reservaActivaData = null;
+    });
+}
+
+function rechazarReservaActiva() {
+  const formData = new FormData();
+  formData.append('reserva_id', reservaActivaData.reserva_id);
+  formData.append('accion', 'rechazar');
+
+  fetch('../BackEnd/confirmarReserva.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('modalReservaActiva').close();
+      
+      if (data.success) {
+        alert('Continuando con el pedido. Esta no es una reserva.');
+        procederCrearPedido(
+          pedidoData.idMesa, 
+          pedidoData.idMozo, 
+          pedidoData.especificacion, 
+          pedidoData.productos
+        );
+      } else {
+        alert(data.message || 'Error');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+        alert('Error al procesar');
+    });
+  
+  pedidoData = null;
+  reservaActivaData = null;
+}
+
 function obtenerProductosSeleccionados(selector, productos) {
-  // Obtener productos y cantidades del formulario
   return Array.from(document.querySelectorAll(selector))
     .map(div => {
       const select = div.querySelector('.select-producto');
@@ -211,8 +299,7 @@ function obtenerProductosSeleccionados(selector, productos) {
       
       const productoId = select.value;
       const cantidad = Math.max(1, parseInt(inputCantidad.value) || 1);
-      
-      // Si el producto está en productosDisponibles, usar esa información
+
       const prodDisponible = productos.find(p => String(p.producto_id) === String(productoId));
       if (prodDisponible) {
         return {
@@ -221,8 +308,6 @@ function obtenerProductosSeleccionados(selector, productos) {
           nombre: prodDisponible.producto_nombre
         };
       }
-      
-      // Si no está en productos disponibles pero tiene un valor válido, usar los datos del select
       if (productoId && select.selectedOptions[0]) {
         return {
           idProducto: parseInt(productoId),
@@ -257,7 +342,6 @@ function cargarPedidos() {
         const card = document.createElement('div');
         card.className = `pedido-card ${estadoClase}`;
 
-        // Botones de cambio de estado
         let btnEstado = '';
         if (pedido.estado === 'Listo') {
           btnEstado = `<button class="btn-accion" onclick="cambiarEstadoPedido(${pedido.idPedido}, 'Entregado')">Entregar</button>`;
@@ -396,9 +480,7 @@ function inicializarFiltros() {
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      // Remover clase active de todos los botones
       filterBtns.forEach(b => b.classList.remove('active'));
-      // Agregar clase active al botón clickeado
       btn.classList.add('active');
 
       const filter = btn.getAttribute('data-filter');
@@ -415,9 +497,6 @@ function inicializarFiltros() {
   });
 }
 
-// (Se elimina la agrupación en front: las cantidades vienen desde Contiene)
-
-// Función para formatear la fecha y hora
 function formatearFechaHora(fechaHora) {
   const opciones = {
     year: 'numeric',
@@ -460,26 +539,21 @@ function abrirModalEditarPedido(idPedido) {
     return;
   }
 
-  // Cargar mozos si no están ya cargados
   cargarMozos().then(() => {
-    // Establecer el valor del mozo seleccionado
     const selectMozo = document.getElementById('editarSelectMozo');
     if (pedido.idMozo) {
       selectMozo.value = pedido.idMozo;
     }
     
-    // Configurar el resto del formulario
     document.getElementById('editarIdPedido').value = idPedido;
     document.getElementById('especificacionPedidoEditar').value = pedido.especificacion || '';
     
-    // Limpiar y cargar productos
     const cont = document.getElementById('editarProductosContainer');
     cont.innerHTML = '';
     
     (pedido.productos || []).forEach(prod => {
       const div = document.createElement('div');
       div.className = 'producto-item-editar';
-      // Selector de producto
       const select = document.createElement('select');
       select.className = 'select-producto';
       select.innerHTML = '<option value="">Seleccionar producto...</option>';
@@ -492,14 +566,12 @@ function abrirModalEditarPedido(idPedido) {
         }
         select.appendChild(opt);
       });
-      // Input cantidad
       const inputCantidad = document.createElement('input');
       inputCantidad.type = 'number';
       inputCantidad.min = '1';
       inputCantidad.className = 'input-cantidad';
       inputCantidad.style.width = '60px';
       inputCantidad.value = prod.contiene_cantidad || prod.cantidad || 1;
-      // Botón quitar
       const btnQuitar = document.createElement('button');
       btnQuitar.type = 'button';
       btnQuitar.textContent = 'Quitar';
@@ -510,7 +582,6 @@ function abrirModalEditarPedido(idPedido) {
       cont.appendChild(div);
     });
     
-    // Limpiar y cargar clientes
     const chipsContainer = document.getElementById('clientesChipsEditar');
     chipsContainer.innerHTML = '';
     (pedido.clientes || []).forEach(email => {
@@ -521,7 +592,6 @@ function abrirModalEditarPedido(idPedido) {
       chipsContainer.appendChild(chip);
     });
     
-    // Mostrar el modal
     document.getElementById('modalEditar').showModal();
   });
 }
@@ -532,7 +602,6 @@ function editarPedidoSubmit(e) {
   const idMozo = document.getElementById('editarSelectMozo').value;
   const especificacion = document.getElementById('especificacionPedidoEditar').value || '';
   
-  // Obtener productos seleccionados
   const productos = Array.from(document.querySelectorAll('.producto-item-editar')).map(div => {
     const select = div.querySelector('.select-producto');
     const inputCantidad = div.querySelector('.input-cantidad');
@@ -547,7 +616,6 @@ function editarPedidoSubmit(e) {
     };
   }).filter(p => p.idProducto);
 
-  // Validar que se haya seleccionado un mozo
   if (!idMozo) {
     alert('Por favor, seleccione un mozo.');
     return;
@@ -585,7 +653,6 @@ function editarPedidoSubmit(e) {
     });
 }
 
-// Helpers chips clientes
 function emailValido(email) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(String(email).toLowerCase());
@@ -597,7 +664,6 @@ function agregarClienteChip(inputId, chipsContainerId) {
   const email = (input.value || '').trim().toLowerCase();
   if (!email) return;
   if (!emailValido(email)) { alert('Email inválido'); return; }
-  // evitar duplicados
   const existentes = Array.from(cont.querySelectorAll('.chip span')).map(s => s.textContent.toLowerCase());
   if (existentes.includes(email)) { input.value=''; return; }
 

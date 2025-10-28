@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         if ($stmtCantidad->rowCount() === 0) {
-            // Si no existía fila de cantidad, insertarla
             $stmtInsertCantidad = $con->prepare("INSERT INTO Stock_Cantidad (stock_id, stock_cantidad, stock_medida) VALUES (?, ?, ?)");
             $stmtInsertCantidad->execute([
                 $_POST['id'],

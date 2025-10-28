@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadIngredients();
     loadIngredientesUnicos();
 
-    // Listener para autocompletar medida cuando se selecciona un ingrediente existente
     nombreInput.addEventListener('input', () => {
         const nombreIngresado = nombreInput.value.trim();
         const ingredienteExistente = ingredientesExistentes.find(
@@ -23,15 +22,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         );
 
         if (ingredienteExistente) {
-            // Ingrediente existente - autocompletar y bloquear medida
             medidaSelect.value = ingredienteExistente.medida;
             medidaSelect.disabled = true;
             medidaInfo.style.display = 'block';
             medidaInfoText.textContent = `Este ingrediente ya existe y usa la medida: ${getMedidaNombre(ingredienteExistente.medida)}`;
         } else {
-            // Ingrediente nuevo - permitir selección libre
             if (!document.getElementById('ingredientId').value) {
-                // Solo habilitar si no estamos editando
                 medidaSelect.disabled = false;
             }
             medidaInfo.style.display = 'none';
@@ -72,7 +68,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Habilitar temporalmente los campos deshabilitados para que se envíen
         const nombreInput = document.getElementById('nombre');
         const medidaSelect = document.getElementById('medida');
         const nombreDisabled = nombreInput.disabled;
@@ -112,20 +107,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 alert(id ? 'Lote actualizado con éxito' : 'Lote agregado con éxito');
             } else {
                 alert(data.message || 'Error al procesar la solicitud');
-                // Restaurar estado de deshabilitado si hubo error
                 nombreInput.disabled = nombreDisabled;
                 medidaSelect.disabled = medidaDisabled;
             }
         } catch (error) {
             console.error('Error:', error);
             alert('Error al procesar la solicitud');
-            // Restaurar estado de deshabilitado si hubo error
             nombreInput.disabled = nombreDisabled;
             medidaSelect.disabled = medidaDisabled;
         }
     });
 
-    // Función auxiliar para cargar ingredientes únicos
     async function loadIngredientesUnicos() {
         try {
             const response = await fetch('../BackEnd/obtenerIngredientesUnicos.php');
@@ -238,11 +230,9 @@ async function editIngredient(id) {
             document.getElementById('medida').value = ingrediente.medida;
             document.getElementById('caducidad').value = ingrediente.caducidad;
             
-            // Al editar, el nombre y la medida no se pueden cambiar
             document.getElementById('nombre').disabled = true;
             document.getElementById('medida').disabled = true;
             
-            // Mostrar info de que está editando
             const medidaInfo = document.getElementById('medidaInfo');
             const medidaInfoText = document.getElementById('medidaInfoText');
             medidaInfo.style.display = 'block';
@@ -304,7 +294,6 @@ function debounce(func, wait) {
     };
 }
 
-// Función para manejar el menú de tres puntos
 function toggleMenu(btn) {
     document.querySelectorAll('.menu-opciones').forEach(menu => {
         if (menu !== btn.nextElementSibling) menu.style.display = 'none';

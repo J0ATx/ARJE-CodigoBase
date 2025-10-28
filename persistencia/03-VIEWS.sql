@@ -74,15 +74,3 @@ SELECT
     FALSE AS usuario_fidelizado,
     personal_rol AS usuario_rol
 FROM Personal;
-
-CREATE VIEW ProductosConCalificaciones AS
-SELECT
-    p.producto_id,
-    p.producto_nombre,
-    p.producto_precio,
-    p.producto_categoria,
-    p.producto_calificacion,
-    COUNT(c.comentario_id) AS total_comentarios
-FROM Producto p
-LEFT JOIN Comentario c ON p.producto_id = c.producto_id
-GROUP BY p.producto_id, p.producto_nombre, p.producto_precio, p.producto_categoria, p.producto_calificacion;

@@ -10,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $producto = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($producto) {
-            // Obtener la imagen del producto si existe
             $imagePath = null;
             $imageDir = '../../../../Recursos/productos/';
             $files = glob($imageDir . $producto['producto_id'] . '.*');

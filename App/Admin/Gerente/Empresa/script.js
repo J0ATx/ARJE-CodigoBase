@@ -175,7 +175,6 @@ subFavicon.addEventListener('click', function (e) {
     })
     .then(res => res.text()) // o res.json() si el PHP responde en JSON
     .then(data => {
-        // document.getElementById('mensaje').textContent = "Favicon subido correctamente a " + data;
         console.log(data);
         document.getElementById('favicon_img').src = data; // Actualiza la vista previa del favicon
     })

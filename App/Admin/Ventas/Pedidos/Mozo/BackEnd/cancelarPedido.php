@@ -30,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response['message'] = 'No se puede cancelar un pedido con estado final: ' . $estado;
         } else {
             $con->beginTransaction();
-            // Eliminar relaciones y el pedido
             $con->prepare('DELETE FROM Contiene WHERE pedido_id = ?')->execute([$idPedido]);
             $con->prepare('DELETE FROM Pedido WHERE pedido_id = ?')->execute([$idPedido]);
             $con->commit();
