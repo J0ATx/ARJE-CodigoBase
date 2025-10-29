@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
     <script src="../../../../Componentes/JS/headerClient.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
 </head>
 
@@ -22,7 +24,282 @@
             <div class="left-side">
                 <client-header></client-header>
                 <div id="panorama"></div>
+                <div class="zones-navigation">
+                    <div class="zone-thumbnail" data-scene="exterior">
+                        <img src="/ARJE-CodigoBase/App/Recursos/mesasexterior.jpeg" alt="Exterior">
+                    </div>
+                    <div class="zone-thumbnail" data-scene="pecera">
+                        <img src="/ARJE-CodigoBase/App/Recursos/mesaspecera.jpg" alt="Pecera">
+                    </div>
+                    <div class="zone-thumbnail" data-scene="interior1">
+                        <img src="/ARJE-CodigoBase/App/Recursos/mesasinterior1.jpeg" alt="Interior">
+                    </div>
+                    <div class="zone-thumbnail" data-scene="interior2">
+                        <img src="/ARJE-CodigoBase/App/Recursos/mesasinterior2.jpeg" alt="Interior">
+                    </div>
+                </div>
             </div>
+            <script>
+                const viewer = pannellum.viewer('panorama', {
+                    "default": {
+                        "firstScene": "exterior",
+                        "sceneFadeDuration": 500
+                    },
+                    "scenes": {
+                        "exterior": {
+                            "type": "equirectangular",
+                            "autoLoad": true,
+                            "minPitch": -10,
+                            "maxPitch": 10,
+                            "minYaw": -70,
+                            "maxYaw": 70,
+                            "hfov": 90,
+                            "minHfov": 54,
+                            "maxHfov": 54,
+                            "mouseZoom": false,
+                            "keyboardZoom": false,
+                            "doubleClickZoom": false,
+                            "showZoomCtrl": false,
+                            "haov": 149.87,
+                            "vaov": 54.15,
+                            "vOffset": 1.17,
+                            "panorama": "/ARJE-CodigoBase/App/Recursos/mesasexterior.jpeg",
+                            "hotSpots": [
+                                {
+                                    "pitch": -10,
+                                    "yaw": 0,
+                                    "type": "scene",
+                                    "cssClass": "panorama-volver",
+                                    "createTooltipArgs": "Ir a la pecera",
+                                    "text": "Ir a la pecera",
+                                    "sceneId": "pecera"
+                                },
+                                // Mesa 1
+                                {
+                                    "pitch": 7,
+                                    "yaw": -47,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "1",
+                                },
+                                // Mesa 2
+                                {
+                                    "pitch": 5,
+                                    "yaw": -38,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "2",
+                                },
+                                // Mesa 3
+                                {
+                                    "pitch": 0,
+                                    "yaw": -16,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "3",
+                                },
+                                // Mesa 4
+                                {
+                                    "pitch": -2,
+                                    "yaw": 13,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "4",
+                                },
+                                // Mesa 5
+                                {
+                                    "pitch": -2,
+                                    "yaw": 34,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "5",
+                                },// Mesa 6
+                                {
+                                    "pitch": 0,
+                                    "yaw": 47,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "6",
+                                }
+                            ]
+                        },
+                        "pecera": {
+                            "type": "equirectangular",
+                            "autoLoad": true,
+                            "minPitch": -10,
+                            "maxPitch": 10,
+                            "minYaw": -75,
+                            "maxYaw": 75,
+                            "hfov": 90,
+                            "minHfov": 54,
+                            "maxHfov": 54,
+                            "mouseZoom": false,
+                            "keyboardZoom": false,
+                            "doubleClickZoom": false,
+                            "showZoomCtrl": false,
+                            "haov": 149.87,
+                            "vaov": 54.15,
+                            "vOffset": 1.17,
+                            "panorama": "/ARJE-CodigoBase/App/Recursos/mesaspecera.jpg",
+                            "hotSpots": [
+                                {
+                                    "pitch": -10,
+                                    "yaw": 0,
+                                    "type": "scene",
+                                    "cssClass": "panorama-volver",
+                                    "createTooltipArgs": "Volver al exterior",
+                                    "text": "Volver al exterior",
+                                    "sceneId": "exterior"
+                                },
+                                {
+                                    "pitch": 0,
+                                    "yaw": 0,
+                                    "type": "scene",
+                                    "cssClass": "panorama-ir",
+                                    "createTooltipArgs": "Ir al interior",
+                                    "text": "Ir al interior",
+                                    "sceneId": "interior1"
+                                },
+                                // Mesa 6
+                                {
+                                    "pitch": -15,
+                                    "yaw": -30,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "6",
+                                },
+                                // Mesa 7
+                                {
+                                    "pitch": -15,
+                                    "yaw": -15,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "7",
+                                },
+                                // Mesa 8
+                                {
+                                    "pitch": -15,
+                                    "yaw": 15,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "8",
+                                },
+                                // Mesa 9
+                                {
+                                    "pitch": -15,
+                                    "yaw": 30,
+                                    "cssClass": "mesa-marker",
+                                    "createTooltipFunc": hotspot,
+                                    "createTooltipArgs": "9",
+                                }
+                            ]
+                        },
+                        "interior1": {
+                            "type": "equirectangular",
+                            "autoLoad": true,
+                            "minPitch": -10,
+                            "maxPitch": 10,
+                            "minYaw": -70,
+                            "maxYaw": 70,
+                            "hfov": 90,
+                            "minHfov": 54,
+                            "maxHfov": 54,
+                            "mouseZoom": false,
+                            "keyboardZoom": false,
+                            "doubleClickZoom": false,
+                            "showZoomCtrl": false,
+                            "haov": 149.87,
+                            "vaov": 54.15,
+                            "vOffset": 1.17,
+                            "panorama": "/ARJE-CodigoBase/App/Recursos/mesasinterior1.jpeg",
+                            "hotSpots": [
+                                {
+                                    "pitch": 5,
+                                    "yaw": 0,
+                                    "type": "scene",
+                                    "cssClass": "panorama-ir",
+                                    "createTooltipArgs": "Moverse en el interior",
+                                    "text": "Moverse en el interior",
+                                    "sceneId": "interior2"
+                                }, {
+                                    "pitch": -10,
+                                    "yaw": 0,
+                                    "type": "scene",
+                                    "cssClass": "panorama-volver",
+                                    "createTooltipArgs": "Volver a la pecera",
+                                    "text": "Volver a la pecera",
+                                    "sceneId": "pecera"
+                                }
+                            ]
+                        },
+                        "interior2": {
+                            "type": "equirectangular",
+                            "autoLoad": true,
+                            "minPitch": -10,
+                            "maxPitch": 10,
+                            "minYaw": -70,
+                            "maxYaw": 70,
+                            "hfov": 90,
+                            "minHfov": 54,
+                            "maxHfov": 54,
+                            "mouseZoom": false,
+                            "keyboardZoom": false,
+                            "doubleClickZoom": false,
+                            "showZoomCtrl": false,
+                            "haov": 149.87,
+                            "vaov": 54.15,
+                            "vOffset": 1.17,
+                            "panorama": "/ARJE-CodigoBase/App/Recursos/mesasinterior2.jpeg",
+                            "hotSpots": [
+                                {
+                                    "pitch": 0,
+                                    "yaw": 0,
+                                    "type": "scene",
+                                    "cssClass": "panorama-ir",
+                                    "createTooltipArgs": "Moverse en el interior",
+                                    "text": "Moverse en el interior",
+                                    "sceneId": "interior1"
+                                },
+                            ]
+                        }
+                    }
+                });
+
+                document.querySelectorAll('.zone-thumbnail').forEach(thumbnail => {
+                    thumbnail.addEventListener('click', function () {
+                        const sceneId = this.getAttribute('data-scene');
+                        if (sceneId) {
+                            document.querySelectorAll('.zone-thumbnail').forEach(t => {
+                                t.classList.remove('active');
+                            });
+                            this.classList.add('active');
+                            viewer.loadScene(sceneId);
+                        }
+                    });
+                });
+
+                document.querySelector('.zone-thumbnail[data-scene="exterior"]')?.classList.add('active');
+
+                viewer.on('scenechange', function (e) {
+                    document.querySelectorAll('.zone-thumbnail').forEach(thumbnail => {
+                        if (thumbnail.getAttribute('data-scene') === e) {
+                            thumbnail.classList.add('active');
+                        } else {
+                            thumbnail.classList.remove('active');
+                        }
+                    });
+                });
+
+                function hotspot(hotSpotDiv, args) {
+                    hotSpotDiv.style.cursor = 'pointer';
+                    hotSpotDiv.textContent = args;
+                    hotSpotDiv.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        console.log(args);
+                    });
+                }
+
+            </script>
             <div class="right-side">
                 <div class="form-box">
 
@@ -75,7 +352,7 @@
                     <div class="mensajes-alerta"></div>
                 </div>
             </div>
-            
+
             <div id="reserva-overlay" class="modal-overlay" aria-hidden="true" hidden>
                 <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
                     <div class="modal-header">
@@ -107,7 +384,7 @@
     </main>
     <script src="../script.js"></script>
     <script src="../session.js"></script>
-    
+
 </body>
 
 </html>
