@@ -5,43 +5,85 @@ function cargarDatos() {
     .then(res => res.json())
     .then(data => {
         document.getElementById('informes').innerHTML = '';
-        document.getElementById('informes').innerHTML = JSON.stringify(data);
+        document.getElementById('informes').innerHTML = `
+            <div id="ventasTotales">
+                <h2>Ganancias Totales</h2>
+            </div>
+            <hr>
+            <div id="ventasCamarero">
+                <h2>Ganancias Por Camarero</h2>
+            </div>
+            <hr>
+            <div id="ventasCliente">
+                <h2>Ganancias Por Cliente</h2>
+            </div>
+            <hr>
+            <div id="ventasFecha">
+                <h2>Ganancias Por Fecha</h2>
+            </div>
+            <hr>
+            <div id="ventasPago">
+                <h2>Ganancias Por Pago</h2>
+            </div>
+            <hr>
+            <div id="ventasProducto">
+                <h2>Ganancias Por Producto</h2>
+            </div>
+            <hr>
+            <div id="noShowCliente">
+                <h2>No Shows Por Cliente</h2>
+            </div>
+            <hr>
+            <div id="noShowFecha">
+                <h2>No Shows Por Fecha</h2>
+            </div>`;
 
-        for (const [clave, valor] of Object.entries(data.ventasPorCliente)) {
-            const info = document.createElement('p');
-            info.value = valor;
-        }
+        // document.getElementById('informes').innerHTML = JSON.stringify(data);
+
+        const ventasTotales = document.createElement('p');
+        ventasTotales.textContent = `Ingresos Totales a la Fecha: $${data.ventasTotales[0].total_ventas}`;
+        document.getElementById('ventasTotales').appendChild(ventasTotales);
         
-        data.horarios.forEach(element => {
-            const dia = document.createElement('input');
-            dia.type = 'text';
-            dia.name = 'dias[]';
-            dia.id = element.empresa_dia;
-            dia.value = element.empresa_dia;
-            const hora = document.createElement('input');
-            hora.type = 'text';
-            hora.name = 'horas[]';
-            hora.id = element.empresa_hora;
-            hora.value = element.empresa_hora;
-            const btnQuitar = document.createElement('button');
-            btnQuitar.type = 'button';
-            btnQuitar.textContent = 'Quitar';
-            btnQuitar.id = 'quitar_horario';
-            btnQuitar.addEventListener('click', function() {
-                formdata = new FormData();
-                formdata.append('dia', element.empresa_dia);
-                formdata.append('hora', element.empresa_hora);
+        data.ventasPorCamarero.forEach(element => {
+            const venta = document.createElement('p');
+            venta.textContent = `${element.personal_nombre} : ${element.total}`;
+            document.getElementById('ventasCamarero').appendChild(venta);
+        });
 
-                fetch('../BackEnd/delHorario.php', {
-                method: 'POST',
-                body: formdata
-                })
-                .then(res => res.text())
-                .then(data => {
-                    console.log(data);
-                    cargarDatos();
-                })
-            });
+        data.ventasPorCliente.forEach(element => {
+            const venta = document.createElement('p');
+            venta.textContent = `${element.cliente_nombre} : ${element.total}`;
+            document.getElementById('ventasCliente').appendChild(venta);
+        });
+
+        data.ventasPorFecha.forEach(element => {
+            const venta = document.createElement('p');
+            venta.textContent = `${element.fecha} : ${element.total}`;
+            document.getElementById('ventasFecha').appendChild(venta);
+        });
+
+        data.ventasPorPago.forEach(element => {
+            const venta = document.createElement('p');
+            venta.textContent = `${element.pedido_pago} : ${element.total}`;
+            document.getElementById('ventasPago').appendChild(venta);
+        });
+
+        data.ventasPorProducto.forEach(element => {
+            const venta = document.createElement('p');
+            venta.textContent = `${element.producto_nombre} : ${element.total}`;
+            document.getElementById('ventasProducto').appendChild(venta);
+        });
+
+        data.noShowPorCliente.forEach(element => {
+            const venta = document.createElement('p');
+            venta.textContent = `${element.cliente_id} : ${element.no_shows}`;
+            document.getElementById('noShowCliente').appendChild(venta);
+        });
+
+        data.noShowPorFecha.forEach(element => {
+            const venta = document.createElement('p');
+            venta.textContent = `${element.no_show_fecha} : ${element.no_shows}`;
+            document.getElementById('noShowFecha').appendChild(venta);
         });
     });
 }
