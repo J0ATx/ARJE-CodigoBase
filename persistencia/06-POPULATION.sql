@@ -411,14 +411,14 @@ INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha,
 -- (PK: comentario_id (AI), producto_id, cliente_id)
 INSERT INTO Comentario (producto_id, cliente_id, comentario_contenido, comentario_calificacion) VALUES
 (1, 'ana@example.com', 'El gramajo estaba espectacular, muy abundante.', 9.5),
-(61, 'eduardo@example.com', 'La mejor muzza de la zona. El metro es gigante.', 10.0),
+(61, 'eduardo@example.com', 'La mejor muzza de la zona. El metro es gigante.', 9.0),
 (17, 'helena@example.com', 'Los ravioles de verdura estaban frescos y la salsa deliciosa.', 9.0),
 (37, 'gustavo@example.com', 'El asado de tira estaba un poco duro esta vez.', 6.5),
-(49, 'kevin@example.com', 'La milanesa de soja es la mejor que he probado. Muy recomendable.', 10.0),
+(49, 'kevin@example.com', 'La milanesa de soja es la mejor que he probado. Muy recomendable.', 9.0),
 (2, 'bruno@example.com', 'El gramajo grande es para 3 personas, increíble.', 9.0),
 (54, 'carla@example.com', 'La porción de muzza es clásica y rica.', 8.0),
 (32, 'julia@example.com', 'El finito de lomo con puré es el favorito de mi hijo.', 9.0),
-(38, 'martin@example.com', 'El entrecot en su punto justo. Muy bueno.', 9.5),
+(38, 'martin@example.com', 'El entrecot en su punto justo. Muy bueno.', 9.0),
 (10, 'laura@example.com', 'El sándwich tropical es una combinación rara pero funciona!', 8.5);
 
 -- 8. Pedidos (Tabla vacía) (10 inserciones)

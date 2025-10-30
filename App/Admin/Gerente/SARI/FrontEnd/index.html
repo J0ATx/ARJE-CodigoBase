@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Pseudo-RAG Gemma 3 con PHP</title>
+    </head>
+    <body>
+        <h1>Chatbot Pseudo-RAG (Gemma 3)</h1>
+        <p>Pregunta sobre la información estática del producto o contacto.</p>
+        
+        <input type="text" id="userInput" placeholder="Escribe tu pregunta aquí..." style="width: 300px;">
+        <button onclick="sendQuery()">Enviar Consulta</button>
+        
+        <div id="loading" style="display: none; color: gray;">Generando respuesta...</div>
+        
+        <h2>Respuesta:</h2>
+        <div id="respuesta" style="border: 1px solid #ccc; padding: 15px; min-height: 50px;"></div>
+        <script src="../script.js"></script>
+    </body>
+</html>

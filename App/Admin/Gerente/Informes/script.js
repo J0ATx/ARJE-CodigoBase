@@ -1,3 +1,5 @@
+const informe = document.getElementById('generarInforme');
+
 function cargarDatos() {
     fetch('../BackEnd/cargarInfo.php', {
         method: 'POST'
@@ -88,4 +90,12 @@ function cargarDatos() {
 
 document.addEventListener('DOMContentLoaded', function () {
     cargarDatos();
+});
+
+informe.addEventListener('click', function () {
+    // Navegar a la URL — el navegador pedirá descargar porque PHP envía Content-Disposition: attachment
+    window.location.href = '../BackEnd/generarPDF.php';
+
+    // O abrir en nueva pestaña:
+    // window.open('../BackEnd/generarPDF.php', '_blank');
 });
