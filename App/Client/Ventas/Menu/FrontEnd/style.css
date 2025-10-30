@@ -230,6 +230,77 @@ body {
     background: linear-gradient(to right, #ffffff1a, #ffffff2d);
 }
 
+.menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+    position: relative;
+}
+
+.btn-download {
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: rgb(27, 27, 27);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: .3s;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.11);
+    border: 1px solid rgba(239, 231, 210, 0.2);
+}
+
+.download-svg {
+    fill: #f6f0e2;
+}
+
+.download2 {
+    width: 18px;
+    height: 5px;
+    border-bottom: 2px solid #f6f0e2;
+    border-left: 2px solid #f6f0e2;
+    border-right: 2px solid #f6f0e2;
+}
+
+.btn-download:hover {
+    background-color: #ffffff44;
+    transition-duration: .3s;
+}
+
+.btn-download:hover .download2 {
+    border-bottom: 2px solid #f6f0e2;
+    border-left: 2px solid #f6f0e2;
+    border-right: 2px solid #f6f0e2;
+}
+
+.btn-download:hover .download-svg {
+    fill: rgb(255, 255, 255);
+    animation: slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes slide-in-top {
+    0% {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+
+
 .resultados-info {
     text-align: center;
 }
