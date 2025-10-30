@@ -14,7 +14,7 @@
 
             try {
                 // Llama al archivo PHP en el servidor
-                const response = await fetch('api_rag.php', {
+                const response = await fetch('../Backend/api_rag.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
