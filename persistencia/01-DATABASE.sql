@@ -93,9 +93,8 @@ CREATE TABLE Empresa_Horario (
 );
 
 CREATE TABLE Mesa (
-    mesa_id INT AUTO_INCREMENT NOT NULL,
+    mesa_id INT UNIQUE NOT NULL,
     mesa_estado ENUM ('Libre', 'Ocupada', 'Inhabilitada'),
-    mesa_ubicacion ENUM ('Interior', 'Exterior'),
     mesa_tiempo_uso TIME,
     mesa_alcance INT (1),
     mesa_reservable ENUM ('Si', 'No') DEFAULT 'No' NOT NULL,

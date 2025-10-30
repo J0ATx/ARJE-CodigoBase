@@ -8,8 +8,8 @@ const RATING = {
 function getStarRating(calificacion) {
     if (!calificacion) return '';
     const normalizedRating = Math.min(RATING.MAX, Math.max(RATING.MIN, Math.round(parseFloat(calificacion))));
-    return RATING.STAR_FILLED.repeat(normalizedRating) + 
-           RATING.STAR_EMPTY.repeat(RATING.MAX - normalizedRating);
+    return RATING.STAR_FILLED.repeat(normalizedRating) +
+        RATING.STAR_EMPTY.repeat(RATING.MAX - normalizedRating);
 }
 
 function getRatingText(calificacion) {
@@ -25,6 +25,7 @@ function validateRating(calificacion) {
 document.addEventListener('DOMContentLoaded', () => {
     fetchProductos();
     configurarEventListeners();
+    configurarBotonDescarga();
 });
 
 function configurarEventListeners() {
@@ -104,6 +105,43 @@ function aplicarFiltrosModal() {
 
 let productosOriginales = [];
 let productosFiltrados = [];
+
+function configurarBotonDescarga() {
+    const btnDescargar = document.getElementById('descargar-menu');
+    if (btnDescargar) {
+        btnDescargar.addEventListener('click', descargarMenuPDF);
+    }
+}
+
+function descargarMenuPDF() {
+    fetch('../BackEnd/descargar.php', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/pdf'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(err => {
+                    throw new Error(err.error);
+                });
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `los3tanos_menu_${new Date().toISOString().split('T')[0]}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+        })
+        .catch(error => {
+            console.error('Error al descargar el menú:', error);
+        })
+}
 
 function fetchProductos() {
     fetch('../BackEnd/visualizar.php')

@@ -28,4 +28,4 @@
 
 -- DROP DATABASE IF EXISTS lostrestanosdb;
 
--- Orden de creación: DATABASE.sql, TRIGGERS.sql, VIEW.sql, INSERT.sql, EVENTS.sql, PROCEDURES.sql, USERS.sql.
+-- -- -- Orden de creación: DATABASE.sql, TRIGGERS.sql, VIEW.sql, INSERT.sql, EVENTS.sql, PROCEDURES.sql, USERS.sql.

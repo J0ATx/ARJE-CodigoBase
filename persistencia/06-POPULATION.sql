@@ -350,17 +350,30 @@ INSERT INTO Cliente_Alergia (cliente_id, cliente_alergia) VALUES
 
 -- 3. Mesas (Tabla vacía) (10 inserciones)
 -- (Los IDs de mesa serán 1-10)
-INSERT INTO Mesa (mesa_estado, mesa_ubicacion, mesa_tiempo_uso, mesa_alcance, mesa_reservable, mesa_creacion) VALUES
-('Libre', 'Interior', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 1
-('Libre', 'Interior', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 2
-('Libre', 'Interior', '00:00:00', 2, 'Si', CURDATE()), -- Mesa 3
-('Libre', 'Interior', '00:00:00', 2, 'Si', CURDATE()), -- Mesa 4
-('Ocupada', 'Interior', '01:15:30', 6, 'Si', CURDATE()), -- Mesa 5 (Usada para un pedido activo)
-('Libre', 'Interior', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 6
-('Libre', 'Exterior', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 7
-('Libre', 'Exterior', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 8
-('Inhabilitada', 'Exterior', '00:00:00', 2, 'No', CURDATE()), -- Mesa 9
-('Libre', 'Exterior', '00:00:00', 8, 'Si', CURDATE()); -- Mesa 10
+INSERT INTO Mesa (mesa_id, mesa_estado, mesa_tiempo_uso, mesa_alcance, mesa_reservable, mesa_creacion) VALUES
+(1, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 1
+(2, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 2
+(3, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 3
+(4, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 4
+(5, 'Ocupada', '01:15:30', 6, 'Si', CURDATE()), -- Mesa 5 (Usada para un pedido activo)
+(6, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 6
+(10, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 10
+(11, 'Libre', '00:00:00', 4, 'No', CURDATE()), -- Mesa 11
+(12, 'Inhabilitada', '00:00:00', 4, 'No', CURDATE()), -- Mesa 12
+(13, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 13
+(14, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 14
+(15, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 15
+(16, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 16
+(17, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 17
+(18, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 18
+(20, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 20
+(21, 'Libre', '00:00:00', 2, 'Si', CURDATE()), -- Mesa 21
+(22, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 22
+(23, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 23
+(24, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 24
+(25, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 25
+(26, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 26
+(27, 'Libre', '00:00:00', 4, 'Si', CURDATE()); -- Mesa 27
 
 -- 4. Promociones (Tabla vacía) (10 inserciones)
 -- (Los IDs de promoción serán 1-10)
@@ -396,14 +409,14 @@ INSERT INTO Producto_Criterio (producto_id, producto_criterio) VALUES
 -- Clientes: 'ana@example.com', 'bruno@example.com', 'eduardo@example.com', ...
 -- Mesas: 1 a 10
 INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha, reserva_inicio, reserva_estado, cliente_id, mesa_id) VALUES
-(4, '2', CURDATE(), '20:30:00', 'Confirmada', 'ana@example.com', 1), -- Reserva 1
-(2, '1', CURDATE(), '21:00:00', 'Confirmada', 'bruno@example.com', 3), -- Reserva 2
+(4, '5', CURDATE(), '20:30:00', 'Pendiente', 'ana@example.com', 1), -- Reserva 1
+(2, '6', CURDATE(), '21:00:00', 'Pendiente', 'bruno@example.com', 3), -- Reserva 2
 (6, '3', DATE_ADD(CURDATE(), INTERVAL 1 DAY), '21:30:00', 'Pendiente', 'eduardo@example.com', 6), -- Reserva 3
-(4, '2', DATE_ADD(CURDATE(), INTERVAL 1 DAY), '20:00:00', 'Confirmada', 'florencia@example.com', 7), -- Reserva 4
+(4, '2', DATE_ADD(CURDATE(), INTERVAL 1 DAY), '20:00:00', 'Pendiente', 'florencia@example.com', 4), -- Reserva 4
 (2, '2', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '22:00:00', 'Pendiente', 'gustavo@example.com', 4), -- Reserva 5
-(8, '3', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '21:00:00', 'Confirmada', 'martin@example.com', 10), -- Reserva 6
-(4, '2', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '20:30:00', 'Confirmada', 'laura@example.com', 2), -- Reserva 7
-(2, '1', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '21:00:00', 'Cancelada', 'ivan@example.com', 8), -- Reserva 8
+(2, '3', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '21:00:00', 'Pendiente', 'martin@example.com', 16), -- Reserva 6
+(4, '2', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '20:30:00', 'Pendiente', 'laura@example.com', 2), -- Reserva 7
+(2, '1', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '21:00:00', 'Cancelada', 'ivan@example.com', 22), -- Reserva 8
 (3, '2', DATE_ADD(CURDATE(), INTERVAL 4 DAY), '20:00:00', 'Pendiente', 'carla@example.com', 1), -- Reserva 9
 (5, '2', DATE_ADD(CURDATE(), INTERVAL 5 DAY), '21:00:00', 'Pendiente', 'diego@example.com', 6); -- Reserva 10
 

@@ -115,6 +115,12 @@ btnConfirmar.addEventListener('click', () => {
                     case "table_unavailable":
                         mensaje.textContent = "La mesa seleccionada no está disponible en ese horario.";
                         break;
+                    case "table_not_available":
+                        mensaje.textContent = "La mesa seleccionada no está disponible.";
+                        break;
+                    case "table_not_amount":
+                        mensaje.textContent = "La mesa seleccionada no tiene suficiente capacidad.";
+                        break;
                     default:
                         mensaje.textContent = "Error: " + data.error;
                 }
