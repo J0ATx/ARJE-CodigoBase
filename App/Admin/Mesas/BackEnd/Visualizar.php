@@ -7,7 +7,6 @@ try {
             m.mesa_id,
             m.mesa_alcance,
             m.mesa_estado,
-            m.mesa_ubicacion,
             m.mesa_tiempo_uso,
             m.mesa_reservable,
             r.reserva_id,
@@ -30,7 +29,6 @@ try {
                 'idMesa' => $id,
                 'capacidad' => (int)$row['mesa_alcance'],
                 'estadoActual' => $row['mesa_estado'],
-                'ubicacion' => $row['mesa_ubicacion'],
                 'reservable' => $row['mesa_reservable'],
                 'tiempoUso' => $row['mesa_tiempo_uso'],
                 'reservas' => []

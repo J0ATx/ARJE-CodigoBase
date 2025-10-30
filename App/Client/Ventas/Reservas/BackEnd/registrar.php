@@ -61,7 +61,7 @@ $id_cliente = $_SESSION["usuario_id"];
     try {
         $con->beginTransaction();
 
-        $sqlVerificarMesa = "SELECT mesa_id, mesa_reservable FROM Mesa WHERE mesa_id = ?";
+        $sqlVerificarMesa = "SELECT mesa_id, mesa_reservable, mesa_estado, mesa_alcance FROM Mesa WHERE mesa_id = ?";
         $stmtVerificar = $con->prepare($sqlVerificarMesa);
         $stmtVerificar->execute([$mesa_id]);
         $mesaExiste = $stmtVerificar->fetch(PDO::FETCH_ASSOC);
@@ -75,6 +75,16 @@ $id_cliente = $_SESSION["usuario_id"];
         if ($mesaExiste['mesa_reservable'] !== 'Si') {
             $con->rollBack();
             echo json_encode(["error" => "table_not_reservable"]);
+            exit();
+        }
+        if ($mesaExiste['mesa_estado'] == 'Inhabilitada') {
+            $con->rollBack();
+            echo json_encode(["error" => "table_not_available"]);
+            exit();
+        }
+        if ($mesaExiste['mesa_alcance'] < $cantidad) {
+            $con->rollBack();
+            echo json_encode(["error" => "table_not_amount"]);
             exit();
         }
 

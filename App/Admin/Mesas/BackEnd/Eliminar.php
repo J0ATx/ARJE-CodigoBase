@@ -20,7 +20,7 @@ try {
         exit;
     }
 
-    $stmtMesa = $con->prepare("SELECT mesa_ubicacion, mesa_alcance FROM Mesa WHERE mesa_id = ?");
+    $stmtMesa = $con->prepare("SELECT mesa_alcance FROM Mesa WHERE mesa_id = ?");
     $stmtMesa->execute([$mesaId]);
     $mesaInfo = $stmtMesa->fetch(PDO::FETCH_ASSOC);
     if (!$mesaInfo) {
@@ -29,7 +29,6 @@ try {
         exit;
     }
 
-    $ubicacion = $mesaInfo['mesa_ubicacion'];
 
     $stmtRes = $con->prepare("SELECT reserva_id, reserva_cantidad_personas FROM Reserva WHERE mesa_id = ?");
     $stmtRes->execute([$mesaId]);
@@ -42,11 +41,11 @@ try {
 
         $stmtCand = $con->prepare(
             "SELECT mesa_id, mesa_alcance FROM Mesa 
-             WHERE mesa_estado = 'Libre' AND mesa_ubicacion = ? AND mesa_id <> ? AND mesa_alcance >= ?
+             WHERE mesa_estado = 'Libre' AND mesa_id <> ? AND mesa_alcance >= ?
              ORDER BY mesa_alcance ASC, mesa_id ASC
              LIMIT 1"
         );
-        $stmtCand->execute([$ubicacion, $mesaId, $minAlcance]);
+        $stmtCand->execute([$mesaId, $minAlcance]);
         $candidata = $stmtCand->fetch(PDO::FETCH_ASSOC);
 
         if (!$candidata) {
