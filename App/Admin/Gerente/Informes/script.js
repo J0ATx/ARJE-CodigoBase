@@ -37,9 +37,7 @@ function cargarDatos() {
             <div id="noShowFecha">
                 <h2>No Shows Por Fecha</h2>
             </div>`;
-
-        // document.getElementById('informes').innerHTML = JSON.stringify(data);
-
+            
         const ventasTotales = document.createElement('p');
         ventasTotales.textContent = `Ingresos Totales a la Fecha: $${data.ventasTotales[0].total_ventas}`;
         document.getElementById('ventasTotales').appendChild(ventasTotales);
