@@ -8,28 +8,28 @@ function cargarDatos() {
     .then(data => {
         document.getElementById('informes').innerHTML = '';
         document.getElementById('informes').innerHTML = `
-            <div id="ventasTotales">
-                <h2>Ganancias Totales</h2>
+            <div id="ingresosTotales">
+                <h2>Ingresos Totales</h2>
             </div>
             <hr>
-            <div id="ventasCamarero">
-                <h2>Ganancias Por Camarero</h2>
+            <div id="ingresosCamarero">
+                <h2>Ingresos Por Camarero</h2>
             </div>
             <hr>
-            <div id="ventasCliente">
-                <h2>Ganancias Por Cliente</h2>
+            <div id="ingresosCliente">
+                <h2>Ingresos Por Cliente</h2>
             </div>
             <hr>
-            <div id="ventasFecha">
-                <h2>Ganancias Por Fecha</h2>
+            <div id="ingresosFecha">
+                <h2>Ingresos Por Fecha</h2>
             </div>
             <hr>
-            <div id="ventasPago">
-                <h2>Ganancias Por Pago</h2>
+            <div id="ingresosPago">
+                <h2>Ingresos Por Pago</h2>
             </div>
             <hr>
-            <div id="ventasProducto">
-                <h2>Ganancias Por Producto</h2>
+            <div id="ingresosProducto">
+                <h2>Ingresos Por Producto</h2>
             </div>
             <hr>
             <div id="noShowCliente">
@@ -38,40 +38,48 @@ function cargarDatos() {
             <hr>
             <div id="noShowFecha">
                 <h2>No Shows Por Fecha</h2>
+            </div>
+            <hr>
+            <div id="ventasProducto">
+                <h2>Ventas Por Producto</h2>
+            </div>
+            <hr>
+            <div id="calificacinPromedio">
+                <h2>Calififcación Promedio Por Producto</h2>
             </div>`;
             
-        const ventasTotales = document.createElement('p');
-        ventasTotales.textContent = `Ingresos Totales a la Fecha: $${data.ventasTotales[0].total_ventas}`;
-        document.getElementById('ventasTotales').appendChild(ventasTotales);
+        const ingresosTotales = document.createElement('p');
+        ingresosTotales.textContent = `Ingresos Totales a la Fecha: $${data.ingresosTotales[0].total_ingresos}`;
+        document.getElementById('ingresosTotales').appendChild(ingresosTotales);
         
-        data.ventasPorCamarero.forEach(element => {
+        data.ingresosPorCamarero.forEach(element => {
             const venta = document.createElement('p');
             venta.textContent = `${element.personal_nombre} : ${element.total}`;
-            document.getElementById('ventasCamarero').appendChild(venta);
+            document.getElementById('ingresosCamarero').appendChild(venta);
         });
 
-        data.ventasPorCliente.forEach(element => {
+        data.ingresosPorCliente.forEach(element => {
             const venta = document.createElement('p');
             venta.textContent = `${element.cliente_nombre} : ${element.total}`;
-            document.getElementById('ventasCliente').appendChild(venta);
+            document.getElementById('ingresosCliente').appendChild(venta);
         });
 
-        data.ventasPorFecha.forEach(element => {
+        data.ingresosPorFecha.forEach(element => {
             const venta = document.createElement('p');
             venta.textContent = `${element.fecha} : ${element.total}`;
-            document.getElementById('ventasFecha').appendChild(venta);
+            document.getElementById('ingresosFecha').appendChild(venta);
         });
 
-        data.ventasPorPago.forEach(element => {
+        data.ingresosPorPago.forEach(element => {
             const venta = document.createElement('p');
             venta.textContent = `${element.pedido_pago} : ${element.total}`;
-            document.getElementById('ventasPago').appendChild(venta);
+            document.getElementById('ingresosPago').appendChild(venta);
         });
 
-        data.ventasPorProducto.forEach(element => {
+        data.ingresosPorProducto.forEach(element => {
             const venta = document.createElement('p');
             venta.textContent = `${element.producto_nombre} : ${element.total}`;
-            document.getElementById('ventasProducto').appendChild(venta);
+            document.getElementById('ingresosProducto').appendChild(venta);
         });
 
         data.noShowPorCliente.forEach(element => {

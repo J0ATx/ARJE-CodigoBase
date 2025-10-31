@@ -52,12 +52,12 @@ if (file_exists($cargarPath)) {
 // Fallback: if we didn't get data, create an empty structure to avoid warnings
 if (!is_array($data)) {
 	$data = [
-		'ventasTotales' => [['total_ventas' => '0']],
-		'ventasPorCamarero' => [],
-		'ventasPorCliente' => [],
-		'ventasPorFecha' => [],
-		'ventasPorPago' => [],
-		'ventasPorProducto' => [],
+		'gananciasTotales' => [['total_ganancias' => '0']],
+		'gananciasPorCamarero' => [],
+		'gananciasPorCliente' => [],
+		'gananciasPorFecha' => [],
+		'gananciasPorPago' => [],
+		'gananciasPorProducto' => [],
 		'noShowPorCliente' => [],
 		'noShowPorFecha' => []
 	];
@@ -69,7 +69,7 @@ $pdf->AddPage();
 
 // Document title
 $pdf->SetFont('Arial','B',16);
-$pdf->Cell(0,10, fpdf_text('Informe de Ventas - Los 3 Tanos'), 0, 1, 'C');
+$pdf->Cell(0,10, fpdf_text('Informe de Ingresos - Los 3 Tanos'), 0, 1, 'C');
 $pdf->Ln(4);
 
 // Section renderer
@@ -79,16 +79,16 @@ function render_section($pdf, $title) {
 	$pdf->SetFont('Arial','',11);
 }
 
-// Ventas Totales
-render_section($pdf, 'Ganancias Totales');
-$total = isset($data['ventasTotales'][0]['total_ventas']) ? $data['ventasTotales'][0]['total_ventas'] : '0';
+// ganancias Totales
+render_section($pdf, 'Ingresos Totales');
+$total = isset($data['gananciasTotales'][0]['total_ganancias']) ? $data['gananciasTotales'][0]['total_ganancias'] : '0';
 $pdf->Cell(0,6, fpdf_text('Ingresos Totales a la Fecha: $' . $total), 0, 1);
 $pdf->Ln(3);
 
-// Ventas por Camarero
-render_section($pdf, 'Ganancias Por Camarero');
-if (!empty($data['ventasPorCamarero'])) {
-	foreach ($data['ventasPorCamarero'] as $row) {
+// ganancias por Camarero
+render_section($pdf, 'Ingresos Por Camarero');
+if (!empty($data['gananciasPorCamarero'])) {
+	foreach ($data['gananciasPorCamarero'] as $row) {
 		$name = isset($row['personal_nombre']) ? $row['personal_nombre'] : '';
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$name} : {$totalv}"), 0, 1);
@@ -98,10 +98,10 @@ if (!empty($data['ventasPorCamarero'])) {
 }
 $pdf->Ln(3);
 
-// Ventas por Cliente
-render_section($pdf, 'Ganancias Por Cliente');
-if (!empty($data['ventasPorCliente'])) {
-	foreach ($data['ventasPorCliente'] as $row) {
+// ganancias por Cliente
+render_section($pdf, 'Ingresos Por Cliente');
+if (!empty($data['gananciasPorCliente'])) {
+	foreach ($data['gananciasPorCliente'] as $row) {
 		$name = isset($row['cliente_nombre']) ? $row['cliente_nombre'] : (isset($row['cliente_id']) ? $row['cliente_id'] : '');
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$name} : {$totalv}"), 0, 1);
@@ -111,10 +111,10 @@ if (!empty($data['ventasPorCliente'])) {
 }
 $pdf->Ln(3);
 
-// Ventas por Fecha
-render_section($pdf, 'Ganancias Por Fecha');
-if (!empty($data['ventasPorFecha'])) {
-	foreach ($data['ventasPorFecha'] as $row) {
+// ganancias por Fecha
+render_section($pdf, 'Ingresos Por Fecha');
+if (!empty($data['gananciasPorFecha'])) {
+	foreach ($data['gananciasPorFecha'] as $row) {
 		$fecha = isset($row['fecha']) ? $row['fecha'] : '';
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$fecha} : {$totalv}"), 0, 1);
@@ -124,10 +124,10 @@ if (!empty($data['ventasPorFecha'])) {
 }
 $pdf->Ln(3);
 
-// Ventas por Pago
-render_section($pdf, 'Ganancias Por Pago');
-if (!empty($data['ventasPorPago'])) {
-	foreach ($data['ventasPorPago'] as $row) {
+// ganancias por Pago
+render_section($pdf, 'Ingresos Por Pago');
+if (!empty($data['gananciasPorPago'])) {
+	foreach ($data['gananciasPorPago'] as $row) {
 		$pago = isset($row['pedido_pago']) ? $row['pedido_pago'] : '';
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$pago} : {$totalv}"), 0, 1);
@@ -137,10 +137,10 @@ if (!empty($data['ventasPorPago'])) {
 }
 $pdf->Ln(3);
 
-// Ventas por Producto
-render_section($pdf, 'Ganancias Por Producto');
-if (!empty($data['ventasPorProducto'])) {
-	foreach ($data['ventasPorProducto'] as $row) {
+// ganancias por Producto
+render_section($pdf, 'Ingresos Por Producto');
+if (!empty($data['gananciasPorProducto'])) {
+	foreach ($data['gananciasPorProducto'] as $row) {
 		$prod = isset($row['producto_nombre']) ? $row['producto_nombre'] : '';
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$prod} : {$totalv}"), 0, 1);
@@ -181,6 +181,6 @@ if (ob_get_length()) {
 }
 
 // Force download
-$pdf->Output('D', 'informe_ventas.pdf');
+$pdf->Output('D', 'informe_ingresos.pdf');
 
 ?>
