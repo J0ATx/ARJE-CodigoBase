@@ -1,6 +1,6 @@
 <?php
 // Use an absolute-ish path relative to this file for robustness
-require_once __DIR__ . '/../../../../Recursos/fpdf186/fpdf.php';
+require_once __DIR__ . '/../../../../Control/Librerias/fpdf/fpdf.php';
 
 // Helper: convert UTF-8 strings to ISO-8859-1 expected by FPDF
 function fpdf_text($s) {
