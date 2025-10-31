@@ -7,7 +7,7 @@ function fpdf_text($s) {
 	if ($s === null) return '';
 	// utf8_decode maps UTF-8 to ISO-8859-1; if characters are outside ISO-8859-1 they'll be lost.
 	// For full Unicode support you'd need a different approach (TCPDF or add a Unicode font).
-	return utf8_decode($s);
+	return ($s);
 }
 
 // Try to obtain the same data that the frontend uses by including cargarInfo.php
