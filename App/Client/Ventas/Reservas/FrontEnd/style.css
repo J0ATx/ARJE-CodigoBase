@@ -38,7 +38,6 @@ body::before {
 
 a {
     color: #9c9c9c;
-
 }
 
 html,
@@ -441,17 +440,20 @@ body {
 .footer a {
     color: #EFE7D2;
     font-family: 'Poppins', sans-serif;
+    text-decoration: underline;
 }
 
 .footer a:visited {
     color: #EFE7D2;
     font-family: 'Poppins', sans-serif;
+    text-decoration: underline;
 }
 
 .footer a:hover,
 .footer a:active {
     color: #BCB6A7;
     font-family: 'Poppins', sans-serif;
+        text-decoration: underline;
 }
 
 .mensajes-alerta {
@@ -785,6 +787,12 @@ input[type=number] {
 
 #loading-screen {
     position: fixed;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10+ */
+    user-select: none;
+    /* Standard syntax */
     top: 0;
     left: 0;
     width: 100%;
@@ -794,16 +802,12 @@ input[type=number] {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    color: #EFE7D2;
-}
-
-.logo-loading {
-    width: 200px;
-    height: 200px;
-    color: #EFE7D2;
 }
 
 .logo-loading svg {
+    color: #EFE7D2;
+    width: 200px;
+    height: 200px;
     fill-opacity: 0;
     stroke-dasharray: 1300;
     stroke-dashoffset: 1300;
@@ -819,6 +823,13 @@ input[type=number] {
         fill-opacity: 100%;
         stroke-dashoffset: 0;
         stroke-width: 0;
+    }
+}
+
+
+@keyframes drawLogo {
+    to {
+        stroke-dashoffset: 0;
     }
 }
 

@@ -101,12 +101,6 @@ body {
     display: block;
 }
 
-#logo-container svg {
-    height: 40px;
-    width: auto;
-    color: #EFE7D2;
-}
-
 
 .dropdown-content {
     display: none;
@@ -473,6 +467,12 @@ td:last-child {
 
 #loading-screen {
     position: fixed;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10+ */
+    user-select: none;
+    /* Standard syntax */
     top: 0;
     left: 0;
     width: 100%;
@@ -511,4 +511,12 @@ td:last-child {
     to {
         stroke-dashoffset: 0;
     }
+}
+
+#main-content {
+    display: none;
+}
+
+#main-content.visible {
+    display: block;
 }
