@@ -178,6 +178,12 @@ section img {
 
 #loading-screen {
     position: fixed;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10+ */
+    user-select: none;
+    /* Standard syntax */
     top: 0;
     left: 0;
     width: 100%;
@@ -187,31 +193,34 @@ section img {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    color: #EFE7D2;
-    font-family: 'Poppins', sans-serif;
 }
 
-.logo-loading {
+.logo-loading svg {
+    color: #EFE7D2;
     width: 200px;
     height: 200px;
-    color: #EFE7D2;
-}
-
-.logo-loading svg{
     fill-opacity: 0;
     stroke-dasharray: 1300;
     stroke-dashoffset: 1300;
     animation: dash 1s ease-in forwards
 }
 
-@keyframes dash{
-    70%{
+@keyframes dash {
+    70% {
         fill-opacity: 0;
     }
-    100%{
+
+    100% {
         fill-opacity: 100%;
         stroke-dashoffset: 0;
         stroke-width: 0;
+    }
+}
+
+
+@keyframes drawLogo {
+    to {
+        stroke-dashoffset: 0;
     }
 }
 
