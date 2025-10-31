@@ -445,8 +445,8 @@ INSERT INTO Pedido (pedido_estado, pedido_especificacion, pedido_fecha, pedido_m
 ('Pagado', '', DATE_SUB(NOW(), INTERVAL 3 HOUR), 540.0, 'Efectivo', 'camarero1@prueba.com', 3), -- Pedido 4
 ('Pagado', 'Hamburguesa bien cocida', DATE_SUB(NOW(), INTERVAL 4 HOUR), 800.0, 'Tarjeta', 'camarero4@prueba.com', 4), -- Pedido 5
 ('Pagado', 'Traer la picada primero', DATE_SUB(NOW(), INTERVAL 1 DAY), 2100.0, 'Tarjeta', 'camarero5@prueba.com', 6), -- Pedido 6
-('Pagado', 'Mucha muzzarella', DATE_SUB(NOW(), INTERVAL 1 DAY), 680.0, 'Efectivo', 'camarero6@prueba.com', 7), -- Pedido 7
-('Pagado', 'Sin sal', DATE_SUB(NOW(), INTERVAL 1 DAY), 560.0, 'Efectivo', 'camarero7@prueba.com', 8), -- Pedido 8
+('Pagado', 'Mucha muzzarella', DATE_SUB(NOW(), INTERVAL 1 DAY), 680.0, 'Efectivo', 'camarero6@prueba.com', 12), -- Pedido 7
+('Pagado', 'Sin sal', DATE_SUB(NOW(), INTERVAL 1 DAY), 560.0, 'Efectivo', 'camarero7@prueba.com', 11), -- Pedido 8
 ('Pagado', '', DATE_SUB(NOW(), INTERVAL 2 DAY), 1350.0, 'Tarjeta', 'camarero8@prueba.com', 10), -- Pedido 9
 ('Pagado', 'Para llevar', DATE_SUB(NOW(), INTERVAL 2 DAY), 420.0, 'Tarjeta', 'camarero9@prueba.com', 1); -- Pedido 10
 
@@ -522,11 +522,11 @@ INSERT INTO Posee (promocion_id, producto_id, pedido_id) VALUES
 -- (IDs de reserva 11-20)
 INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha, reserva_inicio, reserva_estado, cliente_id, mesa_id) VALUES
 (2, '2', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '21:00:00', 'No-Show', 'ivan@example.com', 1), -- Reserva 11
-(4, '2', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '20:30:00', 'No-Show', 'natalia@example.com', 7), -- Reserva 12
+(4, '2', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '20:30:00', 'No-Show', 'natalia@example.com', 11), -- Reserva 12
 (2, '1', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '22:00:00', 'No-Show', 'ana@example.com', 3), -- Reserva 13
 (6, '2', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '21:00:00', 'No-Show', 'eduardo@example.com', 6), -- Reserva 14
 (3, '2', DATE_SUB(CURDATE(), INTERVAL 3 DAY), '20:00:00', 'No-Show', 'bruno@example.com', 4), -- Reserva 15
-(5, '2', DATE_SUB(CURDATE(), INTERVAL 3 DAY), '21:30:00', 'No-Show', 'florencia@example.com', 8), -- Reserva 16
+(5, '2', DATE_SUB(CURDATE(), INTERVAL 3 DAY), '21:30:00', 'No-Show', 'florencia@example.com', 12), -- Reserva 16
 (2, '1', DATE_SUB(CURDATE(), INTERVAL 4 DAY), '20:00:00', 'No-Show', 'gustavo@example.com', 1), -- Reserva 17
 (4, '2', DATE_SUB(CURDATE(), INTERVAL 4 DAY), '21:00:00', 'No-Show', 'helena@example.com', 2), -- Reserva 18
 (8, '3', DATE_SUB(CURDATE(), INTERVAL 5 DAY), '20:30:00', 'No-Show', 'martin@example.com', 10), -- Reserva 19
