@@ -1,5 +1,42 @@
 USE lostrestanosdb;
 
+-- GRUPO 1: Tablas "Hijas" (Nivel más bajo de dependencia)
+-- Estas tablas referencian a otras, pero ninguna otra tabla las referencia a ellas.
+-- TRUNCATE TABLE No_Show;
+-- TRUNCATE TABLE Posee;
+-- TRUNCATE TABLE Contiene;
+-- TRUNCATE TABLE Efectua;
+-- TRUNCATE TABLE Consume;
+-- TRUNCATE TABLE Comentario;
+-- TRUNCATE TABLE Producto_Criterio;
+-- TRUNCATE TABLE Stock_Cantidad;
+-- TRUNCATE TABLE Empresa_Horario;
+-- TRUNCATE TABLE Empresa_Telefono;
+-- TRUNCATE TABLE Empresa_Ubicacion;
+-- TRUNCATE TABLE Cliente_Alergia;
+-- TRUNCATE TABLE Camarero;
+-- TRUNCATE TABLE Chef_Ejecutivo;
+-- TRUNCATE TABLE Gerente_General;
+
+-- GRUPO 2: Tablas "Intermedias"
+-- Estas son referenciadas por el GRUPO 1, pero a su vez referencian a otras.
+-- TRUNCATE TABLE Reserva;
+-- TRUNCATE TABLE Pedido;
+-- TRUNCATE TABLE Producto;
+-- TRUNCATE TABLE Empresa;
+
+-- GRUPO 3: Tablas "Padre" o "Raíz"
+-- Estas son las tablas principales que son referenciadas por el GRUPO 2.
+-- TRUNCATE TABLE Personal;
+-- TRUNCATE TABLE Cliente;
+-- TRUNCATE TABLE Mesa;
+-- TRUNCATE TABLE Promocion;
+-- TRUNCATE TABLE Stock;
+
+-- GRUPO 4: Tablas Independientes
+-- Tablas sin claves foráneas (ni de entrada ni de salida)
+-- TRUNCATE TABLE image_id_sequence;
+
 -- Email: gerente@prueba.com
 -- Contraseña: gerente123 (hasheada correctamente con password_hash)
 INSERT INTO Personal (personal_nombre, personal_apellido, personal_contrasenia, personal_id, personal_telefono, personal_rol) VALUES ('Gerente', 'Prueba', '$2y$10$gy0d3tiaoPcx3J34cw2ia.4dV42Zea1VvGt75nqikQZGxDJpLtERy', 'gerente@prueba.com', 123456789, 'Gerente-General');

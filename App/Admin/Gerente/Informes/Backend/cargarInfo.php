@@ -4,35 +4,35 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
-            $sql = "SELECT * FROM Ventas_Totales;";
+            $sql = "SELECT * FROM Ingresos_Totales;";
             $stmt = $con->prepare($sql);
             $stmt->execute();
-            $ventasTotales = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ingresosTotales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $sql = "SELECT * FROM Ventas_Por_Cliente;";
+            $sql = "SELECT * FROM Ingresos_Por_Cliente;";
             $stmt = $con->prepare($sql);
             $stmt->execute();
-            $ventasPorCliente = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ingresosPorCliente = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            $sql = "SELECT * FROM Ventas_Por_Camarero;";
+            $sql = "SELECT * FROM Ingresos_Por_Camarero;";
             $stmt = $con->prepare($sql);
             $stmt->execute();
-            $ventasPorCamarero = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ingresosPorCamarero = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $sql = "SELECT * FROM Ventas_Por_Producto;";
+            $sql = "SELECT * FROM Ingresos_Por_Producto;";
             $stmt = $con->prepare($sql);
             $stmt->execute();
-            $ventasPorProducto = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ingresosPorProducto = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $sql = "SELECT * FROM Ventas_Por_Pago;";
+            $sql = "SELECT * FROM Ingresos_Por_Pago;";
             $stmt = $con->prepare($sql);
             $stmt->execute();
-            $ventasPorPago = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ingresosPorPago = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $sql = "SELECT * FROM Ventas_Por_Fecha;";
+            $sql = "SELECT * FROM Ingresos_Por_Fecha;";
             $stmt = $con->prepare($sql);
             $stmt->execute();
-            $ventasPorFecha = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ingresosPorFecha = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $sql = "SELECT * FROM No_Show_Por_Cliente";
             $stmt = $con->prepare($sql);
@@ -44,15 +44,27 @@
             $stmt->execute();
             $noShowPorFecha = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+            $sql = "SELECT * FROM Ventas_Por_Producto";
+            $stmt = $con->prepare($sql);
+            $stmt->execute();
+            $ventasPorProducto = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $sql = "SELECT * FROM Calificacion_Promedio";
+            $stmt = $con->prepare($sql);
+            $stmt->execute();
+            $calificacionPromedio = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             $response = [
-                'ventasTotales' => $ventasTotales,
-                'ventasPorCamarero' => $ventasPorCamarero,
-                'ventasPorCliente' => $ventasPorCliente,
-                'ventasPorFecha' => $ventasPorFecha,
-                'ventasPorPago' => $ventasPorPago,
-                'ventasPorProducto' => $ventasPorProducto,
+                'ingresosTotales' => $ingresosTotales,
+                'ingresosPorCamarero' => $ingresosPorCamarero,
+                'ingresosPorCliente' => $ingresosPorCliente,
+                'ingresosPorFecha' => $ingresosPorFecha,
+                'ingresosPorPago' => $ingresosPorPago,
+                'ingresosPorProducto' => $ingresosPorProducto,
                 'noShowPorCliente' => $noShowPorCliente,
                 'noShowPorFecha' => $noShowPorFecha,
+                'vetasPorProducto' => $ventasPorProducto,
+                'calififcacionPromedio' => &$calificacionPromedio
             ];
 
             echo json_encode($response);
