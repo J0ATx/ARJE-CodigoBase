@@ -466,9 +466,9 @@ INSERT INTO Comentario (producto_id, cliente_id, comentario_contenido, comentari
 (37, 'gustavo@example.com', 'El asado de tira estaba un poco duro esta vez.', 4),
 (49, 'kevin@example.com', 'La milanesa de soja es la mejor que he probado. Muy recomendable.', 4),
 (2, 'bruno@example.com', 'El gramajo grande es para 3 personas, increíble.', 4),
-(54, 'carla@example.com', 'La porción de muzza es clásica y rica.', 3,
+(54, 'carla@example.com', 'La porción de muzza es clásica y rica.', 3),
 (32, 'julia@example.com', 'El finito de lomo con puré es el favorito de mi hijo.', 4),
-(38, 'martin@example.com', 'El entrecot en su punto justo. Muy bueno.', 5,
+(38, 'martin@example.com', 'El entrecot en su punto justo. Muy bueno.', 5),
 (10, 'laura@example.com', 'El sándwich tropical es una combinación rara pero funciona!', 5);
 
 -- 8. Pedidos (Tabla vacía) (10 inserciones)

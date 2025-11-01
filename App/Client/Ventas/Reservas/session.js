@@ -37,6 +37,7 @@ async function checkSession() {
             if (userNameElement) {
                 userNameElement.textContent = "Sin sesión";
                 userRolElement.textContent = "Sin sesión";
+                window.location.href = "/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html";
             }
             userIcon.innerHTML += `<a href="/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html" class="notlogged">
                             <svg width="clamp(35px, 4vw, 50px)" height="clamp(35px, 4vw, 50px)" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">

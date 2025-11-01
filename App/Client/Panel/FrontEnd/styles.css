@@ -73,6 +73,11 @@ html {
     cursor: pointer;
 }
 
+.ai-maitre svg {
+    width: clamp(2rem, 4vw, 4vw);
+    height: auto;
+}
+
 .chatbot-bg {
     position: fixed;
     opacity: 0;
