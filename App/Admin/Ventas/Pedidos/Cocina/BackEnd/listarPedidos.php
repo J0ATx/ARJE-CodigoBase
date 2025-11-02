@@ -15,7 +15,6 @@ $sql = "
     FROM Pedido p
     LEFT JOIN Contiene c ON p.pedido_id = c.pedido_id
     LEFT JOIN Producto pr ON c.producto_id = pr.producto_id
-    WHERE p.pedido_estado != 'Pagado'
     GROUP BY p.pedido_id, p.mesa_id, p.personal_id, p.pedido_estado, p.pedido_especificacion
     ORDER BY p.pedido_id DESC
 ";

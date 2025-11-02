@@ -1,25 +1,27 @@
+/* ESTILOS GENERALES BASE - Aplicar a todas las páginas */
+
+/* Reset básico */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
+/* Estilos del body */
 body {
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
+    background-color: #a7a7a7;
     font-family: 'Poppins', sans-serif;
     height: 100vh;
-    display: grid;
-    grid-template-areas: "nav main";
-    grid-template-columns: 300px 1fr;
-    grid-template-rows: 1fr;
     overflow: hidden;
 }
 
+/* Layout principal */
 .page {
     display: grid;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     grid-template-areas: "nav main";
     grid-template-columns: 300px 1fr;
 }

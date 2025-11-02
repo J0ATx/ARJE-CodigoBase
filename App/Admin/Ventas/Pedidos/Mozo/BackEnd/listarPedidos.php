@@ -13,8 +13,7 @@ $sql = "SELECT
             p.pedido_fecha AS fecha
         FROM Pedido p
         LEFT JOIN Personal per ON p.personal_id = per.personal_id
-        WHERE p.pedido_estado != 'Pagado'
-        ORDER BY p.pedido_id DESC";
+        ORDER BY p.pedido_fecha ASC";
 
 $stmt = $con->query($sql);
 $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -1,136 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pedidos - Mozo</title>
   <link rel="stylesheet" href="style.css">
   <script src="/ARJE-CodigoBase/App/Componentes/JS/navAdmin.js"></script>
-  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="32x32" href="/ARJE-CodigoBase/App/Recursos/favicon.ico">
 </head>
-<body>
-    <div id="loading-screen">
-        <div id="logo-container" class="logo-loading"></div>
-    </div>
-    <nav-admin></nav-admin>
-    <div id="main-content">
-        <div class="kds-container">
-            <header class="kds-header">
-              <h1>Pedidos - Mozo</h1>
-              <button id="btnAbrirNuevoPedido" class="btn-nuevo-pedido">+ Nuevo Pedido</button>
-            </header>
-    
-    <div class="kds-filters">
-      <div class="filter-options">
-        <button class="filter-btn active" data-filter="all">Todos</button>
-        <button class="filter-btn" data-filter="pendiente">Pendientes</button>
-        <button class="filter-btn" data-filter="en_preparacion">En Preparación</button>
-        <button class="filter-btn" data-filter="listo">Listos</button>
-        <button class="filter-btn" data-filter="entregado">Entregados</button>
-      </div>
-    </div>
 
-    <div id="pedidosList" class="pedidos-grid">
-      
+<body>
+  <div id="loading-screen">
+    <div id="logo-container" class="logo-loading"></div>
+  </div>
+
+  <div id="main-content">
+    <div class="page">
+      <nav-Admin></nav-Admin>
+      <main class="contenedor">
+        <h1>PEDIDOS - MOZO</h1>
+        <div class="kds-container">
+          <div class="kds-header">
+            <button id="btnAbrirNuevoPedido" class="btn-nuevo-pedido">+ Nuevo Pedido</button>
+          </div>
+          <div class="kds-body">
+            <div id="pedidosList" class="pedidos-grid">
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
-    <dialog id="modalNuevoPedido">
-      <form id="formPedido" method="dialog">
-        <h2>Nuevo Pedido</h2>
-        <div class="form-row">
-          <label>Mesa:
-            <select id="selectMesa" required></select>
-          </label>
-          <label>Mozo:
-            <select id="selectMozo" required></select>
-          </label>
+  </div>
+  <dialog id="modalNuevoPedido">
+    <form id="formPedido" method="dialog">
+      <h2>Nuevo Pedido</h2>
+      <div class="form-row">
+        <label>Mesa:
+          <select id="selectMesa" required></select>
+        </label>
+        <label>Mozo:
+          <select id="selectMozo" required></select>
+        </label>
+      </div>
+      <div id="productosContainer"></div>
+      <button type="button" id="agregarProducto">Agregar producto</button>
+      <div class="form-group">
+        <label>Especificaciones del pedido:</label>
+        <textarea id="especificacionPedido" rows="3"
+          placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Clientes (emails):</label>
+        <div class="chips-input">
+          <input type="email" id="clienteEmail" placeholder="email@dominio.com" />
+          <button type="button" id="agregarCliente">Agregar cliente</button>
         </div>
-        <div id="productosContainer"></div>
-        <button type="button" id="agregarProducto">Agregar producto</button>
-        <div class="form-group">
-          <label>Especificaciones del pedido:</label>
-          <textarea id="especificacionPedido" rows="3" placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
+        <div id="clientesChips" class="chips"></div>
+        <small>Puede agregar varios clientes asociados al pedido</small>
+      </div>
+      <div class="form-buttons">
+        <button type="submit" class="submit-button">Crear pedido</button>
+        <span class="close-button" onclick="document.getElementById('modalNuevoPedido').close()">×</span>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="modalEditar">
+    <form id="formEditarPedido" method="dialog">
+      <h2>Editar Pedido</h2>
+      <input type="hidden" id="editarIdPedido">
+      <div class="form-row">
+        <label>Mozo:
+          <select id="editarSelectMozo" required></select>
+        </label>
+      </div>
+      <div id="editarProductosContainer"></div>
+      <button type="button" id="agregarProductoEditar">Agregar producto</button>
+      <div class="form-group">
+        <label>Especificaciones del pedido:</label>
+        <textarea id="especificacionPedidoEditar" rows="3"
+          placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Clientes (emails):</label>
+        <div class="chips-input">
+          <input type="email" id="clienteEmailEditar" placeholder="email@dominio.com" />
+          <button type="button" id="agregarClienteEditar">Agregar cliente</button>
         </div>
-        <div class="form-group">
-          <label>Clientes (emails):</label>
-          <div class="chips-input">
-            <input type="email" id="clienteEmail" placeholder="email@dominio.com" />
-            <button type="button" id="agregarCliente">Agregar cliente</button>
-          </div>
-          <div id="clientesChips" class="chips"></div>
-          <small>Puede agregar varios clientes asociados al pedido</small>
-        </div>
-        <div style="margin-top:1em;">
-          <button type="submit">Crear pedido</button>
-          <button type="button" onclick="document.getElementById('modalNuevoPedido').close()">Cancelar</button>
-        </div>
-      </form>
-    </dialog>
-    <dialog id="modalEditar">
-      <form id="formEditarPedido" method="dialog">
-        <h2>Editar Pedido</h2>
-        <input type="hidden" id="editarIdPedido">
-        <div class="form-row">
-          <label>Mozo:
-            <select id="editarSelectMozo" required></select>
-          </label>
-        </div>
-        <div id="editarProductosContainer"></div>
-        <button type="button" id="agregarProductoEditar">Agregar producto</button>
-        <div class="form-group">
-          <label>Especificaciones del pedido:</label>
-          <textarea id="especificacionPedidoEditar" rows="3" placeholder="Ingrese especificaciones generales del pedido (opcional)"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Clientes (emails):</label>
-          <div class="chips-input">
-            <input type="email" id="clienteEmailEditar" placeholder="email@dominio.com" />
-            <button type="button" id="agregarClienteEditar">Agregar cliente</button>
-          </div>
-          <div id="clientesChipsEditar" class="chips"></div>
-          <small>Si agrega emails aquí, se reemplazará la lista de clientes del pedido</small>
-        </div>
-        <div style="margin-top:1em;">
-          <button type="submit">Guardar cambios</button>
-          <button type="button" onclick="document.getElementById('modalEditar').close()">Cancelar</button>
-        </div>
-      </form>
-    </dialog>
-    <dialog id="modalPago">
-      <form method="dialog" style="min-width:300px">
-        <h3>Confirmar pago</h3>
-        <p>Monto total: $<span id="modalPagoMonto"></span></p>
+        <div id="clientesChipsEditar" class="chips"></div>
+        <small>Si agrega emails aquí, se reemplazará la lista de clientes del pedido</small>
+      </div>
+      <div class="form-buttons">
+        <button type="submit" class="submit-button">Guardar cambios</button>
+        <span class="close-button" onclick="document.getElementById('modalEditar').close()">×</span>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="modalPago">
+    <form method="dialog">
+      <h2>Confirmar pago</h2>
+      <div class="form-group">
+        <label>Monto total: $<span id="modalPagoMonto"></span></label>
+      </div>
+      <div class="form-group">
         <label>
           <input type="radio" name="metodoPago" value="Efectivo"> Efectivo
         </label>
         <label>
           <input type="radio" name="metodoPago" value="Tarjeta"> Tarjeta
         </label>
-        <div style="margin-top:1em;">
-          <button type="button" onclick="confirmarPago()">Confirmar</button>
-          <button type="button" onclick="document.getElementById('modalPago').close()">Cancelar</button>
-        </div>
-      </form>
-    </dialog>
-    <dialog id="modalReservaActiva">
-      <form method="dialog" style="min-width:400px">
-        <h3>⚠️ Reserva Detectada</h3>
-        <div id="reservaInfo">
-          <p><strong>Cliente:</strong> <span id="reservaCliente"></span></p>
-          <p><strong>Personas:</strong> <span id="reservaCantidad"></span></p>
-          <p><strong>Hora:</strong> <span id="reservaHora"></span></p>
-        </div>
-        <div class="form-group" id="emailReservaContainer" style="margin: 1em 0;">
-          <label>Verificar email del cliente:</label>
-          <input type="email" id="emailReserva" placeholder="email@dominio.com" style="width: 100%; padding: 8px; margin-top: 5px;" />
-        </div>
-        <div style="margin-top:1em; display:flex; gap:10px;">
-          <button type="button" onclick="confirmarReservaActiva()" style="background-color: #4CAF50; color: white; flex: 1;">✓ Confirmar Reserva</button>
-          <button type="button" onclick="rechazarReservaActiva()" style="background-color: #f44336; color: white; flex: 1;">✗ No es esta Reserva</button>
-        </div>
-      </form>
-    </dialog>
-  </div>
+      </div>
+      <div class="form-buttons">
+        <button type="button" class="submit-button" onclick="confirmarPago()">Confirmar</button>
+        <span class="close-button" onclick="document.getElementById('modalPago').close()">×</span>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="modalReservaActiva">
+    <form method="dialog">
+      <h2>Reserva Detectada</h2>
+      <div id="reservaInfo">
+        <p><strong>Cliente:</strong> <span id="reservaCliente"></span></p>
+        <p><strong>Personas:</strong> <span id="reservaCantidad"></span></p>
+        <p><strong>Hora:</strong> <span id="reservaHora"></span></p>
+      </div>
+      <div class="form-group" id="emailReservaContainer">
+        <label>Verificar email del cliente:</label>
+        <input type="email" id="emailReserva" placeholder="email@dominio.com" />
+      </div>
+      <div class="form-buttons">
+        <button type="button" class="submit-button" onclick="confirmarReservaActiva()">Confirmar reserva</button>
+        <button type="button" class="cancel-button" onclick="rechazarReservaActiva()">No es esta reserva</button>
+      </div>
+    </form>
+  </dialog>
   <script src="../session.js"></script>
   <script src="../script.js"></script>
 </body>
+
 </html>

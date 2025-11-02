@@ -7,9 +7,9 @@ $response = ["success" => false];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idPedido = isset($_POST['idPedido']) ? (int)$_POST['idPedido'] : null;
     $especificacion = $_POST['especificacion'] ?? '';
-    $productos = json_decode($_POST['productos'] ?? '[]', true); // [{idProducto, cantidad}]
-    $clientes = isset($_POST['clientes']) ? json_decode($_POST['clientes'], true) : null; // array de emails o null
-    $idMozo = isset($_POST['idMozo']) ? $_POST['idMozo'] : null; // ID del mozo seleccionado
+    $productos = json_decode($_POST['productos'] ?? '[]', true); 
+    $clientes = isset($_POST['clientes']) ? json_decode($_POST['clientes'], true) : null; 
+    $idMozo = isset($_POST['idMozo']) ? $_POST['idMozo'] : null; 
     
     if (!$idPedido || !is_array($productos) || !$idMozo) {
         $response['message'] = 'Datos incompletos';
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (is_array($clientes)) {
             $norm = [];
-            $alergiasClientes = []; // Para almacenar alergias únicas
+            $alergiasClientes = []; 
             
             foreach ($clientes as $c) {
                 if (!is_string($c)) continue;

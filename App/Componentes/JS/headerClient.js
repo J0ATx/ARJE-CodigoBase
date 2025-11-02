@@ -249,6 +249,7 @@ img {
                             </a>
                         </button>
                         <button class="dropdown-btn help-btn" id="helpBtn">
+                            <a href="/ARJE-CodigoBase/App/Client/Contacto/FrontEnd/index.html">
                             <svg id='Help_24' width='24' height='24' viewBox='0 0 24 24'
                                 xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
                                 <rect width='24' height='24' stroke='none' fill='white' opacity='0' />
@@ -261,6 +262,7 @@ img {
                                 </g>
                             </svg>
                             Ayuda
+                            </a>
                         </button>
                         <button class="dropdown-btn logout-btn" id="logoutBtn">
                             <svg id='Logout_Rounded_Left_24' width='24' height='24' viewBox='0 0 24 24'

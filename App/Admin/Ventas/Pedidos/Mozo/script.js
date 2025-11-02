@@ -2,6 +2,18 @@ let ws;
 let productosDisponibles = [];
 let pedidos = [];
 
+// Variables para el manejo del arrastre táctil
+let touchStartX = 0;
+let touchStartY = 0;
+let touchStartTime = 0;
+let isDragging = false;
+let draggedItem = null;
+let ghostElement = null;
+let initialX = 0;
+let initialY = 0;
+let xOffset = 0;
+let yOffset = 0;
+
 document.addEventListener('DOMContentLoaded', () => {
   cargarMesas();
   cargarMozos();
@@ -61,30 +73,30 @@ function cargarMozos() {
     .then(data => {
       const selectNuevo = document.getElementById('selectMozo');
       selectNuevo.innerHTML = '';
-      
+
       const defaultOption = document.createElement('option');
       defaultOption.value = '';
       defaultOption.textContent = 'Seleccione un mozo';
       defaultOption.disabled = true;
       defaultOption.selected = true;
       selectNuevo.appendChild(defaultOption);
-      
+
       const selectEditar = document.getElementById('editarSelectMozo');
       selectEditar.innerHTML = '';
-      
+
       const defaultOptionEditar = defaultOption.cloneNode(true);
       selectEditar.appendChild(defaultOptionEditar);
-      
+
       data.forEach(mozo => {
         const optNuevo = document.createElement('option');
         optNuevo.value = mozo.personal_id;
         optNuevo.textContent = `${mozo.personal_apellido}, ${mozo.personal_nombre}`;
         selectNuevo.appendChild(optNuevo);
-        
+
         const optEditar = optNuevo.cloneNode(true);
         selectEditar.appendChild(optEditar);
       });
-      
+
       return data;
     })
     .catch(error => {
@@ -146,7 +158,7 @@ function crearPedido(e) {
   const idMesa = document.getElementById('selectMesa').value;
   const idMozo = document.getElementById('selectMozo').value;
   const especificacion = document.getElementById('especificacionPedido').value || '';
-  
+
   if (!idMozo) {
     alert('Por favor, seleccione un mozo.');
     return;
@@ -177,7 +189,7 @@ function consultarReservaActiva(idMesa, idMozo, especificacion, productos) {
         document.getElementById('reservaCantidad').textContent = data.reserva.reserva_cantidad_personas;
         document.getElementById('reservaHora').textContent = data.reserva.reserva_inicio;
         document.getElementById('modalReservaActiva').showModal();
-        
+
         pedidoData = {
           idMesa, idMozo, especificacion, productos
         };
@@ -198,7 +210,7 @@ function procederCrearPedido(idMesa, idMozo, especificacion, productos) {
   formData.append('idMozo', idMozo);
   formData.append('especificacion', especificacion);
   formData.append('productos', JSON.stringify(productos));
-  
+
   const clientes = obtenerClientesDesdeChips('clientesChips');
   if (clientes.length) {
     formData.append('clientes', JSON.stringify(clientes));
@@ -213,6 +225,7 @@ function procederCrearPedido(idMesa, idMozo, especificacion, productos) {
         document.getElementById('productosContainer').innerHTML = '';
         sendReload();
         cargarPedidos();
+        document.getElementById('modalNuevoPedido').close();
       } else {
         alert(data.message || 'Error');
       }
@@ -221,7 +234,7 @@ function procederCrearPedido(idMesa, idMozo, especificacion, productos) {
 
 function confirmarReservaActiva() {
   const emailCliente = document.getElementById('emailReserva').value;
-  
+
   if (!emailCliente) {
     alert('Por favor ingrese el email del cliente para confirmar.');
     return;
@@ -236,13 +249,13 @@ function confirmarReservaActiva() {
     .then(r => r.json())
     .then(data => {
       document.getElementById('modalReservaActiva').close();
-      
+
       if (data.success) {
         alert('Reserva confirmada. Creando pedido...');
         procederCrearPedido(
-          pedidoData.idMesa, 
-          pedidoData.idMozo, 
-          pedidoData.especificacion, 
+          pedidoData.idMesa,
+          pedidoData.idMozo,
+          pedidoData.especificacion,
           pedidoData.productos
         );
       } else {
@@ -268,13 +281,13 @@ function rechazarReservaActiva() {
     .then(r => r.json())
     .then(data => {
       document.getElementById('modalReservaActiva').close();
-      
+
       if (data.success) {
         alert('Continuando con el pedido. Esta no es una reserva.');
         procederCrearPedido(
-          pedidoData.idMesa, 
-          pedidoData.idMozo, 
-          pedidoData.especificacion, 
+          pedidoData.idMesa,
+          pedidoData.idMozo,
+          pedidoData.especificacion,
           pedidoData.productos
         );
       } else {
@@ -283,9 +296,9 @@ function rechazarReservaActiva() {
     })
     .catch(error => {
       console.error('Error:', error);
-        alert('Error al procesar');
+      alert('Error al procesar');
     });
-  
+
   pedidoData = null;
   reservaActivaData = null;
 }
@@ -296,7 +309,7 @@ function obtenerProductosSeleccionados(selector, productos) {
       const select = div.querySelector('.select-producto');
       const inputCantidad = div.querySelector('.input-cantidad');
       if (!select || !inputCantidad) return null;
-      
+
       const productoId = select.value;
       const cantidad = Math.max(1, parseInt(inputCantidad.value) || 1);
 
@@ -315,7 +328,7 @@ function obtenerProductosSeleccionados(selector, productos) {
           nombre: select.selectedOptions[0].textContent
         };
       }
-      
+
       return null;
     })
     .filter(Boolean);
@@ -333,44 +346,138 @@ function cargarPedidos() {
     .then(data => {
       if (!data.success) return;
       pedidos = data.data;
+      const estadosOrden = ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado'];
       const pedidosContainer = document.getElementById('pedidosList');
       pedidosContainer.innerHTML = '';
+
+      const rowsWrapper = document.createElement('div');
+      rowsWrapper.className = 'kds-rows';
+
+      const TRANSICIONES_MOZO = {
+        'Listo': ['Entregado'],
+        'Entregado': ['Pagado']
+      };
+
+      const descripcionesEstados = {
+        'Pendiente': 'Un <strong>mozo</strong> ingresa un pedido',
+        'En-Preparacion': 'El <strong>cocinero</strong> está preparando el plato',
+        'Listo': 'El <strong>cocinero</strong> tiene listo el plato',
+        'Entregado': 'El <strong>mozo</strong> entrega el plato al cliente',
+        'Pagado': 'El <strong>mozo</strong> anota el pago del cliente'
+      };
+
+      estadosOrden.forEach(estado => {
+        const row = document.createElement('div');
+        row.className = 'kds-row';
+        row.dataset.estado = estado;
+
+        const header = document.createElement('div');
+        header.className = 'kds-row-header';
+        header.innerHTML = `
+          <div class="header-content">
+            <h3>${estado.replace('_', ' ').replace('-', ' ')}</h3>
+            <small class="kds-row-count">(0)</small>
+          </div>
+          <div class="info-tooltip">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="tooltip-text">${descripcionesEstados[estado] || 'Descripción no disponible'}</span>
+          </div>`;
+
+        const dropzone = document.createElement('div');
+        dropzone.className = 'kds-dropzone';
+        dropzone.dataset.estado = estado;
+
+        // Drag & Drop handlers
+        dropzone.addEventListener('dragover', e => {
+          e.preventDefault();
+          dropzone.classList.add('drag-over');
+        });
+        dropzone.addEventListener('dragleave', e => {
+          dropzone.classList.remove('drag-over');
+        });
+        dropzone.addEventListener('drop', async (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('drag-over');
+          const idPedido = e.dataTransfer.getData('text/plain');
+          if (!idPedido) return;
+          const nuevoEstado = dropzone.dataset.estado;
+          const pedidoObj = pedidos.find(p => String(p.idPedido) === String(idPedido));
+          if (!pedidoObj) return;
+          if (pedidoObj.estado === nuevoEstado) return;
+
+          // Validar transiciones permitidas para mozo
+          const permitido = Array.isArray(TRANSICIONES_MOZO[pedidoObj.estado]) && TRANSICIONES_MOZO[pedidoObj.estado].includes(nuevoEstado);
+          if (!permitido) {
+            alert('No tiene permiso para mover este pedido a ese estado. El flujo para mozos es: Pendiente -> (cocina) -> Listo -> Entregado -> Pagado.');
+            return;
+          }
+
+          // Si es pasar de Entregado a Pagado, abrir modal de pago (el modal hará la petición)
+          if (pedidoObj.estado === 'Entregado' && nuevoEstado === 'Pagado') {
+            abrirModalPago(idPedido);
+            return;
+          }
+
+          // En los demás casos permitidos (ej. Listo -> Entregado), pedir confirmación y llamar al backend
+          if (!confirm(`Mover pedido #${idPedido} a \"${nuevoEstado.replace('_', ' ')}\"?`)) return;
+
+          try {
+            const resp = await fetch('../BackEnd/cambiarEstado.php', {
+              method: 'POST',
+              body: new URLSearchParams({ idPedido, nuevoEstado })
+            });
+            const res = await resp.json();
+            if (res.success) {
+              sendReload();
+              cargarPedidos();
+            } else {
+              alert(res.message || 'Error al cambiar estado');
+            }
+          } catch (err) {
+            console.error(err);
+            alert('Error al cambiar estado');
+          }
+        });
+
+        row.appendChild(header);
+        row.appendChild(dropzone);
+        rowsWrapper.appendChild(row);
+      });
 
       pedidos.forEach(pedido => {
         const productosLista = Array.isArray(pedido.productos) ? pedido.productos : [];
         const estadoClase = pedido.estado.toLowerCase().replace(/-/g, '_');
         const card = document.createElement('div');
         card.className = `pedido-card ${estadoClase}`;
+        card.setAttribute('draggable', 'true');
+        card.dataset.idPedido = pedido.idPedido;
 
         let btnEstado = '';
-        if (pedido.estado === 'Listo') {
-          btnEstado = `<button class="btn-accion" onclick="cambiarEstadoPedido(${pedido.idPedido}, 'Entregado')">Entregar</button>`;
-        } else if (pedido.estado === 'Entregado') {
-          btnEstado = `<button class="btn-accion" onclick="abrirModalPago(${pedido.idPedido})">Pagar</button>`;
-        }
 
         card.innerHTML = `
           <div class="pedido-header">
             <div class="pedido-info">
               <h3 class="pedido-titulo">Pedido #${pedido.idPedido}</h3>
               <div class="pedido-meta">
-                <span title="Mesa">
-                  <i class="fas fa-table"></i> Mesa ${pedido.idMesa}
-                </span>
-                <span title="Mozo">
-                  <i class="fas fa-user-tie"></i> ${pedido.nombreMozo || 'Sin asignar'}
-                </span>
-                <span title="Fecha">
-                  <i class="far fa-calendar-alt"></i> ${formatearFechaHora(pedido.fecha)}
-                </span>
+                <span title="Mesa">Mesa ${pedido.idMesa}</span>
+                <span title="Mozo">${pedido.nombreMozo || 'Sin asignar'}</span>
+                <span title="Fecha">${formatearFechaHora(pedido.fecha)}</span>
               </div>
             </div>
             <div class="pedido-acciones">
               <button class="btn-accion" title="Editar pedido" onclick="abrirModalEditarPedido(${pedido.idPedido})">
-                <i class="fas fa-edit"></i>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"></path>
+                        </svg>
               </button>
               <button class="btn-accion" title="Cancelar pedido" onclick="cancelarPedido(${pedido.idPedido})">
-                <i class="fas fa-times"></i>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"></path>
+                        </svg>
               </button>
               ${btnEstado}
             </div>
@@ -396,67 +503,84 @@ function cargarPedidos() {
               ${pedido.estado === 'Pendiente' ? 'Pendiente' :
             pedido.estado === 'En-Preparacion' ? 'En Preparacion' :
               pedido.estado === 'Listo' ? 'Listo' :
-                pedido.estado === 'Entregado' ? 'Entregado' : pedido.estado === 'Pagado' ? 'Pagado' : 'Cancelado'}
+                pedido.estado === 'Entregado' ? 'Entregado' : pedido.estado === 'Pagado' ? 'Pagado' : 'Pagado'}
             </span>
             <span class="tiempo-transcurrido" title="${formatearFechaHora(pedido.fecha)}">
               ${calcularTiempoTranscurrido(pedido.fecha)}
             </span>
           </div>
         `;
-        pedidosContainer.appendChild(card);
+
+        // handlers drag
+        card.addEventListener('dragstart', (ev) => {
+          ev.dataTransfer.setData('text/plain', String(pedido.idPedido));
+          card.classList.add('dragging');
+        });
+        card.addEventListener('dragend', () => card.classList.remove('dragging'));
+
+        // colocar en la fila correspondiente
+        const targetDropzone = rowsWrapper.querySelector(`.kds-dropzone[data-estado="${pedido.estado}"]`);
+        if (targetDropzone) targetDropzone.appendChild(card);
       });
-      inicializarFiltros();
+
+      // actualizar contadores
+      rowsWrapper.querySelectorAll('.kds-row').forEach(row => {
+        const count = row.querySelectorAll('.kds-dropzone > .pedido-card').length;
+        const c = row.querySelector('.kds-row-count');
+        if (c) c.textContent = `(${count})`;
+      });
+
+      pedidosContainer.appendChild(rowsWrapper);
 
 
-window.cambiarEstadoPedido = function(idPedido, nuevoEstado) {
-  fetch('../BackEnd/cambiarEstado.php', {
-    method: 'POST',
-    body: new URLSearchParams({ idPedido, nuevoEstado })
-  })
-    .then(r => r.json())
-    .then(data => {
-      if (data.success) {
-        sendReload();
-        cargarPedidos();
-      } else {
-        alert(data.message || 'Error');
+      window.cambiarEstadoPedido = function (idPedido, nuevoEstado) {
+        fetch('../BackEnd/cambiarEstado.php', {
+          method: 'POST',
+          body: new URLSearchParams({ idPedido, nuevoEstado })
+        })
+          .then(r => r.json())
+          .then(data => {
+            if (data.success) {
+              sendReload();
+              cargarPedidos();
+            } else {
+              alert(data.message || 'Error');
+            }
+          });
       }
-    });
-}
 
-window.abrirModalPago = function(idPedido) {
-  const pedido = pedidos.find(p => p.idPedido == idPedido);
-  if (!pedido) return;
-  console.log(pedido)
-  const modal = document.getElementById('modalPago');
-  document.getElementById('modalPagoMonto').textContent = pedido.monto;
-  modal.setAttribute('data-idPedido', idPedido);
-  modal.showModal();
-}
-
-window.confirmarPago = function() {
-  const modal = document.getElementById('modalPago');
-  const idPedido = modal.getAttribute('data-idPedido');
-  const metodoPago = document.querySelector('input[name="metodoPago"]:checked')?.value;
-  if (!metodoPago) {
-    alert('Seleccione método de pago');
-    return;
-  }
-  fetch('../BackEnd/cambiarEstado.php', {
-    method: 'POST',
-    body: new URLSearchParams({ idPedido, nuevoEstado: 'Pagado', metodoPago })
-  })
-    .then(r => r.json())
-    .then(data => {
-      if (data.success) {
-        document.getElementById('modalPago').close();
-        sendReload();
-        cargarPedidos();
-      } else {
-        alert(data.message || 'Error');
+      window.abrirModalPago = function (idPedido) {
+        const pedido = pedidos.find(p => p.idPedido == idPedido);
+        if (!pedido) return;
+        const modal = document.getElementById('modalPago');
+        document.getElementById('modalPagoMonto').textContent = pedido.monto;
+        modal.setAttribute('data-idPedido', idPedido);
+        modal.showModal();
       }
-    });
-}
+
+      window.confirmarPago = function () {
+        const modal = document.getElementById('modalPago');
+        const idPedido = modal.getAttribute('data-idPedido');
+        const metodoPago = document.querySelector('input[name="metodoPago"]:checked')?.value;
+        if (!metodoPago) {
+          alert('Seleccione método de pago');
+          return;
+        }
+        fetch('../BackEnd/cambiarEstado.php', {
+          method: 'POST',
+          body: new URLSearchParams({ idPedido, nuevoEstado: 'Pagado', metodoPago })
+        })
+          .then(r => r.json())
+          .then(data => {
+            if (data.success) {
+              document.getElementById('modalPago').close();
+              sendReload();
+              cargarPedidos();
+            } else {
+              alert(data.message || 'Error');
+            }
+          });
+      }
     });
 }
 
@@ -474,28 +598,6 @@ window.onload = function () {
   };
   ws.onclose = () => console.log('Sistema desconectado');
 };
-
-function inicializarFiltros() {
-  const filterBtns = document.querySelectorAll('.filter-btn');
-
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const filter = btn.getAttribute('data-filter');
-      const cards = document.querySelectorAll('.pedido-card');
-
-      cards.forEach(card => {
-        if (filter === 'all' || card.classList.contains(filter)) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    });
-  });
-}
 
 function formatearFechaHora(fechaHora) {
   const opciones = {
@@ -544,13 +646,13 @@ function abrirModalEditarPedido(idPedido) {
     if (pedido.idMozo) {
       selectMozo.value = pedido.idMozo;
     }
-    
+
     document.getElementById('editarIdPedido').value = idPedido;
     document.getElementById('especificacionPedidoEditar').value = pedido.especificacion || '';
-    
+
     const cont = document.getElementById('editarProductosContainer');
     cont.innerHTML = '';
-    
+
     (pedido.productos || []).forEach(prod => {
       const div = document.createElement('div');
       div.className = 'producto-item-editar';
@@ -581,7 +683,7 @@ function abrirModalEditarPedido(idPedido) {
       div.appendChild(btnQuitar);
       cont.appendChild(div);
     });
-    
+
     const chipsContainer = document.getElementById('clientesChipsEditar');
     chipsContainer.innerHTML = '';
     (pedido.clientes || []).forEach(email => {
@@ -591,7 +693,7 @@ function abrirModalEditarPedido(idPedido) {
       chip.querySelector('.chip-remove').onclick = () => chip.remove();
       chipsContainer.appendChild(chip);
     });
-    
+
     document.getElementById('modalEditar').showModal();
   });
 }
@@ -601,14 +703,14 @@ function editarPedidoSubmit(e) {
   const idPedido = document.getElementById('editarIdPedido').value;
   const idMozo = document.getElementById('editarSelectMozo').value;
   const especificacion = document.getElementById('especificacionPedidoEditar').value || '';
-  
+
   const productos = Array.from(document.querySelectorAll('.producto-item-editar')).map(div => {
     const select = div.querySelector('.select-producto');
     const inputCantidad = div.querySelector('.input-cantidad');
-    
+
     const productoId = select.value;
     const cantidad = parseInt(inputCantidad.value) || 1;
-    
+
     return {
       idProducto: parseInt(productoId),
       cantidad: cantidad,
@@ -665,7 +767,7 @@ function agregarClienteChip(inputId, chipsContainerId) {
   if (!email) return;
   if (!emailValido(email)) { alert('Email inválido'); return; }
   const existentes = Array.from(cont.querySelectorAll('.chip span')).map(s => s.textContent.toLowerCase());
-  if (existentes.includes(email)) { input.value=''; return; }
+  if (existentes.includes(email)) { input.value = ''; return; }
 
   const chip = document.createElement('div');
   chip.className = 'chip';
@@ -681,4 +783,192 @@ function obtenerClientesDesdeChips(chipsContainerId) {
   return Array.from(cont.querySelectorAll('.chip span')).map(s => s.textContent.trim().toLowerCase());
 }
 
-function pInt(v){ return parseInt(v, 10) || 0; }
+function pInt(v) { return parseInt(v, 10) || 0; }
+
+// Funciones para el manejo de arrastre táctil
+function handleTouchStart(e) {
+  if (e.touches.length !== 1) return;
+
+  const touch = e.touches[0];
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  const card = target.closest('.pedido-card');
+
+  if (!card) return;
+
+  // Evitar arrastrar si se hace clic en un botón
+  if (target.closest('button, a, input, select')) {
+    return;
+  }
+
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  touchStartTime = Date.now();
+  draggedItem = card;
+
+  // Crear elemento fantasma para el arrastre
+  ghostElement = card.cloneNode(true);
+  ghostElement.classList.add('ghost-element');
+  ghostElement.style.width = `${card.offsetWidth}px`;
+  ghostElement.style.height = `${card.offsetHeight}px`;
+
+  const rect = card.getBoundingClientRect();
+  initialX = touch.clientX - rect.left;
+  initialY = touch.clientY - rect.top;
+
+  ghostElement.style.left = `${rect.left}px`;
+  ghostElement.style.top = `${rect.top}px`;
+
+  document.body.appendChild(ghostElement);
+  document.body.style.overflow = 'hidden';
+
+  // Prevenir scroll durante el arrastre
+  document.addEventListener('touchmove', preventScroll, { passive: false });
+
+  // Agregar clase de arrastre
+  card.classList.add('dragging');
+
+  // Iniciar seguimiento del movimiento
+  isDragging = false; // Se establecerá a true después de un umbral de movimiento
+}
+
+function handleTouchMove(e) {
+  if (!draggedItem || !ghostElement) return;
+
+  // Verificar si el evento es cancelable antes de intentar prevenirlo
+  const isCancelable = e.cancelable && !e.defaultPrevented;
+  
+  const touch = e.touches[0];
+  const deltaX = Math.abs(touch.clientX - touchStartX);
+  const deltaY = Math.abs(touch.clientY - touchStartY);
+
+  // Umbral para determinar si es un arrastre o un toque
+  if (!isDragging && (deltaX > 10 || deltaY > 10)) {
+    isDragging = true;
+    if (isCancelable) {
+      e.preventDefault();
+    }
+    return; // Salir temprano para el primer movimiento
+  }
+
+  if (!isDragging) return;
+
+  // Solo prevenir el comportamiento por defecto si es seguro hacerlo
+  if (isCancelable) {
+    e.preventDefault();
+  }
+
+  try {
+    // Actualizar posición del elemento fantasma
+    ghostElement.style.left = `${touch.clientX - initialX}px`;
+    ghostElement.style.top = `${touch.clientY - initialY}px`;
+
+    // Resaltar la zona de destino
+    const touchElement = document.elementFromPoint(touch.clientX, touch.clientY);
+    const dropzone = touchElement?.closest('.kds-dropzone');
+
+    document.querySelectorAll('.kds-dropzone').forEach(dz => {
+      dz.classList.remove('drag-over');
+    });
+
+    if (dropzone) {
+      dropzone.classList.add('drag-over');
+    }
+  } catch (err) {
+    console.warn('Error en handleTouchMove:', err);
+  }
+}
+
+function handleTouchEnd(e) {
+  if (!draggedItem) return;
+
+  // Limpiar el estado de arrastre
+  const wasDragging = isDragging;
+  isDragging = false;
+
+  // Eliminar el elemento fantasma
+  if (ghostElement) {
+    ghostElement.remove();
+    ghostElement = null;
+  }
+
+  // Restaurar el scroll
+  document.body.style.overflow = '';
+  document.removeEventListener('touchmove', preventScroll);
+
+  // Quitar clase de arrastre
+  draggedItem.classList.remove('dragging');
+
+  // Si no fue un arrastre, salir
+  if (!wasDragging) {
+    draggedItem = null;
+    return;
+  }
+
+  // Obtener la posición final del toque
+  const touch = e.changedTouches[0];
+  const touchElement = document.elementFromPoint(touch.clientX, touch.clientY);
+  const dropzone = touchElement?.closest('.kds-dropzone');
+
+  // Limpiar resaltado de zonas
+  document.querySelectorAll('.kds-dropzone').forEach(dz => {
+    dz.classList.remove('drag-over');
+  });
+
+  // Si hay una zona de destino válida, procesar el cambio de estado
+  if (dropzone && draggedItem) {
+    const idPedido = draggedItem.dataset.idPedido;
+    const nuevoEstado = dropzone.dataset.estado;
+    const pedidoObj = pedidos.find(p => String(p.idPedido) === String(idPedido));
+
+    if (pedidoObj && pedidoObj.estado !== nuevoEstado) {
+      const TRANSICIONES_MOZO = {
+        'Listo': ['Entregado'],
+        'Entregado': ['Pagado']
+      };
+
+      const permitido = Array.isArray(TRANSICIONES_MOZO[pedidoObj.estado]) &&
+        TRANSICIONES_MOZO[pedidoObj.estado].includes(nuevoEstado);
+
+      if (permitido) {
+        if (pedidoObj.estado === 'Entregado' && nuevoEstado === 'Pagado') {
+          abrirModalPago(idPedido);
+        } else {
+          if (confirm(`Mover pedido #${idPedido} a "${nuevoEstado.replace('_', ' ')}"?`)) {
+            cambiarEstadoPedido(idPedido, nuevoEstado);
+          }
+        }
+      }
+    }
+  }
+
+  draggedItem = null;
+}
+
+function preventScroll(e) {
+  if (isDragging && e.cancelable && !e.defaultPrevented) {
+    try {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    } catch (err) {
+      console.warn('No se pudo prevenir el scroll:', err);
+    }
+  }
+  return true;
+}
+
+// Inicializar eventos táctiles con manejo de compatibilidad
+function setupTouchEvents() {
+  const options = { passive: false };
+  document.addEventListener('touchstart', handleTouchStart, options);
+  document.addEventListener('touchmove', handleTouchMove, options);
+  document.addEventListener('touchend', handleTouchEnd, { passive: true });
+  document.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+}
+
+// Inicializar eventos cuando el DOM esté listo
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupTouchEvents);
+} else {
+  setupTouchEvents();
+}

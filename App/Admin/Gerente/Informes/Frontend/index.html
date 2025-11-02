@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +8,23 @@
     <script src="/ARJE-CodigoBase/App/Componentes/JS/navAdmin.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <nav-admin></nav-admin>
 
+<body>
+    <div id="loading-screen">
+        <div id="logo-container" class="logo-loading"></div>
+    </div>
     <div id="main-content">
-        <div class="container">
-            <h1>Estadísticas e Informes</h1>
-            <button id="generarInforme">Generar Informe Compatible Con SARI</button>
-            <div id="informes"></div>
+        <div class="page">
+            <nav-admin></nav-admin>
+            <main class="contenedor">
+                <h1>Estadísticas e Informes</h1>
+                <button id="generarInforme">Generar Informe Compatible Con SARI</button>
+                <div id="informes"></div>
+                <script src="../session.js"></script>
+                <script src="../script.js"></script>
+            </main>
         </div>
     </div>
-    <script src="../session.js"></script>
-    <script src="../script.js"></script>
 </body>
+
 </html>
