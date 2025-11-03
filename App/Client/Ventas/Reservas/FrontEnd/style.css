@@ -67,11 +67,21 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    display: flex;
     overflow: hidden;
 }
 
+header{
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    margin-left: 3vw;
+    margin-top: 3vw;
+    z-index: 999999 !important;
+    background: rgba(10, 11, 10, 0.95);
+}
+
 .page {
+    padding-top: 80px; /* Ajusta este valor según la altura de tu header */
     display: grid;
     grid-template-areas:
         "left right"
@@ -422,40 +432,6 @@ body {
     background: linear-gradient(to right, #ffffff4d, #ffffff2d);
 }
 
-.footer {
-    grid-area: footer;
-    margin: 0vw;
-    border-radius: 1vw;
-    border: 0.1vw solid rgba(239, 231, 210, 0.1);
-    padding: 1vw;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    font-family: 'Poppins', sans-serif;
-    color: #EFE7D2;
-    font-size: 1vw;
-    max-height: 80px;
-}
-
-.footer a {
-    color: #EFE7D2;
-    font-family: 'Poppins', sans-serif;
-    text-decoration: underline;
-}
-
-.footer a:visited {
-    color: #EFE7D2;
-    font-family: 'Poppins', sans-serif;
-    text-decoration: underline;
-}
-
-.footer a:hover,
-.footer a:active {
-    color: #BCB6A7;
-    font-family: 'Poppins', sans-serif;
-        text-decoration: underline;
-}
-
 .mensajes-alerta {
     height: 32px;
     display: flex;
@@ -656,7 +632,31 @@ input[type=number] {
     text-align: center;
 }
 
+.toggle-panorama {
+    display: none;
+}
+
+@media (width >= 900px) {
+    .toggle-panorama {
+        display: none !important;
+    }
+}
+
 @media (max-width: 900px) {
+    .input-group.tooltip[data-mesa-tooltip] .tooltip-content {
+        content: "Haz clic en el botón de la esquina para ver las mesas disponibles";
+        display: block;
+    }
+    
+    .input-group.tooltip[data-mesa-tooltip] .tooltip-content > * {
+        display: none;
+    }
+
+    .main-container {
+        display: flex;
+        flex-direction: column;
+    }
+
     .page {
         grid-template-areas:
             "right"
@@ -669,16 +669,124 @@ input[type=number] {
     }
 
     .left-side {
-        visibility: hidden;
+        position: relative;
+        grid-area: left;
+        z-index: 1000;
+        visibility: visible;
+        opacity: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    @media (max-width: 900px) {
+        .left-side {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            visibility: hidden;
+            opacity: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+        }
+    }
+
+    .left-side.active {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .left-side #panorama {
+        flex: 1;
+    }
+
+    .toggle-panorama {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #fff;
+        border: none;
+        cursor: pointer;
+        z-index: 1002;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: #000000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .toggle-panorama:hover {
+        transform: scale(1.1);
+    }
+
+    .toggle-panorama::before {
+        content: "";
+        width: 20px;
+        height: 20px;
+        background-image: url('files/svg/Chair.svg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        filter: brightness(0);
+    }
+
+    .close-panorama {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #fff;
+        border: none;
+        cursor: pointer;
+        z-index: 1002;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: #333;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .close-panorama:hover {
+        transform: scale(1.1);
+    }
+
+    .left-side.active .close-panorama {
+        display: flex;
     }
 
     header {
         visibility: visible !important;
         position: fixed !important;
-        top: 3vw !important;
-        left: 3vw !important;
-        right: 3vw !important;
-        z-index: 10 !important;
+        top: 0 !important;
+        left: 0 !important;
+        margin-top: 3vw !important;
+        margin-left: 3vw !important;
+        z-index: 1001 !important;
+    }
+
+    @media (max-width: 900px) {
+        .main-container > header {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .left-side > *:not(header) {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .left-side.active > *:not(header) {
+            opacity: 1;
+        }
     }
 
     .right-side {
@@ -686,6 +794,8 @@ input[type=number] {
         height: auto;
         padding: 16px;
         border-radius: 8px;
+        position: relative;
+        z-index: 1;
     }
 
     .form-box {
@@ -734,13 +844,6 @@ input[type=number] {
         margin: 20px 0 10px;
     }
 
-    .footer {
-        font-size: 12px;
-        padding: 10px;
-        max-height: 60px;
-        border-radius: 8px;
-    }
-
     .formulario {
         gap: 12px;
     }
@@ -760,28 +863,12 @@ input[type=number] {
         padding: 8px 10px;
     }
 
+    .tooltip-icon {
+        top: calc(11px + 6px + 29px);
+    }
+
     .helper-text {
         font-size: 12px;
-    }
-}
-
-@media (max-width: 450px) {
-    footer a {
-        font-size: 10px;
-    }
-
-    footer p {
-        font-size: 10px;
-    }
-}
-
-@media (max-width: 350px) {
-    footer a {
-        font-size: 8px;
-    }
-
-    footer p {
-        font-size: 8px;
     }
 }
 

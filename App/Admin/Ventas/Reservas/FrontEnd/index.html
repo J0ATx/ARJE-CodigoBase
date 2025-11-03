@@ -35,8 +35,11 @@
                                 </svg>
                             </span>
                         </div>
-                        <div class="filtro">
-                            <span class="icono-filtro">
+                        <div class="actions">
+                            <button id="btnNuevaReserva" class="btn-nuevo">
+                                + Nueva Reserva
+                            </button>
+                            <div class="filtro">
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -44,30 +47,31 @@
                                         stroke="#A4A4A4" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round" />
                                 </svg>
-                            </span>
-                            <span>Filtrar</span>
-                            <div class="dropdown-filtro">
-                                <div class="dropdown-content">
-                                    <label class="checkbox-item">
-                                        <input type="checkbox" name="orden" value="usuario" class="filter-checkbox">
-                                        <span class="checkmark"></span>
-                                        Usuario
-                                    </label>
-                                    <label class="checkbox-item">
-                                        <input type="checkbox" name="orden" value="mesa" class="filter-checkbox">
-                                        <span class="checkmark"></span>
-                                        Mesa
-                                    </label>
-                                    <label class="checkbox-item">
-                                        <input type="checkbox" name="orden" value="fecha" class="filter-checkbox">
-                                        <span class="checkmark"></span>
-                                        Fecha
-                                    </label>
-                                    <label class="checkbox-item">
-                                        <input type="checkbox" name="orden" value="cantidad_personas" class="filter-checkbox">
-                                        <span class="checkmark"></span>
-                                        Cantidad de Personas
-                                    </label>
+                                <span>Filtrar</span>
+                                <div class="dropdown-filtro">
+                                    <div class="dropdown-content">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="orden" value="usuario" class="filter-checkbox">
+                                            <span class="checkmark"></span>
+                                            Usuario
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="orden" value="mesa" class="filter-checkbox">
+                                            <span class="checkmark"></span>
+                                            Mesa
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="orden" value="fecha" class="filter-checkbox">
+                                            <span class="checkmark"></span>
+                                            Fecha
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="orden" value="cantidad_personas"
+                                                class="filter-checkbox">
+                                            <span class="checkmark"></span>
+                                            Cantidad de Personas
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -90,7 +94,7 @@
         </div>
     </div>
 
-    
+
     <div id="modalEditarReserva" class="modal">
         <div class="modal-content">
             <span class="close" onclick="cerrarModalEditarReserva()">&times;</span>
@@ -145,6 +149,52 @@
             </form>
         </div>
     </div>
+    <!-- Modal para nueva reserva -->
+    <div id="modalNuevaReserva" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModalNuevaReserva()">&times;</span>
+            <h2>Nueva Reserva</h2>
+            <form id="formNuevaReserva">
+                <div class="form-group">
+                    <label for="cliente_id">Email del Cliente:</label>
+                    <input type="email" id="cliente_id" name="cliente_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="reserva_cantidad_personas">Cantidad de Personas:</label>
+                    <input type="number" id="reserva_cantidad_personas" name="reserva_cantidad_personas" min="1"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="reserva_duracion">Duración (horas):</label>
+                    <select id="reserva_duracion" name="reserva_duracion" required>
+                        <option value="1">1 hora</option>
+                        <option value="2" selected>2 horas</option>
+                        <option value="3">3 horas</option>
+                        <option value="4">4 horas</option>
+                        <option value="5">5 horas</option>
+                        <option value="6">6 horas</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reserva_fecha">Fecha:</label>
+                    <input type="date" id="reserva_fecha" name="reserva_fecha" required>
+                </div>
+                <div class="form-group">
+                    <label for="reserva_inicio">Hora de Inicio:</label>
+                    <input type="time" id="reserva_inicio" name="reserva_inicio" required>
+                </div>
+                <div class="form-group">
+                    <label for="mesa_id">ID de Mesa:</label>
+                    <input type="number" id="mesa_id" name="mesa_id" min="1" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="submit-button">Crear Reserva</button>
+                    <button type="button" class="cancel-button" onclick="cerrarModalNuevaReserva()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../session.js"></script>
     <script src="../control.js"></script>
     <script src="script.js"></script>

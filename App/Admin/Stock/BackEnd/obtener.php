@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 s.stock_id AS idIngrediente,
                 s.stock_nombre AS nombre,
                 s.stock_caducidad AS caducidad,
+                s.stock_alerta AS alerta,
                 sc.stock_cantidad AS stock,
                 sc.stock_medida AS medida
             FROM Stock s

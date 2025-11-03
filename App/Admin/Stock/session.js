@@ -85,5 +85,57 @@ function showContent() {
 
 window.addEventListener('load', async () => {
     await loadSVGLogo();
-    await checkSession();
+    const sessionValid = await checkSession();
+    
+    if (sessionValid) {
+        setTimeout(() => {
+            if (typeof sistemaAlertas !== 'undefined') {
+                sistemaAlertas.inicializar();
+                console.log('Sistema de alertas inicializado desde session.js');
+            } else {
+                console.warn('sistemaAlertas no está disponible en session.js');
+            }
+        }, 1500);
+    }
 });
+
+function reinicializarAlertas() {
+    if (typeof verificarAlertasManual === 'function') {
+        verificarAlertasManual();
+    } else if (typeof sistemaAlertas !== 'undefined' && sistemaAlertas.isInitialized) {
+        sistemaAlertas.verificarAlertas();
+    }
+}
+
+function mostrarResumenAlertas() {
+    if (typeof mostrarResumenAlertasGlobal === 'function') {
+        mostrarResumenAlertasGlobal();
+    } else if (typeof sistemaAlertas !== 'undefined' && sistemaAlertas.isInitialized) {
+        sistemaAlertas.mostrarResumenAlertas();
+    }
+}
+
+function asegurarSistemaAlertas() {
+    return new Promise((resolve) => {
+        const checkAlertas = () => {
+            if (typeof sistemaAlertas !== 'undefined' && sistemaAlertas.isInitialized) {
+                resolve(true);
+            } else if (typeof verificarAlertasManual === 'function') {
+                resolve(true);
+            } else {
+                setTimeout(checkAlertas, 100);
+            }
+        };
+        checkAlertas();
+    });
+}
+
+async function reinicializarAlertasSeguro() {
+    await asegurarSistemaAlertas();
+    reinicializarAlertas();
+}
+
+window.reinicializarAlertas = reinicializarAlertas;
+window.mostrarResumenAlertas = mostrarResumenAlertas;
+window.reinicializarAlertasSeguro = reinicializarAlertasSeguro;
+window.asegurarSistemaAlertas = asegurarSistemaAlertas;

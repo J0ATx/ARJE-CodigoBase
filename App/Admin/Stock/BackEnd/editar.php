@@ -7,28 +7,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $con->beginTransaction();
 
-        $stmtStock = $con->prepare("UPDATE Stock SET stock_nombre = ?, stock_caducidad = ? WHERE stock_id = ?");
+        if ($_POST['fechaAlerta'] > $_POST['caducidad']) {
+            throw new Exception("La fecha de alerta debe ser anterior o igual a la fecha de caducidad.");
+        }
+
+        $stmtStock = $con->prepare("UPDATE Stock SET stock_nombre = ?, stock_caducidad = ?, stock_alerta = ? WHERE stock_id = ?");
         $stmtStock->execute([
             $_POST['nombre'],
             $_POST['caducidad'],
+            $_POST['fechaAlerta'],
             $_POST['id']
         ]);
 
-        $stmtCantidad = $con->prepare("UPDATE Stock_Cantidad SET stock_cantidad = ?, stock_medida = ? WHERE stock_id = ?");
-        $stmtCantidad->execute([
-            $_POST['stock'],
-            $_POST['medida'],
-            $_POST['id']
-        ]);
+        $stmtCheck = $con->prepare("SELECT COUNT(*) FROM Stock_Cantidad WHERE stock_id = ?");
+        $stmtCheck->execute([$_POST['id']]);
+        $exists = $stmtCheck->fetchColumn() > 0;
 
-        if ($stmtCantidad->rowCount() === 0) {
-            $stmtInsertCantidad = $con->prepare("INSERT INTO Stock_Cantidad (stock_id, stock_cantidad, stock_medida) VALUES (?, ?, ?)");
-            $stmtInsertCantidad->execute([
-                $_POST['id'],
-                $_POST['stock'],
-                $_POST['medida']
-            ]);
+        if ($exists) {
+            $stmtDelete = $con->prepare("DELETE FROM Stock_Cantidad WHERE stock_id = ?");
+            $stmtDelete->execute([$_POST['id']]);
         }
+
+        $stmtInsertCantidad = $con->prepare("INSERT INTO Stock_Cantidad (stock_id, stock_cantidad, stock_medida) VALUES (?, ?, ?)");
+        $stmtInsertCantidad->execute([
+            $_POST['id'],
+            $_POST['stock'],
+            $_POST['medida']
+        ]);
 
         $con->commit();
 

@@ -11,6 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $medida = $_POST['medida'];
         $cantidad = $_POST['stock'];
         $caducidad = $_POST['caducidad'];
+        $alerta = $_POST['fechaAlerta'];
+
+        if ($alerta > $caducidad) {
+            throw new Exception("La fecha de alerta debe ser anterior o igual a la fecha de caducidad.");
+        }
 
         $checkStmt = $con->prepare("
             SELECT DISTINCT sc.stock_medida 
@@ -35,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        $stmtStock = $con->prepare("INSERT INTO Stock (stock_nombre, stock_caducidad) VALUES (?, ?)");
-        $stmtStock->execute([$nombre, $caducidad]);
+        $stmtStock = $con->prepare("INSERT INTO Stock (stock_nombre, stock_caducidad, stock_alerta) VALUES (?, ?, ?)");
+        $stmtStock->execute([$nombre, $caducidad, $alerta]);
 
         $stockId = $con->lastInsertId();
 
