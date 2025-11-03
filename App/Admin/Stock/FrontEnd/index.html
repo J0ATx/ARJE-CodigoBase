@@ -48,8 +48,8 @@
                             <tr>
                                 <th>NOMBRE</th>
                                 <th>STOCK</th>
+                                <th>CANTIDAD MÍNIMA</th>
                                 <th>FECHA DE CADUCIDAD</th>
-                                <th>FECHA DE ALERTA</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
@@ -92,15 +92,15 @@
                     </small>
                 </div>
                 <div class="form-group">
-                    <label for="caducidad">Fecha de Caducidad</label>
-                    <input type="date" id="caducidad" required>
+                    <label for="cantidadMinima">Cantidad Mínima de Alerta</label>
+                    <input type="number" id="cantidadMinima" step="any" min="0" placeholder="0">
+                    <small class="cantidad-minima-info">
+                        Cantidad mínima para recibir alertas de stock bajo (opcional, por defecto 0)
+                    </small>
                 </div>
                 <div class="form-group">
-                    <label for="fechaAlerta">Fecha de Alerta</label>
-                    <input type="date" id="fechaAlerta" required>
-                    <small class="fecha-alerta-info">
-                        La fecha de alerta debe ser anterior o igual a la fecha de caducidad
-                    </small>
+                    <label for="caducidad">Fecha de Caducidad</label>
+                    <input type="date" id="caducidad" required>
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="submit-button">Guardar Lote</button>

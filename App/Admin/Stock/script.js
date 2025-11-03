@@ -5,13 +5,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const closeBtn = document.querySelector('.close');
     const form = document.getElementById('ingredientForm');
     const searchInput = document.getElementById('searchInput');
-    const tableBody = document.getElementById('ingredientsTableBody');
     const nombreInput = document.getElementById('nombre');
     const medidaSelect = document.getElementById('medida');
     const medidaInfo = document.getElementById('medidaInfo');
     const medidaInfoText = document.getElementById('medidaInfoText');
-    const caducidadInput = document.getElementById('caducidad');
-    const fechaAlertaInput = document.getElementById('fechaAlerta');
+
+    const cantidadMinimaInput = document.getElementById('cantidadMinima');
 
     let ingredientesExistentes = [];
 
@@ -23,49 +22,58 @@ document.addEventListener('DOMContentLoaded', async () => {
     setTimeout(() => {
         if (typeof asegurarSistemaAlertas === 'function') {
             asegurarSistemaAlertas();
+        } else if (typeof inicializarSistemaAlertas === 'function') {
+            inicializarSistemaAlertas();
         }
+        
+        setTimeout(() => {
+            if (typeof conectarAlertasConNavegacion === 'function') {
+                conectarAlertasConNavegacion();
+            }
+        }, 500);
     }, 2000);
 
-    function validateFechaAlerta() {
-        const caducidad = caducidadInput.value;
-        const fechaAlerta = fechaAlertaInput.value;
+    function validateCantidadMinima() {
+        const cantidadMinima = cantidadMinimaInput.value;
 
-        if (caducidad && fechaAlerta) {
-            const fechaCaducidad = new Date(caducidad);
-            const fechaAlertaDate = new Date(fechaAlerta);
-
-            if (fechaAlertaDate > fechaCaducidad) {
-                fechaAlertaInput.classList.add('fecha-alerta-error');
-                showFechaAlertaError('La fecha de alerta debe ser anterior o igual a la fecha de caducidad');
+        if (cantidadMinima !== '' && cantidadMinima !== null) {
+            const cantidad = parseFloat(cantidadMinima);
+            
+            if (isNaN(cantidad) || cantidad < 0) {
+                cantidadMinimaInput.classList.add('cantidad-minima-error');
+                showCantidadMinimaError('La cantidad mínima debe ser un número positivo o cero');
                 return false;
             } else {
-                fechaAlertaInput.classList.remove('fecha-alerta-error');
-                hideFechaAlertaError();
+                cantidadMinimaInput.classList.remove('cantidad-minima-error');
+                hideCantidadMinimaError();
                 return true;
             }
+        } else {
+            cantidadMinimaInput.classList.remove('cantidad-minima-error');
+            hideCantidadMinimaError();
+            return true;
         }
-        return true;
     }
 
-    function showFechaAlertaError(message) {
-        let errorMsg = document.querySelector('.fecha-alerta-error-msg');
+    function showCantidadMinimaError(message) {
+        let errorMsg = document.querySelector('.cantidad-minima-error-msg');
         if (!errorMsg) {
             errorMsg = document.createElement('small');
-            errorMsg.className = 'fecha-alerta-error-msg';
-            fechaAlertaInput.parentNode.appendChild(errorMsg);
+            errorMsg.className = 'cantidad-minima-error-msg';
+            cantidadMinimaInput.parentNode.appendChild(errorMsg);
         }
         errorMsg.textContent = message;
     }
 
-    function hideFechaAlertaError() {
-        const errorMsg = document.querySelector('.fecha-alerta-error-msg');
+    function hideCantidadMinimaError() {
+        const errorMsg = document.querySelector('.cantidad-minima-error-msg');
         if (errorMsg) {
             errorMsg.remove();
         }
     }
 
-    caducidadInput.addEventListener('change', validateFechaAlerta);
-    fechaAlertaInput.addEventListener('change', validateFechaAlerta);
+    cantidadMinimaInput.addEventListener('input', validateCantidadMinima);
+    cantidadMinimaInput.addEventListener('change', validateCantidadMinima);
 
     function checkForEditParameter() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -141,8 +149,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('nombre').disabled = false;
         document.getElementById('medida').disabled = false;
         medidaInfo.style.display = 'none';
-        fechaAlertaInput.classList.remove('fecha-alerta-error');
-        hideFechaAlertaError();
+        cantidadMinimaInput.classList.remove('cantidad-minima-error');
+        hideCantidadMinimaError();
     }
 
     searchInput.addEventListener('input', debounce(() => {
@@ -152,7 +160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!validateFechaAlerta()) {
+        if (!validateCantidadMinima()) {
             return;
         }
 
@@ -166,11 +174,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const formData = new FormData();
         const id = document.getElementById('ingredientId').value;
+        const cantidadMinima = cantidadMinimaInput.value || '0';
+        
         formData.append('nombre', nombreInput.value);
         formData.append('stock', document.getElementById('stock').value);
         formData.append('medida', medidaSelect.value);
+        formData.append('stock_alerta', cantidadMinima);
         formData.append('caducidad', document.getElementById('caducidad').value);
-        formData.append('fechaAlerta', document.getElementById('fechaAlerta').value);
 
         let endpoint = '';
         if (id) {
@@ -281,41 +291,44 @@ function renderIngredients(ingredientes) {
 
     ingredientes.forEach(ingrediente => {
         const row = document.createElement('tr');
-
-        const fechaAlerta = ingrediente.alerta || ingrediente.fechaAlerta || ingrediente.stock_alerta;
         let alertaClass = '';
-        let fechaAlertaDisplay = 'No configurada';
-        let fechaAlertaClass = '';
+        let fechaCaducidadClass = '';
 
-        if (fechaAlerta) {
+        if (ingrediente.caducidad) {
             const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
-
-            const fechaAlertaDate = new Date(fechaAlerta);
-            fechaAlertaDate.setHours(0, 0, 0, 0);
-
-            const diasHastaAlerta = Math.ceil((fechaAlertaDate.getTime() - hoy.getTime()) / (1000 * 3600 * 24));
-
-            fechaAlertaDisplay = formatDate(fechaAlerta);
-
-            if (diasHastaAlerta < 0) {
+            const fechaCaducidad = new Date(ingrediente.caducidad);
+            const diasHastaCaducidad = Math.ceil((fechaCaducidad.getTime() - hoy.getTime()) / (1000 * 3600 * 24));
+            
+            if (diasHastaCaducidad <= 0) {
                 alertaClass = 'alerta-vencida';
-                fechaAlertaClass = 'fecha-alerta-vencida';
-            } else if (diasHastaAlerta === 0) {
+                fechaCaducidadClass = 'fecha-vencida';
+            } else if (diasHastaCaducidad <= 15) {
                 alertaClass = 'alerta-activa';
-                fechaAlertaClass = 'fecha-alerta-proxima';
-            } else if (diasHastaAlerta <= 3) {
-                alertaClass = 'alerta-activa';
-                fechaAlertaClass = 'fecha-alerta-proxima';
+                fechaCaducidadClass = 'fecha-proxima-vencer';
             }
         }
 
+        const cantidadMinima = ingrediente.alerta || ingrediente.stock_alerta || 0;
+        const cantidadActual = parseFloat(ingrediente.stock) || 0;
+        const tieneStockBajo = cantidadMinima > 0 && cantidadActual <= cantidadMinima;
+        
+        if (tieneStockBajo && !alertaClass) {
+            alertaClass = 'stock-bajo';
+        } else if (tieneStockBajo && alertaClass) {
+            alertaClass += ' stock-bajo';
+        }
+        
         row.className = alertaClass;
+        
+        const cantidadMinimaDisplay = tieneStockBajo ? 
+            `<span class="cantidad-minima-alerta">${cantidadMinima.toString().replace(/\./g, ',')} ${ingrediente.medida}</span>` :
+            (cantidadMinima > 0 ? `${cantidadMinima.toString().replace(/\./g, ',')} ${ingrediente.medida}` : '<span class="no-configurada">No configurada</span>');
+
         row.innerHTML = `
             <td>${ingrediente.nombre}</td>
             <td>${ingrediente.stock.toString().replace(/\./g, ',')} ${ingrediente.medida}</td>
-            <td>${formatDate(ingrediente.caducidad)}</td>
-            <td class="${fechaAlertaClass}">${fechaAlertaDisplay}</td>
+            <td>${cantidadMinimaDisplay}</td>
+            <td class="${fechaCaducidadClass}">${formatDate(ingrediente.caducidad)}</td>
             <td class="acciones">
                 <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
                 <div class="menu-opciones">
@@ -336,6 +349,16 @@ function renderIngredients(ingredientes) {
         `;
         tableBody.appendChild(row);
     });
+    
+    setTimeout(() => {
+        if (typeof reconectarAlertasDespuesDeActualizacion === 'function') {
+            reconectarAlertasDespuesDeActualizacion();
+        } else if (typeof reinicializarAlertasSeguro === 'function') {
+            reinicializarAlertasSeguro();
+        } else if (typeof reinicializarAlertas === 'function') {
+            reinicializarAlertas();
+        }
+    }, 300);
 }
 
 async function editIngredient(id) {
@@ -356,8 +379,8 @@ async function editIngredient(id) {
             document.getElementById('nombre').value = ingrediente.nombre;
             document.getElementById('stock').value = ingrediente.stock;
             document.getElementById('medida').value = ingrediente.medida;
+            document.getElementById('cantidadMinima').value = ingrediente.alerta || ingrediente.stock_alerta || 0;
             document.getElementById('caducidad').value = ingrediente.caducidad;
-            document.getElementById('fechaAlerta').value = ingrediente.alerta || ingrediente.fechaAlerta || ingrediente.stock_alerta || '';
 
             document.getElementById('nombre').disabled = true;
             document.getElementById('medida').disabled = true;

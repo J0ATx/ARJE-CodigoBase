@@ -7,15 +7,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $con->beginTransaction();
 
-        if ($_POST['fechaAlerta'] > $_POST['caducidad']) {
-            throw new Exception("La fecha de alerta debe ser anterior o igual a la fecha de caducidad.");
+        $stockAlerta = isset($_POST['stock_alerta']) ? (int)$_POST['stock_alerta'] : 0;
+
+        if ($stockAlerta < 0) {
+            throw new Exception("La cantidad mínima de alerta debe ser mayor o igual a 0.");
         }
 
         $stmtStock = $con->prepare("UPDATE Stock SET stock_nombre = ?, stock_caducidad = ?, stock_alerta = ? WHERE stock_id = ?");
         $stmtStock->execute([
             $_POST['nombre'],
             $_POST['caducidad'],
-            $_POST['fechaAlerta'],
+            $stockAlerta,
             $_POST['id']
         ]);
 

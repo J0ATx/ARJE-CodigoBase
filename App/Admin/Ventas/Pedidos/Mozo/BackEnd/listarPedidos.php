@@ -2,6 +2,11 @@
 header('Content-Type: application/json');
 require_once '../../../../../Control/Conexion/empleado.php';
 
+// Verificar si se debe incluir pedidos pagados
+$incluirPagados = isset($_GET['incluirPagados']) && $_GET['incluirPagados'] === 'true';
+
+$whereClause = $incluirPagados ? "" : "WHERE p.pedido_estado != 'Pagado'";
+
 $sql = "SELECT 
             p.pedido_id AS idPedido,
             p.mesa_id AS idMesa,
@@ -13,6 +18,7 @@ $sql = "SELECT
             p.pedido_fecha AS fecha
         FROM Pedido p
         LEFT JOIN Personal per ON p.personal_id = per.personal_id
+        $whereClause
         ORDER BY p.pedido_fecha ASC";
 
 $stmt = $con->query($sql);

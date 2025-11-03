@@ -1,76 +1,51 @@
 class SistemaAlertas {
     constructor() {
-        this.alertasActivas = [];
+        this.alertasActivas = {
+            caducidad: [],
+            stock_bajo: []
+        };
         this.alertasVistas = new Set();
         this.intervalId = null;
-        this.notificationContainer = null;
-        this.alertIndicator = null;
-        this.isInitialized = false;
-        
-        this.config = {
-            intervaloVerificacion: 60000,
-            mostrarNotificacionesPor: 5000,
-            maxNotificacionesVisibles: 3
-        };
+        this.modalResumen = null;
+
+        this.init();
     }
 
-    async inicializar() {
-        if (this.isInitialized) return;
-        
-        try {
-            this.crearElementosUI();
-            await this.verificarAlertas();
-            this.iniciarVerificacionPeriodica();
-            this.isInitialized = true;
-        } catch (error) {
-            console.error('Error al inicializar sistema de alertas:', error);
-        }
+    init() {
+        this.crearModalResumen();
+        this.iniciarVerificacionPeriodica();
+        this.verificarAlertasInicial();
     }
 
-    crearElementosUI() {
-        this.notificationContainer = document.createElement('div');
-        this.notificationContainer.id = 'alertas-container';
-        this.notificationContainer.className = 'alertas-container';
-        document.body.appendChild(this.notificationContainer);
+    crearModalResumen() {
+        this.modalResumen = document.createElement('div');
+        this.modalResumen.className = 'alerta-resumen-modal';
+        this.modalResumen.id = 'alerta-resumen-modal';
+        this.modalResumen.style.display = 'none';
 
-        this.crearIndicadorAlertas();
-    }
-
-    crearIndicadorAlertas() {
-        let navElement = document.querySelector('nav-admin');
-        
-        if (!navElement) {
-            navElement = document.querySelector('nav');
-        }
-        if (!navElement) {
-            navElement = document.querySelector('.navigation');
-        }
-        if (!navElement) {
-            navElement = document.querySelector('.nav');
-        }
-        
-        if (!navElement) {
-            console.warn('No se encontró elemento de navegación, creando indicador en body');
-            navElement = document.body;
-        }
-        
-        this.alertIndicator = document.createElement('div');
-        this.alertIndicator.id = 'alerta-indicator';
-        this.alertIndicator.className = 'alerta-indicator hidden';
-        this.alertIndicator.innerHTML = `
-            <div class="alerta-badge">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="currentColor"/>
-                </svg>
-                <span class="alerta-count">0</span>
+        this.modalResumen.innerHTML = `
+            <div class="alerta-resumen-content">
+                <div class="alerta-resumen-header">
+                    <h3>Resumen de Alertas</h3>
+                    <button class="alerta-resumen-close">&times;</button>
+                </div>
+                <div class="alerta-resumen-body" id="alerta-resumen-body">
+                </div>
+                <div class="alerta-resumen-footer">
+                </div>
             </div>
         `;
-        
-        this.alertIndicator.addEventListener('click', () => {
-            this.mostrarResumenAlertas();
+
+        const closeBtn = this.modalResumen.querySelector('.alerta-resumen-close');
+        closeBtn.addEventListener('click', () => this.cerrarModalResumen());
+
+        this.modalResumen.addEventListener('click', (e) => {
+            if (e.target === this.modalResumen) {
+                this.cerrarModalResumen();
+            }
         });
-        
-        navElement.appendChild(this.alertIndicator);
+
+        document.body.appendChild(this.modalResumen);
     }
 
     async verificarAlertas() {
@@ -78,18 +53,14 @@ class SistemaAlertas {
             const response = await fetch('../BackEnd/verificarAlertas.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json'
                 }
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
             const data = await response.json();
-            
+
             if (data.success) {
-                this.procesarAlertas(data.alertas, data.estadisticas);
+                this.procesarAlertas(data);
             } else {
                 console.error('Error al verificar alertas:', data.message);
             }
@@ -98,257 +69,132 @@ class SistemaAlertas {
         }
     }
 
-    procesarAlertas(alertas, estadisticas) {
-        this.alertasActivas = alertas;
-        
-        this.actualizarIndicadorAlertas(estadisticas);
-        
-        const alertasNuevas = alertas.filter(alerta => 
-            !this.alertasVistas.has(alerta.stock_id) && 
-            (alerta.estado === 'activa' || alerta.estado === 'vencida')
-        );
-        
-        if (alertasNuevas.length > 0) {
-            this.mostrarNotificaciones(alertasNuevas);
+    procesarAlertas(data) {
+        this.alertasActivas.caducidad = data.alertas_caducidad || [];
+        this.alertasActivas.stock_bajo = data.alertas_stock_bajo || [];
+    }
+
+    getClaseAlerta(alerta, tipo) {
+        if (tipo === 'caducidad') {
+            return alerta.dias_restantes <= 0 ? 'vencida' : 'activa';
         }
+        return 'activa';
     }
 
-    actualizarIndicadorAlertas(estadisticas) {
-        if (!this.alertIndicator) return;
-        
-        const totalAlertas = estadisticas.activas + estadisticas.vencidas;
-        const countElement = this.alertIndicator.querySelector('.alerta-count');
-        
-        if (totalAlertas > 0) {
-            this.alertIndicator.classList.remove('hidden');
-            countElement.textContent = totalAlertas;
-            
-            if (estadisticas.vencidas > 0) {
-                this.alertIndicator.classList.add('critica');
-                this.alertIndicator.classList.remove('advertencia');
-            } else if (estadisticas.activas > 0) {
-                this.alertIndicator.classList.add('advertencia');
-                this.alertIndicator.classList.remove('critica');
-            }
-        } else {
-            this.alertIndicator.classList.add('hidden');
-        }
-    }
-
-    mostrarNotificaciones(alertas) {
-        const alertasAMostrar = alertas.slice(0, this.config.maxNotificacionesVisibles);
-        
-        alertasAMostrar.forEach((alerta, index) => {
-            setTimeout(() => {
-                this.crearNotificacion(alerta);
-            }, index * 500);
-        });
-    }
-
-    crearNotificacion(alerta) {
-        const notification = document.createElement('div');
-        notification.className = `alerta-notification ${alerta.estado}`;
-        notification.dataset.stockId = alerta.stock_id;
-        
-        const iconoSvg = alerta.estado === 'vencida' 
-            ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    getIconoAlerta(tipo) {
+        if (tipo === 'caducidad') {
+            return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
-               </svg>`
-            : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="currentColor"/>
-               </svg>`;
-        
-        const mensaje = alerta.estado === 'vencida' 
-            ? `¡Alerta vencida! ${alerta.nombre} debía ser revisado el ${this.formatearFecha(alerta.alerta)}`
-            : `¡Alerta activa! ${alerta.nombre} debe ser revisado hoy (${this.formatearFecha(alerta.alerta)})`;
-        
-        notification.innerHTML = `
-            <div class="alerta-icon">${iconoSvg}</div>
-            <div class="alerta-content">
-                <div class="alerta-title">${alerta.estado === 'vencida' ? 'Alerta Vencida' : 'Alerta Activa'}</div>
-                <div class="alerta-message">${mensaje}</div>
-                <div class="alerta-details">Caduca: ${this.formatearFecha(alerta.caducidad)}</div>
-            </div>
-            <button class="alerta-close" onclick="sistemaAlertas.cerrarNotificacion(${alerta.stock_id})">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
-                </svg>
-            </button>
-        `;
-        
-        this.notificationContainer.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 100);
-        
-        setTimeout(() => {
-            this.cerrarNotificacion(alerta.stock_id);
-        }, this.config.mostrarNotificacionesPor);
-    }
-
-    cerrarNotificacion(stockId) {
-        const notification = this.notificationContainer.querySelector(`[data-stock-id="${stockId}"]`);
-        if (notification) {
-            notification.classList.add('hide');
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 300);
+            </svg>`;
+        } else {
+            return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0 0 2h1v11a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V9h1a1 1 0 0 0 0-2zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 15a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9h10v12z" fill="currentColor"/>
+            </svg>`;
         }
-        
-        this.marcarAlertaComoVista(stockId);
     }
 
-    marcarAlertaComoVista(stockId) {
-        this.alertasVistas.add(stockId);
-        
-        const alertasVistasArray = Array.from(this.alertasVistas);
-        localStorage.setItem('alertasVistas', JSON.stringify(alertasVistasArray));
-    }
+    getContenidoAlerta(alerta, tipo) {
+        if (tipo === 'caducidad') {
+            const diasTexto = alerta.dias_restantes === 0 ? 'hoy' :
+                alerta.dias_restantes === 1 ? 'mañana' :
+                    alerta.dias_restantes < 0 ? `hace ${Math.abs(alerta.dias_restantes)} día(s)` :
+                        `en ${alerta.dias_restantes} día(s)`;
 
-    cargarAlertasVistas() {
-        try {
-            const alertasVistasArray = JSON.parse(localStorage.getItem('alertasVistas') || '[]');
-            this.alertasVistas = new Set(alertasVistasArray);
-        } catch (error) {
-            console.error('Error al cargar alertas vistas:', error);
-            this.alertasVistas = new Set();
+            return `
+                <div class="alerta-title">Alerta de Caducidad</div>
+                <div class="alerta-message"><strong>${alerta.nombre}</strong> caduca ${diasTexto}</div>
+                <div class="alerta-details">Fecha: ${this.formatearFecha(alerta.caducidad)}</div>
+            `;
+        } else {
+            return `
+                <div class="alerta-title">Stock Bajo</div>
+                <div class="alerta-message"><strong>${alerta.nombre}</strong> tiene stock insuficiente</div>
+                <div class="alerta-details">Actual: ${alerta.cantidad_actual} ${alerta.medida} | Mínimo: ${alerta.cantidad_minima} ${alerta.medida}</div>
+            `;
         }
     }
 
     mostrarResumenAlertas() {
-        if (this.alertasActivas.length === 0) {
-            this.mostrarMensaje('No hay alertas activas en este momento', 'info');
-            return;
+        const body = this.modalResumen.querySelector('#alerta-resumen-body');
+        body.innerHTML = '';
+
+        const caducidadVencidas = this.alertasActivas.caducidad.filter(a => a.dias_restantes <= 0);
+        if (caducidadVencidas.length > 0) {
+            this.agregarGrupoAlertas(body, 'Ingredientes Vencidos', caducidadVencidas, 'vencida', 'caducidad');
         }
-        
-        const modal = document.createElement('div');
-        modal.className = 'alerta-resumen-modal';
-        modal.innerHTML = `
-            <div class="alerta-resumen-content">
-                <div class="alerta-resumen-header">
-                    <h3>Resumen de Alertas de Caducidad</h3>
-                    <button class="alerta-resumen-close">&times;</button>
-                </div>
-                <div class="alerta-resumen-body">
-                    ${this.generarHTMLResumen()}
-                </div>
-                <div class="alerta-resumen-footer">
-                    <button class="btn-marcar-vistas">Marcar Todas como Vistas</button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        modal.querySelector('.alerta-resumen-close').addEventListener('click', () => {
-            document.body.removeChild(modal);
-        });
-        
-        modal.querySelector('.btn-marcar-vistas').addEventListener('click', () => {
-            this.marcarTodasComoVistas();
-            document.body.removeChild(modal);
-        });
-        
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                document.body.removeChild(modal);
-            }
-        });
+
+        const caducidadProximas = this.alertasActivas.caducidad.filter(a => a.dias_restantes > 0);
+        if (caducidadProximas.length > 0) {
+            this.agregarGrupoAlertas(body, 'Próximos a Vencer', caducidadProximas, 'activa', 'caducidad');
+        }
+
+        if (this.alertasActivas.stock_bajo.length > 0) {
+            this.agregarGrupoAlertas(body, 'Stock Bajo', this.alertasActivas.stock_bajo, 'pendiente', 'stock_bajo');
+        }
+
+        if (this.alertasActivas.caducidad.length === 0 && this.alertasActivas.stock_bajo.length === 0) {
+            body.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay alertas activas en este momento.</p>';
+        }
+
+        this.modalResumen.style.display = 'flex';
     }
 
-    generarHTMLResumen() {
-        let html = '<div class="alertas-lista">';
-        
-        const alertasPorEstado = {
-            vencida: this.alertasActivas.filter(a => a.estado === 'vencida'),
-            activa: this.alertasActivas.filter(a => a.estado === 'activa'),
-            pendiente: this.alertasActivas.filter(a => a.estado === 'pendiente')
-        };
-        
-        Object.entries(alertasPorEstado).forEach(([estado, alertas]) => {
-            if (alertas.length > 0) {
-                const titulo = estado === 'vencida' ? 'Alertas Vencidas' : 
-                              estado === 'activa' ? 'Alertas Activas' : 'Alertas Próximas';
-                
-                html += `<div class="grupo-alertas ${estado}">
-                    <h4>${titulo} (${alertas.length})</h4>
-                    <ul>`;
-                
-                alertas.forEach(alerta => {
-                    html += `
-                        <li class="item-alerta">
-                            <div class="alerta-info">
-                                <strong>${alerta.nombre}</strong>
-                                <span class="alerta-fechas">
-                                    Alerta: ${this.formatearFecha(alerta.alerta)} | 
-                                    Caduca: ${this.formatearFecha(alerta.caducidad)}
-                                </span>
-                            </div>
-                            <div class="alerta-stock">${alerta.stock} ${alerta.medida}</div>
-                        </li>
-                    `;
-                });
-                
-                html += '</ul></div>';
+    agregarGrupoAlertas(contenedor, titulo, alertas, clase, tipo) {
+        const grupo = document.createElement('div');
+        grupo.className = `grupo-alertas ${clase}`;
+
+        const tituloElement = document.createElement('h4');
+        tituloElement.textContent = `${titulo} (${alertas.length})`;
+        grupo.appendChild(tituloElement);
+
+        const lista = document.createElement('ul');
+
+        alertas.forEach(alerta => {
+            const item = document.createElement('li');
+            item.className = 'item-alerta';
+
+            let contenidoItem = '';
+            if (tipo === 'caducidad') {
+                const diasTexto = alerta.dias_restantes === 0 ? 'Caduca hoy' :
+                    alerta.dias_restantes === 1 ? 'Caduca mañana' :
+                        alerta.dias_restantes < 0 ? `Venció hace ${Math.abs(alerta.dias_restantes)} día(s)` :
+                            `Caduca en ${alerta.dias_restantes} día(s)`;
+
+                contenidoItem = `
+                    <div class="alerta-info">
+                        <strong>${alerta.nombre}</strong>
+                        <div class="alerta-fechas">${diasTexto} - ${this.formatearFecha(alerta.caducidad)}</div>
+                    </div>
+                `;
+            } else {
+                contenidoItem = `
+                    <div class="alerta-info">
+                        <strong>${alerta.nombre}</strong>
+                        <div class="alerta-stock">Actual: ${alerta.cantidad_actual} ${alerta.medida} | Mínimo: ${alerta.cantidad_minima} ${alerta.medida}</div>
+                    </div>
+                `;
             }
+
+            item.innerHTML = contenidoItem;
+            lista.appendChild(item);
         });
-        
-        html += '</div>';
-        return html;
+
+        grupo.appendChild(lista);
+        contenedor.appendChild(grupo);
     }
 
-    marcarTodasComoVistas() {
-        this.alertasActivas.forEach(alerta => {
-            this.alertasVistas.add(alerta.stock_id);
-        });
-        
-        const alertasVistasArray = Array.from(this.alertasVistas);
-        localStorage.setItem('alertasVistas', JSON.stringify(alertasVistasArray));
-        
-        this.actualizarIndicadorAlertas({ activas: 0, vencidas: 0, pendientes: 0 });
-        
-        this.mostrarMensaje('Todas las alertas han sido marcadas como vistas', 'success');
+    cerrarModalResumen() {
+        this.modalResumen.style.display = 'none';
     }
 
     iniciarVerificacionPeriodica() {
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-        }
-        
         this.intervalId = setInterval(() => {
             this.verificarAlertas();
-        }, this.config.intervaloVerificacion);
+        }, 5 * 60 * 1000);
     }
 
-    detenerVerificacionPeriodica() {
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-            this.intervalId = null;
-        }
-    }
-
-    mostrarMensaje(mensaje, tipo = 'info') {
-        const messageElement = document.createElement('div');
-        messageElement.className = `alerta-mensaje ${tipo}`;
-        messageElement.textContent = mensaje;
-        
-        this.notificationContainer.appendChild(messageElement);
-        
-        setTimeout(() => {
-            messageElement.classList.add('show');
-        }, 100);
-        
-        setTimeout(() => {
-            messageElement.classList.add('hide');
-            setTimeout(() => {
-                if (messageElement.parentNode) {
-                    messageElement.parentNode.removeChild(messageElement);
-                }
-            }, 300);
-        }, 3000);
+    verificarAlertasInicial() {
+        this.verificarAlertas();
     }
 
     formatearFecha(fechaString) {
@@ -360,47 +206,65 @@ class SistemaAlertas {
         });
     }
 
+    reinicializar() {
+        this.alertasVistas.clear();
+        this.verificarAlertas();
+    }
+
+    reinicializarSeguro() {
+        if (this.verificarAlertas) {
+            this.verificarAlertas();
+        }
+    }
+
     destruir() {
-        this.detenerVerificacionPeriodica();
-        
-        if (this.notificationContainer && this.notificationContainer.parentNode) {
-            this.notificationContainer.parentNode.removeChild(this.notificationContainer);
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
         }
-        
-        if (this.alertIndicator && this.alertIndicator.parentNode) {
-            this.alertIndicator.parentNode.removeChild(this.alertIndicator);
+
+        if (this.modalResumen) {
+            this.modalResumen.remove();
         }
-        
-        this.isInitialized = false;
     }
 }
 
-const sistemaAlertas = new SistemaAlertas();
+let sistemaAlertas = null;
 
-window.verificarAlertasManual = function() {
-    if (sistemaAlertas.isInitialized) {
-        sistemaAlertas.verificarAlertas();
-    } else {
-        console.warn('Sistema de alertas no inicializado');
+function asegurarSistemaAlertas() {
+    if (!sistemaAlertas) {
+        sistemaAlertas = new SistemaAlertas();
     }
-};
+    return sistemaAlertas;
+}
 
-window.mostrarResumenAlertasGlobal = function() {
-    if (sistemaAlertas.isInitialized) {
+function reinicializarAlertas() {
+    if (sistemaAlertas) {
+        sistemaAlertas.reinicializar();
+    }
+}
+
+function reinicializarAlertasSeguro() {
+    if (sistemaAlertas) {
+        sistemaAlertas.reinicializarSeguro();
+    }
+}
+
+function mostrarResumenAlertas() {
+    if (sistemaAlertas) {
         sistemaAlertas.mostrarResumenAlertas();
     } else {
-        console.warn('Sistema de alertas no inicializado');
+        asegurarSistemaAlertas();
     }
-};
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-    sistemaAlertas.cargarAlertasVistas();
-    
     setTimeout(() => {
-        sistemaAlertas.inicializar();
+        asegurarSistemaAlertas();
     }, 1000);
 });
 
 window.addEventListener('beforeunload', () => {
-    sistemaAlertas.destruir();
+    if (sistemaAlertas) {
+        sistemaAlertas.destruir();
+    }
 });

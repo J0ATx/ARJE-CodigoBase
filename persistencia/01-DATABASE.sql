@@ -163,7 +163,7 @@ CREATE TABLE Stock (
     stock_id INT AUTO_INCREMENT NOT NULL,
     stock_nombre VARCHAR (100),
     stock_caducidad DATE,
-    stock_alerta DATE,
+    stock_alerta DECIMAL(10,3),
     PRIMARY KEY (stock_id)
 );
 

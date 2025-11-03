@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarMozos();
   cargarProductos();
   cargarPedidos();
+  
+  // Manejar el toggle de pedidos pagados
+  const togglePagados = document.getElementById('togglePagados');
+  if (togglePagados) {
+    togglePagados.addEventListener('change', () => {
+      cargarPedidos();
+    });
+  }
 
   document.getElementById('btnAbrirNuevoPedido').addEventListener('click', abrirModalNuevoPedido);
   document.getElementById('agregarProducto').addEventListener('click', e => {
@@ -341,12 +349,19 @@ function sendReload() {
 }
 
 function cargarPedidos() {
-  fetch('../BackEnd/listarPedidos.php')
+  const togglePagados = document.getElementById('togglePagados');
+  const incluirPagados = togglePagados ? togglePagados.checked : false;
+  
+  fetch(`../BackEnd/listarPedidos.php?incluirPagados=${incluirPagados}`)
     .then(r => r.json())
     .then(data => {
       if (!data.success) return;
       pedidos = data.data;
-      const estadosOrden = ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado'];
+      const togglePagados = document.getElementById('togglePagados');
+      const incluirPagados = togglePagados ? togglePagados.checked : false;
+      const estadosOrden = incluirPagados ? 
+        ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado'] : 
+        ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado'];
       const pedidosContainer = document.getElementById('pedidosList');
       pedidosContainer.innerHTML = '';
 

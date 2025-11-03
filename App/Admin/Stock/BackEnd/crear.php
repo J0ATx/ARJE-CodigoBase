@@ -11,10 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $medida = $_POST['medida'];
         $cantidad = $_POST['stock'];
         $caducidad = $_POST['caducidad'];
-        $alerta = $_POST['fechaAlerta'];
+        $stockAlerta = isset($_POST['stock_alerta']) ? (int)$_POST['stock_alerta'] : 0;
 
-        if ($alerta > $caducidad) {
-            throw new Exception("La fecha de alerta debe ser anterior o igual a la fecha de caducidad.");
+        if ($stockAlerta < 0) {
+            throw new Exception("La cantidad mínima de alerta debe ser mayor o igual a 0.");
         }
 
         $checkStmt = $con->prepare("
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $stmtStock = $con->prepare("INSERT INTO Stock (stock_nombre, stock_caducidad, stock_alerta) VALUES (?, ?, ?)");
-        $stmtStock->execute([$nombre, $caducidad, $alerta]);
+        $stmtStock->execute([$nombre, $caducidad, $stockAlerta]);
 
         $stockId = $con->lastInsertId();
 

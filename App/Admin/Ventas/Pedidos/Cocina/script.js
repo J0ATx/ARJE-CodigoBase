@@ -2,7 +2,6 @@ let ws;
 let productosDisponibles = [];
 let pedidos = [];
 
-// Variables para el manejo del arrastre táctil
 let touchStartX = 0;
 let touchStartY = 0;
 let touchStartTime = 0;
@@ -16,6 +15,13 @@ let yOffset = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
   cargarPedidos();
+  
+  const togglePagados = document.getElementById('togglePagados');
+  if (togglePagados) {
+    togglePagados.addEventListener('change', () => {
+      cargarPedidos();
+    });
+  }
 });
 
 function sendReload() {
@@ -25,12 +31,19 @@ function sendReload() {
 }
 
 function cargarPedidos() {
-  fetch('../BackEnd/listarPedidos.php')
+  const togglePagados = document.getElementById('togglePagados');
+  const incluirPagados = togglePagados ? togglePagados.checked : false;
+  
+  fetch(`../BackEnd/listarPedidos.php?incluirPagados=${incluirPagados}`)
     .then(r => r.json())
     .then(data => {
       if (!data.success) return;
       pedidos = data.data;
-      const estadosOrden = ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado'];
+      const togglePagados = document.getElementById('togglePagados');
+      const incluirPagados = togglePagados ? togglePagados.checked : false;
+      const estadosOrden = incluirPagados ? 
+        ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado'] : 
+        ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado'];
       const pedidosContainer = document.getElementById('pedidosList');
       pedidosContainer.innerHTML = '';
 
@@ -76,7 +89,6 @@ function cargarPedidos() {
         dropzone.className = 'kds-dropzone';
         dropzone.dataset.estado = estado;
 
-        // Drag & Drop handlers
         dropzone.addEventListener('dragover', e => {
           e.preventDefault();
           dropzone.classList.add('drag-over');
@@ -94,14 +106,12 @@ function cargarPedidos() {
           if (!pedidoObj) return;
           if (pedidoObj.estado === nuevoEstado) return;
 
-          // Validar transiciones permitidas para cocina
           const permitido = Array.isArray(TRANSICIONES_COCINA[pedidoObj.estado]) && TRANSICIONES_COCINA[pedidoObj.estado].includes(nuevoEstado);
           if (!permitido) {
             alert('No tiene permiso para mover este pedido a ese estado. El flujo para cocina es: Pendiente -> En-Preparacion -> Listo.');
             return;
           }
 
-          // En los demás casos permitidos (ej. Listo -> Entregado), pedir confirmación y llamar al backend
           if (!confirm(`Mover pedido #${idPedido} a \"${nuevoEstado.replace('_', ' ')}\"?`)) return;
 
           try {
@@ -180,19 +190,16 @@ function cargarPedidos() {
           </div>
         `;
 
-        // handlers drag
         card.addEventListener('dragstart', (ev) => {
           ev.dataTransfer.setData('text/plain', String(pedido.idPedido));
           card.classList.add('dragging');
         });
         card.addEventListener('dragend', () => card.classList.remove('dragging'));
 
-        // colocar en la fila correspondiente
         const targetDropzone = rowsWrapper.querySelector(`.kds-dropzone[data-estado="${pedido.estado}"]`);
         if (targetDropzone) targetDropzone.appendChild(card);
       });
 
-      // actualizar contadores
       rowsWrapper.querySelectorAll('.kds-row').forEach(row => {
         const count = row.querySelectorAll('.kds-dropzone > .pedido-card').length;
         const c = row.querySelector('.kds-row-count');
@@ -276,7 +283,6 @@ function emailValido(email) {
 
 function pInt(v) { return parseInt(v, 10) || 0; }
 
-// Funciones para el manejo de arrastre táctil
 function handleTouchStart(e) {
   if (e.touches.length !== 1) return;
 
@@ -286,7 +292,6 @@ function handleTouchStart(e) {
 
   if (!card) return;
 
-  // Evitar arrastrar si se hace clic en un botón
   if (target.closest('button, a, input, select')) {
     return;
   }
@@ -296,7 +301,6 @@ function handleTouchStart(e) {
   touchStartTime = Date.now();
   draggedItem = card;
 
-  // Crear elemento fantasma para el arrastre
   ghostElement = card.cloneNode(true);
   ghostElement.classList.add('ghost-element');
   ghostElement.style.width = `${card.offsetWidth}px`;
@@ -312,48 +316,40 @@ function handleTouchStart(e) {
   document.body.appendChild(ghostElement);
   document.body.style.overflow = 'hidden';
 
-  // Prevenir scroll durante el arrastre
   document.addEventListener('touchmove', preventScroll, { passive: false });
 
-  // Agregar clase de arrastre
   card.classList.add('dragging');
 
-  // Iniciar seguimiento del movimiento
-  isDragging = false; // Se establecerá a true después de un umbral de movimiento
+  isDragging = false;
 }
 
 function handleTouchMove(e) {
   if (!draggedItem || !ghostElement) return;
 
-  // Verificar si el evento es cancelable antes de intentar prevenirlo
   const isCancelable = e.cancelable && !e.defaultPrevented;
   
   const touch = e.touches[0];
   const deltaX = Math.abs(touch.clientX - touchStartX);
   const deltaY = Math.abs(touch.clientY - touchStartY);
 
-  // Umbral para determinar si es un arrastre o un toque
   if (!isDragging && (deltaX > 10 || deltaY > 10)) {
     isDragging = true;
     if (isCancelable) {
       e.preventDefault();
     }
-    return; // Salir temprano para el primer movimiento
+    return;
   }
 
   if (!isDragging) return;
 
-  // Solo prevenir el comportamiento por defecto si es seguro hacerlo
   if (isCancelable) {
     e.preventDefault();
   }
 
   try {
-    // Actualizar posición del elemento fantasma
     ghostElement.style.left = `${touch.clientX - initialX}px`;
     ghostElement.style.top = `${touch.clientY - initialY}px`;
 
-    // Resaltar la zona de destino
     const touchElement = document.elementFromPoint(touch.clientX, touch.clientY);
     const dropzone = touchElement?.closest('.kds-dropzone');
 
@@ -372,40 +368,32 @@ function handleTouchMove(e) {
 function handleTouchEnd(e) {
   if (!draggedItem) return;
 
-  // Limpiar el estado de arrastre
   const wasDragging = isDragging;
   isDragging = false;
 
-  // Eliminar el elemento fantasma
   if (ghostElement) {
     ghostElement.remove();
     ghostElement = null;
   }
 
-  // Restaurar el scroll
   document.body.style.overflow = '';
   document.removeEventListener('touchmove', preventScroll);
 
-  // Quitar clase de arrastre
   draggedItem.classList.remove('dragging');
 
-  // Si no fue un arrastre, salir
   if (!wasDragging) {
     draggedItem = null;
     return;
   }
 
-  // Obtener la posición final del toque
   const touch = e.changedTouches[0];
   const touchElement = document.elementFromPoint(touch.clientX, touch.clientY);
   const dropzone = touchElement?.closest('.kds-dropzone');
 
-  // Limpiar resaltado de zonas
   document.querySelectorAll('.kds-dropzone').forEach(dz => {
     dz.classList.remove('drag-over');
   });
 
-  // Si hay una zona de destino válida, procesar el cambio de estado
   if (dropzone && draggedItem) {
     const idPedido = draggedItem.dataset.idPedido;
     const nuevoEstado = dropzone.dataset.estado;
@@ -447,7 +435,6 @@ function preventScroll(e) {
   return true;
 }
 
-// Inicializar eventos táctiles con manejo de compatibilidad
 function setupTouchEvents() {
   const options = { passive: false };
   document.addEventListener('touchstart', handleTouchStart, options);
@@ -456,7 +443,6 @@ function setupTouchEvents() {
   document.addEventListener('touchcancel', handleTouchEnd, { passive: true });
 }
 
-// Inicializar eventos cuando el DOM esté listo
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', setupTouchEvents);
 } else {
