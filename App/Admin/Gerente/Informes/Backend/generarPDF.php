@@ -52,12 +52,12 @@ if (file_exists($cargarPath)) {
 // Fallback: if we didn't get data, create an empty structure to avoid warnings
 if (!is_array($data)) {
 	$data = [
-		'gananciasTotales' => [['total_ganancias' => '0']],
-		'gananciasPorCamarero' => [],
-		'gananciasPorCliente' => [],
-		'gananciasPorFecha' => [],
-		'gananciasPorPago' => [],
-		'gananciasPorProducto' => [],
+		'ingresosTotales' => [['total_ingresos' => '0']],
+		'ingresosPorCamarero' => [],
+		'ingresosPorCliente' => [],
+		'ingresosPorFecha' => [],
+		'ingresosPorPago' => [],
+		'ingresosPorProducto' => [],
 		'noShowPorCliente' => [],
 		'noShowPorFecha' => []
 	];
@@ -79,16 +79,16 @@ function render_section($pdf, $title) {
 	$pdf->SetFont('Arial','',11);
 }
 
-// ganancias Totales
+// ingresos Totales
 render_section($pdf, 'Ingresos Totales');
-$total = isset($data['gananciasTotales'][0]['total_ganancias']) ? $data['gananciasTotales'][0]['total_ganancias'] : '0';
+$total = isset($data['ingresosTotales'][0]['total_ingresos']) ? $data['ingresosTotales'][0]['total_ingresos'] : '0';
 $pdf->Cell(0,6, fpdf_text('Ingresos Totales a la Fecha: $' . $total), 0, 1);
 $pdf->Ln(3);
 
-// ganancias por Camarero
+// ingresos por Camarero
 render_section($pdf, 'Ingresos Por Camarero');
-if (!empty($data['gananciasPorCamarero'])) {
-	foreach ($data['gananciasPorCamarero'] as $row) {
+if (!empty($data['ingresosPorCamarero'])) {
+	foreach ($data['ingresosPorCamarero'] as $row) {
 		$name = isset($row['personal_nombre']) ? $row['personal_nombre'] : '';
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$name} : {$totalv}"), 0, 1);
@@ -98,10 +98,10 @@ if (!empty($data['gananciasPorCamarero'])) {
 }
 $pdf->Ln(3);
 
-// ganancias por Cliente
+// ingresos por Cliente
 render_section($pdf, 'Ingresos Por Cliente');
-if (!empty($data['gananciasPorCliente'])) {
-	foreach ($data['gananciasPorCliente'] as $row) {
+if (!empty($data['ingresosPorCliente'])) {
+	foreach ($data['ingresosPorCliente'] as $row) {
 		$name = isset($row['cliente_nombre']) ? $row['cliente_nombre'] : (isset($row['cliente_id']) ? $row['cliente_id'] : '');
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$name} : {$totalv}"), 0, 1);
@@ -111,10 +111,10 @@ if (!empty($data['gananciasPorCliente'])) {
 }
 $pdf->Ln(3);
 
-// ganancias por Fecha
+// ingresos por Fecha
 render_section($pdf, 'Ingresos Por Fecha');
-if (!empty($data['gananciasPorFecha'])) {
-	foreach ($data['gananciasPorFecha'] as $row) {
+if (!empty($data['ingresosPorFecha'])) {
+	foreach ($data['ingresosPorFecha'] as $row) {
 		$fecha = isset($row['fecha']) ? $row['fecha'] : '';
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$fecha} : {$totalv}"), 0, 1);
@@ -124,10 +124,10 @@ if (!empty($data['gananciasPorFecha'])) {
 }
 $pdf->Ln(3);
 
-// ganancias por Pago
+// ingresos por Pago
 render_section($pdf, 'Ingresos Por Pago');
-if (!empty($data['gananciasPorPago'])) {
-	foreach ($data['gananciasPorPago'] as $row) {
+if (!empty($data['ingresosPorPago'])) {
+	foreach ($data['ingresosPorPago'] as $row) {
 		$pago = isset($row['pedido_pago']) ? $row['pedido_pago'] : '';
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$pago} : {$totalv}"), 0, 1);
@@ -137,10 +137,10 @@ if (!empty($data['gananciasPorPago'])) {
 }
 $pdf->Ln(3);
 
-// ganancias por Producto
+// ingresos por Producto
 render_section($pdf, 'Ingresos Por Producto');
-if (!empty($data['gananciasPorProducto'])) {
-	foreach ($data['gananciasPorProducto'] as $row) {
+if (!empty($data['ingresosPorProducto'])) {
+	foreach ($data['ingresosPorProducto'] as $row) {
 		$prod = isset($row['producto_nombre']) ? $row['producto_nombre'] : '';
 		$totalv = isset($row['total']) ? $row['total'] : '';
 		$pdf->Cell(0,6, fpdf_text("- {$prod} : {$totalv}"), 0, 1);
@@ -174,6 +174,34 @@ if (!empty($data['noShowPorFecha'])) {
 } else {
 	$pdf->Cell(0,6, fpdf_text('No hay datos.'), 0, 1);
 }
+$pdf->Ln(3);
+
+// Ventas Por Producto
+render_section($pdf, 'Ventas Por Producto');
+if (!empty($data['ventasPorProducto'])) {
+	foreach ($data['ventasPorProducto'] as $row) {
+		$prod = isset($row['producto_nombre']) ? $row['producto_nombre'] : '';
+		$total = isset($row['total']) ? $row['total'] : '';
+		$pdf->Cell(0,6, fpdf_text("- {$prod} : {$total}"), 0, 1);
+	}
+} else {
+	$pdf->Cell(0,6, fpdf_text('No hay datos.'), 0, 1);
+}
+$pdf->Ln(3);
+
+// Calificación Promedio Por Producto
+render_section($pdf, 'Calificación Promedio Por Producto');
+if (!empty($data['calificacionPromedio'])) {
+	foreach ($data['calificacionPromedio'] as $row) {
+		$prod = isset($row['producto_nombre']) ? $row['producto_nombre'] : '';
+		$calif = isset($row['calificacion']) ? $row['calificacion'] : '';
+		$pdf->Cell(0,6, fpdf_text("- {$prod} : {$calif}"), 0, 1);
+	}
+} else {
+	$pdf->Cell(0,6, fpdf_text('No hay datos.'), 0, 1);
+}
+
+
 
 // Clear output buffers to avoid header issues
 if (ob_get_length()) {

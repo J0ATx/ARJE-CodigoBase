@@ -5,6 +5,14 @@ SELECT SUM(pedido_monto) AS total_ingresos
 FROM Pedido
 WHERE pedido_estado = 'Pagado';
 
+CREATE VIEW Cantidad_Clientes AS
+SELECT COUNT(*) AS total_clientes
+FROM Cliente;
+
+CREATE VIEW Cantidad_Personal AS
+SELECT COUNT(*) AS total_personal
+FROM Personal;
+
 CREATE VIEW Ingresos_Por_Cliente AS
 SELECT cliente_id, cliente_nombre, SUM(pedido_monto) AS total
 FROM Pedido JOIN Efectua USING (pedido_id)
@@ -39,7 +47,7 @@ CREATE VIEW Ingresos_Por_Fecha AS
 SELECT DATE(pedido_fecha) AS fecha, SUM(pedido_monto) AS total
 FROM Pedido
 WHERE pedido_estado = 'Pagado'
-GROUP BY pedido_fecha
+GROUP BY DATE(pedido_fecha)
 ORDER BY total DESC;
 
 CREATE VIEW No_Show_Por_Cliente AS
@@ -92,5 +100,3 @@ SELECT
     FALSE AS usuario_fidelizado,
     personal_rol AS usuario_rol
 FROM Personal;
-
--- A Implementar: Autogenerar Plantilla en base a los requerimientos del cliente

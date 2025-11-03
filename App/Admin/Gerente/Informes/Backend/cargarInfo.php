@@ -9,6 +9,16 @@
             $stmt->execute();
             $ingresosTotales = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+            $sql = "SELECT * FROM Cantidad_Clientes;";
+            $stmt = $con->prepare($sql);
+            $stmt->execute();
+            $cantidadClientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $sql = "SELECT * FROM Cantidad_Personal;";
+            $stmt = $con->prepare($sql);
+            $stmt->execute();
+            $cantidadPersonal = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             $sql = "SELECT * FROM Ingresos_Por_Cliente;";
             $stmt = $con->prepare($sql);
             $stmt->execute();
@@ -56,6 +66,8 @@
 
             $response = [
                 'ingresosTotales' => $ingresosTotales,
+                'cantidadClientes' => $cantidadClientes,
+                'cantidadPersonal' => $cantidadPersonal,
                 'ingresosPorCamarero' => $ingresosPorCamarero,
                 'ingresosPorCliente' => $ingresosPorCliente,
                 'ingresosPorFecha' => $ingresosPorFecha,
@@ -63,8 +75,8 @@
                 'ingresosPorProducto' => $ingresosPorProducto,
                 'noShowPorCliente' => $noShowPorCliente,
                 'noShowPorFecha' => $noShowPorFecha,
-                'vetasPorProducto' => $ventasPorProducto,
-                'calififcacionPromedio' => &$calificacionPromedio
+                'ventasPorProducto' => $ventasPorProducto,
+                'calificacionPromedio' => $calificacionPromedio
             ];
 
             echo json_encode($response);
