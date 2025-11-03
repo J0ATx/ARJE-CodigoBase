@@ -33,14 +33,23 @@
                                 </svg>
                             </span>
                         </div>
-                        <button id="addIngredientBtn" class="action-button">+ Agregar Lote</button>
+                        <div class="header-actions">
+                            <button id="verAlertasBtn" class="action-button alertas-btn">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="currentColor"/>
+                                </svg>
+                                Ver Alertas
+                            </button>
+                            <button id="addIngredientBtn" class="action-button">+ Agregar Lote</button>
+                        </div>
                     </div>
                     <table>
-                        <thead>
+                        <thead class="thead-personalizado">
                             <tr>
                                 <th>NOMBRE</th>
                                 <th>STOCK</th>
                                 <th>FECHA DE CADUCIDAD</th>
+                                <th>FECHA DE ALERTA</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
@@ -54,47 +63,55 @@
 
     <div class="modal" id="ingredientModal">
         <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2 id="modalTitle">Agregar Lote</h2>
-                <form id="ingredientForm">
-                    <input type="hidden" id="ingredientId">
-                    <div class="form-group">
-                        <label for="nombre">Nombre del Ingrediente</label>
-                        <input type="text" id="nombre" list="ingredientesExistentes" autocomplete="off" required>
-                        <datalist id="ingredientesExistentes"></datalist>
-                        <small style="color: #666; font-size: 0.85em;">
-                            Escribe para autocompletar con ingredientes existentes
-                        </small>
-                    </div>
-                    <div class="form-group">
-                        <label for="stock">Cantidad</label>
-                        <input type="number" id="stock" step="any" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="medida">Unidad de Medida</label>
-                        <select id="medida" required>
-                            <option value="">Seleccione una medida</option>
-                            <option value="g">Gramos (g)</option>
-                            <option value="kg">Kilogramos (kg)</option>
-                            <option value="ml">Mililitros (ml)</option>
-                            <option value="L">Litros (L)</option>
-                            <option value="u">Unidades (u)</option>
-                        </select>
-                        <small id="medidaInfo">
-                            <span id="medidaInfoText"></span>
-                        </small>
-                    </div>
-                    <div class="form-group">
-                        <label for="caducidad">Fecha de Caducidad</label>
-                        <input type="date" id="caducidad" required>
-                    </div>
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Agregar Lote</h2>
+            <form id="ingredientForm">
+                <input type="hidden" id="ingredientId">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Ingrediente</label>
+                    <input type="text" id="nombre" list="ingredientesExistentes" autocomplete="off" required>
+                    <datalist id="ingredientesExistentes"></datalist>
+                    <small>Escribe para autocompletar con ingredientes existentes</small>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Cantidad</label>
+                    <input type="number" id="stock" step="any" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="medida">Unidad de Medida</label>
+                    <select id="medida" required>
+                        <option value="">Seleccione una medida</option>
+                        <option value="g">Gramos (g)</option>
+                        <option value="kg">Kilogramos (kg)</option>
+                        <option value="ml">Mililitros (ml)</option>
+                        <option value="L">Litros (L)</option>
+                        <option value="u">Unidades (u)</option>
+                    </select>
+                    <small id="medidaInfo">
+                        <span id="medidaInfoText"></span>
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="caducidad">Fecha de Caducidad</label>
+                    <input type="date" id="caducidad" required>
+                </div>
+                <div class="form-group">
+                    <label for="fechaAlerta">Fecha de Alerta</label>
+                    <input type="date" id="fechaAlerta" required>
+                    <small class="fecha-alerta-info">
+                        La fecha de alerta debe ser anterior o igual a la fecha de caducidad
+                    </small>
+                </div>
+                <div class="form-buttons">
                     <button type="submit" class="submit-button">Guardar Lote</button>
-                </form>
-            </div>
+                    <button type="button" class="cancel-button">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
     <script src="../session.js"></script>
     <script src="../script.js"></script>
+    <script src="alertas.js"></script>
 </body>
 
 </html>

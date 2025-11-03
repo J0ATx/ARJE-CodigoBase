@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const addIngredientBtn = document.getElementById('addIngredientBtn');
+    const verAlertasBtn = document.getElementById('verAlertasBtn');
     const modal = document.getElementById('ingredientModal');
     const closeBtn = document.querySelector('.close');
     const form = document.getElementById('ingredientForm');
@@ -9,11 +10,76 @@ document.addEventListener('DOMContentLoaded', async () => {
     const medidaSelect = document.getElementById('medida');
     const medidaInfo = document.getElementById('medidaInfo');
     const medidaInfoText = document.getElementById('medidaInfoText');
+    const caducidadInput = document.getElementById('caducidad');
+    const fechaAlertaInput = document.getElementById('fechaAlerta');
 
     let ingredientesExistentes = [];
 
     loadIngredients();
     loadIngredientesUnicos();
+
+    checkForEditParameter();
+
+    setTimeout(() => {
+        if (typeof asegurarSistemaAlertas === 'function') {
+            asegurarSistemaAlertas();
+        }
+    }, 2000);
+
+    function validateFechaAlerta() {
+        const caducidad = caducidadInput.value;
+        const fechaAlerta = fechaAlertaInput.value;
+
+        if (caducidad && fechaAlerta) {
+            const fechaCaducidad = new Date(caducidad);
+            const fechaAlertaDate = new Date(fechaAlerta);
+
+            if (fechaAlertaDate > fechaCaducidad) {
+                fechaAlertaInput.classList.add('fecha-alerta-error');
+                showFechaAlertaError('La fecha de alerta debe ser anterior o igual a la fecha de caducidad');
+                return false;
+            } else {
+                fechaAlertaInput.classList.remove('fecha-alerta-error');
+                hideFechaAlertaError();
+                return true;
+            }
+        }
+        return true;
+    }
+
+    function showFechaAlertaError(message) {
+        let errorMsg = document.querySelector('.fecha-alerta-error-msg');
+        if (!errorMsg) {
+            errorMsg = document.createElement('small');
+            errorMsg.className = 'fecha-alerta-error-msg';
+            fechaAlertaInput.parentNode.appendChild(errorMsg);
+        }
+        errorMsg.textContent = message;
+    }
+
+    function hideFechaAlertaError() {
+        const errorMsg = document.querySelector('.fecha-alerta-error-msg');
+        if (errorMsg) {
+            errorMsg.remove();
+        }
+    }
+
+    caducidadInput.addEventListener('change', validateFechaAlerta);
+    fechaAlertaInput.addEventListener('change', validateFechaAlerta);
+
+    function checkForEditParameter() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const editId = urlParams.get('edit');
+
+        if (editId) {
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+
+            setTimeout(() => {
+                editIngredient(editId);
+            }, 1000);
+        }
+    }
 
     nombreInput.addEventListener('input', () => {
         const nombreIngresado = nombreInput.value.trim();
@@ -39,14 +105,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         form.reset();
         medidaSelect.disabled = false;
         medidaInfo.style.display = 'none';
-        loadIngredientesUnicos(); // Recargar lista
+        loadIngredientesUnicos();
         modal.style.display = 'flex';
+    });
+
+    verAlertasBtn.addEventListener('click', () => {
+        if (typeof mostrarResumenAlertas === 'function') {
+            mostrarResumenAlertas();
+        } else {
+            alert('Sistema de alertas no disponible. Recargue la página.');
+        }
     });
 
     closeBtn.addEventListener('click', () => {
         modal.style.display = 'none';
         resetModalState();
     });
+
+    const cancelBtn = document.querySelector('.cancel-button');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            resetModalState();
+        });
+    }
 
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -59,6 +141,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('nombre').disabled = false;
         document.getElementById('medida').disabled = false;
         medidaInfo.style.display = 'none';
+        fechaAlertaInput.classList.remove('fecha-alerta-error');
+        hideFechaAlertaError();
     }
 
     searchInput.addEventListener('input', debounce(() => {
@@ -67,22 +151,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
+        if (!validateFechaAlerta()) {
+            return;
+        }
+
         const nombreInput = document.getElementById('nombre');
         const medidaSelect = document.getElementById('medida');
         const nombreDisabled = nombreInput.disabled;
         const medidaDisabled = medidaSelect.disabled;
-        
+
         nombreInput.disabled = false;
         medidaSelect.disabled = false;
-        
+
         const formData = new FormData();
         const id = document.getElementById('ingredientId').value;
         formData.append('nombre', nombreInput.value);
         formData.append('stock', document.getElementById('stock').value);
         formData.append('medida', medidaSelect.value);
         formData.append('caducidad', document.getElementById('caducidad').value);
-        
+        formData.append('fechaAlerta', document.getElementById('fechaAlerta').value);
+
         let endpoint = '';
         if (id) {
             formData.append('id', id);
@@ -90,7 +179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             endpoint = '../BackEnd/crear.php';
         }
-        
+
         try {
             const response = await fetch(endpoint, {
                 method: 'POST',
@@ -98,12 +187,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             const data = await response.json();
-            
+
             if (data.success) {
                 modal.style.display = 'none';
                 resetModalState();
                 loadIngredients();
-                loadIngredientesUnicos(); // Recargar lista de ingredientes únicos
+                loadIngredientesUnicos();
+
+                if (typeof reinicializarAlertasSeguro === 'function') {
+                    setTimeout(() => {
+                        reinicializarAlertasSeguro();
+                    }, 500);
+                } else if (typeof reinicializarAlertas === 'function') {
+                    setTimeout(() => {
+                        reinicializarAlertas();
+                    }, 500);
+                }
+
                 alert(id ? 'Lote actualizado con éxito' : 'Lote agregado con éxito');
             } else {
                 alert(data.message || 'Error al procesar la solicitud');
@@ -122,12 +222,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const response = await fetch('../BackEnd/obtenerIngredientesUnicos.php');
             const data = await response.json();
-            
+
             if (data.success) {
                 ingredientesExistentes = data.ingredientes;
                 const datalist = document.getElementById('ingredientesExistentes');
                 datalist.innerHTML = '';
-                
+
                 data.ingredientes.forEach(ing => {
                     const option = document.createElement('option');
                     option.value = ing.nombre;
@@ -152,7 +252,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-
 async function loadIngredients(searchTerm = '') {
     const formData = new FormData();
     if (searchTerm) {
@@ -165,7 +264,7 @@ async function loadIngredients(searchTerm = '') {
             body: formData
         });
         const data = await response.json();
-        
+
         if (data.success) {
             renderIngredients(data.ingredientes);
         } else {
@@ -176,17 +275,47 @@ async function loadIngredients(searchTerm = '') {
     }
 }
 
-
 function renderIngredients(ingredientes) {
     const tableBody = document.getElementById('ingredientsTableBody');
     tableBody.innerHTML = '';
 
     ingredientes.forEach(ingrediente => {
         const row = document.createElement('tr');
+
+        const fechaAlerta = ingrediente.alerta || ingrediente.fechaAlerta || ingrediente.stock_alerta;
+        let alertaClass = '';
+        let fechaAlertaDisplay = 'No configurada';
+        let fechaAlertaClass = '';
+
+        if (fechaAlerta) {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            const fechaAlertaDate = new Date(fechaAlerta);
+            fechaAlertaDate.setHours(0, 0, 0, 0);
+
+            const diasHastaAlerta = Math.ceil((fechaAlertaDate.getTime() - hoy.getTime()) / (1000 * 3600 * 24));
+
+            fechaAlertaDisplay = formatDate(fechaAlerta);
+
+            if (diasHastaAlerta < 0) {
+                alertaClass = 'alerta-vencida';
+                fechaAlertaClass = 'fecha-alerta-vencida';
+            } else if (diasHastaAlerta === 0) {
+                alertaClass = 'alerta-activa';
+                fechaAlertaClass = 'fecha-alerta-proxima';
+            } else if (diasHastaAlerta <= 3) {
+                alertaClass = 'alerta-activa';
+                fechaAlertaClass = 'fecha-alerta-proxima';
+            }
+        }
+
+        row.className = alertaClass;
         row.innerHTML = `
             <td>${ingrediente.nombre}</td>
             <td>${ingrediente.stock.toString().replace(/\./g, ',')} ${ingrediente.medida}</td>
             <td>${formatDate(ingrediente.caducidad)}</td>
+            <td class="${fechaAlertaClass}">${fechaAlertaDisplay}</td>
             <td class="acciones">
                 <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
                 <div class="menu-opciones">
@@ -209,7 +338,6 @@ function renderIngredients(ingredientes) {
     });
 }
 
-
 async function editIngredient(id) {
     const formData = new FormData();
     formData.append('id', id);
@@ -220,7 +348,7 @@ async function editIngredient(id) {
             body: formData
         });
         const data = await response.json();
-        
+
         if (data.success) {
             const ingrediente = data.ingrediente;
             document.getElementById('modalTitle').textContent = 'Editar Lote';
@@ -229,15 +357,16 @@ async function editIngredient(id) {
             document.getElementById('stock').value = ingrediente.stock;
             document.getElementById('medida').value = ingrediente.medida;
             document.getElementById('caducidad').value = ingrediente.caducidad;
-            
+            document.getElementById('fechaAlerta').value = ingrediente.alerta || ingrediente.fechaAlerta || ingrediente.stock_alerta || '';
+
             document.getElementById('nombre').disabled = true;
             document.getElementById('medida').disabled = true;
-            
+
             const medidaInfo = document.getElementById('medidaInfo');
             const medidaInfoText = document.getElementById('medidaInfoText');
             medidaInfo.style.display = 'block';
             medidaInfoText.textContent = 'Al editar un lote, no se puede cambiar el nombre ni la medida.';
-            
+
             document.getElementById('ingredientModal').style.display = 'flex';
         } else {
             alert(data.message || 'Error al cargar el Lote');
@@ -247,7 +376,6 @@ async function editIngredient(id) {
         alert('Error al cargar el Lote');
     }
 }
-
 
 async function deleteIngredient(id) {
     if (!confirm('¿Estás seguro de que deseas eliminar este Lote?')) return;
@@ -260,11 +388,22 @@ async function deleteIngredient(id) {
             method: 'POST',
             body: formData
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
             loadIngredients();
+
+            if (typeof reinicializarAlertasSeguro === 'function') {
+                setTimeout(() => {
+                    reinicializarAlertasSeguro();
+                }, 500);
+            } else if (typeof reinicializarAlertas === 'function') {
+                setTimeout(() => {
+                    reinicializarAlertas();
+                }, 500);
+            }
+
             alert('Lote eliminado con éxito');
         } else {
             alert(data.message || 'Error al eliminar el Lote');
@@ -275,12 +414,10 @@ async function deleteIngredient(id) {
     }
 }
 
-
 function formatDate(dateString) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('es-ES', options);
 }
-
 
 function debounce(func, wait) {
     let timeout;

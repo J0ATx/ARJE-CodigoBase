@@ -962,7 +962,7 @@ dialog input[type="radio"] {
   background-color: #3f3f3f;
 }
 
-#agregarCliente {
+#agregarCliente, #agregarClienteEditar {
   background-color: #2f2f2f;
   color: white;
   border: none;
@@ -975,7 +975,7 @@ dialog input[type="radio"] {
   gap: 5px;
 }
 
-#agregarCliente:hover {
+#agregarCliente:hover, #agregarClienteEditar:hover {
   background-color: #3f3f3f;
 }
 
