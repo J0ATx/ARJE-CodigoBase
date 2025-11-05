@@ -43,8 +43,8 @@ footer a:active {
 }
         </style>
             <footer>
-                <a href="/ARJE-CodigoBase/App/Client/Informacion/Frontend/index.html">Los 3 Tanos Pizzería</a>
-                <a href="/ARJE-CodigoBase/App/Client/Contacto/Frontend/index.html">Contacto</a>
+                <a href="/ARJE-CodigoBase/Informacion">Los 3 Tanos Pizzería</a>
+                <a href="/ARJE-CodigoBase/Contacto">Contacto</a>
                 <p>Las Toscas M. Ferreira y Central</p>
             </footer>
     `;
