@@ -12,27 +12,31 @@ Categoría: Horarios, Contacto y Ubicación
 
 P: ¿Cuál es el horario de funcionamiento del restaurante?
 R: Nuestros horarios generales son:
-Lunes a Jueves: 11:00 AM - 10:00 PM
-Viernes y Sábados: 11:00 AM - 11:00 PM
-Domingos: 12:00 PM - 9:00 PM
+Lunes: Cerrado
+Martes: 19:00 - 00:00
+Miércoles: 19:00 - 00:00
+Jueves: 19:00 - 00:00
+Viernes: 19:00 - 00:00
+Sábado: 12:00 - 16:00
+Sábado: 19:00 - 00:00
+Domingo: 12:00 - 16:00
+Domingo: 19:00 - 00:00
 
 P: ¿Hasta qué hora puedo pedir comida?
 R: Para consumir en el local, el último pedido se toma 30 minutos antes del cierre. Para delivery, el último pedido se toma 1 hora antes del cierre.
 
 P: ¿Abren en días festivos?
-R: Cerramos únicamente en Navidad y Año Nuevo. En la mayoría de los otros feriados, trabajamos con horario reducido de 12:00 PM a 8:00 PM. Recomendamos consultar nuestras redes sociales para horarios especiales.
+R: Cerramos únicamente en Navidad y Año Nuevo. En la mayoría de los otros feriados, trabajamos con horario reducido de 16:00 PM a 08:00 PM. Recomendamos consultar nuestras redes sociales para horarios especiales.
 
 P: ¿Cómo puedo contactarlos?
 R: Puedes contactarnos por:
-Teléfono principal / Reservas: [+598 2XXX XXXX] (Opción 1 para Reservas, Opción 2 para Delivery)
-WhatsApp Business: [+598 9X XXX XXXX]
-Email General: info@restaurante.com
-Email Reservas: reservas@restaurante.com
-Instagram: @restaurante_oficial
-Facebook: /Restaurante Oficial
+Teléfono principal / Reservas: [+598 043 729 333] (Opción 1 para Reservas, Opción 2 para Delivery)
+WhatsApp Business: [+598 092 412 772]
+Instagram: @los3tanos_pizzeria
+Facebook: /Pizzeria Los 3 Tanos | Atlántida
 
 P: ¿Dónde están ubicados?
-R: Nuestra dirección es [Dirección específica, número], en el barrio [Nombre del barrio], Montevideo, Uruguay. Estamos cerca de [Punto de referencia, ej: Centro comercial].
+R: Nuestra dirección es M. Ferreira y Central, en el barrio Las Toscas, Montevideo, Uruguay. Estamos cerca de [Punto de referencia, ej: Centro comercial].
 
 Categoría: Menú y Productos
 
