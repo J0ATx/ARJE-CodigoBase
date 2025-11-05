@@ -1,21 +1,103 @@
-# RewriteEngine On
-# RewriteBase /
+RewriteEngine On
+RewriteBase /
 
-# 1. Mapea la solicitud de la raíz al archivo de inicio real
-# Cuando el usuario pide /, internamente se carga la ruta completa
-# RewriteRule ^$ ARJE-CodigoBase/App/Client/Panel/FrontEnd/index.html [L]
+Options -Indexes
 
-# 2. (Opcional pero recomendado) Si alguien intenta acceder directamente al archivo,
-# se le redirige a la raíz para mantener la URL limpia.
-# RewriteRule ^ARJE-CodigoBase/App/Client/Panel/FrontEnd/index.html$ / [R=301,L]
+# --- REGLAS DE REDIRECCIÓN (De Sucio a Limpio) ---
+# Solo se aplica si la solicitud original (THE_REQUEST) contenía la URL "sucia"
+# Regla para /Panel
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Panel/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Client/Panel/FrontEnd/il [R=301,L]
+# Regla para /Contacto
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Contacto/Frontend/index\.html\sHTTP
+RewriteRule ^App/Client/Contacto/Frontenontacto [R=301,L]
+# Regla para /Informacion
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Informacion/Frontend/index\.html\sHTTP
+RewriteRule ^App/Client/Informacion/Fron$ Informacion [R=301,L]
+# Regla para /MiUsuario
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/MiUsuario/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Client/MiUsuario/FrontEMiUsuario [R=301,L]
+# Regla para /Menu
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/Menu/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Client/Ventas/Menu/Fron$ Menu [R=301,L]
+# Regla para /Reservas
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/Reservas/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Client/Ventas/Reservas/html$ Reservas [R=301,L]
+# Regla para /TakeAway
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/TakeAway/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Client/Ventas/TakeAway/html$ TakeAway [R=301,L]
+# Regla para /SignIn
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/SignIn/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Control/SignIn/FrontEndgnIn [R=301,L]
+# Regla para /SignUp
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/SignUp/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Control/SignUp/FrontEndgnUp [R=301,L]
+# Regla para /SignInEmpleado
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/SignInEmpleado/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Control/SignInEmpleado/html$ SignInEmpleado [R=301,L]
+# Regla para /Informes
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Gerente/Informes/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Gerente/Informes/html$ Informes [R=301,L]
+# Regla para /Pedidos
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Ventas/Pedidos/Mox\.html$ Pedidos [R=301,L]
+# Regla para /Inventario
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Stock/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Stock/FrontEnd/intario [R=301,L]
+# Regla para /ReservasAdmin
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Reservas/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Ventas/Reservas/Ftml$ ReservasAdmin [R=301,L]
+# Regla para /Mesas
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Mesas/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Mesas/FrontEnd/in [R=301,L]
+# Regla para /Cocina
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Pedidos/Cocina/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Ventas/Pedidos/Codex\.html$ Cocina [R=301,L]
+# Regla para /Platillos
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Productos/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Ventas/Productos/html$ Platillos [R=301,L]
+# Regla para /Promociones
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Promociones/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Ventas/Promocione\.html$ Promociones [R=301,L]
+# Regla para /Usuarios
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Gerente/Usuarios/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Gerente/Usuarios/html$ Usuarios [R=301,L]
+# Regla para /Empresa
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Gerente/Empresa/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Gerente/Empresa/FrontEnd/index\.html$ Empresa [R=301,L]
 
-# bloquear ips
-# protección de directorios
-# paginas de error
-# restriccion de accesos a archivos
-# forzado https
-# compresión y mejora de rendimientos
+RewriteRule ^$ App/Client/Panel/FrontEnd/index.html [L]
 
-# <head>
-#     <base href="/ARJE-CodigoBase/App/Client/Panel/FrontEnd/">
-# </head>
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# 2. Regla de Reescriba
+RewriteRule ^Panel$ App/Client/Panel/FrontEnd/index.html [L]
+RewriteRule ^Contacto$ App/Client/Contacto/FrontEnd/index.html [L]
+RewriteRule ^Informacion$ App/Client/Informacion/FrontEnd/index.html [L]
+RewriteRule ^MiUsuario$ App/Client/MiUsuario/FrontEnd/index.html [L]
+RewriteRule ^Menu$ App/Client/Ventas/Menu/FrontEnd/index.html [L]
+RewriteRule ^Reservas$ App/Client/Ventas/Reservas/FrontEnd/index.html [L]
+RewriteRule ^TakeAway$ App/Client/Ventas/TakeAway/FrontEnd/index.html [L]
+RewriteRule ^SignIn$ App/Control/SignIn/FrontEnd/index.html [L]
+RewriteRule ^SignUp$ App/Control/SignUp/FrontEnd/index.html [L]
+RewriteRule ^SignInEmpleado$ App/Control/SignInEmpleado/FrontEnd/index.html [L]
+RewriteRule ^Informes$ App/Admin/Gerente/Informes/FrontEnd/index.html [L]
+RewriteRule ^Pedidos$ App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index.html [L]
+RewriteRule ^Inventario$ App/Admin/Stock/FrontEnd/index.html [L]
+RewriteRule ^ReservasAdmin$ App/Admin/Ventas/Reservas/FrontEnd/index.html [L]
+RewriteRule ^Mesas$ App/Admin/Mesas/FrontEnd/index.html [L]
+RewriteRule ^Cocina$ App/Admin/Ventas/Pedidos/Cocina/FrontEnd/index.html [L]
+RewriteRule ^Platillos$ App/Admin/Ventas/Productos/FrontEnd/index.html [L]
+RewriteRule ^Promociones$ App/Admin/Ventas/Promociones/FrontEnd/index.html [L]
+RewriteRule ^Usuarios$ App/Admin/Gerente/Usuarios/FrontEnd/index.html [L]
+RewriteRule ^Empresa$ App/Admin/Gerente/Empresa/FrontEnd/index.html [L]
+
+ErrorDocument 404 /App/error.html
+ErrorDocument 403 /App/error.html
+ErrorDocument 500 /App/error.html
+
+<FilesMatch "^(config\.inc\.php|\.htaccess|error_log)">
+  Order allow,deny
+  Deny from all
+</FilesMatch>

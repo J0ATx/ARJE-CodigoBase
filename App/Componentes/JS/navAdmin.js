@@ -291,6 +291,9 @@ class NavAdmin extends HTMLElement {
                     <a href="/ARJE-CodigoBase/App/Admin/Gerente/Informes/FrontEnd/index.html" class="nav-link" data-page="estadisticas"><img src="/ARJE-CodigoBase/App/Componentes/svg/Estadisticas.svg" alt="Estadísticas"> Estadísticas</a>
                 </li>
                 <li class="nav-item">
+                    <a href="/ARJE-CodigoBase/App/Admin/Ventas/Promociones/FrontEnd/index.html" class="nav-link" data-page="promociones"><img src="/ARJE-CodigoBase/App/Componentes/svg/Promociones.svg" alt="Promociones"> Promociones</a>
+                </li>
+                <li class="nav-item">
                     <a href="/ARJE-CodigoBase/App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index.html" class="nav-link" data-page="pedidos"><img src="/ARJE-CodigoBase/App/Componentes/svg/Pedidos.svg" alt="Pedidos"> Pedidos</a>
                     <ul class="submenu">
                         <li><a href="/ARJE-CodigoBase/App/Admin/Stock/FrontEnd/index.html" class="nav-link" data-page="inventario"><img src="/ARJE-CodigoBase/App/Componentes/svg/Inventario.svg" alt="Inventario"> Inventario</a></li>
@@ -370,6 +373,7 @@ class NavAdmin extends HTMLElement {
             if (normalizedPath.includes('gerente/informes') || normalizedPath.includes('estadisticas')) return 'estadisticas';
             if (normalizedPath.includes('ventas/pedidos/mozo') || normalizedPath.includes('mozo')) return 'pedidos';
             if (normalizedPath.includes('ventas/reservas') || normalizedPath.includes('reservas')) return 'reservas';
+            if (normalizedPath.includes('ventas/promociones') || normalizedPath.includes('promociones')) return 'promociones';
             if (normalizedPath.includes('ventas/pedidos/cocina') || normalizedPath.includes('cocina')) return 'cocina';
             if (normalizedPath.includes('stock') || normalizedPath.includes('inventario')) return 'inventario';
             if (normalizedPath.includes('mesas')) return 'mesas';

@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas - Los 3 Tanos</title>
     <script src="/ARJE-CodigoBase/App/Componentes/JS/navAdmin.js"></script>
+    <!-- CanvasJS CDN -->
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -19,6 +21,12 @@
             <main class="contenedor">
                 <h1>Estadísticas e Informes</h1>
                 <button id="generarInforme">Generar Informe Compatible Con SARI</button>
+                
+                <!-- Dashboard container para métricas y gráficas -->
+                <div class="dashboard-container">
+                    <!-- Las métricas se insertarán aquí dinámicamente -->
+                </div>
+                
                 <div id="informes"></div>
                 <hr>
                 <!-- <div id="filtros">
@@ -43,6 +51,10 @@
                     </div>
                     <button id="quitarFiltro">Quitar Filtro</button>
                 </div> -->
+                <!-- Módulos JavaScript funcionales -->
+                <script src="js/dataProcessor.js"></script>
+                <script src="js/chartUtils.js"></script>
+                <script src="js/controlsManager.js"></script>
                 <script src="../session.js"></script>
                 <script src="../script.js"></script>
             </main>

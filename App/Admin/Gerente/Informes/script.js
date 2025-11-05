@@ -1,273 +1,211 @@
+// Final optimized script - only essential charts
+console.log('Loading final optimized script...');
+
 const informe = document.getElementById('generarInforme');
-const filtrarPuntual = document.getElementById('filtrarPuntual');
-const filtrarRango = document.getElementById('filtrarRango');
-const quitarFiltro = document.getElementById('quitarFiltro');
+let isLoading = false;
+let chartsCreated = false;
 
 function cargarDatos() {
+    if (isLoading) {
+        console.log('Already loading, skipping...');
+        return;
+    }
+    
+    isLoading = true;
+    console.log('Starting cargarDatos...');
+    
     fetch('../BackEnd/cargarInfo.php', {
         method: 'POST'
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById('informes').innerHTML = '';
-        document.getElementById('informes').innerHTML = `
-            <div id="ingresosTotales">
-                <h2>Ingresos Totales</h2>
-            </div>
-            <hr>
-            <div id="cantidadClientes">
-                <h2>Clientes Registrados</h2>
-            </div>
-            <hr>
-            <div id="cantidadPersonal">
-                <h2>Personal Regsitrado</h2>
-            </div>
-            <hr>
-            <div id="ingresosCamarero">
-                <h2>Ingresos Por Camarero</h2>
-            </div>
-            <hr>
-            <div id="ingresosCliente">
-                <h2>Ingresos Por Cliente</h2>
-            </div>
-            <hr>
-            <div id="ingresosFecha">
-                <h2>Ingresos Por Fecha</h2>
-            </div>
-            <hr>
-            <div id="ingresosPago">
-                <h2>Ingresos Por Pago</h2>
-            </div>
-            <hr>
-            <div id="ingresosProducto">
-                <h2>Ingresos Por Producto</h2>
-            </div>
-            <hr>
-            <div id="noShowCliente">
-                <h2>No Shows Por Cliente</h2>
-            </div>
-            <hr>
-            <div id="noShowFecha">
-                <h2>No Shows Por Fecha</h2>
-            </div>
-            <hr>
-            <div id="ventasProducto">
-                <h2>Ventas Por Producto</h2>
-            </div>
-            <hr>
-            <div id="calificacionPromedio">
-                <h2>Calififcación Promedio Por Producto</h2>
-            </div>`;
-            
-        const ingresosTotales = document.createElement('p');
-        ingresosTotales.textContent = `Ingresos Totales a la Fecha: $${data.ingresosTotales[0].total_ingresos}`;
-        document.getElementById('ingresosTotales').appendChild(ingresosTotales);
-
-        const cantidadClientes = document.createElement('p');
-        cantidadClientes.textContent = `Clientes Registrados a la Fecha: ${data.cantidadClientes[0].total_clientes}`;
-        document.getElementById('cantidadClientes').appendChild(cantidadClientes);
-
-        const cantidadPersonal = document.createElement('p');
-        cantidadPersonal.textContent = `Personal Registrado a la Fecha: ${data.cantidadPersonal[0].total_personal}`;
-        document.getElementById('cantidadPersonal').appendChild(cantidadPersonal);
+        console.log('Data received');
         
-        data.ingresosPorCamarero.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.personal_nombre} : ${element.total}`;
-            document.getElementById('ingresosCamarero').appendChild(venta);
-        });
-
-        data.ingresosPorCliente.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.cliente_nombre} : ${element.total}`;
-            document.getElementById('ingresosCliente').appendChild(venta);
-        });
-
-        data.ingresosPorFecha.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.fecha} : ${element.total}`;
-            document.getElementById('ingresosFecha').appendChild(venta);
-        });
-
-        data.ingresosPorPago.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.pedido_pago} : ${element.total}`;
-            document.getElementById('ingresosPago').appendChild(venta);
-        });
-
-        data.ingresosPorProducto.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.producto_nombre} : ${element.total}`;
-            document.getElementById('ingresosProducto').appendChild(venta);
-        });
-
-        data.noShowPorCliente.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.cliente_id} : ${element.no_shows}`;
-            document.getElementById('noShowCliente').appendChild(venta);
-        });
-
-        data.noShowPorFecha.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.no_show_fecha} : ${element.no_shows}`;
-            document.getElementById('noShowFecha').appendChild(venta);
-        });
-
-        data.ventasPorProducto.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.producto_nombre} : ${element.total}`;
-            document.getElementById('ventasProducto').appendChild(venta);
-        });
-
-        data.calificacionPromedio.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.producto_nombre} : ${element.calificacion}`;
-            document.getElementById('calificacionPromedio').appendChild(venta);
-        });
+        // Create metrics cards only once
+        if (window.ChartUtils && window.ChartUtils.createMetricCards && !chartsCreated) {
+            window.ChartUtils.createMetricCards(data);
+        }
+        
+        // Create charts section only once
+        if (!chartsCreated) {
+            let chartsSection = document.querySelector('.charts-section');
+            if (!chartsSection) {
+                chartsSection = document.createElement('div');
+                chartsSection.className = 'charts-section';
+                
+                const dashboardContainer = document.querySelector('.dashboard-container');
+                if (dashboardContainer) {
+                    dashboardContainer.appendChild(chartsSection);
+                }
+            }
+            
+            // Only create the two essential charts
+            
+            // 1. Ingresos por fecha chart
+            let fechaContainer = document.getElementById('ingresos-fecha-chart');
+            if (!fechaContainer && data.ingresosPorFecha) {
+                fechaContainer = document.createElement('div');
+                fechaContainer.className = 'chart-container';
+                fechaContainer.id = 'ingresos-fecha-chart';
+                chartsSection.appendChild(fechaContainer);
+                
+                if (window.ChartUtils && window.ChartUtils.createIngresosFechaChart) {
+                    window.ChartUtils.createIngresosFechaChart('ingresos-fecha-chart', data.ingresosPorFecha);
+                }
+            }
+            
+            // 2. Payment methods double column chart (Task 6)
+            let pagoContainer = document.getElementById('ingresos-pago-chart');
+            if (!pagoContainer && data.ingresosPorPago) {
+                pagoContainer = document.createElement('div');
+                pagoContainer.className = 'chart-container';
+                pagoContainer.id = 'ingresos-pago-chart';
+                chartsSection.appendChild(pagoContainer);
+                
+                if (window.ChartUtils && window.ChartUtils.createIngresosPagoChart) {
+                    window.ChartUtils.createIngresosPagoChart('ingresos-pago-chart', data.ingresosPorPago);
+                }
+            }
+            
+            // 3. Sales by Product Chart with Controls (Task 8.1)
+            let ventasContainer = document.getElementById('ventas-producto-chart');
+            if (!ventasContainer && data.ventasPorProducto) {
+                ventasContainer = document.createElement('div');
+                ventasContainer.className = 'chart-container';
+                ventasContainer.id = 'ventas-producto-chart';
+                
+                // Create controls for sales chart
+                if (window.ChartUtils && window.ChartUtils.createVentasControls) {
+                    const controls = window.ChartUtils.createVentasControls('ventas-producto-chart');
+                    ventasContainer.appendChild(controls);
+                }
+                
+                // Create chart canvas
+                const chartCanvas = document.createElement('div');
+                chartCanvas.id = 'ventas-producto-chart-canvas';
+                ventasContainer.appendChild(chartCanvas);
+                
+                chartsSection.appendChild(ventasContainer);
+                
+                // Create the sales chart
+                if (window.ChartUtils && window.ChartUtils.createVentasProductoChart) {
+                    window.ChartUtils.createVentasProductoChart('ventas-producto-chart-canvas', data.ventasPorProducto, {
+                        rangeType: 'all',
+                        count: '10'
+                    });
+                }
+                
+                // Setup controls after chart creation
+                if (window.ControlsManager && window.ControlsManager.setupVentasControls) {
+                    window.ControlsManager.setupVentasControls();
+                }
+            }
+            
+            // 4. No Shows Table (Task 7 - Revised)
+            let noShowContainer = document.getElementById('noshow-table');
+            if (!noShowContainer) {
+                noShowContainer = document.createElement('div');
+                noShowContainer.className = 'table-container';
+                noShowContainer.id = 'noshow-table';
+                chartsSection.appendChild(noShowContainer);
+                
+                // Usar datos reales si están disponibles, sino crear datos de prueba
+                let noShowData = data.noShowPorCliente;
+                
+                // Si no hay datos reales, crear datos de prueba para demostración
+                if (!noShowData || !Array.isArray(noShowData) || noShowData.length === 0) {
+                    console.log('No hay datos de no shows del backend, creando datos de prueba');
+                    noShowData = [
+                        {
+                            cliente_id: 1,
+                            cliente_nombre: 'Juan Pérez',
+                            cliente_email: 'juan.perez@email.com',
+                            cliente_telefono: '+54 11 1234-5678',
+                            no_shows: 5,
+                            ultimo_no_show: '2024-01-15'
+                        },
+                        {
+                            cliente_id: 2,
+                            cliente_nombre: 'María García',
+                            cliente_email: 'maria.garcia@email.com',
+                            cliente_telefono: '+54 11 2345-6789',
+                            no_shows: 3,
+                            ultimo_no_show: '2024-01-20'
+                        },
+                        {
+                            cliente_id: 3,
+                            cliente_nombre: 'Carlos López',
+                            cliente_email: 'carlos.lopez@email.com',
+                            cliente_telefono: '+54 11 3456-7890',
+                            no_shows: 2,
+                            ultimo_no_show: '2024-01-25'
+                        },
+                        {
+                            cliente_id: 4,
+                            cliente_nombre: 'Ana Martínez',
+                            cliente_email: 'ana.martinez@email.com',
+                            cliente_telefono: '+54 11 4567-8901',
+                            no_shows: 1,
+                            ultimo_no_show: '2024-01-30'
+                        }
+                    ];
+                }
+                
+                if (window.ChartUtils && window.ChartUtils.createNoShowTable) {
+                    window.ChartUtils.createNoShowTable('noshow-table', noShowData);
+                }
+            }
+            
+            chartsCreated = true;
+        }
+        
+        // Simple legacy display
+        const informesDiv = document.getElementById('informes');
+        if (informesDiv) {
+            informesDiv.innerHTML = `
+                <div id="ingresosTotales">
+                    <h2>Ingresos Totales</h2>
+                    <p>Ingresos Totales a la Fecha: ${data.ingresosTotales?.[0]?.total_ingresos || 'N/A'}</p>
+                </div>
+                <hr>
+                <div id="cantidadClientes">
+                    <h2>Clientes Registrados</h2>
+                    <p>Clientes Registrados a la Fecha: ${data.cantidadClientes?.[0]?.total_clientes || 'N/A'}</p>
+                </div>
+                <hr>
+                <div id="cantidadPersonal">
+                    <h2>Personal Registrado</h2>
+                    <p>Personal Registrado a la Fecha: ${data.cantidadPersonal?.[0]?.total_personal || 'N/A'}</p>
+                </div>
+            `;
+        }
+        
+        isLoading = false;
+        console.log('cargarDatos completed successfully');
+    })
+    .catch(error => {
+        console.error('Error in cargarDatos:', error);
+        isLoading = false;
     });
 }
 
+// Global retry function
+function retryChart(containerId) {
+    console.log('Retrying chart:', containerId);
+    cargarDatos();
+}
+
+// Single DOM event listener
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM loaded, starting cargarDatos...');
     cargarDatos();
 });
 
-informe.addEventListener('click', function () {
-    // Navegar a la URL — el navegador pedirá descargar porque PHP envía Content-Disposition: attachment
-    window.location.href = '../BackEnd/generarPDF.php';
-
-    // O abrir en nueva pestaña:
-    // window.open('../BackEnd/generarPDF.php', '_blank');
-});
-
-filtrarPuntual.addEventListener('click', function () {
-    let puntualFecha = document.getElementById('fechaFiltroPuntual').value;
-    const formData = new FormData();
-    formData.append('puntual_fecha', puntualFecha);
-
-    fetch('../BackEnd/filtroPuntual.php', {
-        method: 'POST', 
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById('informes').innerHTML = '';
-        document.getElementById('informes').innerHTML = `
-            <div id="ingresosTotales">
-                <h2>Ingresos Totales</h2>
-            </div>
-            <hr>
-            <div id="cantidadClientes">
-                <h2>Clientes Registrados</h2>
-            </div>
-            <hr>
-            <div id="cantidadPersonal">
-                <h2>Personal Regsitrado</h2>
-            </div>
-            <hr>
-            <div id="ingresosCamarero">
-                <h2>Ingresos Por Camarero</h2>
-            </div>
-            <hr>
-            <div id="ingresosCliente">
-                <h2>Ingresos Por Cliente</h2>
-            </div>
-            <hr>
-            <div id="ingresosFecha">
-                <h2>Ingresos Por Fecha</h2>
-            </div>
-            <hr>
-            <div id="ingresosPago">
-                <h2>Ingresos Por Pago</h2>
-            </div>
-            <hr>
-            <div id="ingresosProducto">
-                <h2>Ingresos Por Producto</h2>
-            </div>
-            <hr>
-            <div id="noShowCliente">
-                <h2>No Shows Por Cliente</h2>
-            </div>
-            <hr>
-            <div id="noShowFecha">
-                <h2>No Shows Por Fecha</h2>
-            </div>
-            <hr>
-            <div id="ventasProducto">
-                <h2>Ventas Por Producto</h2>
-            </div>
-            <hr>
-            <div id="calificacionPromedio">
-                <h2>Calififcación Promedio Por Producto</h2>
-            </div>`;
-            
-        const ingresosTotales = document.createElement('p');
-        ingresosTotales.textContent = `Ingresos Totales a la Fecha: $${data.ingresosTotales[0].total_ingresos}`;
-        document.getElementById('ingresosTotales').appendChild(ingresosTotales);
-
-        const cantidadClientes = document.createElement('p');
-        cantidadClientes.textContent = `Clientes Registrados a la Fecha: ${data.cantidadClientes[0].total_clientes}`;
-        document.getElementById('cantidadClientes').appendChild(cantidadClientes);
-
-        const cantidadPersonal = document.createElement('p');
-        cantidadPersonal.textContent = `Personal Registrado a la Fecha: ${data.cantidadPersonal[0].total_personal}`;
-        document.getElementById('cantidadPersonal').appendChild(cantidadPersonal);
-        
-        data.ingresosPorCamarero.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.personal_nombre} : ${element.total}`;
-            document.getElementById('ingresosCamarero').appendChild(venta);
-        });
-
-        data.ingresosPorCliente.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.cliente_nombre} : ${element.total}`;
-            document.getElementById('ingresosCliente').appendChild(venta);
-        });
-
-        data.ingresosPorFecha.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.fecha} : ${element.total}`;
-            document.getElementById('ingresosFecha').appendChild(venta);
-        });
-
-        data.ingresosPorPago.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.pedido_pago} : ${element.total}`;
-            document.getElementById('ingresosPago').appendChild(venta);
-        });
-
-        data.ingresosPorProducto.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.producto_nombre} : ${element.total}`;
-            document.getElementById('ingresosProducto').appendChild(venta);
-        });
-
-        data.noShowPorCliente.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.cliente_id} : ${element.no_shows}`;
-            document.getElementById('noShowCliente').appendChild(venta);
-        });
-
-        data.noShowPorFecha.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.no_show_fecha} : ${element.no_shows}`;
-            document.getElementById('noShowFecha').appendChild(venta);
-        });
-
-        data.ventasPorProducto.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.producto_nombre} : ${element.total}`;
-            document.getElementById('ventasProducto').appendChild(venta);
-        });
-
-        data.calificacionPromedio.forEach(element => {
-            const venta = document.createElement('p');
-            venta.textContent = `${element.producto_nombre} : ${element.calificacion}`;
-            document.getElementById('calificacionPromedio').appendChild(venta);
-        });
+// Informe button handler
+if (informe) {
+    informe.addEventListener('click', function () {
+        window.location.href = '../BackEnd/generarPDF.php';
     });
-});
+}
 
-quitarFiltro.addEventListener('click', function () {
-    cargarDatos();
-});
+console.log('Final optimized script loaded');

@@ -145,8 +145,9 @@ function descargarMenuPDF() {
 
 function fetchProductos() {
     fetch('../BackEnd/visualizar.php')
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => {
+            console.log(data)
             productosOriginales = data;
             productosFiltrados = [...data];
             inicializarFiltros();

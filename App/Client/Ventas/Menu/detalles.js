@@ -152,7 +152,7 @@ async function mostrarComentarios(comentarios) {
                             </button>
                         ` : ''}
                         <button class="btn-eliminar-comentario" onclick="eliminarComentario(${comentario.comentario_id})">
-                            ${esGerenteGeneral ? 'Eliminar' : 'Eliminar'}
+                            ${esGerenteGeneral ? 'Destruir' : 'Eliminar'}
                         </button>
                     </div>
                 ` : ''}
