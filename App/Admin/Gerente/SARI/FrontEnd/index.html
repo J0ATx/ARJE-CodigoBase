@@ -2,9 +2,42 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Pseudo-RAG Gemma 3 con PHP</title>
+        
+        <style>
+            /* Estilos básicos para el extractor de PDF */
+            .pdf-extractor {
+                margin-top: 30px;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background-color: #f9f9f9;
+            }
+            #output {
+                margin-top: 15px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                background-color: #fff;
+                white-space: pre-wrap;
+                max-height: 300px;
+                overflow-y: auto;
+            }
+            .pdf-extractor button {
+                padding: 10px 15px;
+                background-color: #28a745; /* Botón verde para diferenciarse */
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .pdf-extractor button:hover {
+                background-color: #1e7e34;
+            }
+        </style>
     </head>
     <body>
+        
         <h1>Chatbot Pseudo-RAG (Gemma 3)</h1>
         <p>Pregunta sobre la información estática del producto o contacto.</p>
         
@@ -13,8 +46,81 @@
         
         <div id="loading" style="display: none; color: gray;">Generando respuesta...</div>
         
-        <h2>Respuesta:</h2>
+        <h2>Respuesta del Chatbot:</h2>
         <div id="respuesta" style="border: 1px solid #ccc; padding: 15px; min-height: 50px;"></div>
+
+        <div class="pdf-extractor">
+            <h1>📄 Extractor de Texto PDF</h1>
+            <p>Sube un archivo PDF para extraer y ver su contenido de texto.</p>
+            
+            <input type="file" id="pdf-file-input" accept="application/pdf">
+            <button onclick="extractText()">Extraer Texto</button>
+            
+            <h2>Texto Extraído:</h2>
+            <pre id="output">Aquí aparecerá el texto extraído del PDF.</pre>
+        </div>
+
         <script src="../script.js"></script>
+        
+        <script type="module">
+            
+            // 🚨 RUTAS CRÍTICAS DE PDF.JS (Usando tu ruta relativa)
+            // 1. Importa el módulo principal (pdf.mjs)
+            import { getDocument, GlobalWorkerOptions } from '../../../../Control/Librerias/pdfjs/build/pdf.mjs';
+
+            // 2. Configura la ruta del Worker (pdf.worker.mjs)
+            GlobalWorkerOptions.workerSrc = '../../../../Control/Librerias/pdfjs/build/pdf.worker.mjs';
+            
+            // LÓGICA DE EXTRACCIÓN
+            
+            async function getFullText(pdfDocument) {
+                let fullText = '';
+                const numPages = pdfDocument.numPages;
+
+                for (let i = 1; i <= numPages; i++) {
+                    const page = await pdfDocument.getPage(i);
+                    const textContent = await page.getTextContent();
+                    
+                    const pageText = textContent.items
+                        .map(item => item.str)
+                        .join(' '); 
+
+                    fullText += `\n\n--- INICIO PÁGINA ${i} ---\n\n` + pageText;
+                }
+
+                return fullText;
+            }
+
+            window.extractText = async function() {
+                const fileInput = document.getElementById('pdf-file-input');
+                const outputElement = document.getElementById('output');
+                outputElement.textContent = 'Cargando y extrayendo texto...';
+                
+                const file = fileInput.files[0];
+                if (!file) {
+                    outputElement.textContent = 'Por favor, selecciona un archivo PDF.';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = async function(event) {
+                    const arrayBuffer = event.target.result;
+                    
+                    try {
+                        const pdfDocument = await getDocument({ data: arrayBuffer }).promise;
+                        
+                        const fullText = await getFullText(pdfDocument);
+                        
+                        outputElement.textContent = fullText;
+
+                    } catch (error) {
+                        outputElement.textContent = `🚫 Error al procesar el PDF: ${error.message}. Verifica las rutas de pdf.mjs y pdf.worker.mjs.`;
+                        console.error("Error de PDF.js:", error);
+                    }
+                };
+                
+                reader.readAsArrayBuffer(file);
+            }
+        </script>
     </body>
 </html>

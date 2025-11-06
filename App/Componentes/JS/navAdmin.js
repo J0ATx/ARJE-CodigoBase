@@ -288,34 +288,34 @@
             <hr>
             <ul>
                 <li>
-                    <a href="/App/Admin/Gerente/Informes/FrontEnd/index.html" class="nav-link" data-page="estadisticas"><img src="/App/Componentes/svg/Estadisticas.svg" alt="Estadísticas"> Estadísticas</a>
+                    <a href="/Informes" class="nav-link" data-page="estadisticas"><img src="/App/Componentes/svg/Estadisticas.svg" alt="Estadísticas">Estadísticas</a>
+                </li>
+                <li>
+                    <a href="/Promociones" class="nav-link" data-page="promociones"><img src="/App/Componentes/svg/Estadisticas.svg" alt="Promociones">Promociones</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/App/Admin/Ventas/Promociones/FrontEnd/index.html" class="nav-link" data-page="promociones"><img src="/App/Componentes/svg/Promociones.svg" alt="Promociones"> Promociones</a>
-                </li>
-                <li class="nav-item">
-                    <a href="/App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index.html" class="nav-link" data-page="pedidos"><img src="/App/Componentes/svg/Pedidos.svg" alt="Pedidos"> Pedidos</a>
+                    <a href="/Pedidos" class="nav-link" data-page="pedidos"><img src="/App/Componentes/svg/Pedidos.svg" alt="Pedidos"> Pedidos</a>
                     <ul class="submenu">
-                        <li><a href="/App/Admin/Stock/FrontEnd/index.html" class="nav-link" data-page="inventario"><img src="/App/Componentes/svg/Inventario.svg" alt="Inventario"> Inventario</a></li>
+                        <li><a href="/Inventario" class="nav-link" data-page="inventario"><img src="/App/Componentes/svg/Inventario.svg" alt="Inventario"> Inventario</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="/App/Admin/Ventas/Reservas/FrontEnd/index.html" class="nav-link" data-page="reservas"><img src="/App/Componentes/svg/Reservas.svg" alt="Reservas"> Reservas</a>
+                    <a href="/ReservasAdmin" class="nav-link" data-page="reservas"><img src="/App/Componentes/svg/Reservas.svg" alt="Reservas"> Reservas</a>
                     <ul class="submenu">
-                        <li><a href="/App/Admin/Mesas/FrontEnd/index.html" class="nav-link" data-page="mesas"><img src="/App/Componentes/svg/Mesas.svg" alt="Mesas"> Mesas</a></li>
+                        <li><a href="/Mesas" class="nav-link" data-page="mesas"><img src="/App/Componentes/svg/Mesas.svg" alt="Mesas"> Mesas</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="/App/Admin/Ventas/Pedidos/Cocina/FrontEnd/index.html" class="nav-link" data-page="cocina"><img src="/App/Componentes/svg/Cocina.svg" alt="Cocina"> Cocina</a>
+                    <a href="/Cocina" class="nav-link" data-page="cocina"><img src="/App/Componentes/svg/Cocina.svg" alt="Cocina"> Cocina</a>
                     <ul class="submenu">
-                        <li><a href="/App/Admin/Ventas/Productos/FrontEnd/index.html" class="nav-link" data-page="productos"><img src="/App/Componentes/svg/Platillos.svg" alt="Platillos"> Platillos</a></li>
+                        <li><a href="/Platillos" class="nav-link" data-page="productos"><img src="/App/Componentes/svg/Platillos.svg" alt="Platillos"> Platillos</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="/App/Admin/Gerente/Usuarios/FrontEnd/index.html" class="nav-link" data-page="usuarios"><img src="/App/Componentes/svg/Usuarios.svg" alt="Usuarios"> Usuarios</a>
+                    <a href="/Usuarios" class="nav-link" data-page="usuarios"><img src="/App/Componentes/svg/Usuarios.svg" alt="Usuarios"> Usuarios</a>
                 </li>
                 <li>
-                    <a href="/App/Admin/Gerente/Empresa/FrontEnd/index.html" class="nav-link" data-page="empresa"><img src="/App/Componentes/svg/Datos.svg" alt="Datos empresariales"> Datos empresariales</a>
+                    <a href="/Empresa" class="nav-link" data-page="empresa"><img src="/App/Componentes/svg/Datos.svg" alt="Datos empresariales"> Datos empresariales</a>
                 </li>
             </ul>
 
@@ -341,7 +341,7 @@
                                 </g>
                             </svg>
                 </button>
-            </div>
+            </div>  
         </nav>
         `;
             this.init();
@@ -371,6 +371,7 @@
             const normalizedPath = path.toLowerCase();
 
             if (normalizedPath.includes('gerente/informes') || normalizedPath.includes('estadisticas')) return 'estadisticas';
+             if (normalizedPath.includes('ventas/promociones') || normalizedPath.includes('promociones')) return 'promociones';
             if (normalizedPath.includes('ventas/pedidos/mozo') || normalizedPath.includes('mozo')) return 'pedidos';
             if (normalizedPath.includes('ventas/reservas') || normalizedPath.includes('reservas')) return 'reservas';
             if (normalizedPath.includes('ventas/promociones') || normalizedPath.includes('promociones')) return 'promociones';
