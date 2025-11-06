@@ -1,4 +1,4 @@
-USE lostrestanosdb;
+﻿USE lostrestanosdb;
 
 CREATE VIEW Ingresos_Totales AS
 SELECT SUM(pedido_monto) AS total_ingresos

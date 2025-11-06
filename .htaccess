@@ -7,61 +7,61 @@ Options -Indexes
 # Solo se aplica si la solicitud original (THE_REQUEST) contenía la URL "sucia"
 # Regla para /Panel
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Panel/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Client/Panel/FrontEnd/il [R=301,L]
+RewriteRule ^App/Client/Panel/FrontEnd/index\.html$ Panel [R=301,L]
 # Regla para /Contacto
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Contacto/Frontend/index\.html\sHTTP
-RewriteRule ^App/Client/Contacto/Frontenontacto [R=301,L]
+RewriteRule ^App/Client/Contacto/Frontend/index\.html$ Contacto [R=301,L]
 # Regla para /Informacion
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Informacion/Frontend/index\.html\sHTTP
-RewriteRule ^App/Client/Informacion/Fron$ Informacion [R=301,L]
+RewriteRule ^App/Client/Informacion/Frontend/index\.html$ Informacion [R=301,L]
 # Regla para /MiUsuario
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/MiUsuario/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Client/MiUsuario/FrontEMiUsuario [R=301,L]
+RewriteRule ^App/Client/MiUsuario/FrontEnd/index\.html$ MiUsuario [R=301,L]
 # Regla para /Menu
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/Menu/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Client/Ventas/Menu/Fron$ Menu [R=301,L]
+RewriteRule ^App/Client/Ventas/Menu/FrontEnd/index\.html$ Menu [R=301,L]
 # Regla para /Reservas
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/Reservas/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Client/Ventas/Reservas/html$ Reservas [R=301,L]
+RewriteRule ^App/Client/Ventas/Reservas/FrontEnd/index\.html$ Reservas [R=301,L]
 # Regla para /TakeAway
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/TakeAway/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Client/Ventas/TakeAway/html$ TakeAway [R=301,L]
+RewriteRule ^App/Client/Ventas/TakeAway/FrontEnd/index\.html$ TakeAway [R=301,L]
 # Regla para /SignIn
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/SignIn/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Control/SignIn/FrontEndgnIn [R=301,L]
+RewriteRule ^App/Control/SignIn/FrontEnd/index\.html$ SignIn [R=301,L]
 # Regla para /SignUp
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/SignUp/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Control/SignUp/FrontEndgnUp [R=301,L]
+RewriteRule ^App/Control/SignUp/FrontEnd/index\.html$ SignUp [R=301,L]
 # Regla para /SignInEmpleado
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/SignInEmpleado/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Control/SignInEmpleado/html$ SignInEmpleado [R=301,L]
+RewriteRule ^App/Control/SignInEmpleado/FrontEnd/index\.html$ SignInEmpleado [R=301,L]
 # Regla para /Informes
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Gerente/Informes/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Admin/Gerente/Informes/html$ Informes [R=301,L]
+RewriteRule ^App/Admin/Gerente/Informes/FrontEnd/index\.html$ Informes [R=301,L]
 # Regla para /Pedidos
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Admin/Ventas/Pedidos/Mox\.html$ Pedidos [R=301,L]
+RewriteRule ^App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index\.html$ Pedidos [R=301,L]
 # Regla para /Inventario
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Stock/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Admin/Stock/FrontEnd/intario [R=301,L]
+RewriteRule ^App/Admin/Stock/FrontEnd/index\.html$ Inventario [R=301,L]
 # Regla para /ReservasAdmin
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Reservas/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Admin/Ventas/Reservas/Ftml$ ReservasAdmin [R=301,L]
+RewriteRule ^App/Admin/Ventas/Reservas/FrontEnd/index\.html$ ReservasAdmin [R=301,L]
 # Regla para /Mesas
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Mesas/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Admin/Mesas/FrontEnd/in [R=301,L]
+RewriteRule ^App/Admin/Mesas/FrontEnd/index\.html$ Mesas [R=301,L]
 # Regla para /Cocina
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Pedidos/Cocina/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Admin/Ventas/Pedidos/Codex\.html$ Cocina [R=301,L]
+RewriteRule ^App/Admin/Ventas/Pedidos/Cocina/FrontEnd/index\.html$ Cocina [R=301,L]
 # Regla para /Platillos
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Productos/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Admin/Ventas/Productos/html$ Platillos [R=301,L]
+RewriteRule ^App/Admin/Ventas/Productos/FrontEnd/index\.html$ Platillos [R=301,L]
 # Regla para /Promociones
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Ventas/Promociones/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Admin/Ventas/Promocione\.html$ Promociones [R=301,L]
+RewriteRule ^App/Admin/Ventas/Promociones/FrontEnd/index\.html$ Promociones [R=301,L]
 # Regla para /Usuarios
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Gerente/Usuarios/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Admin/Gerente/Usuarios/html$ Usuarios [R=301,L]
+RewriteRule ^App/Admin/Gerente/Usuarios/FrontEnd/index\.html$ Usuarios [R=301,L]
 # Regla para /Empresa
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Gerente/Empresa/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Admin/Gerente/Empresa/FrontEnd/index\.html$ Empresa [R=301,L]

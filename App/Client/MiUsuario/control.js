@@ -1,4 +1,4 @@
-let usuarioActual = null;
+﻿let usuarioActual = null;
 
 document.addEventListener('DOMContentLoaded', function () {
     cargarDatosUsuario();
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function cargarDatosUsuario() {
-    fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php')
+    fetch('/App/Control/Session/checkSession.php')
         .then(response => {
             if (!response.ok) throw new Error('Error al cargar los datos del usuario');
             return response.json();
@@ -204,7 +204,7 @@ async function mostrarDatosUsuario(usuario) {
 
     const fidelizado = usuario.cliente_fidelizado ? 'Sí' : 'No';
 
-    const res = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+    const res = await fetch('/App/Control/Session/avatar.php', {
         method: 'GET',
         credentials: 'same-origin'
     });
@@ -213,7 +213,7 @@ async function mostrarDatosUsuario(usuario) {
     contenedor.innerHTML = `
         <div class="perfil-container">
             <div class="avatar-container">
-                <img src="/ARJE-CodigoBase/App/Recursos/avatars/${avatar.avatar}" alt="Foto de perfil" class="avatar" id="avatar">
+                <img src="/App/Recursos/avatars/${avatar.avatar}" alt="Foto de perfil" class="avatar" id="avatar">
             </div>
             <div class="datos-container">
                 <ul class="datos-lista">

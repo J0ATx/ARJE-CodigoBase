@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS lostrestanosdb;
+﻿CREATE DATABASE IF NOT EXISTS lostrestanosdb;
 USE lostrestanosdb;
 
 CREATE TABLE IF NOT EXISTS image_id_sequence (

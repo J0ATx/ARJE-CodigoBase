@@ -57,7 +57,7 @@ const viewer = pannellum.viewer('panorama', {
             "haov": 149.87,
             "vaov": 54.15,
             "vOffset": 1.17,
-            "panorama": "/ARJE-CodigoBase/App/Recursos/mesasexterior.jpeg",
+            "panorama": "/App/Recursos/mesasexterior.jpeg",
             "hotSpots": [
                 {
                     "pitch": -10,
@@ -132,7 +132,7 @@ const viewer = pannellum.viewer('panorama', {
             "haov": 149.87,
             "vaov": 54.15,
             "vOffset": 1.17,
-            "panorama": "/ARJE-CodigoBase/App/Recursos/mesaspecera.jpg",
+            "panorama": "/App/Recursos/mesaspecera.jpg",
             "hotSpots": [
                 {
                     "pitch": -10,
@@ -239,7 +239,7 @@ const viewer = pannellum.viewer('panorama', {
             "haov": 149.87,
             "vaov": 54.15,
             "vOffset": 1.17,
-            "panorama": "/ARJE-CodigoBase/App/Recursos/mesasinterior1.jpeg",
+            "panorama": "/App/Recursos/mesasinterior1.jpeg",
             "hotSpots": [
                 {
                     "pitch": 5,
@@ -337,7 +337,7 @@ const viewer = pannellum.viewer('panorama', {
             "haov": 149.87,
             "vaov": 54.15,
             "vOffset": 1.17,
-            "panorama": "/ARJE-CodigoBase/App/Recursos/mesasinterior2.jpeg",
+            "panorama": "/App/Recursos/mesasinterior2.jpeg",
             "hotSpots": [
                 {
                     "pitch": 0,

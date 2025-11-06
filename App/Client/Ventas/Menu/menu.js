@@ -145,9 +145,8 @@ function descargarMenuPDF() {
 
 function fetchProductos() {
     fetch('../BackEnd/visualizar.php')
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
-            console.log(data)
             productosOriginales = data;
             productosFiltrados = [...data];
             inicializarFiltros();
@@ -292,7 +291,7 @@ function mostrarProductos(productos) {
             div.dataset.productoId = producto.producto_id;
             div.style.animationDelay = `${index * 50}ms`;
 
-            const defaultImage = '/ARJE-CodigoBase/App/Recursos/productos/logo.png';
+            const defaultImage = '/App/Recursos/productos/logo.png';
             const imageUrl = producto.imagen_url || defaultImage;
 
             div.innerHTML = `

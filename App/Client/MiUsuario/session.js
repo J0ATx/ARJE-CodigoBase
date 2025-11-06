@@ -1,6 +1,6 @@
-async function loadSVGLogo() {
+﻿async function loadSVGLogo() {
     try {
-        const response = await fetch('/ARJE-CodigoBase/App/Recursos/logo.svg');
+        const response = await fetch('/App/Recursos/logo.svg');
         const svgText = await response.text();
         const logoContainer = document.getElementById('logo-container');
         if (logoContainer) {
@@ -20,7 +20,7 @@ async function loadSVGLogo() {
 
 async function checkSession() {
     try {
-        const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+        const response = await fetch('/App/Control/Session/checkSession.php', {
             method: 'GET',
             credentials: 'same-origin'
         });
@@ -29,17 +29,17 @@ async function checkSession() {
             window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
             return false;
         } else {
-            const res = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+            const res = await fetch('/App/Control/Session/avatar.php', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
             const avatar = await res.json();
-            document.getElementById('avatar').src = "/ARJE-CodigoBase/App/Recursos/avatars/" + avatar.avatar
+            document.getElementById('avatar').src = "/App/Recursos/avatars/" + avatar.avatar
             showContent();
         }
     } catch (error) {
         console.error('Error checking session:', error);
-        window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
+        window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
     }
 }
 

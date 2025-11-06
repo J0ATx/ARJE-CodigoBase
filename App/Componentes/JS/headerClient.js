@@ -1,4 +1,4 @@
-class Header extends HTMLElement {
+﻿class Header extends HTMLElement {
     constructor() {
         super();
     }
@@ -197,7 +197,7 @@ img {
                             <h3 id="userName">Sin sesión</h3>
                             <h4 id="userRol">Sin sesión</h4>
                         </div>
-                        <a href='/ARJE-CodigoBase/App/Client/MiUsuario/FrontEnd/index.html' class="dropdown-btn profile-btn" id="profileBtn">
+                        <a href='/App/Client/MiUsuario/FrontEnd/index.html' class="dropdown-btn profile-btn" id="profileBtn">
                             <svg id='user-circle_24' width='24' height='24' viewBox='0 0 24 24'
                                 xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
                                 <rect width='24' height='24' stroke='none' fill='white' opacity='0' />
@@ -233,7 +233,7 @@ img {
                         </a>
 
                         <button class="dropdown-btn dashboard-btn" id="dashboardBtn">
-                            <a href="/ARJE-CodigoBase/App/Admin/Gerente/Empresa/FrontEnd/index.html">
+                            <a href="/App/Admin/Gerente/Empresa/FrontEnd/index.html">
                                 <svg id='Dashboard_Layout_24' width='24' height='24' viewBox='0 0 24 24'
                                     xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' fill="currentColor">
                                     <rect width='24' height='24' stroke='none' fill='white' opacity='0' />
@@ -249,7 +249,7 @@ img {
                             </a>
                         </button>
                         <button class="dropdown-btn help-btn" id="helpBtn">
-                            <a href="/ARJE-CodigoBase/App/Client/Contacto/FrontEnd/index.html">
+                            <a href="/App/Client/Contacto/FrontEnd/index.html">
                             <svg id='Help_24' width='24' height='24' viewBox='0 0 24 24'
                                 xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
                                 <rect width='24' height='24' stroke='none' fill='white' opacity='0' />
@@ -280,24 +280,24 @@ img {
                         </button>
                     </div>
                 </div>
-                <a href="/ARJE-CodigoBase/App/Client/Panel/FrontEnd/index.html">
+                <a href="/App/Client/Panel/FrontEnd/index.html">
                 <div class="logo">
-                    <img src="/ARJE-CodigoBase/App/Recursos/logo.svg" alt="logo Los 3 Tanos">
+                    <img src="/App/Recursos/logo.svg" alt="logo Los 3 Tanos">
                 </div>
                 </a>
-                <a href="/ARJE-CodigoBase/App/Client/Ventas/Menu/FrontEnd/index.html" class="btn-header">PEDÍ AHORA</a>
+                <a href="/App/Client/Ventas/Menu/FrontEnd/index.html" class="btn-header">PEDÍ AHORA</a>
             </header>
     `;
         async function logout() {
             try {
-                const response = await fetch('/ARJE-CodigoBase/App/Control/Panel/BackEnd/logout.php', {
+                const response = await fetch('/App/Control/Panel/BackEnd/logout.php', {
                     method: 'POST',
                     credentials: 'same-origin'
                 });
                 const data = await response.json();
 
                 if (data.success) {
-                    window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
+                    window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
                 } else {
                     console.error('Error al cerrar sesión:', data.message);
                     alert('Error al cerrar sesión. Por favor, intenta nuevamente.');

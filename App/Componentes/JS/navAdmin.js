@@ -1,4 +1,4 @@
-class NavAdmin extends HTMLElement {
+﻿class NavAdmin extends HTMLElement {
     constructor() {
         super();
     }
@@ -280,42 +280,42 @@ class NavAdmin extends HTMLElement {
         </style>
         <nav>
             <div class="logo-container">
-                <a href="/ARJE-CodigoBase/App/Client/Panel/FrontEnd/index.html">
-                    <img src="/ARJE-CodigoBase/App/Recursos/logo.svg" alt="Logo de la empresa" class="logo" />
+                <a href="/App/Client/Panel/FrontEnd/index.html">
+                    <img src="/App/Recursos/logo.svg" alt="Logo de la empresa" class="logo" />
                     <p>Los 3<br>Tanos</p>
                 </a>
             </div>
             <hr>
             <ul>
                 <li>
-                    <a href="/ARJE-CodigoBase/App/Admin/Gerente/Informes/FrontEnd/index.html" class="nav-link" data-page="estadisticas"><img src="/ARJE-CodigoBase/App/Componentes/svg/Estadisticas.svg" alt="Estadísticas"> Estadísticas</a>
+                    <a href="/App/Admin/Gerente/Informes/FrontEnd/index.html" class="nav-link" data-page="estadisticas"><img src="/App/Componentes/svg/Estadisticas.svg" alt="Estadísticas"> Estadísticas</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/ARJE-CodigoBase/App/Admin/Ventas/Promociones/FrontEnd/index.html" class="nav-link" data-page="promociones"><img src="/ARJE-CodigoBase/App/Componentes/svg/Promociones.svg" alt="Promociones"> Promociones</a>
+                    <a href="/App/Admin/Ventas/Promociones/FrontEnd/index.html" class="nav-link" data-page="promociones"><img src="/App/Componentes/svg/Promociones.svg" alt="Promociones"> Promociones</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/ARJE-CodigoBase/App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index.html" class="nav-link" data-page="pedidos"><img src="/ARJE-CodigoBase/App/Componentes/svg/Pedidos.svg" alt="Pedidos"> Pedidos</a>
+                    <a href="/App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index.html" class="nav-link" data-page="pedidos"><img src="/App/Componentes/svg/Pedidos.svg" alt="Pedidos"> Pedidos</a>
                     <ul class="submenu">
-                        <li><a href="/ARJE-CodigoBase/App/Admin/Stock/FrontEnd/index.html" class="nav-link" data-page="inventario"><img src="/ARJE-CodigoBase/App/Componentes/svg/Inventario.svg" alt="Inventario"> Inventario</a></li>
+                        <li><a href="/App/Admin/Stock/FrontEnd/index.html" class="nav-link" data-page="inventario"><img src="/App/Componentes/svg/Inventario.svg" alt="Inventario"> Inventario</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="/ARJE-CodigoBase/App/Admin/Ventas/Reservas/FrontEnd/index.html" class="nav-link" data-page="reservas"><img src="/ARJE-CodigoBase/App/Componentes/svg/Reservas.svg" alt="Reservas"> Reservas</a>
+                    <a href="/App/Admin/Ventas/Reservas/FrontEnd/index.html" class="nav-link" data-page="reservas"><img src="/App/Componentes/svg/Reservas.svg" alt="Reservas"> Reservas</a>
                     <ul class="submenu">
-                        <li><a href="/ARJE-CodigoBase/App/Admin/Mesas/FrontEnd/index.html" class="nav-link" data-page="mesas"><img src="/ARJE-CodigoBase/App/Componentes/svg/Mesas.svg" alt="Mesas"> Mesas</a></li>
+                        <li><a href="/App/Admin/Mesas/FrontEnd/index.html" class="nav-link" data-page="mesas"><img src="/App/Componentes/svg/Mesas.svg" alt="Mesas"> Mesas</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="/ARJE-CodigoBase/App/Admin/Ventas/Pedidos/Cocina/FrontEnd/index.html" class="nav-link" data-page="cocina"><img src="/ARJE-CodigoBase/App/Componentes/svg/Cocina.svg" alt="Cocina"> Cocina</a>
+                    <a href="/App/Admin/Ventas/Pedidos/Cocina/FrontEnd/index.html" class="nav-link" data-page="cocina"><img src="/App/Componentes/svg/Cocina.svg" alt="Cocina"> Cocina</a>
                     <ul class="submenu">
-                        <li><a href="/ARJE-CodigoBase/App/Admin/Ventas/Productos/FrontEnd/index.html" class="nav-link" data-page="productos"><img src="/ARJE-CodigoBase/App/Componentes/svg/Platillos.svg" alt="Platillos"> Platillos</a></li>
+                        <li><a href="/App/Admin/Ventas/Productos/FrontEnd/index.html" class="nav-link" data-page="productos"><img src="/App/Componentes/svg/Platillos.svg" alt="Platillos"> Platillos</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="/ARJE-CodigoBase/App/Admin/Gerente/Usuarios/FrontEnd/index.html" class="nav-link" data-page="usuarios"><img src="/ARJE-CodigoBase/App/Componentes/svg/Usuarios.svg" alt="Usuarios"> Usuarios</a>
+                    <a href="/App/Admin/Gerente/Usuarios/FrontEnd/index.html" class="nav-link" data-page="usuarios"><img src="/App/Componentes/svg/Usuarios.svg" alt="Usuarios"> Usuarios</a>
                 </li>
                 <li>
-                    <a href="/ARJE-CodigoBase/App/Admin/Gerente/Empresa/FrontEnd/index.html" class="nav-link" data-page="empresa"><img src="/ARJE-CodigoBase/App/Componentes/svg/Datos.svg" alt="Datos empresariales"> Datos empresariales</a>
+                    <a href="/App/Admin/Gerente/Empresa/FrontEnd/index.html" class="nav-link" data-page="empresa"><img src="/App/Componentes/svg/Datos.svg" alt="Datos empresariales"> Datos empresariales</a>
                 </li>
             </ul>
 
@@ -409,13 +409,13 @@ class NavAdmin extends HTMLElement {
 customElements.define('nav-admin', NavAdmin);
 
 function logout() {
-    fetch('/ARJE-CodigoBase/App/Control/Panel/BackEnd/logout.php', {
+    fetch('/App/Control/Panel/BackEnd/logout.php', {
         method: 'POST',
         credentials: 'same-origin'
     }).then(() => {
-        window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
+        window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
     }).catch(error => {
         console.error('Error durante logout:', error);
-        window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
+        window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
     });
 }

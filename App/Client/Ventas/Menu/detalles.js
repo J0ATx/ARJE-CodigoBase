@@ -107,7 +107,7 @@ async function mostrarComentarios(comentarios) {
     let usuarioActual = null;
     let avatar = null;
     try {
-        const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+        const response = await fetch('/App/Control/Session/checkSession.php', {
             method: 'GET',
             credentials: 'same-origin'
         });
@@ -115,7 +115,7 @@ async function mostrarComentarios(comentarios) {
 
         if (sessionData.logged_in && sessionData.user) {
             usuarioActual = sessionData.user;
-            const responseAvatar = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+            const responseAvatar = await fetch('/App/Control/Session/avatar.php', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
@@ -135,7 +135,7 @@ async function mostrarComentarios(comentarios) {
             <div class="comentario-item" data-comentario-id="${comentario.comentario_id}">
                 <div class="comentario-header">
                 <div class="comentario-user">    
-                <img src="/ARJE-CodigoBase/App/Recursos/avatars/${avatar?.avatar || 'default.png'}" id="avatar" class="logged" alt="Foto de perfíl">
+                <img src="/App/Recursos/avatars/${avatar?.avatar || 'default.png'}" id="avatar" class="logged" alt="Foto de perfíl">
                     <strong>${comentario.cliente_nombre} ${comentario.cliente_apellido}</strong>
                 </div>
                     <div class="comentario-calificacion">
@@ -181,7 +181,7 @@ function actualizarPromedio(producto) {
 async function mostrarFormularioComentario(productoId) {
     const contenedor = document.getElementById('formulario-comentario');
     if (!contenedor) return;
-    const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+    const response = await fetch('/App/Control/Session/checkSession.php', {
         method: 'GET',
         credentials: 'same-origin'
     });
@@ -360,7 +360,7 @@ function configurarModalComentarios(productoId) {
     const loginPrompt = document.getElementById('login-prompt-modal');
     const formComentario = document.getElementById('form-comentario-modal');
 
-    fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+    fetch('/App/Control/Session/checkSession.php', {
         method: 'GET',
         credentials: 'same-origin'
     })
@@ -522,7 +522,7 @@ function enviarComentarioModal(productoId) {
 
     const calificacion = parseFloat(formData.get('calificacion'));
 
-    fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+    fetch('/App/Control/Session/checkSession.php', {
         method: 'GET',
         credentials: 'same-origin'
     })
@@ -701,7 +701,7 @@ async function guardarComentario(comentarioId) {
 
     let usuarioActual = null;
     try {
-        const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+        const response = await fetch('/App/Control/Session/checkSession.php', {
             method: 'GET',
             credentials: 'same-origin'
         });
@@ -749,7 +749,7 @@ async function eliminarComentario(comentarioId) {
     if (!confirm('¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.')) {
         return;
     }
-    const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+    const response = await fetch('/App/Control/Session/checkSession.php', {
         method: 'GET',
         credentials: 'same-origin'
     });

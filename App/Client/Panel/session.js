@@ -1,6 +1,6 @@
 async function loadSVGLogo() {
     try {
-        const response = await fetch('/ARJE-CodigoBase/App/Recursos/logo.svg');
+        const response = await fetch('/App/Recursos/logo.svg');
         const svgText = await response.text();
         const logoContainer = document.getElementById('logo-container');
         if (logoContainer) {
@@ -20,7 +20,7 @@ async function loadSVGLogo() {
 
 async function checkSession() {
     try {
-        const response = await fetch('/ARJE-CodigoBase/App/Control/Session/checkSession.php', {
+        const response = await fetch('/App/Control/Session/checkSession.php', {
             method: 'GET',
             credentials: 'same-origin'
         });
@@ -38,7 +38,7 @@ async function checkSession() {
                 userNameElement.textContent = "Sin sesión";
                 userRolElement.textContent = "Sin sesión";
             }
-            userIcon.innerHTML += `<a href="/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html" class="notlogged">
+            userIcon.innerHTML += `<a href="/App/Control/SignIn/FrontEnd/index.html" class="notlogged">
                             <svg width="clamp(35px, 4vw, 50px)" height="clamp(35px, 4vw, 50px)" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect x=".101" y=".862" width="46" height="45.292" rx="22.646" fill="#181818"
                                     fill-opacity=".5" />
@@ -56,12 +56,12 @@ async function checkSession() {
             });
             return false;
         } else {
-            const resposnseAvatar = await fetch('/ARJE-CodigoBase/App/Control/Session/avatar.php', {
+            const resposnseAvatar = await fetch('/App/Control/Session/avatar.php', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
             const avatar = await resposnseAvatar.json();
-            userIcon.innerHTML += `<img src="/ARJE-CodigoBase/App/Recursos/avatars/${avatar.avatar}" id="avatar" class="logged" alt="Foto de perfíl">`
+            userIcon.innerHTML += `<img src="/App/Recursos/avatars/${avatar.avatar}" id="avatar" class="logged" alt="Foto de perfíl">`
             if (userNameElement) {
                 userNameElement.textContent = `${data.user.nombre} ${data.user.apellido}`;
                 userRolElement.textContent = `${data.user.rol}`;
@@ -79,7 +79,7 @@ async function checkSession() {
             return true;
         }
     } catch (error) {
-        window.location.href = '/ARJE-CodigoBase/App/Control/SignIn/FrontEnd/index.html';
+        window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
         return false;
     }
 }
