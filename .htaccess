@@ -8,6 +8,9 @@ Options -Indexes
 # Regla para /Panel
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Panel/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Client/Panel/FrontEnd/index\.html$ Panel [R=301,L]
+# Regla para /SARI
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Gerente/SARI/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Admin/Gerente/SARI/FrontEnd/index\.html$ SARI [R=301,L]
 # Regla para /Contacto
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Contacto/Frontend/index\.html\sHTTP
 RewriteRule ^App/Client/Contacto/Frontend/index\.html$ Contacto [R=301,L]
@@ -20,6 +23,9 @@ RewriteRule ^App/Client/MiUsuario/FrontEnd/index\.html$ MiUsuario [R=301,L]
 # Regla para /Menu
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/Menu/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Client/Ventas/Menu/FrontEnd/index\.html$ Menu [R=301,L]
+# Regla para /Menu?id=X (detalle.html)
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/Menu/FrontEnd/detalle\.html\?(.+)\sHTTP
+RewriteRule ^App/Client/Ventas/Menu/FrontEnd/detalle\.html$ Menu/Plato?%1 [R=301,L]
 # Regla para /Reservas
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/Reservas/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Client/Ventas/Reservas/FrontEnd/index\.html$ Reservas [R=301,L]
@@ -34,7 +40,13 @@ RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/SignUp/FrontEnd/index\.html\
 RewriteRule ^App/Control/SignUp/FrontEnd/index\.html$ SignUp [R=301,L]
 # Regla para /SignInEmpleado
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/SignInEmpleado/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Control/SignInEmpleado/FrontEnd/index\.html$ SignInEmpleado [R=301,L]
+RewriteRule ^App/Control/SignInEmpleado/FrontEnd/index\.html$ Empleado [R=301,L]
+# Regla para /ContraseñaOlvidada
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/RecuperarContrasena/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Control/RecuperarContrasena/FrontEnd/index\.html$ ContraseñaOlvidada [R=301,L]
+# Regla para /RecuperarContraseña
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/RecuperarContrasena/FrontEnd/restablecer\.html\?(.+)\sHTTP
+RewriteRule ^App/Control/RecuperarContrasena/FrontEnd/restablecer\.html$ RecuperarContraseña?%1 [R=301,L]
 # Regla para /Informes
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Admin/Gerente/Informes/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Admin/Gerente/Informes/FrontEnd/index\.html$ Informes [R=301,L]
@@ -73,15 +85,19 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 # 2. Regla de Reescriba
 RewriteRule ^Panel$ App/Client/Panel/FrontEnd/index.html [L]
+RewriteRule ^SARI$ App/Admin/Gerente/SARI/FrontEnd/index.html [L]
 RewriteRule ^Contacto$ App/Client/Contacto/FrontEnd/index.html [L]
 RewriteRule ^Informacion$ App/Client/Informacion/FrontEnd/index.html [L]
 RewriteRule ^MiUsuario$ App/Client/MiUsuario/FrontEnd/index.html [L]
 RewriteRule ^Menu$ App/Client/Ventas/Menu/FrontEnd/index.html [L]
+RewriteRule ^Menu/Plato$ App/Client/Ventas/Menu/FrontEnd/detalle.html [L]
 RewriteRule ^Reservas$ App/Client/Ventas/Reservas/FrontEnd/index.html [L]
 RewriteRule ^TakeAway$ App/Client/Ventas/TakeAway/FrontEnd/index.html [L]
 RewriteRule ^SignIn$ App/Control/SignIn/FrontEnd/index.html [L]
 RewriteRule ^SignUp$ App/Control/SignUp/FrontEnd/index.html [L]
-RewriteRule ^SignInEmpleado$ App/Control/SignInEmpleado/FrontEnd/index.html [L]
+RewriteRule ^Empleado$ App/Control/SignInEmpleado/FrontEnd/index.html [L]
+RewriteRule ^ContraseñaOlvidada$ App/Control/RecuperarContrasena/FrontEnd/index.html [L]
+RewriteRule ^RecuperarContraseña$ App/Control/RecuperarContrasena/FrontEnd/restablecer.html [L]
 RewriteRule ^Informes$ App/Admin/Gerente/Informes/FrontEnd/index.html [L]
 RewriteRule ^Pedidos$ App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index.html [L]
 RewriteRule ^Inventario$ App/Admin/Stock/FrontEnd/index.html [L]

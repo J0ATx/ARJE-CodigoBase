@@ -1,12 +1,10 @@
 <?php
-// Configuración
 header('Content-Type: application/json');
-$ollama_ip = "127.0.0.1"; // ¡CAMBIA ESTO!
+$ollama_ip = "127.0.0.1";
 $ollama_port = "11434";
 $ollama_model = "gemma3:4b";
-$ollama_url = "http://$ollama_ip:$ollama_port/api/generate";
+$ollama_url = "http://$ollama_ip:$ollama_port/api/chat";
 
-// --- 1. Base de Conocimiento Estática ---
 $knowledge_base = "
 Categoría: Horarios, Contacto y Ubicación
 
@@ -137,28 +135,35 @@ P: ¿La propina es obligatoria?
 R: La propina no es obligatoria y queda a criterio del cliente. Para grupos grandes (más de 8 personas) sugerimos un 10% por el servicio adicional, pero siempre es opcional.
 ";
 
-// --- 2. Obtener la Pregunta del Usuario ---
 $input = json_decode(file_get_contents('php://input'), true);
-$user_query = $input['query'] ?? '';
+$messages = $input['messages'] ?? [];
 
-if (empty($user_query)) {
+if (empty($messages)) {
     http_response_code(400);
-    echo json_encode(["error" => "No se recibió ninguna consulta."]);
+    echo json_encode(["error" => "No se recibió ningún historial de mensajes."]);
     exit;
 }
 
-// --- 3. Construir el Prompt Enriquecido (Pseudo-RAG) ---
-$system_instruction = "Usa la información proporcionada en la sección CONTEXTO DE CONOCIMIENTO para responder a la pregunta del usuario. Prioriza información del contexto cuando esté disponible. Si la pregunta es un saludo o small talk (por ejemplo 'hola'), responde de forma cordial y útil en lugar de indicar solamente que no hay información. Evita inventar hechos que no estén en el CONTEXTO; cuando falten datos específicos, admite la falta de información y ofrece alternativas útiles (por ejemplo, pedir más detalles o proporcionar información general aplicable).";
+$system_instruction = "Eres Maitre, un asistente virtual amable y servil del restaurante 'Los 3 Tanos'. 
+Usa la información proporcionada en la sección CONTEXTO DE CONOCIMIENTO para responder a la pregunta del usuario.
+Prioriza información del contexto cuando esté disponible.
+Si la pregunta es un saludo o small talk (por ejemplo 'hola'), responde de forma cordial y útil.
+Evita inventar hechos que no estén en el CONTEXTO; cuando falten datos específicos, admite la falta de información y ofrece alternativas útiles.
+Responde siempre en español.
 
-$final_prompt = 
-    $system_instruction . "\n\n" .
-    "CONTEXTO DE CONOCIMIENTO:\n" . $knowledge_base . "\n\n" . 
-    "PREGUNTA DEL USUARIO: " . $user_query;
+CONTEXTO DE CONOCIMIENTO:
+" . $knowledge_base;
 
-// --- 4. Preparar la Petición a Ollama ---
+$system_message = [
+    "role" => "system",
+    "content" => $system_instruction
+];
+
+array_unshift($messages, $system_message);
+
 $data = [
     'model' => $ollama_model,
-    'prompt' => $final_prompt,
+    'messages' => $messages,
     'stream' => false
 ];
 
@@ -167,23 +172,21 @@ $options = [
         'header'  => "Content-Type: application/json\r\n",
         'method'  => 'POST',
         'content' => json_encode($data),
-        'timeout' => 60, // Tiempo de espera en segundos para la respuesta de Ollama
+        'timeout' => 60,
     ],
 ];
 $context  = stream_context_create($options);
 
-// --- 5. Llamar a la API de Ollama ---
 $result = @file_get_contents($ollama_url, false, $context);
 
 if ($result === FALSE) {
     http_response_code(503);
     echo json_encode(["error" => "Error al conectar con la API de Ollama. Asegúrate de que esté corriendo en $ollama_ip:$ollama_port."]);
 } else {
-    // Ollama devuelve JSON, lo parseamos y extraemos la respuesta
     $ollama_response = json_decode($result, true);
     
-    // Devolvemos solo la respuesta generada por el modelo
-    $model_response = $ollama_response['response'] ?? 'Respuesta del modelo no encontrada.';
+    $model_response = $ollama_response['message']['content'] ?? 'Respuesta del modelo no encontrada.';
+    
     echo json_encode(["response" => $model_response]);
 }
 

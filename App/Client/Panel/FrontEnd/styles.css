@@ -18,6 +18,10 @@ html {
     text-size-adjust: none;
 }
 
+li{
+    text-indent: -1em;
+    margin-left: 32px;
+}
 @font-face {
     font-family: 'Nesatho';
     src: url('files/nesatho-webfont.woff') format('woff'),
@@ -200,10 +204,11 @@ html {
     border-radius: 16px;
     padding: 1px;
     z-index: 0;
-    display:flex;
-    align-items:center;
-    width:100%;
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
+
 .chatbot-input-wrapper::before {
     content: "";
     position: absolute;
@@ -247,7 +252,7 @@ html {
     background-clip: padding-box;
 }
 
-.chatbot-send::before{
+.chatbot-send::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -259,9 +264,11 @@ html {
     -webkit-mask-composite: xor;
     mask-composite: exclude;
 }
-.chatbot-send:hover{
+
+.chatbot-send:hover {
     background: linear-gradient(to right, #ffffff4d, #ffffff2d);
 }
+
 #loading {
     display: none;
     color: #EFE7D2;

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <base href="/App/Control/RecuperarContrasena/FrontEnd/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../Recursos/favicon.ico">
+    <title>Los 3 Tanos - Recuperar Contraseña</title>
+</head>
+
+<body>
+    <div class="decoration-bg"></div>
+    <div class="texture-bg"></div>
+    <div class="smoke-bg"></div>
+    <div class="container">
+        <div class="reset-container">
+            <div class="reset-bg" style="max-height: 600px">
+                <a href="/App/Control/SignIn/FrontEnd/index.html" class="back-btn" aria-label="Volver al inicio de sesión">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                <div class="reset-content">
+                    <div>
+                        <h2>¿Olvidaste tu <br>contraseña?</h2>
+                        <h3>Ingresa tu email y te enviaremos un enlace para recuperarla</h3>
+                    </div>
+                    <form id="recuperarForm">
+                        <div class="reset-inputs">
+                            <label for="email">Email
+                                <div class="input-wrapper">
+                                    <input type="email" 
+                                           placeholder="tuemail@gmail.com" 
+                                           name="email" 
+                                           class="email-input"
+                                           id="email" 
+                                           required
+                                           autocomplete="email">
+                                </div>
+                            </label>
+                        </div>
+                        <div>
+                            <p class="mensajes" id="mensajes"></p>
+                            <button type="submit" class="reset-btn" id="botonRecuperar">
+                                <span class="btn-text">Enviar enlace de recuperación</span>
+                                <span class="btn-loading" style="display: none;">Enviando...</span>
+                            </button>
+                            <a href="/App/Control/SignIn/FrontEnd/index.html" class="signin-btn">Volver al inicio de sesión</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
