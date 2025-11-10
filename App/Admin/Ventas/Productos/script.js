@@ -8,6 +8,73 @@ document.addEventListener('DOMContentLoaded', () => {
     const ingredientSelect = document.getElementById('ingredientSelect');
     const ingredientAmount = document.getElementById('ingredientAmount');
     const addIngredientToListBtn = document.querySelector('.add-ingredient-btn');
+    let confirmacionCallback = null;
+
+    window.cerrarModalNotificacion = function() {
+        document.getElementById('modalNotificacion').classList.remove('active');
+        document.getElementById('modalNotificacion').style.display = 'none';
+    }
+
+    window.cancelarConfirmacion = function() {
+        document.getElementById('modalConfirmacion').classList.remove('active');
+        document.getElementById('modalConfirmacion').style.display = 'none';
+        confirmacionCallback = null;
+    }
+
+    window.confirmarAccion = function() {
+        if (confirmacionCallback) {
+            confirmacionCallback();
+            confirmacionCallback = null;
+        }
+        cancelarConfirmacion();
+    }
+
+    function mostrarNotificacion(tipo, titulo, mensaje) {
+        const iconContainer = document.getElementById('notificationIcon');
+        const titleElement = document.getElementById('notificationTitle');
+        const messageElement = document.getElementById('notificationMessage');
+
+        iconContainer.className = 'notification-icon';
+        iconContainer.classList.add(tipo);
+
+        const svgs = {
+            success: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>',
+            error: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>',
+            warning: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>'
+        };
+
+        iconContainer.innerHTML = svgs[tipo] || svgs.success;
+        titleElement.textContent = titulo;
+        messageElement.textContent = mensaje;
+
+        const modal = document.getElementById('modalNotificacion');
+        modal.classList.add('active');
+        modal.style.display = 'flex';
+    }
+
+    function mostrarConfirmacion(titulo, mensaje, callback) {
+        document.getElementById('confirmacionTitle').textContent = titulo;
+        document.getElementById('confirmacionMessage').textContent = mensaje;
+        confirmacionCallback = callback;
+        
+        const btnConfirmar = document.getElementById('btnConfirmar');
+        btnConfirmar.onclick = confirmarAccion;
+        
+        const modal = document.getElementById('modalConfirmacion');
+        modal.classList.add('active');
+        modal.style.display = 'flex';
+    }
+
+    window.addEventListener('click', function(e) {
+        const modalNotificacion = document.getElementById('modalNotificacion');
+        const modalConfirmacion = document.getElementById('modalConfirmacion');
+        
+        if (e.target === modalNotificacion) cerrarModalNotificacion();
+        if (e.target === modalConfirmacion) cancelarConfirmacion();
+    });
+
+    window.mostrarNotificacion = mostrarNotificacion;
+    window.mostrarConfirmacion = mostrarConfirmacion;
 
     loadExistingIngredients();
     loadCategories();
@@ -25,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const amount = ingredientAmount.value;
 
         if (!selectedIngredient.value || !amount) {
-            alert('Por favor seleccione un ingrediente y especifique la cantidad');
+            mostrarNotificacion('warning', 'Advertencia', 'Por favor seleccione un ingrediente y especifique la cantidad');
             return;
         }
 
@@ -120,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (ingredientes.length === 0) {
-            alert('Debe agregar al menos un ingrediente al producto');
+            mostrarNotificacion('warning', 'Advertencia', 'Debe agregar al menos un ingrediente al producto');
             return;
         }
 
@@ -129,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (imageInput.files.length > 0) {
             const file = imageInput.files[0];
             if (file.size > 2 * 1024 * 1024) {
-                alert('La imagen no debe pesar más de 2MB');
+                mostrarNotificacion('error', 'Error', 'La imagen no debe pesar más de 2MB');
                 return;
             }
             formData.append('imagen', file);
@@ -148,13 +215,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.success) {
                 productModal.style.display = 'none';
                 loadProducts();
-                alert(id ? 'Producto actualizado con éxito' : 'Producto agregado con éxito');
+                mostrarNotificacion('success', '¡Éxito!', id ? 'Producto actualizado con éxito' : 'Producto agregado con éxito');
             } else {
-                alert(data.message || 'Error al procesar la solicitud');
+                mostrarNotificacion('error', 'Error', data.message || 'Error al procesar la solicitud');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error al procesar la solicitud');
+            mostrarNotificacion('error', 'Error', 'Error al procesar la solicitud');
         }
     });
 });
@@ -188,13 +255,12 @@ function renderProducts(productos) {
 
     productos.forEach(producto => {
         const imageUrl = producto.imagen_url || '';
-
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>
-                <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="producto-info">
                     <div class="producto-imagen" style="width: 40px; height: 40px; border-radius: 4px; background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>
-                    <span>${producto.producto_nombre}</span>
+                    <span class="producto-nombre">${producto.producto_nombre}</span>
                 </div>
             </td>
             <td>$${producto.producto_precio}</td>
@@ -230,7 +296,7 @@ function renderProducts(productos) {
 function addIngredientToList(ingrediente) {
     const existingIngredient = document.querySelector(`.ingredient-item[data-stock-id="${ingrediente.stock_id}"]`);
     if (existingIngredient) {
-        alert('Este ingrediente ya ha sido agregado');
+        mostrarNotificacion('warning', 'Advertencia', 'Este ingrediente ya ha sido agregado');
         return;
     }
 
@@ -274,38 +340,42 @@ async function editProduct(id) {
             producto.ingredientes.forEach(ingrediente => addIngredientToList(ingrediente));
             document.getElementById('productModal').style.display = 'flex';
         } else {
-            alert(data.message || 'Error al cargar el producto');
+            mostrarNotificacion('error', 'Error', data.message || 'Error al cargar el producto');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al cargar el producto');
+        mostrarNotificacion('error', 'Error', 'Error al cargar el producto');
     }
 }
 
 async function deleteProduct(id) {
-    if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
+    mostrarConfirmacion(
+        'Eliminar Producto',
+        '¿Estás seguro de que deseas eliminar este producto?',
+        async function() {
+            const formData = new FormData();
+            formData.append('id', id);
 
-    const formData = new FormData();
-    formData.append('id', id);
+            try {
+                const response = await fetch('../BackEnd/eliminar.php', {
+                    method: 'POST',
+                    body: formData
+                });
 
-    try {
-        const response = await fetch('../BackEnd/eliminar.php', {
-            method: 'POST',
-            body: formData
-        });
+                const data = await response.json();
 
-        const data = await response.json();
-
-        if (data.success) {
-            loadProducts();
-            alert('Producto eliminado con éxito');
-        } else {
-            alert(data.message || 'Error al eliminar el producto');
+                if (data.success) {
+                    loadProducts();
+                    mostrarNotificacion('success', '¡Éxito!', 'Producto eliminado con éxito');
+                } else {
+                    mostrarNotificacion('error', 'Error', data.message || 'Error al eliminar el producto');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarNotificacion('error', 'Error', 'Error al eliminar el producto');
+            }
         }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Error al eliminar el producto');
-    }
+    );
 }
 
 function clearDynamicElements() {
@@ -372,7 +442,11 @@ async function viewProductDetails(productId) {
                             <h3>Receta</h3>
                             <pre style="white-space: pre-wrap;">${(producto.producto_receta || '').trim() || '—'}</pre>
                         </div>
-                        <img src="${producto.imagen_url}" alt="Foto producto">
+                        
+                        <div class="detail-section">
+                            <h3>Imagen del Producto</h3>
+                            <img src="${producto.imagen_url}" alt="Foto producto">
+                        </div>
                     </div>
                 </div>
             `;

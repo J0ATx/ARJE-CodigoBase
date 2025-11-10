@@ -1,6 +1,7 @@
 let ws;
 let productosDisponibles = [];
 let pedidos = [];
+let confirmacionCallback = null;
 
 let touchStartX = 0;
 let touchStartY = 0;
@@ -12,6 +13,69 @@ let initialX = 0;
 let initialY = 0;
 let xOffset = 0;
 let yOffset = 0;
+
+window.cerrarModalNotificacion = function() {
+  document.getElementById('modalNotificacion').classList.remove('active');
+  document.getElementById('modalNotificacion').style.display = 'none';
+}
+
+window.cancelarConfirmacion = function() {
+  document.getElementById('modalConfirmacion').classList.remove('active');
+  document.getElementById('modalConfirmacion').style.display = 'none';
+  confirmacionCallback = null;
+}
+
+window.confirmarAccion = function() {
+  if (confirmacionCallback) {
+    confirmacionCallback();
+    confirmacionCallback = null;
+  }
+  cancelarConfirmacion();
+}
+
+function mostrarNotificacion(tipo, titulo, mensaje) {
+  const iconContainer = document.getElementById('notificationIcon');
+  const titleElement = document.getElementById('notificationTitle');
+  const messageElement = document.getElementById('notificationMessage');
+
+  iconContainer.className = 'notification-icon';
+  iconContainer.classList.add(tipo);
+
+  const svgs = {
+    success: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>',
+    error: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>',
+    warning: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>'
+  };
+
+  iconContainer.innerHTML = svgs[tipo] || svgs.success;
+  titleElement.textContent = titulo;
+  messageElement.textContent = mensaje;
+
+  const modal = document.getElementById('modalNotificacion');
+  modal.classList.add('active');
+  modal.style.display = 'flex';
+}
+
+function mostrarConfirmacion(titulo, mensaje, callback) {
+  document.getElementById('confirmacionTitle').textContent = titulo;
+  document.getElementById('confirmacionMessage').textContent = mensaje;
+  confirmacionCallback = callback;
+  
+  const btnConfirmar = document.getElementById('btnConfirmar');
+  btnConfirmar.onclick = confirmarAccion;
+  
+  const modal = document.getElementById('modalConfirmacion');
+  modal.classList.add('active');
+  modal.style.display = 'flex';
+}
+
+window.addEventListener('click', function(e) {
+  const modalNotificacion = document.getElementById('modalNotificacion');
+  const modalConfirmacion = document.getElementById('modalConfirmacion');
+  
+  if (e.target === modalNotificacion) cerrarModalNotificacion();
+  if (e.target === modalConfirmacion) cancelarConfirmacion();
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   cargarPedidos();
@@ -108,28 +172,32 @@ function cargarPedidos() {
 
           const permitido = Array.isArray(TRANSICIONES_COCINA[pedidoObj.estado]) && TRANSICIONES_COCINA[pedidoObj.estado].includes(nuevoEstado);
           if (!permitido) {
-            alert('No tiene permiso para mover este pedido a ese estado. El flujo para cocina es: Pendiente -> En-Preparacion -> Listo.');
+            mostrarNotificacion('warning', 'Advertencia', 'No tiene permiso para mover este pedido a ese estado. El flujo para cocina es: Pendiente -> En-Preparacion -> Listo.');
             return;
           }
 
-          if (!confirm(`Mover pedido #${idPedido} a \"${nuevoEstado.replace('_', ' ')}\"?`)) return;
-
-          try {
-            const resp = await fetch('../BackEnd/cambiarEstado.php', {
-              method: 'POST',
-              body: new URLSearchParams({ idPedido, nuevoEstado })
-            });
-            const res = await resp.json();
-            if (res.success) {
-              sendReload();
-              cargarPedidos();
-            } else {
-              alert(res.message || 'Error al cambiar estado');
+          mostrarConfirmacion(
+            'Cambiar Estado',
+            `Mover pedido #${idPedido} a "${nuevoEstado.replace('_', ' ')}"?`,
+            async function() {
+              try {
+                const resp = await fetch('../BackEnd/cambiarEstado.php', {
+                  method: 'POST',
+                  body: new URLSearchParams({ idPedido, nuevoEstado })
+                });
+                const res = await resp.json();
+                if (res.success) {
+                  sendReload();
+                  cargarPedidos();
+                } else {
+                  mostrarNotificacion('error', 'Error', res.message || 'Error al cambiar estado');
+                }
+              } catch (err) {
+                console.error(err);
+                mostrarNotificacion('error', 'Error', 'Error al cambiar estado');
+              }
             }
-          } catch (err) {
-            console.error(err);
-            alert('Error al cambiar estado');
-          }
+          );
         });
 
         row.appendChild(header);
@@ -220,7 +288,7 @@ function cargarPedidos() {
               sendReload();
               cargarPedidos();
             } else {
-              alert(data.message || 'Error');
+              mostrarNotificacion('error', 'Error', data.message || 'Error al cambiar estado');
             }
           });
       }
@@ -410,11 +478,15 @@ function handleTouchEnd(e) {
         TRANSICIONES_COCINA[pedidoObj.estado].includes(nuevoEstado);
 
       if (permitido) {
-        if (confirm(`Mover pedido #${idPedido} a "${nuevoEstado.replace('_', ' ')}"?`)) {
-          cambiarEstadoPedido(idPedido, nuevoEstado);
-        }
+        mostrarConfirmacion(
+          'Cambiar Estado',
+          `Mover pedido #${idPedido} a "${nuevoEstado.replace('_', ' ')}"?`,
+          function() {
+            cambiarEstadoPedido(idPedido, nuevoEstado);
+          }
+        );
       } else {
-        alert('No tiene permiso para mover este pedido a ese estado. El flujo para cocina es: Pendiente -> En-Preparacion -> Listo.');
+        mostrarNotificacion('warning', 'Advertencia', 'No tiene permiso para mover este pedido a ese estado. El flujo para cocina es: Pendiente -> En-Preparacion -> Listo.');
       }
     }
   }

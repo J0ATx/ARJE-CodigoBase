@@ -14,11 +14,11 @@ function getStarRating(calificacion) {
 
 function getRatingText(calificacion) {
     if (!calificacion) return '';
-    return `${Math.round(parseFloat(calificacion))}/${RATING.MAX}`;
+    return `${Math.round(parseInt(calificacion))}/${RATING.MAX}`;
 }
 
 function validateRating(calificacion) {
-    const rating = parseFloat(calificacion);
+    const rating = parseInt(calificacion);
     return !isNaN(rating) && rating >= RATING.MIN && rating <= RATING.MAX;
 }
 

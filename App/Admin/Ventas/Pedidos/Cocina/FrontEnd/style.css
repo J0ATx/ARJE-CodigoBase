@@ -1134,3 +1134,143 @@ dialog input[type="radio"] {
 #main-content.visible {
   display: block;
 }
+/*
+ Responsividad para móvil */
+@media (max-width: 767px) {
+    .page {
+        grid-template-columns: 1fr;
+        grid-template-areas: "main";
+        position: relative;
+    }
+
+    .contenedor {
+        padding: 70px 15px 15px 15px;
+        width: 100%;
+        margin: 0;
+    }
+
+    h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .pedidos-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .pedido-card {
+        padding: 15px;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        max-height: 90vh;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+    }
+
+    .submit-button,
+    .cancel-button {
+        width: 100%;
+    }
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-notification .notification-content {
+  max-width: 400px;
+  text-align: center;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-notification .form-buttons {
+  justify-content: center;
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.modal-notification .form-buttons .submit-button,
+.modal-notification .form-buttons .cancel-button {
+  flex: 0 0 auto;
+  min-width: 120px;
+}
+
+.notification-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.notification-icon svg {
+  width: 50px;
+  height: 50px;
+}
+
+.notification-icon.success {
+  background-color: #d4edda;
+}
+
+.notification-icon.success svg {
+  fill: #28a745;
+}
+
+.notification-icon.error {
+  background-color: #f8d7da;
+}
+
+.notification-icon.error svg {
+  fill: #dc3545;
+}
+
+.notification-icon.warning {
+  background-color: #fff3cd;
+}
+
+.notification-icon.warning svg {
+  fill: #ffc107;
+}
+
+.notification-content h2 {
+  margin-bottom: 15px;
+}
+
+.notification-content p {
+  color: #666;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.notification-content .submit-button {
+  width: auto;
+  min-width: 120px;
+}

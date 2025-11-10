@@ -2,7 +2,7 @@ const nombre = document.getElementById('nombre');
 const mision = document.getElementById('mision');
 const vision = document.getElementById('vision');
 const valores = document.getElementById('valores');
-
+const ubicacion = document.getElementById('ubicacion');
 document.addEventListener('DOMContentLoaded', function () {
     fetch('../BackEnd/informacion.php', {
         method: 'GET'
@@ -13,5 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
         mision.appendChild(document.createElement('p')).textContent = data.info.empresa_mision;
         vision.appendChild(document.createElement('p')).textContent = data.info.empresa_vision;
         valores.appendChild(document.createElement('p')).textContent = data.info.empresa_valores;
+        ubicacion.textContent = data.info.empresa_ciudad + ', ' + data.info.empresa_calle;
     });
 });

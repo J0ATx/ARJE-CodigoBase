@@ -6,6 +6,67 @@
     connectedCallback() {
             this.innerHTML = `
         <style>
+
+            .menu-toggle {
+                display: none;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1001 !important;
+                background-color: #1c1c1c;
+                border: none;
+                border-radius: 8px;
+                padding: 12px;
+                cursor: pointer;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+                transition: all 0.3s ease;
+            }
+
+            .menu-toggle:hover {
+                background-color: #363636;
+                transform: scale(1.05);
+            }
+
+            .menu-toggle span {
+                display: block;
+                width: 25px;
+                height: 3px;
+                background-color: #F5F5F5;
+                margin: 5px 0;
+                transition: all 0.3s ease;
+                border-radius: 2px;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -7px);
+            }
+
+            .nav-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .nav-overlay.active {
+                display: block;
+                opacity: 1;
+            }
+
             nav {
                 width: 300px;
                 height: calc(100vh - 80px);
@@ -13,6 +74,8 @@
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
+                position: relative;
+                z-index: 1000;
             }
 
             nav .logo {
@@ -109,13 +172,6 @@
                 width: 100%;
                 cursor: pointer;
                 text-align: left;
-            }
-            .active{
-                background-color: #C3C3C3;
-            }
-            nav .dropdown-toggle:hover,
-            nav .dropdown-toggle.active {
-                background-color: #C3C3C3;
             }
 
             nav .dropdown-toggle::after {
@@ -277,7 +333,64 @@
                 background-color:rgb(255, 122, 122);
             }
 
+            @media (max-width: 767px) {
+                .menu-toggle {
+                    display: block !important;
+                }
+
+                nav {
+                    position: fixed;
+                    top: 0;
+                    left: -300px;
+                    height: 100vh;
+                    width: 300px;
+                    z-index: 1000;
+                    transition: left 0.3s ease;
+                    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+                }
+
+                nav.active {
+                    left: 0;
+                }
+
+                nav .user-section {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                }
+            }
+
+            @media (max-width: 1199px) and (min-width: 768px) {
+                nav {
+                    width: 250px;
+                }
+
+                nav .user-section {
+                    width: 250px;
+                }
+
+                nav .logo-container p {
+                    font-size: 2rem;
+                }
+
+                nav ul li a {
+                    font-size: 0.9rem;
+                    padding: 10px 12px;
+                }
+
+                nav .submenu .nav-link {
+                    font-size: 0.85rem;
+                }
+            }
+
         </style>
+        <button class="menu-toggle" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-overlay"></div>
         <nav>
             <div class="logo-container">
                 <a href="/App/Client/Panel/FrontEnd/index.html">
@@ -350,7 +463,54 @@
             setTimeout(() => {
                 this.updateActiveLink();
                 this.addEventListeners();
+                this.setupMobileMenu();
             }, 10);
+        }
+
+        setupMobileMenu() {
+            const menuToggle = this.querySelector('.menu-toggle');
+            const nav = this.querySelector('nav');
+            const overlay = this.querySelector('.nav-overlay');
+            const navLinks = this.querySelectorAll('.nav-link');
+
+            if (!menuToggle || !nav || !overlay) {
+                console.error('Elementos del menú móvil no encontrados!');
+                return;
+            }
+
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                nav.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+            });
+
+            overlay.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                nav.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 767) {
+                        menuToggle.classList.remove('active');
+                        nav.classList.remove('active');
+                        overlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 767) {
+                    menuToggle.classList.remove('active');
+                    nav.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
         }
 
         updateActiveLink() {

@@ -160,6 +160,7 @@ form {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    z-index: -1;
 }
 
 .login-content h2 {
@@ -328,7 +329,7 @@ form {
 .login-btn {
     margin-top: 16px;
     position: relative;
-    z-index: 1;
+    z-index: -1;
     background: linear-gradient(to right, #ffffff23, #ffffff02);
     width: 100%;
     color: white;
@@ -610,7 +611,7 @@ form {
     opacity: 0;
     visibility: hidden;
     transition: opacity .15s ease, visibility .15s ease, transform .15s ease;
-    transform: translateY(-4px);
+    transform: translateX(25%) translateY(-4px);
     z-index: 999;
 }
 
@@ -618,5 +619,5 @@ form {
 .tooltip:focus-within .tooltip-content {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateX(25%) translateY(0);
 }

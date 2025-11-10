@@ -143,6 +143,32 @@
       </div>
     </form>
   </dialog>
+
+  <div id="modalNotificacion" class="modal modal-notification">
+    <div class="modal-content notification-content">
+      <div class="notification-icon" id="notificationIcon"></div>
+      <h2 id="notificationTitle">Título</h2>
+      <p id="notificationMessage">Mensaje</p>
+      <button type="button" class="submit-button" onclick="cerrarModalNotificacion()">Aceptar</button>
+    </div>
+  </div>
+
+  <div id="modalConfirmacion" class="modal modal-notification">
+    <div class="modal-content notification-content">
+      <div class="notification-icon warning">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+        </svg>
+      </div>
+      <h2 id="confirmacionTitle">Confirmar acción</h2>
+      <p id="confirmacionMessage">¿Estás seguro?</p>
+      <div class="form-buttons">
+        <button type="button" class="cancel-button" onclick="cancelarConfirmacion()">Cancelar</button>
+        <button type="button" class="submit-button" id="btnConfirmar">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
   <script src="../session.js"></script>
   <script src="../script.js"></script>
 </body>

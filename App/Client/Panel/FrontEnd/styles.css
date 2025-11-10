@@ -332,6 +332,7 @@ h1 {
     color: #EFE7D2;
     z-index: 1;
     font-size: clamp(8rem, 8vw, 10rem);
+    width: 600px;
 }
 
 h2 {
@@ -502,12 +503,12 @@ h2 {
     transform: translate(-50%, -50%);
     z-index: 3;
     background: linear-gradient(to right, #ffffff23, #ffffff02);
-    width: 200px;
+    width: fit-content;
     color: white;
-    padding: 12px 24px;
+    padding: clamp(0.5rem, 0rem + 2vw, 1rem) clamp(1rem, 2vw, 3rem);
     border: none;
-    border-radius: 16px;
-    font-size: 16px;
+    border-radius: 1vw;
+    font-size: clamp(0.5rem, 0rem + 2vw, 1rem);
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
     box-shadow: 0 0 1px #fff;
@@ -520,7 +521,7 @@ h2 {
     position: absolute;
     inset: 0;
     z-index: -1;
-    border-radius: 16px;
+    border-radius: 1vw;
     padding: 1px;
     background: radial-gradient(circle, #ffffff44 60%, #ffffffbe 100%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -549,6 +550,7 @@ h2 {
     h1 {
         font-size: 8rem;
         text-align: center;
+        width: 100%;
     }
 
     h2 {
@@ -685,15 +687,9 @@ h2 {
         gap: 1vw;
     }
 
-    .page>footer {
-        font-size: 1.5vw;
-    }
 }
 
 @media (max-width: 700px) {
-    .page>footer {
-        font-size: 2vw;
-    }
 
     .page>main>header {
         font-size: 1.5vw;
@@ -718,14 +714,6 @@ h2 {
     .card-text {
         font-size: 0.8rem;
     }
-
-    footer a {
-        font-size: 0.8rem;
-    }
-
-    footer p {
-        font-size: 0.8rem;
-    }
 }
 
 @media (max-width: 400px) {
@@ -738,14 +726,6 @@ h2 {
     }
 
     .card-text {
-        font-size: 0.6rem;
-    }
-
-    footer a {
-        font-size: 0.6rem;
-    }
-
-    footer p {
         font-size: 0.6rem;
     }
 }

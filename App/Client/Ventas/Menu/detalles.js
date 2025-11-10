@@ -3,18 +3,19 @@ const RATING = {
     MAX: 5,
     STAR: '★',
     EMPTY: '☆',
-    
-    getStars: function(rating) {
+
+    getStars: function (rating) {
         if (!rating) return this.EMPTY.repeat(this.MAX);
         const stars = Math.min(this.MAX, Math.max(this.MIN, Math.round(rating)));
         return this.STAR.repeat(stars) + this.EMPTY.repeat(this.MAX - stars);
     },
-    
-    format: function(rating) {
-        return rating ? `${Math.round(rating)}/${this.MAX}` : '';
+
+    format: function (rating) {
+        if (!rating) return '';
+        return `${Math.round(parseInt(rating))}/${RATING.MAX}`;
     },
-    
-    isValid: function(rating) {
+
+    isValid: function (rating) {
         const num = Number(rating);
         return !isNaN(num) && num >= this.MIN && num <= this.MAX;
     }
@@ -427,13 +428,13 @@ function configurarEstrellasModal() {
     const stars = Array.from(container.querySelectorAll('.estrella'));
     const ratingInput = document.getElementById('calificacion-modal');
     const ratingText = document.getElementById('calificacion-texto-modal');
-    
+
     let selectedRating = 0;
     let hoverRating = 0;
 
     const updateStars = () => {
         const displayRating = hoverRating || selectedRating;
-        
+
         stars.forEach((star, index) => {
             const starValue = index + 1;
             star.textContent = starValue <= displayRating ? RATING.STAR : RATING.EMPTY;
@@ -450,14 +451,14 @@ function configurarEstrellasModal() {
         }
 
         container.setAttribute('aria-valuenow', selectedRating);
-        container.setAttribute('aria-valuetext', 
+        container.setAttribute('aria-valuetext',
             selectedRating ? `${selectedRating} estrella${selectedRating !== 1 ? 's' : ''}` : 'Sin calificación'
         );
     };
 
     stars.forEach((star, index) => {
         const starValue = index + 1;
-        
+
         star.addEventListener('click', () => {
             selectedRating = selectedRating === starValue ? 0 : starValue;
             ratingInput.value = selectedRating;
@@ -572,7 +573,7 @@ function editarComentario(comentarioId, contenidoActual, calificacionActual) {
     const comentarioAcciones = comentarioItem.querySelector('.comentario-acciones');
 
     const calificacionMostrada = parseInt(calificacionActual);
-    
+
     const formEdicion = document.createElement('div');
     formEdicion.className = 'form-edicion-comentario';
     formEdicion.innerHTML = `
@@ -617,9 +618,9 @@ function configurarEstrellasEdicion(comentarioId, calificacionActual) {
 
     let calificacionMostrada = parseInt(calificacionActual);
     calificacionMostrada = Math.min(5, Math.max(1, calificacionMostrada));
-    
+
     calificacionHidden.value = calificacionActual;
-    
+
     calificacionTexto.textContent = `Calificación actual: ${calificacionMostrada}/5`;
 
     let hoverPreview = 0;
@@ -658,7 +659,7 @@ function configurarEstrellasEdicion(comentarioId, calificacionActual) {
             const esPreview = isPreview && valor <= calificacion;
 
             estrella.textContent = estaSeleccionada ? '★' : '☆';
-            
+
             if (isPreview) {
                 if (esPreview) {
                     estrella.classList.add('preview');

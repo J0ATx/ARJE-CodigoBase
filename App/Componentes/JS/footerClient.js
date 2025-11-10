@@ -4,7 +4,12 @@
     }
 
     connectedCallback() {
-        this.innerHTML = `
+        fetch('/App/Client/Informacion/BackEnd/informacion.php', {
+            method: 'GET'
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.innerHTML = `
         <style>
         footer {
     grid-area: footer;
@@ -17,17 +22,19 @@
     font-family: 'Poppins', sans-serif;
     color: #EFE7D2;
     height: 100%;
-    font-size: 1vw;
+    font-size: clamp(0.5rem, 0rem + 2vw, 1rem);
+    line-height: 1.5;
+    text-wrap: pretty;
+    text-align: center;
 }
 footer a {
     color: #EFE7D2;
     font-family: 'Poppins', sans-serif;
     text-decoration: underline;
-    font-size: clamp(1rem, 1vw, 1.5rem);
+    text-align: center;
 }
-
-footer p {
-    font-size: clamp(1rem, 1vw, 1.5rem);
+footer p{
+    max-width: 20vw;
 }
 footer a:visited {
     color: #EFE7D2;
@@ -43,11 +50,12 @@ footer a:active {
 }
         </style>
             <footer>
-                <a href="/Informacion">Los 3 Tanos Pizzería</a>
+                <a href="/Informacion">${data.info.empresa_nombre}</a>
                 <a href="/Contacto">Contacto</a>
-                <p>Las Toscas M. Ferreira y Central</p>
+                <p>${data.info.empresa_ciudad}, ${data.info.empresa_calle}</p>
             </footer>
     `;
+            });
     }
 }
 

@@ -1,8 +1,20 @@
+const title = document.querySelector('h1');
 const userInput = document.getElementById('userInput');
 const chatMessages = document.getElementById('chatMessages');
 const loadingDiv = document.getElementById('loading');
 const chatForm = document.getElementById('chatForm') || document.querySelector('form');
 let isGeneratingResponse = false;
+
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('/App/Client/Informacion/BackEnd/informacion.php', {
+        method: 'GET'
+    })
+    .then(res => res.json())
+    .then(data => {
+        title.textContent = data.info.empresa_nombre;
+    });
+});
+
 
 let conversationHistory = [
     {

@@ -129,12 +129,6 @@ function showMessage(mensaje, tipo = 'info') {
     }
 
     mensajesElement.textContent = mensaje;
-
-    if (tipo === 'error') {
-        setTimeout(() => {
-            clearMessages();
-        }, 5000);
-    }
 }
 
 function clearMessages() {
@@ -207,13 +201,15 @@ async function handleResetSubmit(event) {
     const newPassword = document.getElementById('newPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
 
+    if (!validatePasswordMatch(null, confirmPassword)) {
+        showMessage('Las contraseñas no coinciden.', 'error');
+        return;
+    }
     if (!validatePasswordStrength(null, newPassword)) {
+        showMessage('La contraseña debe tener al menos 8 caracteres, una letra, un número y un carácter especial.', 'error');
         return;
     }
 
-    if (!validatePasswordMatch(null, confirmPassword)) {
-        return;
-    }
 
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
@@ -249,21 +245,18 @@ async function restablecerContrasena(token, newPassword, confirmPassword) {
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
         }
-
         const data = await response.json();
-
+        console.log("data", data)
         if (data.exito) {
             showMessage(data.mensaje || 'Contraseña restablecida exitosamente.', 'success');
-
             document.getElementById('newPassword').value = '';
             document.getElementById('confirmPassword').value = '';
-
             setTimeout(() => {
                 showMessage('Redirigiendo al inicio de sesión...', 'info');
                 setTimeout(() => {
                     window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
-                }, 2000);
-            }, 3000);
+                }, 500);
+            }, 500);
 
         } else {
             showMessage(data.mensaje || 'Error al restablecer la contraseña. Inténtalo nuevamente.', 'error');
@@ -379,8 +372,3 @@ function togglePassword(inputId) {
     }
 }
 
-function debugLog(message, data = null) {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        console.log('[Recuperar Contraseña]', message, data);
-    }
-}

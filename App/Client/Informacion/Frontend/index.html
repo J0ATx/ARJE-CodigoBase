@@ -1,22 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
+    <meta charset="UTF-8" />
     <base href="/App/Client/Informacion/Frontend/">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Los 3 Tanos - Información</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../Recursos/favicon.ico">
+    <script src="../../../Componentes/JS/headerClient.js"></script>
+    <script src="../../../Componentes/JS/footerClient.js"></script>
 </head>
+
 <body>
-    <h1 id="nombre"></h1>
-    <div id="mision">
-        <h2>Mision</h2>
+    <div id="loading-screen">
+        <div id="logo-container" class="logo-loading"></div>
     </div>
-    <div id="vision">
-        <h2>Vision</h2>
-    </div>
-    <div id="valores">
-        <h2>Valores</h2>
-    </div>
+    <main class="main-container">
+        <div class="page">
+            <div class="left-side">
+                <client-header></client-header>
+            </div>
+            <div class="right-side">
+                <div class="info1">
+                    <h1 id="nombre"></h1>
+                    <h2 id="ubicacion"></h2>
+                </div>
+                <img src="./files/img/img2.jpg" class="img2">
+                <img src="./files/img/img3.webp" class="img3">
+                <div class="info4">
+                    <div id="mision">
+                        <h2>Mision</h2>
+                    </div>
+                    <div id="vision">
+                        <h2>Vision</h2>
+                    </div>
+                    <div id="valores">
+                        <h2>Valores</h2>
+                    </div>
+                </div>
+            </div>
+
+            <client-footer></client-footer>
+        </div>
+    </main>
     <script src="../script.js"></script>
+    <script src="../session.js"></script>
 </body>
+
 </html>

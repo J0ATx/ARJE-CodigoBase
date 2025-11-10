@@ -1,8 +1,8 @@
 let ws;
 let productosDisponibles = [];
 let pedidos = [];
+let confirmacionCallback = null;
 
-// Variables para el manejo del arrastre táctil
 let touchStartX = 0;
 let touchStartY = 0;
 let touchStartTime = 0;
@@ -13,6 +13,69 @@ let initialX = 0;
 let initialY = 0;
 let xOffset = 0;
 let yOffset = 0;
+
+window.cerrarModalNotificacion = function() {
+  document.getElementById('modalNotificacion').classList.remove('active');
+  document.getElementById('modalNotificacion').style.display = 'none';
+}
+
+window.cancelarConfirmacion = function() {
+  document.getElementById('modalConfirmacion').classList.remove('active');
+  document.getElementById('modalConfirmacion').style.display = 'none';
+  confirmacionCallback = null;
+}
+
+window.confirmarAccion = function() {
+  if (confirmacionCallback) {
+    confirmacionCallback();
+    confirmacionCallback = null;
+  }
+  cancelarConfirmacion();
+}
+
+function mostrarNotificacion(tipo, titulo, mensaje) {
+  const iconContainer = document.getElementById('notificationIcon');
+  const titleElement = document.getElementById('notificationTitle');
+  const messageElement = document.getElementById('notificationMessage');
+
+  iconContainer.className = 'notification-icon';
+  iconContainer.classList.add(tipo);
+
+  const svgs = {
+    success: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>',
+    error: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>',
+    warning: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>'
+  };
+
+  iconContainer.innerHTML = svgs[tipo] || svgs.success;
+  titleElement.textContent = titulo;
+  messageElement.textContent = mensaje;
+
+  const modal = document.getElementById('modalNotificacion');
+  modal.classList.add('active');
+  modal.style.display = 'flex';
+}
+
+function mostrarConfirmacion(titulo, mensaje, callback) {
+  document.getElementById('confirmacionTitle').textContent = titulo;
+  document.getElementById('confirmacionMessage').textContent = mensaje;
+  confirmacionCallback = callback;
+  
+  const btnConfirmar = document.getElementById('btnConfirmar');
+  btnConfirmar.onclick = confirmarAccion;
+  
+  const modal = document.getElementById('modalConfirmacion');
+  modal.classList.add('active');
+  modal.style.display = 'flex';
+}
+
+window.addEventListener('click', function(e) {
+  const modalNotificacion = document.getElementById('modalNotificacion');
+  const modalConfirmacion = document.getElementById('modalConfirmacion');
+  
+  if (e.target === modalNotificacion) cerrarModalNotificacion();
+  if (e.target === modalConfirmacion) cancelarConfirmacion();
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   cargarMesas();
@@ -168,13 +231,13 @@ function crearPedido(e) {
   const especificacion = document.getElementById('especificacionPedido').value || '';
 
   if (!idMozo) {
-    alert('Por favor, seleccione un mozo.');
+    mostrarNotificacion('warning', 'Advertencia', 'Por favor, seleccione un mozo.');
     return;
   }
 
   const productos = obtenerProductosSeleccionados('div > .producto-item', productosDisponibles);
   if (!productos.length) {
-    alert('Debe seleccionar al menos un producto.');
+    mostrarNotificacion('warning', 'Advertencia', 'Debe seleccionar al menos un producto.');
     return;
   }
 
@@ -228,14 +291,14 @@ function procederCrearPedido(idMesa, idMozo, especificacion, productos) {
     .then(r => r.json())
     .then(data => {
       if (data.success) {
-        alert('Pedido creado');
+        mostrarNotificacion('success', '¡Éxito!', 'Pedido creado exitosamente.');
         document.getElementById('formPedido').reset();
         document.getElementById('productosContainer').innerHTML = '';
         sendReload();
         cargarPedidos();
         document.getElementById('modalNuevoPedido').close();
       } else {
-        alert(data.message || 'Error');
+        mostrarNotificacion('error', 'Error', data.message || 'Error al crear el pedido.');
       }
     });
 }
@@ -244,7 +307,7 @@ function confirmarReservaActiva() {
   const emailCliente = document.getElementById('emailReserva').value;
 
   if (!emailCliente) {
-    alert('Por favor ingrese el email del cliente para confirmar.');
+    mostrarNotificacion('warning', 'Advertencia', 'Por favor ingrese el email del cliente para confirmar.');
     return;
   }
 
@@ -259,7 +322,7 @@ function confirmarReservaActiva() {
       document.getElementById('modalReservaActiva').close();
 
       if (data.success) {
-        alert('Reserva confirmada. Creando pedido...');
+        mostrarNotificacion('success', '¡Éxito!', 'Reserva confirmada. Creando pedido...');
         procederCrearPedido(
           pedidoData.idMesa,
           pedidoData.idMozo,
@@ -267,14 +330,14 @@ function confirmarReservaActiva() {
           pedidoData.productos
         );
       } else {
-        alert(data.message || 'Error al confirmar reserva');
+        mostrarNotificacion('error', 'Error', data.message || 'Error al confirmar reserva');
         pedidoData = null;
         reservaActivaData = null;
       }
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('Error al confirmar reserva');
+      mostrarNotificacion('error', 'Error', 'Error al confirmar reserva');
       pedidoData = null;
       reservaActivaData = null;
     });
@@ -291,7 +354,7 @@ function rechazarReservaActiva() {
       document.getElementById('modalReservaActiva').close();
 
       if (data.success) {
-        alert('Continuando con el pedido. Esta no es una reserva.');
+        mostrarNotificacion('success', 'Información', 'Continuando con el pedido. Esta no es una reserva.');
         procederCrearPedido(
           pedidoData.idMesa,
           pedidoData.idMozo,
@@ -299,12 +362,12 @@ function rechazarReservaActiva() {
           pedidoData.productos
         );
       } else {
-        alert(data.message || 'Error');
+        mostrarNotificacion('error', 'Error', data.message || 'Error');
       }
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('Error al procesar');
+      mostrarNotificacion('error', 'Error', 'Error al procesar');
     });
 
   pedidoData = null;
@@ -427,7 +490,7 @@ function cargarPedidos() {
           // Validar transiciones permitidas para mozo
           const permitido = Array.isArray(TRANSICIONES_MOZO[pedidoObj.estado]) && TRANSICIONES_MOZO[pedidoObj.estado].includes(nuevoEstado);
           if (!permitido) {
-            alert('No tiene permiso para mover este pedido a ese estado. El flujo para mozos es: Pendiente -> (cocina) -> Listo -> Entregado -> Pagado.');
+            mostrarNotificacion('warning', 'Advertencia', 'No tiene permiso para mover este pedido a ese estado. El flujo para mozos es: Pendiente -> (cocina) -> Listo -> Entregado -> Pagado.');
             return;
           }
 
@@ -438,24 +501,28 @@ function cargarPedidos() {
           }
 
           // En los demás casos permitidos (ej. Listo -> Entregado), pedir confirmación y llamar al backend
-          if (!confirm(`Mover pedido #${idPedido} a \"${nuevoEstado.replace('_', ' ')}\"?`)) return;
-
-          try {
-            const resp = await fetch('../BackEnd/cambiarEstado.php', {
-              method: 'POST',
-              body: new URLSearchParams({ idPedido, nuevoEstado })
-            });
-            const res = await resp.json();
-            if (res.success) {
-              sendReload();
-              cargarPedidos();
-            } else {
-              alert(res.message || 'Error al cambiar estado');
+          mostrarConfirmacion(
+            'Cambiar Estado',
+            `Mover pedido #${idPedido} a "${nuevoEstado.replace('_', ' ')}"?`,
+            async function() {
+              try {
+                const resp = await fetch('../BackEnd/cambiarEstado.php', {
+                  method: 'POST',
+                  body: new URLSearchParams({ idPedido, nuevoEstado })
+                });
+                const res = await resp.json();
+                if (res.success) {
+                  sendReload();
+                  cargarPedidos();
+                } else {
+                  mostrarNotificacion('error', 'Error', res.message || 'Error al cambiar estado');
+                }
+              } catch (err) {
+                console.error(err);
+                mostrarNotificacion('error', 'Error', 'Error al cambiar estado');
+              }
             }
-          } catch (err) {
-            console.error(err);
-            alert('Error al cambiar estado');
-          }
+          );
         });
 
         row.appendChild(header);
@@ -632,21 +699,30 @@ function calcularTiempoTranscurrido(fechaHora) {
   const diferencia = Math.floor((ahora - fechaPedido) / 1000); // en segundos
   if (diferencia < 60) return 'Hace unos segundos';
   if (diferencia < 3600) return `Hace ${Math.floor(diferencia / 60)} min`;
-  if (diferencia < 86400) return `Hace ${Math.floor(diferencia / 3600)} h`;
+  if (diferencia < 86600) return `Hace ${Math.floor(diferencia / 3600)} h`;
   return `Hace ${Math.floor(diferencia / 86400)} días`;
 }
 
 function cancelarPedido(idPedido) {
-  if (!confirm('¿Cancelar este pedido?')) return;
-  fetch('../BackEnd/cancelarPedido.php', {
-    method: 'POST',
-    body: new URLSearchParams({ idPedido })
-  })
-    .then(r => r.json())
-    .then(data => {
-      if (data.success) cargarPedidos();
-      else alert(data.message || 'Error');
-    });
+  mostrarConfirmacion(
+    'Cancelar Pedido',
+    '¿Cancelar este pedido?',
+    function() {
+      fetch('../BackEnd/cancelarPedido.php', {
+        method: 'POST',
+        body: new URLSearchParams({ idPedido })
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            cargarPedidos();
+            mostrarNotificacion('success', '¡Éxito!', 'Pedido cancelado exitosamente.');
+          } else {
+            mostrarNotificacion('error', 'Error', data.message || 'Error al cancelar el pedido.');
+          }
+        });
+    }
+  );
 }
 
 function abrirModalEditarPedido(idPedido) {

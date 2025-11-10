@@ -977,10 +977,13 @@ body {
     .page {
         grid-template-columns: 1fr;
         grid-template-areas: "main";
+        position: relative;
     }
     
     .contenedor {
-        padding: 15px;
+        padding: 70px 15px 15px 15px; /* Espacio superior para el botón hamburguesa */
+        width: 100%;
+        margin: 0;
     }
     
     .metrics-section {
@@ -1824,7 +1827,6 @@ ard y Gráficas */
 }
 
 .count-badge {
-    display: inline-block;
     padding: 4px 12px;
     border-radius: 20px;
     font-weight: 600;

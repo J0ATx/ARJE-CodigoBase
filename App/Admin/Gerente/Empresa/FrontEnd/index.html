@@ -16,87 +16,362 @@
     <div id="loading-screen">
         <div id="logo-container" class="logo-loading"></div>
     </div>
-    <nav-admin></nav-admin>
-
     <div id="main-content">
-        <h1>Datos empresariales</h1>
-        <main class="container">
-            <div class="section-1">
+        <div class="page">
+            <nav-admin></nav-admin>
+            <main class="contenedor">
+                <h1>DATOS EMPRESARIALES</h1>
 
-                <section>
-                    <span class="card-title" id="favicon-title">Cambiar Favicon</span>
-                    <div id="favicon_img"></div>
-                    <div class="download">
-                        <a href="../../../../Recursos/favicon.ico" id="descargar_favicon" download="Favicon">
-                            <svg id='Download_24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'
-                                style='fill: currentColor; cursor: pointer;'>
-                                <path
-                                    d="M 11 2 C 10.448 2 10 2.448 10 3 L 10 11 L 6 11 L 12 17 L 18 11 L 14 11 L 14 3 C 14 2.448 13.552 2 13 2 L 11 2 z M 2 20 L 2 22 L 22 22 L 22 20 L 2 20 z" />
-                            </svg>
-                        </a>
-                    </div>
-                    <form>
-                        <input type="file" name="archivo" id="favicon" required>
-                        <input type="button" value="Subir" id="subir_favicon">
-                    </form>
-
-                </section>
-
-
-                <section>
-                    <span class="card-title" id="logo-title">Cambiar Logo</span>
-                    <div id="logo_img"></div>
-                    <div class="download">
-                        <a href="../../../../Recursos/logo.svg" id="descargar_logo" download="Logo">
-                            <svg id='Download_24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'
-                                style='fill: currentColor; cursor: pointer;'>
-                                <path
-                                    d="M 11 2 C 10.448 2 10 2.448 10 3 L 10 11 L 6 11 L 12 17 L 18 11 L 14 11 L 14 3 C 14 2.448 13.552 2 13 2 L 11 2 z M 2 20 L 2 22 L 22 22 L 22 20 L 2 20 z" />
-                            </svg>
-                        </a>
-                    </div>
-                    <form>
-                        <input type="file" name="archivo" id="logo" required>
-                        <input type="button" value="Subir" id="subir_logo">
-                    </form>
-                </section>
-            </div>
-        </main>
-                    <div>
-                        <input type="button" value="Actualizar Datos" id="cambiar_informacion">
-                        <br>
-                        <div id="info">
+                <div class="assets-section">
+                    <div class="asset-card">
+                        <div class="asset-header">
+                            <div class="header-title-group">
+                                <h2>Favicon</h2>
+                                <span class="tooltip-icon"
+                                    data-tooltip="El favicon es el ícono pequeño que aparece en cada pestaña del navegador. Formato requerido: .ico">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 16V12" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <a href="../../../../Recursos/favicon.ico" download="Favicon" class="download-btn"
+                                title="Descargar">
+                                <svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                                    <path
+                                        d="M 11 2 C 10.448 2 10 2.448 10 3 L 10 11 L 6 11 L 12 17 L 18 11 L 14 11 L 14 3 C 14 2.448 13.552 2 13 2 L 11 2 z M 2 20 L 2 22 L 22 22 L 22 20 L 2 20 z" />
+                                </svg>
+                            </a>
                         </div>
-                    </div>
-
-                    <div>
-                        <input type="button" value="Actualizar Ubicación" id="cambiar_ubicacion">
-                        <br>
-                        <div id="ubicacion">
-                        </div>
-                    </div>
-
-                    <div>
-                        <form>
-                            <input type="button" value="Añadir Horario" id="agregar_horario">
-                            <br>
-                            <input type="text" name="dia" id="dia" placeholder="Ingrese un Dia de la semana">
-                            <input type="text" name="hora" id="hora" placeholder="Ingrese el Horario">
+                        <div id="favicon_img" class="asset-preview"></div>
+                        <form class="asset-form">
+                            <input type="file" name="archivo" id="favicon" required
+                                accept="image/x-icon,image/vnd.microsoft.icon">
+                            <button type="button" id="subir_favicon" class="submit-button">Subir Favicon</button>
                         </form>
-                        <div id="horarios">
-                        </div>
                     </div>
 
-                    <div>
-                        <form>
-                            <input type="button" value="Añadir Telefono" id="agregar_telefono">
-                            <br>
-                            <input type="tel" name="tel" id="tel" placeholder="Ingrese un nuevo telefono">
-                        </form>
-                        <div id="telefonos">
+                    <div class="asset-card">
+                        <div class="asset-header">
+                            <div class="header-title-group">
+                                <h2>Logo</h2>
+                                <span class="tooltip-icon"
+                                    data-tooltip="El logo es la imagen principal del restaurante que aparece en el sitio web. Formato requerido: .svg">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 16V12" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <a href="../../../../Recursos/logo.svg" download="Logo" class="download-btn"
+                                title="Descargar">
+                                <svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                                    <path
+                                        d="M 11 2 C 10.448 2 10 2.448 10 3 L 10 11 L 6 11 L 12 17 L 18 11 L 14 11 L 14 3 C 14 2.448 13.552 2 13 2 L 11 2 z M 2 20 L 2 22 L 22 22 L 22 20 L 2 20 z" />
+                                </svg>
+                            </a>
                         </div>
+                        <div id="logo_img" class="asset-preview"></div>
+                        <form class="asset-form">
+                            <input type="file" name="archivo" id="logo" required
+                                accept="image/svg+xml,image/png,image/jpeg">
+                            <button type="button" id="subir_logo" class="submit-button">Subir Logo</button>
+                        </form>
                     </div>
+                </div>
+
+                <div class="info-sections">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <div class="header-title-group">
+                                <h3>Datos Empresariales</h3>
+                                <span class="tooltip-icon"
+                                    data-tooltip="Datos generales de la empresa como nombre, misión, visión, valores y redes sociales. Esta información se mostrará en la sección 'Acerca de' del sitio web.">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 16V12" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div id="info" class="info-content"></div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-header">
+                            <div class="header-title-group">
+                                <h3>Ubicación</h3>
+                                <span class="tooltip-icon"
+                                    data-tooltip="Dirección física de la empresa. Se mostrará en la página de contacto.">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 16V12" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div id="ubicacion" class="info-content"></div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-header">
+                            <div class="header-title-group">
+                                <h3>Horarios</h3>
+                                <span class="tooltip-icon"
+                                    data-tooltip="Horarios de atención al público. Formato sugerido: '09:00 - 18:00'">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 16V12" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <button type="button" class="add-button" id="agregar_horario">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor" />
+                                </svg>
+                                Añadir Horario
+                            </button>
+                        </div>
+                        <div id="horarios" class="info-content"></div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-header">
+                            <div class="header-title-group">
+                                <h3>Teléfonos</h3>
+                                <span class="tooltip-icon"
+                                    data-tooltip="Números de contacto de la empresa.">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 16V12" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <button type="button" class="add-button" id="agregar_telefono">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor" />
+                                </svg>
+                                Añadir Teléfono
+                            </button>
+                        </div>
+                        <div id="telefonos" class="info-content"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
+
+    <div id="modalHorario" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModalHorario()">&times;</span>
+            <h2>Añadir Horario</h2>
+            <form id="formHorario">
+                <div class="form-group">
+                    <label for="dia">
+                        Día de la semana
+                        <span class="tooltip-icon"
+                            data-tooltip="Selecciona el día.">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                                <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                                <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </label>
+                    <select id="dia" required>
+                        <option value="">Seleccione un día</option>
+                        <option value="Lunes">Lunes</option>
+                        <option value="Martes">Martes</option>
+                        <option value="Miércoles">Miércoles</option>
+                        <option value="Jueves">Jueves</option>
+                        <option value="Viernes">Viernes</option>
+                        <option value="Sábado">Sábado</option>
+                        <option value="Domingo">Domingo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="hora">
+                        Horario
+                        <span class="tooltip-icon"
+                            data-tooltip="Ingresa el horario de atención. Formato sugerido: '09:00 - 18:00' o '12:00 - 23:00'.">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 16V12" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                        </span>
+                    </label>
+                    <input type="text" id="hora" placeholder="Ej: 12:00 - 23:00" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="submit-button">Guardar Horario</button>
+                    <button type="button" class="cancel-button" onclick="cerrarModalHorario()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalTelefono" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModalTelefono()">&times;</span>
+            <h2>Añadir Teléfono</h2>
+            <form id="formTelefono">
+                <div class="form-group">
+                    <label for="telefono_tipo">
+                        Tipo
+                        <span class="tooltip-icon"
+                            data-tooltip="Clasifica el teléfono por su uso (Principal, Reservas, Delivery). Esto ayuda a los clientes a saber a qué número llamar.">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 16V12" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                        </span>
+                    </label>
+                    <select id="telefono_tipo" required>
+                        <option value="">Seleccione tipo</option>
+                        <option value="Principal">Principal</option>
+                        <option value="Reservas">Reservas</option>
+                        <option value="Delivery">Delivery</option>
+                        <option value="Atención al Cliente">Atención al Cliente</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tel">
+                        Número de teléfono
+                        <span class="tooltip-icon"
+                            data-tooltip="Ingresa el número con código de país y área. Formato: '+54 9 11 1234-5678'. Se mostrará en la sección de contacto.">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 16V12" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 8H12.01" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                        </span>
+                    </label>
+                    <input type="tel" id="tel" placeholder="+54 9 11 1234-5678" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="submit-button">Guardar Teléfono</button>
+                    <button type="button" class="cancel-button" onclick="cerrarModalTelefono()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modalNotificacion" class="modal modal-notification">
+        <div class="modal-content notification-content">
+            <div class="notification-icon" id="notificationIcon">
+            </div>
+            <h2 id="notificationTitle">Título</h2>
+            <p id="notificationMessage">Mensaje</p>
+            <button type="button" class="submit-button" onclick="cerrarModalNotificacion()">Aceptar</button>
+        </div>
+    </div>
+
+    <div id="modalConfirmacion" class="modal modal-notification">
+        <div class="modal-content notification-content">
+            <div class="notification-icon warning">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+                </svg>
+            </div>
+            <h2 id="confirmacionTitle">Confirmar acción</h2>
+            <p id="confirmacionMessage">¿Estás seguro?</p>
+            <div class="form-buttons">
+                <button type="button" class="cancel-button" onclick="cancelarConfirmacion()">Cancelar</button>
+                <button type="button" class="submit-button" id="btnConfirmar">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalEditar" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModalEditar()">&times;</span>
+            <h2 id="editarTitle">Editar</h2>
+            <form id="formEditar">
+                <div class="form-group">
+                    <label for="editarCampo" id="editarLabel">Campo</label>
+                    <input type="text" id="editarCampo" required>
+                    <input type="time" id="editarHoraInicio" style="display:none;">
+                    <input type="time" id="editarHoraFin" style="display:none;">
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="submit-button">Guardar</button>
+                    <button type="button" class="cancel-button" onclick="cerrarModalEditar()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../session.js"></script>
     <script src="../script.js"></script>
 </body>
