@@ -1,38 +1,123 @@
+// Variables globales
+let productosGlobal = [];
+let promocionesGlobal = [];
+
 document.addEventListener('DOMContentLoaded', function() {
     cargarDatos();
+    setupEventListeners();
 });
 
+function setupEventListeners() {
+    const btnCrear = document.getElementById('btnCrearPromocion');
+    if (btnCrear) {
+        btnCrear.addEventListener('click', abrirFormularioCrear);
+    }
+}
+
+// Funciones de carga de datos
 function cargarDatos() {
+    mostrarCargando(true);
+    
     fetch('../Backend/visualizar.php', {
         method: 'POST'
     })
-    .then(response => response.json())
-    .then(data => {
-        mostrarProductos(data.productosExistentes);
-        mostrarPromociones(data.promociones);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor: ' + response.status);
+        }
+        return response.json();
     })
-    .catch(error => console.error('Error al cargar datos:', error));
+    .then(data => {
+        if (!data.success) {
+            mostrarError('Error al cargar datos: ' + data.message);
+            return;
+        }
+
+        productosGlobal = data.data.productosExistentes || [];
+        promocionesGlobal = data.data.promociones || [];
+
+        mostrarProductos(productosGlobal);
+        mostrarPromociones(promocionesGlobal);
+        mostrarError(''); // Limpiar errores
+    })
+    .catch(error => {
+        console.error('Error al cargar datos:', error);
+        mostrarError('Error al cargar los datos: ' + error.message);
+    })
+    .finally(() => {
+        mostrarCargando(false);
+    });
 }
 
+function mostrarCargando(mostrar) {
+    const cargando = document.getElementById('cargandoIndicador');
+    if (cargando) {
+        cargando.style.display = mostrar ? 'block' : 'none';
+    }
+}
+
+function mostrarError(mensaje) {
+    const contenedor = document.getElementById('mensajeError');
+    if (!contenedor) return;
+
+    if (mensaje) {
+        contenedor.innerHTML = `
+            <div class="alert alert-error">
+                <button class="close-alert" onclick="this.parentElement.style.display='none';">&times;</button>
+                ${mensaje}
+            </div>
+        `;
+        contenedor.style.display = 'block';
+    } else {
+        contenedor.style.display = 'none';
+    }
+}
+
+function mostrarExito(mensaje) {
+    const contenedor = document.getElementById('mensajeError');
+    if (!contenedor) return;
+
+    if (mensaje) {
+        contenedor.innerHTML = `
+            <div class="alert alert-success">
+                <button class="close-alert" onclick="this.parentElement.style.display='none';">&times;</button>
+                ${mensaje}
+            </div>
+        `;
+        contenedor.style.display = 'block';
+
+        // Auto-cerrar después de 5 segundos
+        setTimeout(() => {
+            contenedor.style.display = 'none';
+        }, 5000);
+    }
+}
+
+// Mostrar productos
 function mostrarProductos(productos) {
     const contenedor = document.getElementById('productosContainer');
     if (!contenedor) return;
 
-    if (productos.length === 0) {
-        contenedor.innerHTML = '<p>No hay productos disponibles</p>';
+    if (!Array.isArray(productos) || productos.length === 0) {
+        contenedor.innerHTML = '<div class="no-data"><p>No hay productos disponibles</p></div>';
         return;
     }
 
-    let html = '<h2>Productos Existentes</h2>';
+    let html = '<h2>Productos Disponibles</h2>';
     html += '<div class="productos-grid">';
     
     productos.forEach(producto => {
+        const nombre = escapeHtml(producto.producto_nombre || 'N/A');
+        const precio = parseFloat(producto.producto_precio || 0).toFixed(2);
+        const descripcion = escapeHtml(producto.producto_descripcion || 'Sin descripción');
+        const categoria = escapeHtml(producto.producto_categoria || 'N/A');
+        
         html += `
-            <div class="producto-card">
-                <h3>${producto.producto_nombre}</h3>
-                <p><strong>Precio:</strong> $${producto.producto_precio}</p>
-                <p><strong>Descripción:</strong> ${producto.producto_descripcion}</p>
-                <p><strong>Categoría:</strong> ${producto.producto_categoria}</p>
+            <div class="producto-card" data-producto-id="${producto.producto_id}">
+                <h3>${nombre}</h3>
+                <p><strong>Precio:</strong> $${precio}</p>
+                <p><strong>Descripción:</strong> ${descripcion}</p>
+                <p><strong>Categoría:</strong> ${categoria}</p>
             </div>
         `;
     });
@@ -41,12 +126,13 @@ function mostrarProductos(productos) {
     contenedor.innerHTML = html;
 }
 
+// Mostrar promociones
 function mostrarPromociones(promociones) {
     const contenedor = document.getElementById('promocionesContainer');
     if (!contenedor) return;
 
-    if (promociones.length === 0) {
-        contenedor.innerHTML = '<p>No hay promociones disponibles</p>';
+    if (!Array.isArray(promociones) || promociones.length === 0) {
+        contenedor.innerHTML = '<div class="no-data"><h2>Promociones</h2><p>No hay promociones disponibles</p></div>';
         return;
     }
 
@@ -56,25 +142,39 @@ function mostrarPromociones(promociones) {
         <table>
             <thead>
                 <tr>
-                    <th>Producto</th>
-                    <th>Promoción</th>
+                    <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Descuento</th>
                     <th>Fidelizada</th>
+                    <th>Creación</th>
+                    <th>Productos</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
     `;
     
     promociones.forEach(promo => {
+        const nombre = escapeHtml(promo.promocion_nombre || 'N/A');
+        const descripcion = escapeHtml(promo.promocion_descripcion || 'N/A');
+        const descuento = parseFloat(promo.promocion_descuento || 0).toFixed(2);
         const fidelizada = promo.promocion_fidelizada ? 'Sí' : 'No';
+        const creacion = promo.promocion_creacion || 'N/A';
+        const productosCount = Array.isArray(promo.productos) ? promo.productos.length : 0;
+        const promoId = promo.promocion_id;
+
         html += `
             <tr>
-                <td>${promo.producto_nombre}</td>
-                <td>${promo.promocion_nombre}</td>
-                <td>${promo.promocion_descripcion}</td>
-                <td>${promo.promocion_descuento}%</td>
+                <td>${nombre}</td>
+                <td>${descripcion}</td>
+                <td>${descuento}%</td>
                 <td>${fidelizada}</td>
+                <td>${creacion}</td>
+                <td>${productosCount} producto(s)</td>
+                <td class="acciones">
+                    <button class="btn-editar" onclick="editarPromocion(${promoId})">Editar</button>
+                    <button class="btn-eliminar" onclick="eliminarPromocion(${promoId})">Eliminar</button>
+                </td>
             </tr>
         `;
     });
@@ -86,4 +186,71 @@ function mostrarPromociones(promociones) {
     `;
     
     contenedor.innerHTML = html;
+}
+
+// Función de utilidad para escapar HTML
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+// Funciones CRUD
+function abrirFormularioCrear() {
+    alert('Formulario de crear promoción - Próxima implementación');
+}
+
+function editarPromocion(promocionId) {
+    const promocion = promocionesGlobal.find(p => p.promocion_id === promocionId);
+    if (!promocion) {
+        mostrarError('Promoción no encontrada');
+        return;
+    }
+    alert('Editar promoción: ' + promocion.promocion_nombre + ' - Próxima implementación');
+}
+
+function eliminarPromocion(promocionId) {
+    const promocion = promocionesGlobal.find(p => p.promocion_id === promocionId);
+    if (!promocion) {
+        mostrarError('Promoción no encontrada');
+        return;
+    }
+
+    if (!confirm(`¿Está seguro de que desea eliminar la promoción "${promocion.promocion_nombre}"?`)) {
+        return;
+    }
+
+    fetch('../Backend/eliminar.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            promocion_id: promocionId
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            mostrarExito('Promoción eliminada exitosamente');
+            cargarDatos();
+        } else {
+            mostrarError('Error al eliminar: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarError('Error al eliminar la promoción: ' + error.message);
+    });
 }
