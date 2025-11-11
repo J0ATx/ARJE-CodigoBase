@@ -11,7 +11,7 @@
 
     // El destino de la redirección es tu archivo HTML más el código de error como parámetro.
     // Esto asegura que la URL del navegador cambie a error.html?code=404
-    $redirect_url = '/App/error.html?code=' . urlencode($error_code);
+    $redirect_url = '/App/Control/Errores/error.html?code=' . urlencode($error_code);
 
     // Realizar la redirección HTTP 302 (Temporal)
     // Esto asegura que el cliente (navegador) vaya a la nueva URL y que JavaScript pueda leer el parámetro.

@@ -109,9 +109,10 @@ RewriteRule ^Promociones$ App/Admin/Ventas/Promociones/FrontEnd/index.html [L]
 RewriteRule ^Usuarios$ App/Admin/Gerente/Usuarios/FrontEnd/index.html [L]
 RewriteRule ^Empresa$ App/Admin/Gerente/Empresa/FrontEnd/index.html [L]
 
-ErrorDocument 404 /App/Control/error.php
-ErrorDocument 403 /App/Control/error.php
-ErrorDocument 500 /App/Control/error.php
+ErrorDocument 401 /App/Control/Errores/error.php
+ErrorDocument 403 /App/Control/Errores/error.php
+ErrorDocument 404 /App/Control/Errores/error.php
+ErrorDocument 500 /App/Control/Errores/error.php
 
 <FilesMatch "^(config\.inc\.php|\.htaccess|error_log)">
   Order allow,deny

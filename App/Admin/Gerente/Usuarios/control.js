@@ -16,6 +16,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 window.cerrarModalCrear = function () {
     document.getElementById('modalCrear').style.display = 'none';
 };
+
+function getRolColor(rol) {
+    switch (rol) {
+        case 'Gerente-General': return '#357ddc';
+        case 'Gerente-Turno': return '#dc3545';
+        case 'Camarero': return '#e7c55fff';
+        case 'Chef': return '#4fb44fff';
+        case 'Chef-Ejecutivo': return '#237e23ff';
+        default: return '#6c757d';
+    }
+}
+
 async function cargarUsuarios() {
     const tabla = document.getElementById('tablaUsuarios');
     tabla.innerHTML = '';
@@ -40,7 +52,7 @@ async function cargarUsuarios() {
                 <td>${u.usuario_nombre}</td>
                 <td>${u.usuario_apellido}</td>
                 ${telefonoHtml}
-                <td>${u.usuario_rol}</td>
+                <td><div style="background-color: ${getRolColor(u.usuario_rol)}; padding: 2px 8px; border-radius: 4px; color: white; width:fit-content">${u.usuario_rol}</div></td>
                 <td class="acciones">
                     <button class="btn-menu">⋮</button>
                     <div class="menu-opciones">
@@ -273,36 +285,30 @@ document.addEventListener('click', function (e) {
     }
 });
 async function verDetallesUsuario(usuarioId) {
+    console.log(usuarioId);
     try {
-        const response = await fetch('../BackEnd/visualizar.php');
-        const data = await response.json();
-        const usuario = data.find(u => u.usuario_id == usuarioId);
-        if (!usuario) {
-            alert('Usuario no encontrado');
-            return;
-        }
-        function getRolColor(rol) {
-            switch(rol) {
-                case 'Gerente': return '#dc3545';
-                case 'Mozo': return '#28a745';
-                case 'Cocinero': return '#ffc107';
-                default: return '#6c757d';
-            }
-        }
-        const detailsModal = document.createElement('div');
-        detailsModal.className = 'modal';
-        detailsModal.id = 'detailsModal';
-        detailsModal.style.display = 'flex';
-        const content = `
+        fetch('../BackEnd/visualizar.php', {
+            method: 'POST',
+        }).then(res => res.json())
+            .then(data => {
+                const usuario = data.usuarios.find(user => user.usuario_id === usuarioId);
+                if (!usuario) {
+                    alert('Usuario no encontrado');
+                    return;
+                }
+                const detailsModal = document.createElement('div');
+                detailsModal.className = 'modal';
+                detailsModal.id = 'detailsModal';
+                detailsModal.style.display = 'flex';
+                const content = `
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Detalles del Usuario</h2>
                 <div class="reservation-details">
                     <div class="detail-section">
                         <h3>Información Personal</h3>
-                        <p><strong>ID:</strong> #${usuario.usuario_id}</p>
+                        <p><strong>Email:</strong>${usuario.usuario_id}</p>
                         <p><strong>Nombre completo:</strong> ${usuario.usuario_nombre} ${usuario.usuario_apellido}</p>
-                        <p><strong>Email:</strong> ${usuario.usuario_email}</p>
                         <p><strong>Teléfono:</strong> ${usuario.usuario_telefono || 'No especificado'}</p>
                     </div>
                     <div class="detail-section">
@@ -323,17 +329,18 @@ async function verDetallesUsuario(usuarioId) {
                 </div>
             </div>
         `;
-        detailsModal.innerHTML = content;
-        document.body.appendChild(detailsModal);
-        const closeBtn = detailsModal.querySelector('.close');
-        closeBtn.onclick = function () {
-            detailsModal.remove();
-        }
-        window.onclick = function (event) {
-            if (event.target == detailsModal) {
-                detailsModal.remove();
-            }
-        }
+                detailsModal.innerHTML = content;
+                document.body.appendChild(detailsModal);
+                const closeBtn = detailsModal.querySelector('.close');
+                closeBtn.onclick = function () {
+                    detailsModal.remove();
+                }
+                window.onclick = function (event) {
+                    if (event.target == detailsModal) {
+                        detailsModal.remove();
+                    }
+                }
+            });
     } catch (error) {
         console.error('Error:', error);
         alert('Error al cargar detalles del usuario');

@@ -332,6 +332,9 @@
             nav .logout-btn:hover {
                 background-color:rgb(255, 122, 122);
             }
+            nav .active-link{
+                background-color: #C3C3C3;
+            }
 
             @media (max-width: 767px) {
                 .menu-toggle {
@@ -518,11 +521,11 @@
             const activePage = this.getCurrentPage(currentPath);
             const navLinks = this.querySelectorAll('.nav-link');
 
-            navLinks.forEach(link => link.classList.remove('active'));
+            navLinks.forEach(link => link.classList.remove('active-link'));
 
             navLinks.forEach(link => {
                 if (link.getAttribute('data-page') === activePage) {
-                    link.classList.add('active');
+                    link.classList.add('active-link');
                 }
             });
         }
@@ -531,8 +534,7 @@
             const normalizedPath = path.toLowerCase();
 
             if (normalizedPath.includes('gerente/informes') || normalizedPath.includes('estadisticas')) return 'estadisticas';
-             if (normalizedPath.includes('ventas/promociones') || normalizedPath.includes('promociones')) return 'promociones';
-            if (normalizedPath.includes('ventas/pedidos/mozo') || normalizedPath.includes('mozo')) return 'pedidos';
+            if (normalizedPath.includes('ventas/pedidos/mozo') || normalizedPath.includes('pedidos')) return 'pedidos';
             if (normalizedPath.includes('ventas/reservas') || normalizedPath.includes('reservas')) return 'reservas';
             if (normalizedPath.includes('ventas/promociones') || normalizedPath.includes('promociones')) return 'promociones';
             if (normalizedPath.includes('ventas/pedidos/cocina') || normalizedPath.includes('cocina')) return 'cocina';
@@ -540,7 +542,7 @@
             if (normalizedPath.includes('mesas')) return 'mesas';
             if (normalizedPath.includes('ventas/productos') || normalizedPath.includes('productos') || normalizedPath.includes('platillos')) return 'productos';
             if (normalizedPath.includes('gerente/usuarios') || normalizedPath.includes('usuarios')) return 'usuarios';
-            if (normalizedPath.includes('gerente/empresa') || normalizedPath.includes('datos-empresariales')) return 'empresa';
+            if (normalizedPath.includes('gerente/empresa') || normalizedPath.includes('empresa')) return 'empresa';
         }
 
         addEventListeners() {
