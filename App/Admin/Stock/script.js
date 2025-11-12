@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     let ingredientesExistentes = [];
     let confirmacionCallback = null;
 
+    if (typeof window.canWriteInventory !== 'undefined' && !window.canWriteInventory) {
+        if (addIngredientBtn) addIngredientBtn.style.display = 'none';
+    }
+
     window.cerrarModalNotificacion = function() {
         document.getElementById('modalNotificacion').classList.remove('active');
         document.getElementById('modalNotificacion').style.display = 'none';
@@ -340,11 +344,9 @@ function renderIngredients(ingredientes) {
         const cantidadMinimaDisplay = tieneStockBajo ? 
             `<span class="cantidad-minima-alerta">${cantidadMinima.toString().replace(/\./g, ',')} ${ingrediente.medida}</span>` :
             (cantidadMinima > 0 ? `${cantidadMinima.toString().replace(/\./g, ',')} ${ingrediente.medida}` : '<span class="no-configurada">No configurada</span>');
-        row.innerHTML = `
-            <td>${ingrediente.nombre}</td>
-            <td>${ingrediente.stock.toString().replace(/\./g, ',')} ${ingrediente.medida}</td>
-            <td>${cantidadMinimaDisplay}</td>
-            <td class="${fechaCaducidadClass}">${formatDate(ingrediente.caducidad)}</td>
+        const canWrite = window.canWriteInventory !== false;
+        
+        const accionesHTML = canWrite ? `
             <td class="acciones">
                 <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
                 <div class="menu-opciones">
@@ -368,6 +370,26 @@ function renderIngredients(ingredientes) {
                     </div>
                 </div>
             </td>
+        ` : `
+            <td class="acciones">
+                <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
+                <div class="menu-opciones">
+                    <div class="opcion" onclick="verDetallesIngrediente(${ingrediente.idIngrediente})">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+                        </svg>
+                        Ver Detalles
+                    </div>
+                </div>
+            </td>
+        `;
+        
+        row.innerHTML = `
+            <td>${ingrediente.nombre}</td>
+            <td>${ingrediente.stock.toString().replace(/\./g, ',')} ${ingrediente.medida}</td>
+            <td>${cantidadMinimaDisplay}</td>
+            <td class="${fechaCaducidadClass}">${formatDate(ingrediente.caducidad)}</td>
+            ${accionesHTML}
         `;
         tableBody.appendChild(row);
     });

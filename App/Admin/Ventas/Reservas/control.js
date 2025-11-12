@@ -68,6 +68,12 @@ window.addEventListener('click', function(e) {
     if (e.target === modalConfirmacion) cancelarConfirmacion();
 });
 document.addEventListener('DOMContentLoaded', () => {
+    const btnNuevaReserva = document.getElementById('btnNuevaReserva');
+    
+    if (typeof window.canWriteReservas !== 'undefined' && !window.canWriteReservas) {
+        if (btnNuevaReserva) btnNuevaReserva.style.display = 'none';
+    }
+    
     fetchReservas();
     filterCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', handleFilterChange);
@@ -91,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    const btnNuevaReserva = document.getElementById('btnNuevaReserva');
     if (btnNuevaReserva) {
         btnNuevaReserva.addEventListener('click', abrirModalNuevaReserva);
     }
@@ -170,7 +175,10 @@ function fetchReservas() {
             }
             const estadoInfo = getEstadoInfo(reserva.reserva_estado);
             const estadoDisplay = `<span style="background-color: ${estadoInfo.color}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 600;">${estadoInfo.texto}</span>`;
-            let opcionesMenu = `
+            
+            const canWrite = window.canWriteReservas !== false;
+            
+            let opcionesMenu = canWrite ? `
                 <div class="opcion" onclick="verDetallesReserva(${reserva.reserva_id})">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
@@ -188,6 +196,13 @@ function fetchReservas() {
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
                     </svg>
                     Eliminar
+                </div>
+            ` : `
+                <div class="opcion" onclick="verDetallesReserva(${reserva.reserva_id})">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+                    </svg>
+                    Ver Detalles
                 </div>
             `;
             fila.innerHTML = `

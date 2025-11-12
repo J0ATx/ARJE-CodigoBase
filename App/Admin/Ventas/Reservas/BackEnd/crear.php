@@ -2,6 +2,9 @@
 session_start();
 header('Content-Type: application/json');
 include_once '../../../../Control/Conexion/empleado.php';
+require_once '../../../../Componentes/permissions.php';
+
+requireWritePermission('reservas');
 
 try {
     // Obtener datos del formulario

@@ -1,5 +1,8 @@
 <?php
 require_once '../../../../Control/Conexion/empleado.php';
+require_once '../../../../Componentes/permissions.php';
+
+requireWritePermission('productos');
 
 $response = array();
 

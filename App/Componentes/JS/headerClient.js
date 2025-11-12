@@ -308,11 +308,45 @@ img {
             }
         }
 
+        async function checkDashboardAccess() {
+            try {
+                const response = await fetch('/App/Control/Session/checkSession.php', {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+                const data = await response.json();
+                
+                if (data.logged_in && data.user && data.user.rol) {
+                    const userRole = data.user.rol;
+                    const dashboardBtn = document.querySelector('.dashboard-btn');
+                    const dashboardLink = dashboardBtn.querySelector('a');
+                    
+                    const roleDashboards = {
+                        'Gerente-General': '/App/Admin/Gerente/Informes/FrontEnd/index.html',
+                        'Camarero': '/App/Admin/Mesas/FrontEnd/index.html',
+                        'Chef': '/App/Admin/Ventas/Pedidos/Cocina/FrontEnd/index.html',
+                        'Chef-Ejecutivo': '/App/Admin/Ventas/Productos/FrontEnd/index.html',
+                        'Gerente-Turno': '/App/Admin/Mesas/FrontEnd/index.html'
+                    };
+                    
+                    if (roleDashboards[userRole]) {
+                        dashboardLink.href = roleDashboards[userRole];
+                        dashboardBtn.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error al verificar acceso al dashboard:', error);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const userDropdown = document.getElementById('userDropdown');
             const userIcon = document.getElementById('userIcon');
             const dropdownContent = document.querySelector('.dropdown-content');
             const logoutBtn = document.getElementById('logoutBtn');
+            
+            checkDashboardAccess();
+            
             userIcon.addEventListener('click', (e) => {
                 e.stopPropagation();
                 dropdownContent.classList.toggle('active');

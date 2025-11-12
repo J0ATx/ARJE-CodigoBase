@@ -1,9 +1,155 @@
-﻿class NavAdmin extends HTMLElement {
+﻿const ROLE_PERMISSIONS = {
+    'Gerente-General': {
+        sections: ['estadisticas', 'promociones', 'pedidos', 'inventario', 
+                   'reservas', 'mesas', 'cocina', 'productos', 'usuarios', 'empresa'],
+        fullAccess: true
+    },
+    'Camarero': {
+        sections: ['mesas', 'reservas', 'pedidos'],
+        fullAccess: true
+    },
+    'Chef': {
+        sections: ['productos', 'cocina'],
+        fullAccess: false,
+        readOnly: ['productos']
+    },
+    'Chef-Ejecutivo': {
+        sections: ['productos', 'cocina', 'promociones', 'inventario'],
+        fullAccess: true
+    },
+    'Gerente-Turno': {
+        sections: ['reservas', 'mesas', 'productos', 'promociones', 'inventario'],
+        fullAccess: true
+    }
+};
+
+const NAVBAR_SECTIONS = {
+    estadisticas: {
+        id: 'estadisticas',
+        label: 'Estadísticas',
+        href: '/Informes',
+        icon: '/App/Componentes/svg/Estadisticas.svg',
+        dataPage: 'estadisticas'
+    },
+    promociones: {
+        id: 'promociones',
+        label: 'Promociones',
+        href: '/Promociones',
+        icon: '/App/Componentes/svg/Promociones.svg',
+        dataPage: 'promociones'
+    },
+    pedidos: {
+        id: 'pedidos',
+        label: 'Pedidos',
+        href: '/Pedidos',
+        icon: '/App/Componentes/svg/Pedidos.svg',
+        dataPage: 'pedidos'
+    },
+    inventario: {
+        id: 'inventario',
+        label: 'Inventario',
+        href: '/Inventario',
+        icon: '/App/Componentes/svg/Inventario.svg',
+        dataPage: 'inventario'
+    },
+    reservas: {
+        id: 'reservas',
+        label: 'Reservas',
+        href: '/ReservasAdmin',
+        icon: '/App/Componentes/svg/Reservas.svg',
+        dataPage: 'reservas'
+    },
+    mesas: {
+        id: 'mesas',
+        label: 'Mesas',
+        href: '/Mesas',
+        icon: '/App/Componentes/svg/Mesas.svg',
+        dataPage: 'mesas'
+    },
+    cocina: {
+        id: 'cocina',
+        label: 'Cocina',
+        href: '/Cocina',
+        icon: '/App/Componentes/svg/Cocina.svg',
+        dataPage: 'cocina'
+    },
+    productos: {
+        id: 'productos',
+        label: 'Platillos',
+        href: '/Platillos',
+        icon: '/App/Componentes/svg/Platillos.svg',
+        dataPage: 'productos'
+    },
+    usuarios: {
+        id: 'usuarios',
+        label: 'Usuarios',
+        href: '/Usuarios',
+        icon: '/App/Componentes/svg/Usuarios.svg',
+        dataPage: 'usuarios'
+    },
+    empresa: {
+        id: 'empresa',
+        label: 'Datos empresariales',
+        href: '/Empresa',
+        icon: '/App/Componentes/svg/Datos.svg',
+        dataPage: 'empresa'
+    }
+};
+
+function hasPermission(userRole, sectionId) {
+    return ROLE_PERMISSIONS[userRole]?.sections.includes(sectionId) || false;
+}
+
+function buildMenuHTML(userRole) {
+    const allowedSections = ROLE_PERMISSIONS[userRole]?.sections || [];
+    
+    if (allowedSections.length === 0) {
+        return '';
+    }
+    
+    let menuHTML = '';
+    
+    for (const [, section] of Object.entries(NAVBAR_SECTIONS)) {
+        if (hasPermission(userRole, section.id)) {
+            menuHTML += `
+            <li>
+                <a href="${section.href}" class="nav-link" data-page="${section.dataPage}">
+                    <img src="${section.icon}" alt="${section.label}"> ${section.label}
+                </a>
+            </li>`;
+        }
+    }
+    return menuHTML;
+}
+
+class NavAdmin extends HTMLElement {
     constructor() {
         super();
     }
 
-    connectedCallback() {
+    async connectedCallback() {
+        try {
+            const response = await fetch('/App/Control/Session/checkSession.php', {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+            
+            const data = await response.json();
+            
+            if (!data.logged_in) {
+                window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
+                return;
+            }
+            
+            const userRole = data.user?.rol;
+            
+            if (!userRole) {
+                window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
+                return;
+            }
+            
+            const menuHTML = buildMenuHTML(userRole);
+            
             this.innerHTML = `
         <style>
 
@@ -228,39 +374,6 @@
                 background-color: #E8E8E8;
             }
 
-            nav .nav-item {
-                margin-bottom: 5px;
-            }
-
-            nav .nav-item .nav-link {
-                margin-bottom: 2px;
-            }
-
-            nav .submenu {
-                margin-left: 20px;
-                border-left: 2px solid #E0E0E0;
-                padding-left: 10px;
-            }
-
-            nav .submenu li {
-                list-style: none;
-                margin-bottom: 2px;
-            }
-
-            nav .submenu .nav-link {
-                padding: 8px 12px;
-                font-size: 0.9rem;
-                color: #666;
-                border-radius: 4px;
-            }
-
-            nav .submenu .nav-link img {
-                width: 24px;
-                height: 24px;
-                margin-right: 8px;
-                vertical-align: middle;
-            }
-
 
             nav .user-section {
                 position:fixed;
@@ -381,10 +494,6 @@
                     font-size: 0.9rem;
                     padding: 10px 12px;
                 }
-
-                nav .submenu .nav-link {
-                    font-size: 0.85rem;
-                }
             }
 
         </style>
@@ -403,36 +512,7 @@
             </div>
             <hr>
             <ul>
-                <li>
-                    <a href="/Informes" class="nav-link" data-page="estadisticas"><img src="/App/Componentes/svg/Estadisticas.svg" alt="Estadísticas">Estadísticas</a>
-                </li>
-                <li>
-                    <a href="/Promociones" class="nav-link" data-page="promociones"><img src="/App/Componentes/svg/Estadisticas.svg" alt="Promociones">Promociones</a>
-                </li>
-                <li class="nav-item">
-                    <a href="/Pedidos" class="nav-link" data-page="pedidos"><img src="/App/Componentes/svg/Pedidos.svg" alt="Pedidos"> Pedidos</a>
-                    <ul class="submenu">
-                        <li><a href="/Inventario" class="nav-link" data-page="inventario"><img src="/App/Componentes/svg/Inventario.svg" alt="Inventario"> Inventario</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="/ReservasAdmin" class="nav-link" data-page="reservas"><img src="/App/Componentes/svg/Reservas.svg" alt="Reservas"> Reservas</a>
-                    <ul class="submenu">
-                        <li><a href="/Mesas" class="nav-link" data-page="mesas"><img src="/App/Componentes/svg/Mesas.svg" alt="Mesas"> Mesas</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="/Cocina" class="nav-link" data-page="cocina"><img src="/App/Componentes/svg/Cocina.svg" alt="Cocina"> Cocina</a>
-                    <ul class="submenu">
-                        <li><a href="/Platillos" class="nav-link" data-page="productos"><img src="/App/Componentes/svg/Platillos.svg" alt="Platillos"> Platillos</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="/Usuarios" class="nav-link" data-page="usuarios"><img src="/App/Componentes/svg/Usuarios.svg" alt="Usuarios"> Usuarios</a>
-                </li>
-                <li>
-                    <a href="/Empresa" class="nav-link" data-page="empresa"><img src="/App/Componentes/svg/Datos.svg" alt="Datos empresariales"> Datos empresariales</a>
-                </li>
+                ${menuHTML}
             </ul>
 
             <div class="user-section">
@@ -460,8 +540,13 @@
             </div>  
         </nav>
         `;
+            
             this.init();
+            
+        } catch (error) {
+            window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
         }
+    }
         init() {
             setTimeout(() => {
                 this.updateActiveLink();
@@ -477,7 +562,6 @@
             const navLinks = this.querySelectorAll('.nav-link');
 
             if (!menuToggle || !nav || !overlay) {
-                console.error('Elementos del menú móvil no encontrados!');
                 return;
             }
 
@@ -548,7 +632,7 @@
         addEventListeners() {
             const navLinks = this.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
+                link.addEventListener('click', () => {
                     setTimeout(() => this.updateActiveLink(), 100);
                 });
             });
@@ -578,7 +662,6 @@ function logout() {
     }).then(() => {
         window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
     }).catch(error => {
-        console.error('Error durante logout:', error);
         window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
     });
 }

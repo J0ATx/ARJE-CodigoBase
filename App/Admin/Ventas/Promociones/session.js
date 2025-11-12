@@ -1,4 +1,4 @@
-﻿const permissionsScript = document.createElement('script');
+const permissionsScript = document.createElement('script');
 permissionsScript.src = '/App/Componentes/permissions.js';
 document.head.appendChild(permissionsScript);
 
@@ -35,7 +35,7 @@ async function checkSession() {
             return false;
         }
 
-        if (!isRoleAllowed(data.user.rol, 'pedidos')) {
+        if (!isRoleAllowed(data.user.rol, 'promociones')) {
             window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }

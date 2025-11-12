@@ -1,9 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const addMesaBtn = document.getElementById('addMesaBtn');
+    
+    if (typeof window.canWriteMesas !== 'undefined' && !window.canWriteMesas) {
+        if (addMesaBtn) addMesaBtn.style.display = 'none';
+    }
+    
     cargarMesas();
-    document.getElementById('addMesaBtn').addEventListener('click', () => {
-        document.getElementById('formMesa').reset();
-        document.getElementById('modalCrear').style.display = 'flex';
-    });
+    if (addMesaBtn) {
+        addMesaBtn.addEventListener('click', () => {
+            document.getElementById('formMesa').reset();
+            document.getElementById('modalCrear').style.display = 'flex';
+        });
+    }
     document.getElementById('formMesa').addEventListener('submit', async function (e) {
         e.preventDefault();
         await crearMesa();
@@ -111,6 +119,7 @@ async function cargarMesas() {
                         </svg>
                         Ver Detalles
                     </div>
+                    ${window.canWriteMesas !== false ? `
                     <div class="opcion" onclick="editarMesa(${m.idMesa}, ${m.capacidad}, '${m.estadoActual}', '${m.reservable}')">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
@@ -123,6 +132,7 @@ async function cargarMesas() {
                         </svg>
                         Eliminar
                     </div>
+                    ` : ''}
                 </div>
             </td>
         </tr>

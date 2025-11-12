@@ -1,5 +1,8 @@
 <?php
     include_once '../../../../Control/Conexion/empleado.php';
+    require_once '../../../../Componentes/permissions.php';
+
+    requireWritePermission('reservas');
 
     try {
         $con->beginTransaction();

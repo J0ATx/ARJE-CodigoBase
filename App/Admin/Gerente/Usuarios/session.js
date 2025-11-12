@@ -1,4 +1,8 @@
-﻿async function loadSVGLogo() {
+﻿const permissionsScript = document.createElement('script');
+permissionsScript.src = '/App/Componentes/permissions.js';
+document.head.appendChild(permissionsScript);
+
+async function loadSVGLogo() {
     try {
         const response = await fetch('/App/Recursos/logo.svg');
         const svgText = await response.text();
@@ -31,7 +35,7 @@ async function checkSession() {
             return false;
         }
 
-        if (data.user.rol !== "Gerente-General") {
+        if (!isRoleAllowed(data.user.rol, 'usuarios')) {
             window.location.href = '../../../../Client/Panel/FrontEnd/index.html';
             return false;
         }

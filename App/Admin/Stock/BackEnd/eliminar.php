@@ -1,5 +1,8 @@
 <?php
 require_once '../../../Control/Conexion/gerente.php';
+require_once '../../../Componentes/permissions.php';
+
+requireWritePermission('inventario');
 
 $response = array();
 

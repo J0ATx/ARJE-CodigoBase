@@ -1,5 +1,8 @@
 <?php
 include '../../../Control/Conexion/empleado.php';
+require_once '../../../Componentes/permissions.php';
+
+requireWritePermission('mesas');
 
 $data = json_decode(file_get_contents("php://input"), true);
 

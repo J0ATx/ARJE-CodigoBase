@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const addIngredientToListBtn = document.querySelector('.add-ingredient-btn');
     let confirmacionCallback = null;
 
+    // Aplicar modo solo lectura si el usuario no tiene permisos de escritura
+    applyReadOnlyMode();
+
     window.cerrarModalNotificacion = function() {
         document.getElementById('modalNotificacion').classList.remove('active');
         document.getElementById('modalNotificacion').style.display = 'none';
@@ -274,7 +277,7 @@ function renderProducts(productos) {
                         </svg>
                         Ver Detalles
                     </div>
-                    <div class="opcion" onclick="editProduct(${producto.producto_id})">
+                    ${window.canWriteProducts !== false ? `<div class="opcion" onclick="editProduct(${producto.producto_id})">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
                         </svg>
@@ -285,7 +288,7 @@ function renderProducts(productos) {
                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
                         </svg>
                         Eliminar
-                    </div>
+                    </div>` : ''}
                 </div>
             </td>
         `;
@@ -315,6 +318,12 @@ function addIngredientToList(ingrediente) {
 }
 
 async function editProduct(id) {
+    // Verificar permisos de escritura
+    if (window.canWriteProducts === false) {
+        mostrarNotificacion('warning', 'Acceso Denegado', 'No tienes permisos para editar productos');
+        return;
+    }
+
     const formData = new FormData();
     formData.append('id', id);
 
@@ -349,6 +358,12 @@ async function editProduct(id) {
 }
 
 async function deleteProduct(id) {
+    // Verificar permisos de escritura
+    if (window.canWriteProducts === false) {
+        mostrarNotificacion('warning', 'Acceso Denegado', 'No tienes permisos para eliminar productos');
+        return;
+    }
+
     mostrarConfirmacion(
         'Eliminar Producto',
         '¿Estás seguro de que deseas eliminar este producto?',
@@ -489,3 +504,28 @@ document.addEventListener('click', function (e) {
         });
     }
 });
+
+/**
+ * Aplica el modo solo lectura si el usuario no tiene permisos de escritura
+ */
+function applyReadOnlyMode() {
+    // Esperar a que window.canWriteProducts esté disponible
+    const checkPermissions = setInterval(() => {
+        if (typeof window.canWriteProducts !== 'undefined') {
+            clearInterval(checkPermissions);
+            
+            if (!window.canWriteProducts) {
+                // Ocultar el botón de agregar producto
+                const addProductBtn = document.getElementById('addProductBtn');
+                if (addProductBtn) {
+                    addProductBtn.style.display = 'none';
+                }
+                
+                console.info('[Platillos] Modo solo lectura activado para rol:', window.userRole);
+            }
+        }
+    }, 100);
+    
+    // Timeout de seguridad para evitar bucle infinito
+    setTimeout(() => clearInterval(checkPermissions), 5000);
+}
