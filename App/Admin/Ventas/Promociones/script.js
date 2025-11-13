@@ -1,5 +1,4 @@
 // Variables globales
-let productosGlobal = [];
 let promocionesGlobal = [];
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -33,10 +32,8 @@ function cargarDatos() {
             return;
         }
 
-        productosGlobal = data.data.productosExistentes || [];
         promocionesGlobal = data.data.promociones || [];
 
-        mostrarProductos(productosGlobal);
         mostrarPromociones(promocionesGlobal);
         mostrarError(''); // Limpiar errores
     })
@@ -94,37 +91,8 @@ function mostrarExito(mensaje) {
 }
 
 // Mostrar productos
-function mostrarProductos(productos) {
-    const contenedor = document.getElementById('productosContainer');
-    if (!contenedor) return;
-
-    if (!Array.isArray(productos) || productos.length === 0) {
-        contenedor.innerHTML = '<div class="no-data"><p>No hay productos disponibles</p></div>';
-        return;
-    }
-
-    let html = '<h2>Productos Disponibles</h2>';
-    html += '<div class="productos-grid">';
-    
-    productos.forEach(producto => {
-        const nombre = escapeHtml(producto.producto_nombre || 'N/A');
-        const precio = parseFloat(producto.producto_precio || 0).toFixed(2);
-        const descripcion = escapeHtml(producto.producto_descripcion || 'Sin descripción');
-        const categoria = escapeHtml(producto.producto_categoria || 'N/A');
-        
-        html += `
-            <div class="producto-card" data-producto-id="${producto.producto_id}">
-                <h3>${nombre}</h3>
-                <p><strong>Precio:</strong> $${precio}</p>
-                <p><strong>Descripción:</strong> ${descripcion}</p>
-                <p><strong>Categoría:</strong> ${categoria}</p>
-            </div>
-        `;
-    });
-    
-    html += '</div>';
-    contenedor.innerHTML = html;
-}
+// El listado de productos fue removido del frontend. Si más adelante se vuelve a necesitar,
+// reimplementar la función mostrarProductos y el contenedor correspondiente en el HTML.
 
 // Mostrar promociones
 function mostrarPromociones(promociones) {
@@ -146,7 +114,6 @@ function mostrarPromociones(promociones) {
                     <th>Descripción</th>
                     <th>Descuento</th>
                     <th>Fidelizada</th>
-                    <th>Creación</th>
                     <th>Productos</th>
                     <th>Acciones</th>
                 </tr>
@@ -159,7 +126,6 @@ function mostrarPromociones(promociones) {
         const descripcion = escapeHtml(promo.promocion_descripcion || 'N/A');
         const descuento = parseFloat(promo.promocion_descuento || 0).toFixed(2);
         const fidelizada = promo.promocion_fidelizada ? 'Sí' : 'No';
-        const creacion = promo.promocion_creacion || 'N/A';
         const productosCount = Array.isArray(promo.productos) ? promo.productos.length : 0;
         const promoId = promo.promocion_id;
 
@@ -169,9 +135,9 @@ function mostrarPromociones(promociones) {
                 <td>${descripcion}</td>
                 <td>${descuento}%</td>
                 <td>${fidelizada}</td>
-                <td>${creacion}</td>
                 <td>${productosCount} producto(s)</td>
                 <td class="acciones">
+                    <button class="btn-datos" onclick="datosPromocion(${promoId})">Ver Detalles</button>
                     <button class="btn-editar" onclick="editarPromocion(${promoId})">Editar</button>
                     <button class="btn-eliminar" onclick="eliminarPromocion(${promoId})">Eliminar</button>
                 </td>
