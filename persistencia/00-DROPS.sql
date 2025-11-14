@@ -27,5 +27,3 @@
 -- DROP VIEW IF EXISTS Datos_Usuarios;
 
 -- DROP DATABASE IF EXISTS lostrestanosdb;
-
--- Orden de creación: DATABASE.sql, TRIGGERS.sql, VIEW.sql, INSERT.sql, EVENTS.sql, PROCEDURES.sql, USERS.sql.
