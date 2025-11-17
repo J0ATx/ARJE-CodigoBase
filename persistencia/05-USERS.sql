@@ -1,4 +1,4 @@
-﻿CREATE USER 'gerente'@'localhost' IDENTIFIED BY '0gGiOjvwsBRHnpdt';
+CREATE USER 'gerente'@'localhost' IDENTIFIED BY '0gGiOjvwsBRHnpdt';
 CREATE USER 'empleado'@'localhost' IDENTIFIED BY 'F3sycVEqp9rrdCjt';
 CREATE USER 'cliente_registrado'@'localhost' IDENTIFIED BY 'VApxJBYwnfHRuv43';
 CREATE USER 'cliente_no_registrado'@'localhost' IDENTIFIED BY 'lgfCaXeEgEarShYu';

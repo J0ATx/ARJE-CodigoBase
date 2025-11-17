@@ -46,9 +46,7 @@
             throw new Exception('El descuento debe estar entre 0 y 100');
         }
 
-        if (empty($data['productos']) || !is_array($data['productos'])) {
-            throw new Exception('Debe seleccionar al menos un producto');
-        }
+        // Nota: ya no se requiere enviar productos al crear una promoción.
 
         // Sanitizar entradas
         $nombre = trim(htmlspecialchars($data['promocion_nombre']));
@@ -62,6 +60,10 @@
 
         if (strlen($descripcion) > 100) {
             throw new Exception('La descripción no puede exceder 100 caracteres');
+        }
+
+        if (empty($data['productos']) || !is_array($data['productos'])) {
+            throw new Exception('Debe seleccionar al menos un producto');
         }
 
         // Iniciar transacción
@@ -88,11 +90,11 @@
             throw new Exception('Error al obtener ID de la promoción creada');
         }
 
-        // Insertar relaciones Posee para cada producto seleccionado
-        $sqlPosee = 'INSERT INTO Posee (promocion_id, producto_id, pedido_id) VALUES (?, ?, ?)';
-        $stmtPosee = $con->prepare($sqlPosee);
+        // Insertar relaciones Aplica para cada producto seleccionado
+        $sqlAplica = 'INSERT INTO Aplica (promocion_id, producto_id) VALUES (?, ?)';
+        $stmtAplica = $con->prepare($sqlAplica);
 
-        if (!$stmtPosee) {
+        if (!$stmtAplica) {
             throw new Exception('Error al preparar relación de productos');
         }
 
@@ -111,8 +113,7 @@
                 throw new Exception('El producto con ID ' . $productoId . ' no existe');
             }
 
-            // Usar NULL para pedido_id si es necesario
-            if (!$stmtPosee->execute([$promocionId, $productoId, null])) {
+            if (!$stmtAplica->execute([$promocionId, $productoId])) {
                 throw new Exception('Error al asociar producto a la promoción');
             }
         }

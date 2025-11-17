@@ -1,4 +1,4 @@
-﻿CREATE DATABASE IF NOT EXISTS lostrestanosdb;
+CREATE DATABASE IF NOT EXISTS lostrestanosdb;
 USE lostrestanosdb;
 
 CREATE TABLE IF NOT EXISTS image_id_sequence (
@@ -224,6 +224,14 @@ CREATE TABLE Posee (
     FOREIGN KEY (promocion_id) REFERENCES Promocion (promocion_id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES Producto (producto_id) ON DELETE CASCADE,
     FOREIGN KEY (pedido_id) REFERENCES Pedido (pedido_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Aplica (
+    promocion_id INT NOT NULL,
+    producto_id INT NOT NULL,
+    PRIMARY KEY (promocion_id, producto_id),
+    FOREIGN KEY (promocion_id) REFERENCES Promocion (promocion_id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES Producto (producto_id) ON DELETE CASCADE
 );
 
 CREATE TABLE No_Show (
