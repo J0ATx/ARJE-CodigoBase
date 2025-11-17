@@ -5,14 +5,9 @@ header('Content-Type: application/json');
 // --- 1. CONFIGURACIÓN DEL LLM (Ollama) ---
 $ollama_ip = "127.0.0.1";
 $ollama_port = "11434";
-<<<<<<< HEAD
-$ollama_model = "gemma3:4b";
-$ollama_url = "http://$ollama_ip:$ollama_port/api/generate";
-=======
 $ollama_model = "gemma3:4b"; // Modelo a utilizar
 $ollama_url_generate = "http://$ollama_ip:$ollama_port/api/generate";
 $ollama_url_chat = "http://$ollama_ip:$ollama_port/api/chat";
->>>>>>> e37951b2de9bbe546a3301c23401535cb7a8f569
 
 
 // --- 2. BASE DE CONOCIMIENTO ESTÁTICA ---
@@ -235,15 +230,7 @@ El CONTEXTO DE CONOCIMIENTO tiene tres secciones:
 2.  'CONTEXTO ANALÍTICO DE LA BASE DE DATOS' (JSON de métricas y ventas).
 3.  'CONTEXTO PDF ADJUNTO' (si existe).
 
-<<<<<<< HEAD
-PRIORIDAD DE USO:
--   Para análisis o métricas ('ingresos totales', 'ventas por producto', 'clientes'): usa la sección **2. CONTEXTO ANALÍTICO DE LA BASE DE DATOS**. Debes interpretar el JSON para dar una respuesta coherente. Responde detall
--   Para información del restaurante ('horarios', 'contacto', 'propina'): usa la sección **1. BASE DE CONOCIMIENTO (Restaurante)**.
--   Para preguntas específicas sobre el documento ('resume el PDF', 'qué dice el documento'): usa la sección **3. CONTEXTO PDF ADJUNTO**.
--   Si la información no se encuentra en *ninguna* de las tres secciones, debes indicarlo claramente.";
-=======
 Prioriza datos analíticos (sección 2) para preguntas de métricas; usa sección 1 para info institucional; usa sección 3 para preguntas específicas del PDF. Si falta información, indícalo. Responde en español.";
->>>>>>> e37951b2de9bbe546a3301c23401535cb7a8f569
 
 $system_with_context = $system_instruction . "\n\nCONTEXTO DE CONOCIMIENTO:\n" . $final_context;
 
