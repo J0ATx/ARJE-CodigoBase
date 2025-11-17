@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 body {
     margin: 0;
     padding: 0;
@@ -11,6 +12,7 @@ body {
     height: 100vh;
     overflow: hidden;
 }
+
 .page {
     display: grid;
     width: 100%;
@@ -18,6 +20,7 @@ body {
     grid-template-areas: "nav main";
     grid-template-columns: 300px 1fr;
 }
+
 .contenedor {
     grid-area: main;
     padding: 20px;
@@ -26,6 +29,7 @@ body {
     position: relative;
     z-index: 1;
 }
+
 .contenedor::before {
     content: "";
     position: fixed;
@@ -39,8 +43,9 @@ body {
     background-size: 50%;
     opacity: 0.1;
     z-index: -1;
-        pointer-events:none;
+    pointer-events: none;
 }
+
 h1 {
     font-family: 'Poppins', sans-serif;
     font-size: 65px;
@@ -49,6 +54,7 @@ h1 {
     margin-bottom: 30px;
     text-align: center;
 }
+
 .encabezado-tabla {
     display: flex;
     justify-content: space-between;
@@ -58,9 +64,11 @@ h1 {
     color: white;
     border-radius: 10px 10px 0 0;
 }
+
 .buscador-con-icono {
     position: relative;
 }
+
 .buscador {
     background-color: #333;
     color: white;
@@ -70,6 +78,7 @@ h1 {
     padding-left: 32px;
     width: 180px;
 }
+
 .icono-lupa {
     position: absolute;
     left: 8px;
@@ -77,6 +86,7 @@ h1 {
     transform: translateY(-50%);
     pointer-events: none;
 }
+
 .action-button {
     background-color: #2f2f2f;
     color: white;
@@ -89,9 +99,11 @@ h1 {
     align-items: center;
     gap: 5px;
 }
+
 .action-button:hover {
     background-color: #3f3f3f;
 }
+
 .tabla-contenedor {
     max-width: 1000px;
     margin: 0 auto;
@@ -99,14 +111,17 @@ h1 {
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
 }
+
 thead {
     background-color: #363636;
 }
+
 th {
     padding: 14px 16px;
     border-bottom: 1px solid #ffffff;
@@ -117,6 +132,7 @@ th {
     text-align: left;
     vertical-align: middle !important;
 }
+
 td {
     padding: 14px 16px;
     border-bottom: 1px solid #d4d4d4;
@@ -125,12 +141,14 @@ td {
     height: 50px;
     max-height: 50px;
 }
+
 td:not(:last-child) {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 200px;
 }
+
 td:last-child {
     text-align: center;
     width: 80px;
@@ -139,17 +157,21 @@ td:last-child {
     vertical-align: middle;
     white-space: nowrap;
 }
+
 .acciones {
     position: relative;
     vertical-align: middle;
 }
+
 .btn-menu {
     vertical-align: middle;
     line-height: 1;
 }
+
 tr:nth-child(odd) {
     background-color: #f8f8f8;
 }
+
 #modalEditar {
     display: none;
     position: fixed;
@@ -162,6 +184,7 @@ tr:nth-child(odd) {
     align-items: center;
     z-index: 1000;
 }
+
 #modalEditar form {
     position: relative;
     background-color: #ffffff;
@@ -172,16 +195,19 @@ tr:nth-child(odd) {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.3s ease-out;
 }
+
 @keyframes modalSlideIn {
     from {
         opacity: 0;
         transform: translateY(-50px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
+
 #modalEditar h2 {
     color: #1c1c1c;
     font-size: 24px;
@@ -190,6 +216,7 @@ tr:nth-child(odd) {
     padding-bottom: 15px;
     border-bottom: 2px solid #f1f1f1;
 }
+
 #modalEditar input,
 #modalEditar select {
     width: 100%;
@@ -203,6 +230,7 @@ tr:nth-child(odd) {
     font-size: 14px;
     transition: all 0.2s;
 }
+
 #modalEditar input:focus,
 #modalEditar select:focus {
     outline: none;
@@ -210,6 +238,7 @@ tr:nth-child(odd) {
     background-color: #fff;
     box-shadow: 0 0 0 3px rgba(54, 54, 54, 0.1);
 }
+
 #modalEditar button,
 #modalEditar input[type="submit"] {
     padding: 12px;
@@ -222,24 +251,29 @@ tr:nth-child(odd) {
     transition: all 0.2s;
     margin-right: 10px;
 }
+
 #modalEditar input[type="submit"] {
     background-color: #363636;
     color: #fff;
 }
+
 #modalEditar input[type="submit"]:hover {
     background-color: #1c1c1c;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
 #modalEditar button[type="button"] {
     background-color: #fff;
     color: #333;
     border: 1px solid #d4d4d4;
 }
+
 #modalEditar button[type="button"]:hover {
     background-color: #f8f8f8;
     border-color: #999;
 }
+
 .modal {
     display: none;
     position: fixed;
@@ -252,6 +286,7 @@ tr:nth-child(odd) {
     align-items: center;
     z-index: 1000;
 }
+
 .modal-content {
     position: relative;
     background-color: #ffffff;
@@ -264,6 +299,7 @@ tr:nth-child(odd) {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn 0.3s ease-out;
 }
+
 .modal-content h2 {
     color: #1c1c1c;
     font-size: 24px;
@@ -272,6 +308,7 @@ tr:nth-child(odd) {
     padding-bottom: 15px;
     border-bottom: 2px solid #f1f1f1;
 }
+
 .close {
     position: absolute;
     right: 20px;
@@ -282,12 +319,15 @@ tr:nth-child(odd) {
     transition: color 0.2s;
     line-height: 1;
 }
+
 .close:hover {
     color: #333;
 }
+
 .form-group {
     margin-bottom: 20px;
 }
+
 .form-group label {
     display: block;
     margin-bottom: 8px;
@@ -295,6 +335,7 @@ tr:nth-child(odd) {
     font-weight: 500;
     font-size: 14px;
 }
+
 .form-group input,
 .form-group select {
     width: 100%;
@@ -307,6 +348,7 @@ tr:nth-child(odd) {
     font-size: 14px;
     transition: all 0.2s;
 }
+
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
@@ -314,6 +356,7 @@ tr:nth-child(odd) {
     background-color: #fff;
     box-shadow: 0 0 0 3px rgba(54, 54, 54, 0.1);
 }
+
 .submit-button {
     width: 100%;
     padding: 12px;
@@ -326,16 +369,18 @@ tr:nth-child(odd) {
     font-size: 15px;
     font-weight: 500;
     transition: all 0.2s;
-    margin-top: 10px;
 }
+
 .submit-button:hover {
     background-color: #1c1c1c;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
 .submit-button:active {
     transform: translateY(0);
 }
+
 .menu-opciones {
     display: none;
     position: absolute;
@@ -349,6 +394,7 @@ tr:nth-child(odd) {
     z-index: 100;
     padding: 8px 0;
 }
+
 .menu-opciones .opcion {
     padding: 10px 20px;
     color: #222;
@@ -363,19 +409,23 @@ tr:nth-child(odd) {
     align-items: center;
     gap: 10px;
 }
+
 .menu-opciones .opcion svg {
     width: 18px;
     height: 18px;
     flex-shrink: 0;
 }
+
 .menu-opciones .opcion:hover {
     background: #f2f2f2;
 }
+
 .menu-opciones .eliminar {
     color: #e74c3c;
     font-weight: bold;
     cursor: pointer;
 }
+
 .btn-menu {
     background: none;
     border: none;
@@ -389,16 +439,20 @@ tr:nth-child(odd) {
     box-shadow: none;
     line-height: 1;
 }
+
 .acciones {
     position: relative;
 }
+
 .acciones.acciones-arriba .menu-opciones {
     top: auto;
     bottom: 36px;
 }
+
 td:last-child {
     text-align: right;
 }
+
 .badge {
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
@@ -406,14 +460,22 @@ td:last-child {
     font-weight: 600;
     text-transform: uppercase;
 }
-.reservable-si {
+
+.badge-libre {
     background-color: #d4edda;
     color: #155724;
 }
-.reservable-no {
+
+.badge-ocupada {
     background-color: #f8d7da;
     color: #721c24;
 }
+
+.badge-inhabilitada {
+    background-color: #616161;
+    color: #cfcfcf;
+}
+
 #loading-screen {
     position: fixed;
     -webkit-user-select: none;
@@ -429,6 +491,7 @@ td:last-child {
     align-items: center;
     z-index: 9999;
 }
+
 .logo-loading svg {
     color: #EFE7D2;
     width: 200px;
@@ -438,117 +501,142 @@ td:last-child {
     stroke-dashoffset: 1300;
     animation: dash 1s ease-in forwards
 }
+
 @keyframes dash {
     70% {
         fill-opacity: 0;
     }
+
     100% {
         fill-opacity: 100%;
         stroke-dashoffset: 0;
         stroke-width: 0;
     }
 }
+
 @keyframes drawLogo {
     to {
         stroke-dashoffset: 0;
     }
 }
+
 #main-content {
     display: none;
 }
+
 #main-content.visible {
     display: block;
 }
+
 @media (max-width: 767px) {
     .page {
         grid-template-columns: 1fr;
         grid-template-areas: "main";
         position: relative;
     }
+
     .contenedor {
         padding: 70px 15px 15px 15px;
         width: 100%;
         margin: 0;
     }
+
     h1 {
         font-size: 36px;
         margin-bottom: 20px;
     }
+
     .tabla-contenedor {
         max-width: 100%;
         overflow-x: auto;
     }
+
     .encabezado-tabla {
         flex-direction: column;
         gap: 10px;
         padding: 15px;
     }
+
     .buscador-con-icono {
         width: 100%;
     }
+
     .buscador {
         width: 100%;
     }
+
     .actions {
         width: 100%;
         justify-content: space-between;
     }
+
     table {
         font-size: 12px;
     }
-    th, td {
+
+    th,
+    td {
         padding: 10px 8px;
     }
+
     .modal-content {
         width: 95%;
         padding: 20px;
         max-height: 90vh;
     }
+
     .form-buttons {
         flex-direction: column;
     }
-    .submit-button,
-    .cancel-button {
-        width: 100%;
-    }
 }
+
 .tabla-contenedor {
     position: relative;
 }
+
 @media (max-width: 767px) {
     .tabla-contenedor {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
+
     table {
         min-width: 600px;
     }
+
     .tabla-contenedor::-webkit-scrollbar {
         height: 8px;
     }
+
     .tabla-contenedor::-webkit-scrollbar-track {
         background: #f1f1f1;
         border-radius: 10px;
     }
+
     .tabla-contenedor::-webkit-scrollbar-thumb {
         background: #888;
         border-radius: 10px;
     }
+
     .tabla-contenedor::-webkit-scrollbar-thumb:hover {
         background: #555;
     }
 }
+
 .reservation-details {
     padding: 20px 0;
 }
+
 .detail-section {
     margin-bottom: 25px;
     padding-bottom: 20px;
     border-bottom: 1px solid #e9ecef;
 }
+
 .detail-section:last-child {
     border-bottom: none;
 }
+
 .detail-section h3 {
     color: #1c1c1c;
     font-size: 18px;
@@ -557,12 +645,14 @@ td:last-child {
     padding-bottom: 10px;
     border-bottom: 2px solid #f1f1f1;
 }
+
 .detail-section p {
     margin: 10px 0;
     color: #333;
     font-size: 14px;
     line-height: 1.6;
 }
+
 .detail-section p strong {
     color: #1c1c1c;
     font-weight: 600;
@@ -578,11 +668,32 @@ td:last-child {
     justify-content: center;
     margin-top: 20px;
 }
+.form-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
+}
 
 .modal-notification .form-buttons .submit-button,
 .modal-notification .form-buttons .cancel-button {
     flex: 0 0 auto;
     min-width: 120px;
+}
+
+.cancel-button {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #d4d4d4;
+    height:auto;
+    width: auto;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
 .notification-icon {
@@ -640,4 +751,48 @@ td:last-child {
 .notification-content .submit-button {
     width: auto;
     min-width: 120px;
+}
+
+/* Estilos para la lista de reservas en el modal de detalles */
+.reservas-list {
+    margin-top: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.reserva-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background-color 0.2s ease;
+}
+
+.reserva-item:last-child {
+    border-bottom: none;
+}
+
+.reserva-item:hover {
+    background-color: #f8f9fa;
+}
+
+.reserva-fecha {
+    font-size: 14px;
+    color: #2f2f2f;
+    margin-bottom: 5px;
+}
+
+.reserva-email {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 5px;
+    word-break: break-all;
+}
+
+.reserva-comentarios {
+    font-size: 13px;
+    color: #6c757d;
+    padding: 8px 0 0 0;
+    border-top: 1px dashed #e9ecef;
+    margin-top: 8px;
+    font-style: italic;
 }

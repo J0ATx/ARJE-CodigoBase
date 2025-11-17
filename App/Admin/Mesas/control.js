@@ -91,23 +91,18 @@ async function cargarMesas() {
     const res = await fetch('../BackEnd/Visualizar.php');
     const data = await res.json();
     data.forEach(m => {
-        let reservasHtml = '';
-        if (Array.isArray(m.reservas) && m.reservas.length > 0) {
-            const options = m.reservas.map(r => {
-                const fecha = r.fecha || '';
-                const hora = r.hora || '';
-                const email = r.email || '';
-                const label = `${fecha} ${hora} - ${email}`;
-                return `<option value="${r.reserva_id}">${label}</option>`;
-            }).join('');
-            reservasHtml = `<select>${options}</select>`;
-        }
+        const reservasCount = Array.isArray(m.reservas) ? m.reservas.length : 0;
+        const reservasHtml = reservasCount > 0 ? `
+            <span>
+                ${reservasCount} ${reservasCount === 1 ? 'reserva' : 'reservas'}
+            </span>
+        ` : '';
         tabla.innerHTML += `
         <tr>
             <td>${m.idMesa}</td>
             <td>${m.capacidad}</td>
-            <td>${m.estadoActual}</td>
-            <td><span class="badge ${m.reservable === 'Si' ? 'reservable-si' : 'reservable-no'}">${m.reservable}</span></td>
+            <td><span class="badge ${m.estadoActual === 'Libre' ? 'badge-libre' : m.estadoActual === 'Ocupada' ? 'badge-ocupada' : m.estadoActual === 'Inhabilitada' ? 'badge-inhabilitada' : 'badge-libre'}">${m.estadoActual}</span></td>
+            <td>${m.reservable}</td>
             <td>${m.tiempoUso || ''}</td>
             <td>${reservasHtml}</td>
             <td class="acciones">
@@ -232,10 +227,9 @@ async function verDetallesMesa(idMesa) {
         }
         function getEstadoColor(estado) {
             switch(estado) {
-                case 'Disponible': return '#28a745';
+                case 'Libre': return '#28a745';
                 case 'Ocupada': return '#dc3545';
-                case 'Reservada': return '#ffc107';
-                case 'Mantenimiento': return '#6c757d';
+                case 'Inhabilitada': return '#6c757d';
                 default: return '#6c757d';
             }
         }
@@ -263,6 +257,29 @@ async function verDetallesMesa(idMesa) {
                         </p>
                         <p><strong>Reservable:</strong> ${mesa.reservable === 'Si' ? 'Sí' : 'No'}</p>
                     </div>
+                    ${Array.isArray(mesa.reservas) && mesa.reservas.length > 0 ? `
+                    <div class="detail-section">
+                        <h3>Reservas (${mesa.reservas.length})</h3>
+                        <div class="reservas-list">
+                            ${mesa.reservas.map(r => {
+                                const fecha = r.fecha || 'Sin fecha';
+                                const hora = r.hora || '';
+                                const email = r.email || 'Sin email';
+                                return `
+                                    <div class="reserva-item">
+                                        <div class="reserva-fecha">
+                                            <strong>${fecha} ${hora}</strong>
+                                        </div>
+                                        <div class="reserva-email">${email}</div>
+                                        ${r.comentarios ? `
+                                        <div class="reserva-comentarios">
+                                            <em>${r.comentarios}</em>
+                                        </div>` : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>` : ''}
                     ${mesa.descripcion ? `
                     <div class="detail-section">
                         <h3>Descripción</h3>

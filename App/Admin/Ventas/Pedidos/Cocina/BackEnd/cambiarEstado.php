@@ -2,6 +2,7 @@
 
 header('Content-Type: application/json');
 require_once '../../../../../Control/Conexion/empleado.php';
+require_once '../../../../../Client/Ventas/TakeAway/BackEnd/notificaciones.php';
 
 function responder($ok, $msg, $data = [])
 {
@@ -139,6 +140,20 @@ try {
 
     $up = $con->prepare('UPDATE Pedido SET pedido_estado = ? WHERE pedido_id = ?');
     $up->execute([$nuevoEstado, $pedidoId]);
+
+    if ($nuevoEstado === 'Listo') {
+        $qMesa = $con->prepare('SELECT mesa_id FROM Pedido WHERE pedido_id = ?');
+        $qMesa->execute([$pedidoId]);
+        $mesaId = $qMesa->fetchColumn();
+        if (!$mesaId) {
+            $qCli = $con->prepare('SELECT cliente_id FROM Efectua WHERE pedido_id = ? LIMIT 1');
+            $qCli->execute([$pedidoId]);
+            $email = $qCli->fetchColumn();
+            if ($email) {
+                try { enviarPedidoListo($email, $pedidoId); } catch (Exception $e) {}
+            }
+        }
+    }
 
     $con->commit();
     responder(true, 'Estado actualizado correctamente', [

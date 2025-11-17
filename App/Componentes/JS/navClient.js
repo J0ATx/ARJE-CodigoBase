@@ -1,35 +1,124 @@
-﻿class NavAdmin extends HTMLElement {
+﻿
+
+class NavClient extends HTMLElement {
     constructor() {
         super();
     }
 
-    connectedCallback() {
+    async connectedCallback() {
+        try {
+            const response = await fetch('/App/Control/Session/checkSession.php', {
+                method: 'GET',
+                credentials: 'same-origin'
+            });
+
+            const data = await response.json();
+
+            if (!data.logged_in) {
+                window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
+                return;
+            }
+
+            const userRole = data.user?.rol;
+
+            if (!userRole) {
+                window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
+                return;
+            }
+
             this.innerHTML = `
         <style>
+
+            .menu-toggle {
+                display: none;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1001 !important;
+                background-color: #1c1c1c;
+                border: none;
+                border-radius: 8px;
+                padding: 12px;
+                cursor: pointer;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+                transition: all 0.3s ease;
+            }
+
+            .menu-toggle:hover {
+                background-color: #363636;
+                transform: scale(1.05);
+            }
+
+            .menu-toggle span {
+                display: block;
+                width: 25px;
+                height: 3px;
+                background-color: #F5F5F5;
+                margin: 5px 0;
+                transition: all 0.3s ease;
+                border-radius: 2px;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -7px);
+            }
+
+            .nav-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .nav-overlay.active {
+                display: block;
+                opacity: 1;
+            }
+
             nav {
                 width: 300px;
-                height: calc(100vh - 80px);
-                background-color: #F5F5F5;
+                height: 100%;
+                background-color: #1F1F1F;
                 display: flex;
                 flex-direction: column;
                 overflow: hidden;
+                position: relative;
+                z-index: 1;
+                border-right: 1px solid #efe7d217;
             }
 
             nav .logo {
                 width: 75px;
-                filter: contrast(0%);
+                filter: drop-shadow(0 0 1px black);
             }
 
             nav .logo-container {
+                position: relative;
                 display: flex;
-                height: 100px;
+                height: 200px;
                 align-items: center;
-                justify-content: center;
+                justify-content: column;
+                flex-direction: column;
                 padding-top: 16px;
                 padding-bottom: 16px;
                 margin-bottom: 4px;
                 margin-top: 4px;
-                background-color: #F5F5F5;
+                background-color: #191919;
+                border-bottom: 1px solid #000000;
             }
 
             nav .logo-container p {
@@ -46,12 +135,6 @@
                 text-decoration: none;
                 justify-content: center;
                 align-items: center;
-            }
-
-            nav hr {
-                margin: 0;
-                height: 1px;
-                background-color:rgb(0, 0, 0);
             }
 
             nav ul {
@@ -71,7 +154,7 @@
                 display: flex;
                 align-items: center;
                 padding: 12px 16px;
-                color: #434343;
+                color: #A4A4A4;
                 font-weight: 600;
                 text-decoration: none;
                 border-radius: 6px;
@@ -97,7 +180,7 @@
                 align-items: center;
                 justify-content: space-between;
                 padding: 12px 16px;
-                color: #434343;
+                color: #A4A4A4;
                 font-weight: 600;
                 text-decoration: none;
                 border-radius: 6px;
@@ -109,13 +192,6 @@
                 width: 100%;
                 cursor: pointer;
                 text-align: left;
-            }
-            .active{
-                background-color: #C3C3C3;
-            }
-            nav .dropdown-toggle:hover,
-            nav .dropdown-toggle.active {
-                background-color: #C3C3C3;
             }
 
             nav .dropdown-toggle::after {
@@ -159,7 +235,7 @@
             nav .dropdown-menu a {
                 display: block;
                 padding: 10px 16px;
-                color: #434343;
+                color: #A4A4A4;
                 text-decoration: none;
                 border-radius: 4px;
                 transition: background-color 0.3s;
@@ -172,78 +248,58 @@
                 background-color: #E8E8E8;
             }
 
-            nav .nav-item {
-                margin-bottom: 5px;
-            }
 
-            nav .nav-item .nav-link {
-                margin-bottom: 2px;
-            }
-
-            nav .submenu {
-                margin-left: 20px;
-                border-left: 2px solid #E0E0E0;
-                padding-left: 10px;
-            }
-
-            nav .submenu li {
-                list-style: none;
-                margin-bottom: 2px;
-            }
-
-            nav .submenu .nav-link {
-                padding: 8px 12px;
-                font-size: 0.9rem;
-                color: #666;
-                border-radius: 4px;
-            }
-
-            nav .submenu .nav-link img {
-                width: 24px;
-                height: 24px;
-                margin-right: 8px;
-                vertical-align: middle;
-            }
-
-
-            nav .user-section {
+            nav .delete-accions {
                 position:fixed;
                 bottom: 0;
-                width: 300px;
-                display: flex;
-                align-items: center;
-                padding: 16px;
-                background-color: #F5F5F5;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                border: 1px solid #DDDDDD;
             }
 
             nav .user-avatar {
-                width: 47px;
-                height: 47px;
+                width: 96px;
+                height: 96px;
                 border-radius: 50%;
                 background-color: #0A0B0A;
-                margin-right: 14px;
+                margin-top:16px;
+                margin-bottom: 8px;
             }
 
             nav .user-info {
                 flex: 1;
                 display: flex;
+                align-items: center;
+                justify-content: center;
                 flex-direction: column;
+            }
+            .user-icon img{
+                border-radius: 100%;
+                border: 1px solid #767676c0;
+                width: 96px;
+                height: 96px;
+                margin: 0;
+                display: block;
+                z-index: 999;
+                aspect-ratio: 1/1;
+                object-fit: cover;
             }
 
             nav .user-name {
-                font-size: 0.9rem;
+                font-size: 1.5rem;
                 font-weight: 600;
-                color: #000000;
+                color: #A4A4A4;
                 margin-bottom: 3px;
                 font-family: 'Poppins', sans-serif;
                 line-height: 1.2;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                max-width: 220px;
+                overflow:hidden;
             }
 
             nav .user-role {
-                font-size: 0.8rem;
-                color: #444444;
+                font-size: 1rem;
+                color: #7B7B7B;
                 font-family: 'Poppins', sans-serif;
                 font-weight: 500;
                 line-height: 1.2;
@@ -265,143 +321,224 @@
             nav .logout-btn:hover {
                 background-color:rgb(255, 122, 122);
             }
+            nav .active-link{
+                background-color: #303030;
+            }
+            .back-btn {
+                position: absolute;
+                top: 16px;
+                left: 12px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                color: #EFE7D2;
+                text-decoration: none;
+                background: #ffffff14;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(8px);
+                box-shadow: 0 0 1px #fff;
+                z-index: 200;
+            }
+
+            .back-btn:hover {
+                background: #ffffff2d;
+            }
+
+            .back-btn svg {
+                pointer-events: none;
+            }
+            @media (max-width: 767px) {
+                .menu-toggle {
+                    display: block !important;
+                }
+
+                nav {
+                    position: fixed;
+                    top: 0;
+                    left: -300px;
+                    height: 100vh;
+                    width: 300px;
+                    z-index: 1000;
+                    transition: left 0.3s ease;
+                    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+                }
+
+                nav.active {
+                    left: 0;
+                }
+
+                nav .user-section {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                }
+            }
+
+            @media (max-width: 1199px) and (min-width: 768px) {
+                nav {
+                    width: 250px;
+                }
+
+                nav .user-section {
+                    width: 250px;
+                }
+
+                nav .logo-container p {
+                    font-size: 2rem;
+                }
+
+                nav ul li a {
+                    font-size: 0.9rem;
+                    padding: 10px 12px;
+                }
+            }
 
         </style>
+        <button class="menu-toggle" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-overlay"></div>
         <nav>
             <div class="logo-container">
-                <a href="/App/Client/Panel/FrontEnd/index.html">
-                    <img src="/App/Recursos/logo.svg" alt="Logo de la empresa" class="logo" />
-                    <p>Los 3<br>Tanos</p>
+                <a href="/Panel" class="back-btn" aria-label="Volver al panel">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </a>
-            </div>
-            <hr>
-            <ul>
-                <li>
-                    <a href="/App/Admin/Gerente/Informes/FrontEnd/index.html" class="nav-link" data-page="estadisticas"><img src="/App/Componentes/svg/Estadisticas.svg" alt="Estadísticas"> Estadísticas</a>
-                </li>
-                <li class="nav-item">
-                    <a href="/App/Admin/Ventas/Pedidos/Mozo/FrontEnd/index.html" class="nav-link" data-page="pedidos"><img src="/App/Componentes/svg/Pedidos.svg" alt="Pedidos"> Pedidos</a>
-                    <ul class="submenu">
-                        <li><a href="/App/Admin/Stock/FrontEnd/index.html" class="nav-link" data-page="inventario"><img src="/App/Componentes/svg/Inventario.svg" alt="Inventario"> Inventario</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="/App/Admin/Ventas/Reservas/FrontEnd/index.html" class="nav-link" data-page="reservas"><img src="/App/Componentes/svg/Reservas.svg" alt="Reservas"> Reservas</a>
-                    <ul class="submenu">
-                        <li><a href="/App/Admin/Mesas/FrontEnd/index.html" class="nav-link" data-page="mesas"><img src="/App/Componentes/svg/Mesas.svg" alt="Mesas"> Mesas</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="/App/Admin/Ventas/Pedidos/Cocina/FrontEnd/index.html" class="nav-link" data-page="cocina"><img src="/App/Componentes/svg/Cocina.svg" alt="Cocina"> Cocina</a>
-                    <ul class="submenu">
-                        <li><a href="/App/Admin/Ventas/Productos/FrontEnd/index.html" class="nav-link" data-page="productos"><img src="/App/Componentes/svg/Platillos.svg" alt="Platillos"> Platillos</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="/App/Admin/Gerente/Usuarios/FrontEnd/index.html" class="nav-link" data-page="usuarios"><img src="/App/Componentes/svg/Usuarios.svg" alt="Usuarios"> Usuarios</a>
-                </li>
-                <li>
-                    <a href="/App/Admin/Gerente/Empresa/FrontEnd/index.html" class="nav-link" data-page="empresa"><img src="/App/Componentes/svg/Datos.svg" alt="Datos empresariales"> Datos empresariales</a>
-                </li>
-            </ul>
-
-            <div class="user-section">
                 <div class="user-avatar">
-                    <i class="user-icon">
-                    <svg class="logged" width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x=".101" y=".862" width="46" height="45.292" rx="22.646" fill="#181818"
-                                fill-opacity=".5" />
-                            <rect x=".601" y="1.362" width="45" height="44.292" rx="22.146" stroke="#767676"
-                                stroke-opacity=".7" />
-                            <path
-                                d="M23 23.362q-2.337 0-4.002-1.714t-1.665-4.12 1.665-4.12T23 11.696t4.002 1.713 1.665 4.12-1.665 4.12T23 23.362M11.667 35.028v-4.083q0-1.24.62-2.279a4.2 4.2 0 0 1 1.646-1.586 20.7 20.7 0 0 1 4.463-1.695A19 19 0 0 1 23 24.82q2.337 0 4.604.565 2.267.566 4.463 1.695a4.2 4.2 0 0 1 1.647 1.586q.62 1.04.62 2.279v4.083zm2.833-2.916h17v-1.167q0-.4-.195-.73a1.4 1.4 0 0 0-.513-.51 18 18 0 0 0-3.86-1.476A16 16 0 0 0 23 27.737a16 16 0 0 0-3.931.492q-1.949.492-3.86 1.476a1.4 1.4 0 0 0-.514.51 1.4 1.4 0 0 0-.195.73zM23 20.445q1.17 0 2.001-.857a2.85 2.85 0 0 0 .832-2.06 2.85 2.85 0 0 0-.832-2.06q-.832-.856-2.001-.856t-2.001.856a2.85 2.85 0 0 0-.832 2.06q0 1.203.832 2.06.833.857 2.001.857"
-                                fill="#A4A4A4" />
-                        </svg>
-                    </i>
+                    <div class="user-icon">
+                    </div>
                 </div>
                 <div class="user-info">
                     <div id="userName" class="user-name">Cargando...</div>
                     <div id="userRol" class="user-role">Verificando sesión...</div>
                 </div>
-                <button class="logout-btn" onclick="logout()">
-                <svg id='Logout_Rounded_Left_24' width='24' height='24' viewBox='0 0 24 24'
-                                xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
-                                <rect width='24' height='24' stroke='none' fill='#000000' opacity='0' />
-                                <g transform="matrix(0.8 0 0 0.8 12 12)">
-                                    <path
-                                        style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill-rule: nonzero; opacity: 1;"
-                                        transform=" translate(-14.49, -15)"
-                                        d="M 15 3 C 12.445077 3 10.0833 3.8185753 8.1464844 5.1816406 C 7.694516983499322 5.499312192364347 7.585648707635651 6.123227883499321 7.9033203 6.5751953 C 8.220991892364347 7.027162716500678 8.844907583499321 7.136030992364349 9.296875 6.8183594 C 10.918059 5.6774247 12.870923 5 15 5 C 20.534534 5 25 9.4654664 25 15 C 25 20.534534 20.534534 25 15 25 C 12.870923 25 10.918059 24.322575 9.296875 23.181641 C 8.844907804413221 22.86396940763565 8.220992292364347 22.97283750441322 7.903320699999999 23.4248047 C 7.585649107635652 23.876771895586778 7.694517204413222 24.500687407635652 8.1464844 24.818359 C 10.0833 26.181425 12.445077 27 15 27 C 21.615466 27 27 21.615466 27 15 C 27 8.3845336 21.615466 3 15 3 z M 6.9804688 9.9902344 C 6.7206701476534 9.997975588778472 6.474090371827705 10.106554832127827 6.2929688 10.292969 L 2.3808594 14.205078 C 2.132518321721257 14.394520683571358 1.9869474488697152 14.689111906521271 1.987330693802456 15.001460549295155 C 1.9877139387351965 15.313809192069039 2.134007286128719 15.608042304023291 2.3828125 15.796875 L 6.2929688 19.707031 C 6.543786003039588 19.96826889121244 6.916234985168734 20.07350151917291 7.266675241169932 19.98214435131215 C 7.617115497171131 19.89078718345139 7.890787008886049 19.617115749150738 7.9821442758768875 19.26667551899203 C 8.073501542867726 18.91623528883332 7.968269020263018 18.54378627693672 7.7070312 18.292969 L 5.4140625 16 L 16 16 C 16.360635916577568 16.005100289545485 16.696081364571608 15.815624703830668 16.877887721486516 15.504127150285669 C 17.059694078401428 15.192629596740671 17.059694078401428 14.80737040325933 16.877887721486516 14.495872849714331 C 16.696081364571608 14.184375296169332 16.360635916577568 13.994899710454515 16 14 L 5.4140625 14 L 7.7070312 11.707031 C 8.002791491766063 11.419539571926101 8.091719747595327 10.979965021408564 7.930965494642052 10.600118287107804 C 7.770211241688777 10.220271552807047 7.392752249259285 9.978075910439886 6.9804688 9.9902344 z"
-                                        stroke-linecap="round" />
-                                </g>
-                            </svg>
-                </button>
             </div>
+            <ul>
+            <li><a href="/MiUsuario" class="nav-link" data-page="miusuario"><img src="/App/Componentes/svg/InformacionCliente.svg" alt="Información">Información</a></li>
+            <li><a href="/MisPedidos" class="nav-link" data-page="mispedidos"><img src="/App/Componentes/svg/PedidosCliente.svg" alt="Información">Mis pedidos</a></li>
+            <li><a href="/MisReservas" class="nav-link" data-page="misreservas"><img src="/App/Componentes/svg/ReservasCliente.svg" alt="Información">Mis reservas</a></li>
+            <li><a href="/Fidelizacion" class="nav-link" data-page="fidelizacion"><img src="/App/Componentes/svg/FidelizadoCliente.svg" alt="Información">Fidelizacion</a></li>
+            
+            <div class="delete-accions">
+                <li class="nav-link" onclick="logout()"><a href="#"><img src="/App/Componentes/svg/LogoutCliente.svg" alt="Cerrar sesión">Cerrar sesión</a></li>
+                <li class="nav-link" onclick="deleteAccount()"><a href="#"><img src="/App/Componentes/svg/EliminarCliente.svg" alt="Cerrar sesión">Eliminar cuenta</a></li>
+            </div>
+            </ul>
         </nav>
         `;
             this.init();
-        }
-        init() {
-            setTimeout(() => {
-                this.updateActiveLink();
-                this.addEventListeners();
-            }, 10);
-        }
-
-        updateActiveLink() {
-            const currentPath = window.location.pathname;
-            const activePage = this.getCurrentPage(currentPath);
-            const navLinks = this.querySelectorAll('.nav-link');
-
-            navLinks.forEach(link => link.classList.remove('active'));
-
-            navLinks.forEach(link => {
-                if (link.getAttribute('data-page') === activePage) {
-                    link.classList.add('active');
-                }
-            });
-        }
-
-        getCurrentPage(path) {
-            const normalizedPath = path.toLowerCase();
-
-            if (normalizedPath.includes('gerente/informes') || normalizedPath.includes('estadisticas')) return 'estadisticas';
-            if (normalizedPath.includes('ventas/pedidos/mozo') || normalizedPath.includes('mozo')) return 'pedidos';
-            if (normalizedPath.includes('ventas/reservas') || normalizedPath.includes('reservas')) return 'reservas';
-            if (normalizedPath.includes('ventas/pedidos/cocina') || normalizedPath.includes('cocina')) return 'cocina';
-            if (normalizedPath.includes('stock') || normalizedPath.includes('inventario')) return 'inventario';
-            if (normalizedPath.includes('mesas')) return 'mesas';
-            if (normalizedPath.includes('ventas/productos') || normalizedPath.includes('productos') || normalizedPath.includes('platillos')) return 'productos';
-            if (normalizedPath.includes('gerente/usuarios') || normalizedPath.includes('usuarios')) return 'usuarios';
-            if (normalizedPath.includes('gerente/empresa') || normalizedPath.includes('datos-empresariales')) return 'empresa';
-        }
-
-        addEventListeners() {
-            const navLinks = this.querySelectorAll('.nav-link');
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    setTimeout(() => this.updateActiveLink(), 100);
-                });
-            });
-        }
-
-        setActiveLink(linkName) {
-            const navLinks = this.querySelectorAll('.nav-link');
-
-            navLinks.forEach(link => {
-                const linkText = link.textContent.trim();
-                link.classList.toggle('active', linkText === linkName);
-            });
-        }
-
-        getActiveLink() {
-            const activeLink = this.querySelector('.nav-link.active');
-            return activeLink ? activeLink.textContent.trim() : '';
+        } catch (error) {
+            window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
         }
     }
+    init() {
+        setTimeout(() => {
+            this.updateActiveLink();
+            this.addEventListeners();
+            this.setupMobileMenu();
+        }, 10);
+    }
 
-customElements.define('nav-admin', NavAdmin);
+    setupMobileMenu() {
+        const menuToggle = this.querySelector('.menu-toggle');
+        const nav = this.querySelector('nav');
+        const overlay = this.querySelector('.nav-overlay');
+        const navLinks = this.querySelectorAll('.nav-link');
+
+        if (!menuToggle || !nav || !overlay) {
+            return;
+        }
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            nav.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+        });
+
+        overlay.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            nav.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 767) {
+                    menuToggle.classList.remove('active');
+                    nav.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 767) {
+                menuToggle.classList.remove('active');
+                nav.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    updateActiveLink() {
+        const currentPath = window.location.pathname;
+        const activePage = this.getCurrentPage(currentPath);
+        const navLinks = this.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => link.classList.remove('active-link'));
+
+        navLinks.forEach(link => {
+            if (link.getAttribute('data-page') === activePage) {
+                link.classList.add('active-link');
+            }
+        });
+    }
+
+    getCurrentPage(path) {
+        const normalizedPath = path.toLowerCase();
+
+        if (normalizedPath.includes('miusuario')) return 'miusuario';
+        if (normalizedPath.includes('mispedidos')) return 'mispedidos';
+        if (normalizedPath.includes('misreservas')) return 'misreservas';
+        if (normalizedPath.includes('fidelizacion')) return 'fidelizacion';
+    }
+
+    addEventListeners() {
+        const navLinks = this.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(() => this.updateActiveLink(), 100);
+            });
+        });
+    }
+
+    setActiveLink(linkName) {
+        const navLinks = this.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => {
+            const linkText = link.textContent.trim();
+            link.classList.toggle('active', linkText === linkName);
+        });
+    }
+
+    getActiveLink() {
+        const activeLink = this.querySelector('.nav-link.active');
+        return activeLink ? activeLink.textContent.trim() : '';
+    }
+}
+
+customElements.define('nav-client', NavClient);
 
 function logout() {
     fetch('/App/Control/Panel/BackEnd/logout.php', {
@@ -410,7 +547,6 @@ function logout() {
     }).then(() => {
         window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
     }).catch(error => {
-        console.error('Error durante logout:', error);
         window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
     });
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <base href="/App/Client/MiUsuario/Pedidos/FrontEnd/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Los 3 Tanos - Mis pedidos</title>
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+  <link rel="icon" type="image/png" sizes="32x32" href="/App/Recursos/favicon.ico">
+  <link rel="stylesheet" href="/App/Client/MiUsuario/Informacion/FrontEnd/style.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loading-screen">
+    <div id="logo-container" class="logo-loading"></div>
+  </div>
+  <div id="main-content">
+    <div class="page">
+      <nav-client></nav-client>
+      <main class="contenedor">
+        <section>
+          <h1>Mis pedidos</h1>
+          <div id="menu-listado" class="pedidos-container"></div>
+          <div id="modalRepetir" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2>Repetir pedido</h2>
+                <button type="button" class="cerrar" id="cerrarModalRepetir">&times;</button>
+              </div>
+              <form id="formRepetir" class="formulario">
+                <div id="msgRepetir"></div>
+                <div class="form-group">
+                  <label for="metodoRepetir">Método de pago</label>
+                  <select id="metodoRepetir">
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Tarjeta">Tarjeta</option>
+                  </select>
+                </div>
+                <div class="modal-actions">
+                  <button type="button" class="btn-cancelar" id="cancelarRepetir">Cancelar</button>
+                  <button type="submit" class="btn-guardar">Confirmar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../../../../Componentes/JS/navClient.js"></script>
+  <script src="../session.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

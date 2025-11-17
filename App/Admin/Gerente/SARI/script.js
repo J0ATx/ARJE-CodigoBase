@@ -6,25 +6,15 @@ async function sendQuery() {
     const query = userInput.value.trim();
     if (!query) return;
 
-    // --- MODIFICACIÓN ---
-    // 1. Obtenemos el texto extraído del PDF desde el <pre id="output">
     const extractedText = document.getElementById('output').textContent;
-    // --- FIN MODIFICACIÓN ---
-
-    // Mostrar carga y limpiar respuesta anterior
     loadingDiv.style.display = 'block';
     respuestaDiv.innerText = '';
-    
-    // --- MODIFICACIÓN ---
-    // 2. Enviamos AMBOS datos (la consulta y el contexto) al backend.
     const dataToSend = { 
         query: query,
-        context: extractedText // El texto del PDF ahora viaja al backend
+        context: extractedText
     };
-    // --- FIN MODIFICACIÓN ---
 
     try {
-        // Llama al archivo PHP en el servidor
         const response = await fetch('../Backend/api_rag.php', {
             method: 'POST',
             headers: {

@@ -49,6 +49,49 @@ body {
     z-index: 1;
 }
 
+.contenedor::before {
+    content: "";
+    position: fixed;
+    left: 50%;
+    transform: translate(-40%, 0);
+    width: 100%;
+    height: 100%;
+    background-image: url(../../../../Componentes/svg/Estadisticas.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50%;
+    opacity: 0.1;
+    z-index: -1;
+    pointer-events: none;
+}
+
+h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 65px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+#generarInforme {
+    background-color: #2f2f2f;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+#generarInforme:hover {
+    background-color: #3f3f3f;
+}
+
 #loading-screen {
     position: fixed;
     -webkit-user-select: none;
@@ -138,44 +181,21 @@ body {
 }
 
 /* Variaciones de color para diferentes tipos de métricas */
-.metric-card--success {
-    border-left-color: var(--success);
-}
-
-.metric-card--success .metric-value {
-    color: var(--success);
-}
-
-.metric-card--info {
-    border-left-color: var(--info);
-}
-
-.metric-card--info .metric-value {
-    color: var(--info);
-}
-
-.metric-card--primary {
-    border-left-color: var(--primary-dark);
-}
-
-.metric-card--primary .metric-value {
-    color: var(--primary-dark);
-}
-
-.metric-card--warning {
-    border-left-color: var(--warning);
-}
-
-.metric-card--warning .metric-value {
-    color: var(--warning);
-}
-
+/* Paleta sobria: todas las métricas en grises neutros */
+.metric-card--success,
+.metric-card--info,
+.metric-card--primary,
+.metric-card--warning,
 .metric-card--danger {
-    border-left-color: var(--danger);
+    border-left-color: var(--secondary-dark);
 }
 
+.metric-card--success .metric-value,
+.metric-card--info .metric-value,
+.metric-card--primary .metric-value,
+.metric-card--warning .metric-value,
 .metric-card--danger .metric-value {
-    color: var(--danger);
+    color: var(--primary-dark);
 }
 
 .metric-value {
@@ -1700,29 +1720,31 @@ ard y Gráficas */
     min-width: 300px;
 }
 
+/* Barra de búsqueda sobria, igual que otros módulos */
 .no-show-search input {
-    width: 100%;
-    padding: 10px 40px 10px 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 25px;
+    width: 180px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    padding-left: 32px;
     font-family: var(--font-family);
     font-size: 0.9rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .no-show-search input:focus {
     outline: none;
-    border-color: var(--danger);
-    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    box-shadow: 0 0 0 3px rgba(54, 54, 54, 0.1);
 }
 
 .no-show-search .search-icon {
     position: absolute;
-    right: 15px;
-    top: 50%;
+    left: 8px;
+    top: 60%;
     transform: translateY(-50%);
-    color: var(--medium-gray);
-    font-size: 1.1rem;
+    color: #fff;
+    font-size: 1rem;
 }
 
 .no-show-stats {
@@ -1737,15 +1759,15 @@ ard y Gráficas */
     flex-direction: column;
     align-items: center;
     padding: 15px 25px;
-    background: #fff5f5;
+    background: #f8f8f8;
     border-radius: 8px;
-    border-left: 4px solid var(--danger);
+    border-left: 4px solid var(--primary-dark);
 }
 
 .stat-value {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--danger);
+    color: var(--primary-dark);
     margin-bottom: 5px;
 }
 
@@ -1797,19 +1819,11 @@ ard y Gráficas */
     background-color: #f8f9fa;
 }
 
-.no-show-row.high-risk {
-    background-color: #fff5f5;
-    border-left: 4px solid var(--danger);
-}
-
-.no-show-row.medium-risk {
-    background-color: #fff8e1;
-    border-left: 4px solid var(--warning);
-}
-
+.no-show-row.high-risk,
+.no-show-row.medium-risk,
 .no-show-row.low-risk {
-    background-color: #f0f9ff;
-    border-left: 4px solid var(--info);
+    background-color: #f8f8f8;
+    border-left: 4px solid var(--primary-dark);
 }
 
 .client-name {
@@ -1832,17 +1846,14 @@ ard y Gráficas */
     font-weight: 600;
     font-size: 0.8rem;
     color: var(--white);
-    background: var(--danger);
+    background: var(--primary-dark);
     min-width: 30px;
     text-align: center;
 }
 
-.no-show-row.medium-risk .count-badge {
-    background: var(--warning);
-}
-
+.no-show-row.medium-risk .count-badge,
 .no-show-row.low-risk .count-badge {
-    background: var(--info);
+    background: var(--primary-dark);
 }
 
 .last-no-show {

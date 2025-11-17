@@ -1,0 +1,8 @@
+.page {
+    display: grid;
+    grid-template-areas:
+        "right"
+        "footer" !important;
+    grid-template-rows: 1fr !important;
+    grid-template-columns: 1fr !important;
+}

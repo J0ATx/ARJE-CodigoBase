@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <base href="/App/Client/Ventas/TakeAway/FrontEnd/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
+  <title>Los 3 Tanos - Para llevar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="../../../../Componentes/JS/headerClient.js"></script>
+</head>
+
+<body>
+  <div id="loading-screen">
+    <div id="logo-container" class="logo-loading"></div>
+  </div>
+  <div class="toast-container" id="toast-container"></div>
+  <client-header></client-header>
+  <div class="main-container">
+    <div class="page">
+      <div class="left-side">
+        <br>
+        <div class="filtros-sidebar">
+          <div class="filtros-container">
+            <div class="filtro-grupo">
+              <label for="busqueda-texto-sidebar">Buscar:</label>
+              <input type="text" id="busqueda-texto-sidebar" placeholder="Buscar productos..." class="filtro-input">
+            </div>
+
+            <div class="filtro-grupo">
+              <label for="filtro-categoria">Categoría:</label>
+              <select id="filtro-categoria" class="filtro-select">
+                <option value="">Todas las categorías</option>
+              </select>
+            </div>
+
+            <div class="filtro-grupo">
+              <label for="filtro-precio">Precio máximo:</label>
+              <input type="number" id="filtro-precio" class="filtro-input" placeholder="Ej: 5000" min="0">
+            </div>
+
+            <div class="filtro-grupo">
+              <label for="filtro-calificacion">Calificación mínima:</label>
+              <select id="filtro-calificacion" class="filtro-select">
+                <option value="">Todas las calificaciones</option>
+                <option value="1">1+ estrellas</option>
+                <option value="2">2+ estrellas</option>
+                <option value="3">3+ estrellas</option>
+                <option value="4">4+ estrellas</option>
+                <option value="5">5+ estrellas</option>
+              </select>
+            </div>
+
+            <div class="filtro-grupo">
+              <label for="filtro-ordenar">Ordenar por:</label>
+              <select id="filtro-ordenar" class="filtro-select">
+                <option value="nombre">Nombre</option>
+                <option value="precio-asc">Precio (menor a mayor)</option>
+                <option value="precio-desc">Precio (mayor a menor)</option>
+                <option value="calificacion">Calificación</option>
+                <option value="categoria">Categoría</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="btn-limpiar-todos" class="btn-limpiar-filtros">Limpiar filtros</button>
+          <button id="btn-aplicar-filtros-sidebar" class="btn-aplicar-filtros">Aplicar filtros</button>
+        </div>
+      </div>
+      <div class="right-side">
+        <div class="form-box">
+          <div class="menu-header">
+            <h2 class="titulo">Para llevar</h2>
+            <button id="btn-abrir-filtros" class="btn-filtros"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-filter">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path
+                  d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z" />
+              </svg></button>
+          </div>
+          <div class="acciones" style="margin-top:16px;display:flex;gap:12px;justify-content:center">
+            <a class="btn-comentar-principal" href="checkout.html" style="width:fit-content;">Ir al pedido</a>
+          </div>
+          <div id="menu-listado" class="menu-contenedor"></div>
+
+          <div class="resultados-info">
+            <p id="contador-resultados"></p>
+          </div>
+        </div>
+      </div>
+      <client-footer></client-footer>
+    </div>
+  </div>
+
+  <div id="modal-filtros" class="modal-filtros">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3>Filtros de Búsqueda</h3>
+        <button id="btn-cerrar-modal" class="btn-cerrar-modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="filtros-modal">
+          <div class="filtro-grupo">
+            <label for="busqueda-texto-modal">Buscar:</label>
+            <input type="text" id="busqueda-texto-modal" placeholder="Buscar productos..." class="filtro-input">
+          </div>
+
+          <div class="filtro-grupo">
+            <label for="modal-filtro-categoria">Categoría:</label>
+            <select id="modal-filtro-categoria" class="filtro-select">
+              <option value="">Todas las categorías</option>
+            </select>
+          </div>
+
+          <div class="filtro-grupo">
+            <label for="modal-filtro-precio">Precio máximo:</label>
+            <select id="modal-filtro-precio" class="filtro-select">
+              <option value="">Sin límite</option>
+              <option value="50">$50</option>
+              <option value="100">$100</option>
+              <option value="200">$200</option>
+              <option value="500">$500</option>
+            </select>
+          </div>
+
+          <div class="filtro-grupo">
+            <label for="modal-filtro-calificacion">Calificación mínima:</label>
+            <select id="modal-filtro-calificacion" class="filtro-select">
+              <option value="">Cualquier calificación</option>
+              <option value="1">1+ estrellas</option>
+              <option value="2">2+ estrellas</option>
+              <option value="3">3+ estrellas</option>
+              <option value="4">4+ estrellas</option>
+              <option value="5">5+ estrellas</option>
+            </select>
+          </div>
+
+          <div class="filtro-grupo">
+            <label for="modal-ordenar">Ordenar por:</label>
+            <select id="modal-ordenar" class="filtro-select">
+              <option value="nombre">Nombre</option>
+              <option value="precio-asc">Precio (menor a mayor)</option>
+              <option value="precio-desc">Precio (mayor a menor)</option>
+              <option value="calificacion">Calificación</option>
+              <option value="categoria">Categoría</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button id="btn-limpiar-todos-modal" class="btn-limpiar-filtros">Limpiar Filtros</button>
+          <button id="btn-aplicar-filtros" class="btn-aplicar-filtros">Aplicar Filtros</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="../session.js"></script>
+  <script src="../../../../Componentes/JS/footerClient.js"></script>
+</body>
+
+</html>

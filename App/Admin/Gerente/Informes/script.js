@@ -159,25 +159,9 @@ function cargarDatos() {
             chartsCreated = true;
         }
         
-        // Simple legacy display
         const informesDiv = document.getElementById('informes');
         if (informesDiv) {
-            informesDiv.innerHTML = `
-                <div id="ingresosTotales">
-                    <h2>Ingresos Totales</h2>
-                    <p>Ingresos Totales a la Fecha: ${data.ingresosTotales?.[0]?.total_ingresos || 'N/A'}</p>
-                </div>
-                <hr>
-                <div id="cantidadClientes">
-                    <h2>Clientes Registrados</h2>
-                    <p>Clientes Registrados a la Fecha: ${data.cantidadClientes?.[0]?.total_clientes || 'N/A'}</p>
-                </div>
-                <hr>
-                <div id="cantidadPersonal">
-                    <h2>Personal Registrado</h2>
-                    <p>Personal Registrado a la Fecha: ${data.cantidadPersonal?.[0]?.total_personal || 'N/A'}</p>
-                </div>
-            `;
+            informesDiv.innerHTML = '';
         }
         
         isLoading = false;
