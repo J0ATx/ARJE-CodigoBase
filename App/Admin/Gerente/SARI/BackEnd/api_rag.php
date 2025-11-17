@@ -5,8 +5,14 @@ header('Content-Type: application/json');
 // --- 1. CONFIGURACIÓN DEL LLM (Ollama) ---
 $ollama_ip = "127.0.0.1";
 $ollama_port = "11434";
+<<<<<<< HEAD
 $ollama_model = "gemma3:4b";
 $ollama_url = "http://$ollama_ip:$ollama_port/api/generate";
+=======
+$ollama_model = "gemma3:4b"; // Modelo a utilizar
+$ollama_url_generate = "http://$ollama_ip:$ollama_port/api/generate";
+$ollama_url_chat = "http://$ollama_ip:$ollama_port/api/chat";
+>>>>>>> e37951b2de9bbe546a3301c23401535cb7a8f569
 
 
 // --- 2. BASE DE CONOCIMIENTO ESTÁTICA ---
@@ -147,14 +153,9 @@ R: La propina no es obligatoria y queda a criterio del cliente. Para grupos gran
 
 // --- 3. RECEPCIÓN DE LA PREGUNTA Y EL CONTEXTO DEL USUARIO ---
 $input = json_decode(file_get_contents('php://input'), true);
+$messages = $input['messages'] ?? [];
 $user_query = $input['query'] ?? '';
 $user_context = $input['context'] ?? ''; // Texto extraído del PDF
-
-if (empty($user_query)) {
-    http_response_code(400);
-    echo json_encode(["error" => "No se recibió ninguna consulta."]);
-    exit;
-}
 
 
 // --- 4. CONSULTA Y EXTRACCIÓN DE DATOS DE LA BASE DE DATOS (NUEVA LÓGICA) ---
@@ -226,55 +227,95 @@ if (!empty(trim($user_context)) && trim($user_context) !== $placeholder_text) {
 }
 
 
-// --- 6. CONSTRUCCIÓN DEL PROMPT ENRIQUECIDO ---
-$system_instruction = "Eres un asistente de IA. Tu tarea es responder la PREGUNTA DEL USUARIO utilizando SOLO la información proporcionada en el CONTEXTO DE CONOCIMIENTO.
+// --- 6. CONSTRUCCIÓN DEL CONTEXTO/SYSTEM ---
+$system_instruction = "Eres un asistente de IA para el panel Admin (SARI). Responde usando SOLO la información del CONTEXTO DE CONOCIMIENTO.
 
 El CONTEXTO DE CONOCIMIENTO tiene tres secciones:
-1.  'BASE DE CONOCIMIENTO (Restaurante)': Información fija.
-2.  'CONTEXTO ANALÍTICO DE LA BASE DE DATOS': Datos en formato JSON sobre métricas y ventas.
-3.  'CONTEXTO PDF ADJUNTO': Documento subido por el usuario.
+1.  'BASE DE CONOCIMIENTO (Restaurante)' (fija).
+2.  'CONTEXTO ANALÍTICO DE LA BASE DE DATOS' (JSON de métricas y ventas).
+3.  'CONTEXTO PDF ADJUNTO' (si existe).
 
+<<<<<<< HEAD
 PRIORIDAD DE USO:
 -   Para análisis o métricas ('ingresos totales', 'ventas por producto', 'clientes'): usa la sección **2. CONTEXTO ANALÍTICO DE LA BASE DE DATOS**. Debes interpretar el JSON para dar una respuesta coherente. Responde detall
 -   Para información del restaurante ('horarios', 'contacto', 'propina'): usa la sección **1. BASE DE CONOCIMIENTO (Restaurante)**.
 -   Para preguntas específicas sobre el documento ('resume el PDF', 'qué dice el documento'): usa la sección **3. CONTEXTO PDF ADJUNTO**.
 -   Si la información no se encuentra en *ninguna* de las tres secciones, debes indicarlo claramente.";
+=======
+Prioriza datos analíticos (sección 2) para preguntas de métricas; usa sección 1 para info institucional; usa sección 3 para preguntas específicas del PDF. Si falta información, indícalo. Responde en español.";
+>>>>>>> e37951b2de9bbe546a3301c23401535cb7a8f569
 
-$final_prompt = 
-    $system_instruction . "\n\n" .
-    "CONTEXTO DE CONOCIMIENTO:\n" . $final_context . "\n\n" .
-    "PREGUNTA DEL USUARIO: " . $user_query;
+$system_with_context = $system_instruction . "\n\nCONTEXTO DE CONOCIMIENTO:\n" . $final_context;
 
+// --- 7. LLAMADA A OLLAMA: CHAT con historial o GENERATE simple ---
+if (!empty($messages)) {
+    $system_message = [
+        'role' => 'system',
+        'content' => $system_with_context
+    ];
+    array_unshift($messages, $system_message);
 
-// --- 7. PREPARAR Y LLAMAR A LA API DE OLLAMA ---
-$data = [
-    'model' => $ollama_model,
-    'prompt' => $final_prompt,
-    'stream' => false,
-    'options' => [
-        'temperature' => 0.1, // Baja temperatura para respuestas basadas en hechos
-    ]
-];
+    $data = [
+        'model' => $ollama_model,
+        'messages' => $messages,
+        'stream' => false
+    ];
 
-$options = [
-    'http' => [
-        'header'  => "Content-Type: application/json\r\n",
-        'method'  => 'POST',
-        'content' => json_encode($data),
-        'timeout' => 60,
-    ],
-];
-$context  = stream_context_create($options);
+    $options = [
+        'http' => [
+            'header'  => "Content-Type: application/json\r\n",
+            'method'  => 'POST',
+            'content' => json_encode($data),
+            'timeout' => 60,
+        ],
+    ];
+    $ctx  = stream_context_create($options);
+    $result = @file_get_contents($ollama_url_chat, false, $ctx);
 
-$result = @file_get_contents($ollama_url, false, $context);
-
-if ($result === FALSE) {
-    http_response_code(503);
-    echo json_encode(["error" => "Error al conectar con la API de Ollama. Asegúrate de que esté corriendo en $ollama_ip:$ollama_port."]);
+    if ($result === FALSE) {
+        http_response_code(503);
+        echo json_encode(["error" => "Lamento no poder ayudarte en este momento."]);
+    } else {
+        $ollama_response = json_decode($result, true);
+        $model_response = $ollama_response['message']['content'] ?? 'Respuesta del modelo no encontrada.';
+        echo json_encode(["response" => $model_response]);
+    }
 } else {
-    $ollama_response = json_decode($result, true);
-    $model_response = $ollama_response['response'] ?? 'Respuesta del modelo no encontrada.';
-    echo json_encode(["response" => $model_response]);
+    if (empty($user_query)) {
+        http_response_code(400);
+        echo json_encode(["error" => "No se recibió ninguna consulta."]);
+        exit;
+    }
+
+    $final_prompt = $system_with_context . "\n\nPREGUNTA DEL USUARIO: " . $user_query;
+
+    $data = [
+        'model' => $ollama_model,
+        'prompt' => $final_prompt,
+        'stream' => false,
+        'options' => [
+            'temperature' => 0.1,
+        ]
+    ];
+    $options = [
+        'http' => [
+            'header'  => "Content-Type: application/json\r\n",
+            'method'  => 'POST',
+            'content' => json_encode($data),
+            'timeout' => 60,
+        ],
+    ];
+    $ctx  = stream_context_create($options);
+    $result = @file_get_contents($ollama_url_generate, false, $ctx);
+
+    if ($result === FALSE) {
+        http_response_code(503);
+        echo json_encode(["error" => "Error al conectar con la API de Ollama."]);
+    } else {
+        $ollama_response = json_decode($result, true);
+        $model_response = $ollama_response['response'] ?? 'Respuesta del modelo no encontrada.';
+        echo json_encode(["response" => $model_response]);
+    }
 }
 
 ?>
