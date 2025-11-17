@@ -58,18 +58,23 @@
         <form>
             <h2>Editar Mesa</h2>
             <input id="edit_idMesa" type="hidden">
+            <label for="edit_capacidad">Capacidad</label>
             <input id="edit_capacidad" placeholder="Capacidad" type="number" min="1" required>
+            <label for="edit_estadoActual">Estado Actual</label>
             <select id="edit_estadoActual">
                 <option value="Libre">Libre</option>
                 <option value="Ocupada">Ocupada</option>
                 <option value="Inhabilitada">Inhabilitada</option>
             </select>
+            <label for="edit_reservable">Reservable</label>
             <select id="edit_reservable">
                 <option value="Si">Sí</option>
                 <option value="No">No</option>
             </select>
-            <input type="submit" value="Guardar cambios" onclick="guardarCambiosMesa()">
-            <button type="button" onclick="cerrarModalEditar()">Cancelar</button>
+            <div style="display:flex; gap:10px; margin-top:25px;">
+                <button type="button" onclick="cerrarModalEditar()" style="height:47px; width:100%; margin:0;">Cancelar</button>
+                <input type="submit" value="Guardar cambios" onclick="guardarCambiosMesa()" style="width:100%; margin:0;">
+            </div>
         </form>
     </div>
 

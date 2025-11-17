@@ -18,8 +18,11 @@ RewriteRule ^App/Client/Contacto/Frontend/index\.html$ Contacto [R=301,L]
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Informacion/Frontend/index\.html\sHTTP
 RewriteRule ^App/Client/Informacion/Frontend/index\.html$ Informacion [R=301,L]
 # Regla para /MiUsuario
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/MiUsuario/FrontEnd/index\.html\sHTTP
-RewriteRule ^App/Client/MiUsuario/FrontEnd/index\.html$ MiUsuario [R=301,L]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/MiUsuario/Informacion/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Client/MiUsuario/Informacion/FrontEnd/index\.html$ MiUsuario [R=301,L]
+# Regla para /MisPedidos
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/MiUsuario/Pedidos/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Client/MiUsuario/Pedidos/FrontEnd/index\.html$ MisPedidos [R=301,L] 
 # Regla para /Menu
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/Menu/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Client/Ventas/Menu/FrontEnd/index\.html$ Menu [R=301,L]
@@ -32,6 +35,9 @@ RewriteRule ^App/Client/Ventas/Reservas/FrontEnd/index\.html$ Reservas [R=301,L]
 # Regla para /TakeAway
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/TakeAway/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Client/Ventas/TakeAway/FrontEnd/index\.html$ TakeAway [R=301,L]
+# Regla para /Carrito
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/TakeAway/FrontEnd/checkout\.html\sHTTP
+RewriteRule ^App/Client/Ventas/TakeAway/FrontEnd/checkout\.html$ Carrito [R=301,L]
 # Regla para /SignIn
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Control/SignIn/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Control/SignIn/FrontEnd/index\.html$ SignIn [R=301,L]
@@ -88,11 +94,13 @@ RewriteRule ^Panel$ App/Client/Panel/FrontEnd/index.html [L]
 RewriteRule ^SARI$ App/Admin/Gerente/SARI/FrontEnd/index.html [L]
 RewriteRule ^Contacto$ App/Client/Contacto/FrontEnd/index.html [L]
 RewriteRule ^Informacion$ App/Client/Informacion/FrontEnd/index.html [L]
-RewriteRule ^MiUsuario$ App/Client/MiUsuario/FrontEnd/index.html [L]
+RewriteRule ^MiUsuario$ App/Client/MiUsuario/Informacion/FrontEnd/index.html [L]
+RewriteRule ^MisPedidos$ App/Client/MiUsuario/Pedidos/FrontEnd/index.html [L]
 RewriteRule ^Menu$ App/Client/Ventas/Menu/FrontEnd/index.html [L]
 RewriteRule ^Menu/Plato$ App/Client/Ventas/Menu/FrontEnd/detalle.html [L]
 RewriteRule ^Reservas$ App/Client/Ventas/Reservas/FrontEnd/index.html [L]
 RewriteRule ^TakeAway$ App/Client/Ventas/TakeAway/FrontEnd/index.html [L]
+RewriteRule ^Carrito$ App/Client/Ventas/TakeAway/FrontEnd/checkout.html [L]
 RewriteRule ^SignIn$ App/Control/SignIn/FrontEnd/index.html [L]
 RewriteRule ^SignUp$ App/Control/SignUp/FrontEnd/index.html [L]
 RewriteRule ^Empleado$ App/Control/SignInEmpleado/FrontEnd/index.html [L]

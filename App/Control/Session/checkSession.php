@@ -6,7 +6,7 @@ $response = [
 ];
 if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
     try {
-        require_once "../Conexion/clienteNoRegistrado.php";
+        require_once __DIR__ . "/../Conexion/clienteNoRegistrado.php";
         $sql = "SELECT * FROM datos_usuarios WHERE usuario_id = ?";
         $resultado = $con->prepare($sql);
         $resultado->execute([$_SESSION["usuario_id"]]);
@@ -42,5 +42,7 @@ if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
         ];
     }
 }
-echo json_encode($response);
+if (realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    echo json_encode($response);
+}
 ?>

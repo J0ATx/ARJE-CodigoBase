@@ -18,10 +18,11 @@ html {
     text-size-adjust: none;
 }
 
-li{
+li {
     text-indent: -1em;
     margin-left: 32px;
 }
+
 @font-face {
     font-family: 'Nesatho';
     src: url('files/nesatho-webfont.woff') format('woff'),
@@ -80,6 +81,10 @@ li{
 .ai-maitre svg {
     width: clamp(2rem, 4vw, 4vw);
     height: auto;
+}
+
+.ai-maitre svg:hover {
+    filter: contrast(200%);
 }
 
 .chatbot-bg {

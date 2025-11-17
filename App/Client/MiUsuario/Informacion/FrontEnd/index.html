@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/App/Client/MiUsuario/Informacion/FrontEnd/">
+    <title>Los 3 Tanos - Mi Usuario</title>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="icon" type="image/png" sizes="32x32" href="/App/Recursos/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="loading-screen">
+        <div id="logo-container" class="logo-loading"></div>
+    </div>
+    <div id="main-content">
+        <div class="page">
+            <nav-client></nav-client>
+            <main class="contenedor">
+                <section class="datos-personales">
+                    <h1>Datos personales</h1>
+
+                    <div id="datosUsuario">
+
+                    </div>
+
+                    <div id="modalEditar" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2>Editar Perfil</h2>
+                                <button type="button" class="cerrar" id="cerrarModal" onclick="cerrarModal()">&times;</button>
+                            </div>
+                            <form id="formEditar" class="formulario">
+                                <div id="msgEditar"></div>
+                                <input type="hidden" id="editId" name="id">
+
+                                <div class="form-group">
+                                    <label for="editNombre">Nombre</label>
+                                    <input type="text" id="editNombre" name="nombre" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editApellido">Apellido</label>
+                                    <input type="text" id="editApellido" name="apellido" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editTelefono">Teléfono</label>
+                                    <input type="tel" id="editTelefono" name="telefono" placeholder="Ej: 912345678">
+                                </div>
+
+                                <div id="platilloFavContainer" class="form-group" style="display: none;">
+                                    <label for="editPlatillofav">Platillo Favorito</label>
+                                    <input type="text" id="editPlatillofav" name="platillofav">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editContrasenia">Nueva Contraseña <small>(dejar en blanco para no cambiar)</small></label>
+                                    <input type="password" id="editContrasenia" name="contrasenia">
+                                </div>
+
+                                <div class="modal-actions">
+                                    <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                                    <button type="submit" class="btn-guardar">Guardar Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="modalFoto" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2>Cambiar Foto de Perfil</h2>
+                                <button type="button" class="cerrar" onclick="cerrarModal()">&times;</button>
+                            </div>
+                            <form id="formFotoPerfil" class="formulario">
+                                <div id="msgFoto"></div>
+                                
+                                <div class="form-group">
+                                    <label for="fotoPerfil">Seleccionar imagen</label>
+                                    <div class="file-upload" id="fileUploadContainer">
+                                        <input type="file" id="fotoPerfil" name="fotoPerfil" class="file-upload-input" accept="image/png,image/jpeg" required>
+                                        <label for="fotoPerfil" class="file-upload-label" id="fileUploadLabel">
+                                            <span class="file-name" id="fileName">Ningún archivo seleccionado</span>
+                                        </label>
+                                        <small class="text-muted">Formatos permitidos: JPG, PNG. Tamaño máximo: 2MB</small>
+                                    </div>
+                                </div>
+
+                                <div class="modal-actions">
+                                    <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                                    <button type="submit" class="btn-guardar">Subir Foto</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección Alergias -->
+                    <div class="seccion-alergias">
+                        <div class="seccion-header">
+                            <h2>Alergias</h2>
+                            <div class="help-icon" title="Información sobre alergias">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <circle cx="12" cy="8" r="1" fill="currentColor"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="lista-items" id="listaAlergias">
+                            <!-- Las alergias se cargarán dinámicamente -->
+                        </div>
+                        <div class="accion-agregar">
+                            <button type="button" class="btn-agregar" id="btnAgregarAlergia">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Agregar alergia
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección Platos Favoritos -->
+                    <div class="seccion-platos-favoritos">
+                        <div class="seccion-header">
+                            <h2>Platos favoritos</h2>
+                            <div class="help-icon" title="Información sobre platos favoritos">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <circle cx="12" cy="8" r="1" fill="currentColor"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="lista-items" id="listaPlatosFavoritos">
+                            <!-- Los platos favoritos se cargarán dinámicamente -->
+                        </div>
+                        <div class="accion-agregar">
+                            <button type="button" class="btn-agregar" id="btnAgregarPlato">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Agregar plato favorito
+                            </button>
+                        </div>
+                    </div>
+        </div>
+        </section>
+        </main>
+    </div>
+    <script src="../../../../Componentes/JS/navClient.js"></script>
+    <script src="../control.js"></script>
+    <script src="../session.js"></script>
+</body>
+
+</html>

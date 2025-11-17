@@ -17,18 +17,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (addIngredientBtn) addIngredientBtn.style.display = 'none';
     }
 
-    window.cerrarModalNotificacion = function() {
+    window.cerrarModalNotificacion = function () {
         document.getElementById('modalNotificacion').classList.remove('active');
         document.getElementById('modalNotificacion').style.display = 'none';
     }
 
-    window.cancelarConfirmacion = function() {
+    window.cancelarConfirmacion = function () {
         document.getElementById('modalConfirmacion').classList.remove('active');
         document.getElementById('modalConfirmacion').style.display = 'none';
         confirmacionCallback = null;
     }
 
-    window.confirmarAccion = function() {
+    window.confirmarAccion = function () {
         if (confirmacionCallback) {
             confirmacionCallback();
             confirmacionCallback = null;
@@ -63,19 +63,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('confirmacionTitle').textContent = titulo;
         document.getElementById('confirmacionMessage').textContent = mensaje;
         confirmacionCallback = callback;
-        
+
         const btnConfirmar = document.getElementById('btnConfirmar');
         btnConfirmar.onclick = confirmarAccion;
-        
+
         const modal = document.getElementById('modalConfirmacion');
         modal.classList.add('active');
         modal.style.display = 'flex';
     }
 
-    window.addEventListener('click', function(e) {
+    window.addEventListener('click', function (e) {
         const modalNotificacion = document.getElementById('modalNotificacion');
         const modalConfirmacion = document.getElementById('modalConfirmacion');
-        
+
         if (e.target === modalNotificacion) cerrarModalNotificacion();
         if (e.target === modalConfirmacion) cancelarConfirmacion();
     });
@@ -341,11 +341,11 @@ function renderIngredients(ingredientes) {
             alertaClass += ' stock-bajo';
         }
         row.className = alertaClass;
-        const cantidadMinimaDisplay = tieneStockBajo ? 
+        const cantidadMinimaDisplay = tieneStockBajo ?
             `<span class="cantidad-minima-alerta">${cantidadMinima.toString().replace(/\./g, ',')} ${ingrediente.medida}</span>` :
             (cantidadMinima > 0 ? `${cantidadMinima.toString().replace(/\./g, ',')} ${ingrediente.medida}` : '<span class="no-configurada">No configurada</span>');
         const canWrite = window.canWriteInventory !== false;
-        
+
         const accionesHTML = canWrite ? `
             <td class="acciones">
                 <button class="btn-menu" onclick="toggleMenu(this)">⋮</button>
@@ -383,7 +383,7 @@ function renderIngredients(ingredientes) {
                 </div>
             </td>
         `;
-        
+
         row.innerHTML = `
             <td>${ingrediente.nombre}</td>
             <td>${ingrediente.stock.toString().replace(/\./g, ',')} ${ingrediente.medida}</td>
@@ -440,7 +440,7 @@ async function deleteIngredient(id) {
     mostrarConfirmacion(
         'Eliminar Lote',
         '¿Estás seguro de que deseas eliminar este Lote?',
-        async function() {
+        async function () {
             const formData = new FormData();
             formData.append('id', id);
             try {
@@ -502,13 +502,16 @@ document.addEventListener('click', function (e) {
 });
 async function verDetallesIngrediente(idIngrediente) {
     try {
-        const response = await fetch('../BackEnd/visualizar.php');
+        const response = await fetch("../BackEnd/leer.php", {
+            method: 'POST',
+            body: JSON.stringify({ idIngrediente })
+        });
         const data = await response.json();
         if (data.error) {
             mostrarNotificacion('error', 'Error', 'Error al cargar detalles: ' + data.error);
             return;
         }
-        const ingrediente = data.find(i => i.idIngrediente == idIngrediente);
+        const ingrediente = data.ingredientes.find(i => i.idIngrediente == idIngrediente);
         if (!ingrediente) {
             mostrarNotificacion('error', 'Error', 'Ingrediente no encontrado');
             return;
@@ -516,10 +519,10 @@ async function verDetallesIngrediente(idIngrediente) {
         function formatDate(dateString) {
             if (!dateString) return 'No especificada';
             const date = new Date(dateString);
-            return date.toLocaleDateString('es-ES', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+            return date.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
         }
         function getStockEstado(cantidad, minima) {
@@ -559,16 +562,11 @@ async function verDetallesIngrediente(idIngrediente) {
                         <h3>Stock</h3>
                         <p><strong>Cantidad actual:</strong> ${ingrediente.cantidad} ${ingrediente.unidadMedida || ''}</p>
                         <p><strong>Cantidad mínima:</strong> ${ingrediente.cantidadMinima || 'No configurada'} ${ingrediente.unidadMedida || ''}</p>
-                        <p><strong>Estado del stock:</strong> 
-                            <span style="background-color: ${stockEstado.color}; color: white; padding: 6px 12px; border-radius: 4px; font-weight: 600; display: inline-block; margin-top: 5px;">
-                                ${stockEstado.texto}
-                            </span>
-                        </p>
                     </div>
                     <div class="detail-section">
                         <h3>Caducidad</h3>
                         <p><strong>Fecha de caducidad:</strong> ${formatDate(ingrediente.caducidad)}</p>
-                        <p><strong>Estado:</strong> 
+                        <p><strong>Estado:</strong>
                             <span style="background-color: ${caducidadEstado.color}; color: white; padding: 6px 12px; border-radius: 4px; font-weight: 600; display: inline-block; margin-top: 5px;">
                                 ${caducidadEstado.texto}
                             </span>

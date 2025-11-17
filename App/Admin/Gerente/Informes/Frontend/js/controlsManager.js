@@ -339,8 +339,12 @@ function updateClienteChart(filterValue) {
     
     // Mostrar indicador de carga si existe
     const container = document.getElementById('ingresos-cliente-chart');
+    let overlay = null;
     if (container) {
-        container.innerHTML = '<div class="chart-loading">Actualizando gráfica...</div>';
+        overlay = document.createElement('div');
+        overlay.className = 'chart-loading';
+        overlay.textContent = 'Actualizando gráfica...';
+        container.appendChild(overlay);
     }
     
     // Obtener datos del backend (con cache)
@@ -363,6 +367,9 @@ function updateClienteChart(filterValue) {
             } else {
                 console.warn('No se pudo crear la gráfica de clientes');
             }
+            if (overlay && container) {
+                container.removeChild(overlay);
+            }
         } else {
             console.error('ChartUtils.createIngresosClienteChart no está disponible');
         }
@@ -371,13 +378,14 @@ function updateClienteChart(filterValue) {
         console.error('Error actualizando gráfica de clientes:', error);
         
         // Mostrar mensaje de error en el contenedor
+        if (overlay && container) {
+            container.removeChild(overlay);
+        }
         if (container) {
-            container.innerHTML = `
-                <div class="chart-error">
-                    <p>Error al actualizar la gráfica</p>
-                    <button onclick="updateClienteChart('${filterValue}')">Reintentar</button>
-                </div>
-            `;
+            const errorBox = document.createElement('div');
+            errorBox.className = 'chart-error';
+            errorBox.innerHTML = '<p>Error al actualizar la gráfica</p><button onclick="updateClienteChart(\'' + filterValue + '\')">Reintentar</button>';
+            container.appendChild(errorBox);
         }
     });
 }
@@ -392,8 +400,12 @@ function updateProductoChart(filterType, count) {
     
     // Mostrar indicador de carga si existe
     const container = document.getElementById('ingresos-producto-chart');
+    let overlay = null;
     if (container) {
-        container.innerHTML = '<div class="chart-loading">Actualizando gráfica...</div>';
+        overlay = document.createElement('div');
+        overlay.className = 'chart-loading';
+        overlay.textContent = 'Actualizando gráfica...';
+        container.appendChild(overlay);
     }
     
     // Obtener datos del backend (con cache)
@@ -419,6 +431,9 @@ function updateProductoChart(filterType, count) {
             } else {
                 console.warn('No se pudo crear la gráfica de productos');
             }
+            if (overlay && container) {
+                container.removeChild(overlay);
+            }
         } else {
             console.error('ChartUtils.createIngresosProductoChart no está disponible');
         }
@@ -427,13 +442,14 @@ function updateProductoChart(filterType, count) {
         console.error('Error actualizando gráfica de productos:', error);
         
         // Mostrar mensaje de error en el contenedor
+        if (overlay && container) {
+            container.removeChild(overlay);
+        }
         if (container) {
-            container.innerHTML = `
-                <div class="chart-error">
-                    <p>Error al actualizar la gráfica</p>
-                    <button onclick="updateProductoChart('${filterType}', '${count}')">Reintentar</button>
-                </div>
-            `;
+            const errorBox = document.createElement('div');
+            errorBox.className = 'chart-error';
+            errorBox.innerHTML = '<p>Error al actualizar la gráfica</p><button onclick="updateProductoChart(\'' + filterType + '\', \'' + count + '\')">Reintentar</button>';
+            container.appendChild(errorBox);
         }
     });
 }
@@ -448,8 +464,12 @@ function updateVentasChart(filterType, count) {
     
     // Mostrar indicador de carga si existe
     const container = document.getElementById('ventas-producto-chart');
+    let overlay = null;
     if (container) {
-        container.innerHTML = '<div class="chart-loading">Actualizando gráfica...</div>';
+        overlay = document.createElement('div');
+        overlay.className = 'chart-loading';
+        overlay.textContent = 'Actualizando gráfica...';
+        container.appendChild(overlay);
     }
     
     // Obtener datos del backend (con cache)
@@ -464,9 +484,11 @@ function updateVentasChart(filterType, count) {
         
         // Verificar que existen las funciones necesarias
         if (window.ChartUtils && window.ChartUtils.createVentasProductoChart) {
+            const canvas = document.getElementById('ventas-producto-chart-canvas');
+            const targetId = canvas ? 'ventas-producto-chart-canvas' : 'ventas-producto-chart';
             const chart = window.ChartUtils.createVentasProductoChart(
-                'ventas-producto-chart', 
-                data.ventasPorProducto, 
+                targetId,
+                data.ventasPorProducto,
                 filterOptions
             );
             
@@ -474,6 +496,9 @@ function updateVentasChart(filterType, count) {
                 console.log('Gráfica de ventas actualizada correctamente');
             } else {
                 console.warn('No se pudo crear la gráfica de ventas');
+            }
+            if (overlay && container) {
+                container.removeChild(overlay);
             }
         } else {
             console.error('ChartUtils.createVentasProductoChart no está disponible');
@@ -483,13 +508,14 @@ function updateVentasChart(filterType, count) {
         console.error('Error actualizando gráfica de ventas:', error);
         
         // Mostrar mensaje de error en el contenedor
+        if (overlay && container) {
+            container.removeChild(overlay);
+        }
         if (container) {
-            container.innerHTML = `
-                <div class="chart-error">
-                    <p>Error al actualizar la gráfica</p>
-                    <button onclick="updateVentasChart('${filterType}', '${count}')">Reintentar</button>
-                </div>
-            `;
+            const errorBox = document.createElement('div');
+            errorBox.className = 'chart-error';
+            errorBox.innerHTML = '<p>Error al actualizar la gráfica</p><button onclick="updateVentasChart(\'' + filterType + '\', \'' + count + '\')">Reintentar</button>';
+            container.appendChild(errorBox);
         }
     });
 }

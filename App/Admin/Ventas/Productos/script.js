@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('confirmacionTitle').textContent = titulo;
         document.getElementById('confirmacionMessage').textContent = mensaje;
         confirmacionCallback = callback;
-        
         const btnConfirmar = document.getElementById('btnConfirmar');
         btnConfirmar.onclick = confirmarAccion;
         
@@ -318,7 +317,6 @@ function addIngredientToList(ingrediente) {
 }
 
 async function editProduct(id) {
-    // Verificar permisos de escritura
     if (window.canWriteProducts === false) {
         mostrarNotificacion('warning', 'Acceso Denegado', 'No tienes permisos para editar productos');
         return;
@@ -358,25 +356,23 @@ async function editProduct(id) {
 }
 
 async function deleteProduct(id) {
-    // Verificar permisos de escritura
     if (window.canWriteProducts === false) {
         mostrarNotificacion('warning', 'Acceso Denegado', 'No tienes permisos para eliminar productos');
         return;
     }
-
     mostrarConfirmacion(
         'Eliminar Producto',
         '¿Estás seguro de que deseas eliminar este producto?',
         async function() {
             const formData = new FormData();
             formData.append('id', id);
+            console.log(formData);
 
             try {
                 const response = await fetch('../BackEnd/eliminar.php', {
                     method: 'POST',
                     body: formData
                 });
-
                 const data = await response.json();
 
                 if (data.success) {

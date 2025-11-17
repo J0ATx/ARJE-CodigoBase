@@ -1,7 +1,7 @@
 ﻿const ROLE_PERMISSIONS = {
     'Gerente-General': {
-        sections: ['estadisticas', 'promociones', 'pedidos', 'inventario', 
-                   'reservas', 'mesas', 'cocina', 'productos', 'usuarios', 'empresa'],
+        sections: ['estadisticas', 'promociones', 'pedidos', 'inventario',
+            'reservas', 'mesas', 'cocina', 'productos', 'usuarios', 'empresa', 'sari'],
         fullAccess: true
     },
     'Camarero': {
@@ -30,6 +30,13 @@ const NAVBAR_SECTIONS = {
         href: '/Informes',
         icon: '/App/Componentes/svg/Estadisticas.svg',
         dataPage: 'estadisticas'
+    },
+    sari: {
+        id: 'sari',
+        label: 'SARI',
+        href: '/SARI',
+        icon: '/App/Componentes/svg/SARI.svg',
+        dataPage: 'sari'
     },
     promociones: {
         id: 'promociones',
@@ -102,13 +109,13 @@ function hasPermission(userRole, sectionId) {
 
 function buildMenuHTML(userRole) {
     const allowedSections = ROLE_PERMISSIONS[userRole]?.sections || [];
-    
+
     if (allowedSections.length === 0) {
         return '';
     }
-    
+
     let menuHTML = '';
-    
+
     for (const [, section] of Object.entries(NAVBAR_SECTIONS)) {
         if (hasPermission(userRole, section.id)) {
             menuHTML += `
@@ -133,23 +140,23 @@ class NavAdmin extends HTMLElement {
                 method: 'GET',
                 credentials: 'same-origin'
             });
-            
+
             const data = await response.json();
-            
+
             if (!data.logged_in) {
                 window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
                 return;
             }
-            
+
             const userRole = data.user?.rol;
-            
+
             if (!userRole) {
                 window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
                 return;
             }
-            
+
             const menuHTML = buildMenuHTML(userRole);
-            
+
             this.innerHTML = `
         <style>
 
@@ -419,6 +426,12 @@ class NavAdmin extends HTMLElement {
                 margin-bottom: 3px;
                 font-family: 'Poppins', sans-serif;
                 line-height: 1.2;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                max-width: 140px;
+                overflow:hidden;
             }
 
             nav .user-role {
@@ -476,26 +489,6 @@ class NavAdmin extends HTMLElement {
                     width: 100%;
                 }
             }
-
-            @media (max-width: 1199px) and (min-width: 768px) {
-                nav {
-                    width: 250px;
-                }
-
-                nav .user-section {
-                    width: 250px;
-                }
-
-                nav .logo-container p {
-                    font-size: 2rem;
-                }
-
-                nav ul li a {
-                    font-size: 0.9rem;
-                    padding: 10px 12px;
-                }
-            }
-
         </style>
         <button class="menu-toggle" aria-label="Toggle menu">
             <span></span>
@@ -503,7 +496,7 @@ class NavAdmin extends HTMLElement {
             <span></span>
         </button>
         <div class="nav-overlay"></div>
-        <nav>
+        <nav>   
             <div class="logo-container">
                 <a href="/App/Client/Panel/FrontEnd/index.html">
                     <img src="/App/Recursos/logo.svg" alt="Logo de la empresa" class="logo" />
@@ -540,118 +533,118 @@ class NavAdmin extends HTMLElement {
             </div>  
         </nav>
         `;
-            
+
             this.init();
-            
+
         } catch (error) {
             window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
         }
     }
-        init() {
-            setTimeout(() => {
-                this.updateActiveLink();
-                this.addEventListeners();
-                this.setupMobileMenu();
-            }, 10);
+    init() {
+        setTimeout(() => {
+            this.updateActiveLink();
+            this.addEventListeners();
+            this.setupMobileMenu();
+        }, 10);
+    }
+
+    setupMobileMenu() {
+        const menuToggle = this.querySelector('.menu-toggle');
+        const nav = this.querySelector('nav');
+        const overlay = this.querySelector('.nav-overlay');
+        const navLinks = this.querySelectorAll('.nav-link');
+
+        if (!menuToggle || !nav || !overlay) {
+            return;
         }
 
-        setupMobileMenu() {
-            const menuToggle = this.querySelector('.menu-toggle');
-            const nav = this.querySelector('nav');
-            const overlay = this.querySelector('.nav-overlay');
-            const navLinks = this.querySelectorAll('.nav-link');
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            nav.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+        });
 
-            if (!menuToggle || !nav || !overlay) {
-                return;
-            }
+        overlay.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            nav.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
 
-            menuToggle.addEventListener('click', () => {
-                menuToggle.classList.toggle('active');
-                nav.classList.toggle('active');
-                overlay.classList.toggle('active');
-                document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
-            });
-
-            overlay.addEventListener('click', () => {
-                menuToggle.classList.remove('active');
-                nav.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (window.innerWidth <= 767) {
-                        menuToggle.classList.remove('active');
-                        nav.classList.remove('active');
-                        overlay.classList.remove('active');
-                        document.body.style.overflow = '';
-                    }
-                });
-            });
-
-            window.addEventListener('resize', () => {
-                if (window.innerWidth > 767) {
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 767) {
                     menuToggle.classList.remove('active');
                     nav.classList.remove('active');
                     overlay.classList.remove('active');
                     document.body.style.overflow = '';
                 }
             });
-        }
+        });
 
-        updateActiveLink() {
-            const currentPath = window.location.pathname;
-            const activePage = this.getCurrentPage(currentPath);
-            const navLinks = this.querySelectorAll('.nav-link');
-
-            navLinks.forEach(link => link.classList.remove('active-link'));
-
-            navLinks.forEach(link => {
-                if (link.getAttribute('data-page') === activePage) {
-                    link.classList.add('active-link');
-                }
-            });
-        }
-
-        getCurrentPage(path) {
-            const normalizedPath = path.toLowerCase();
-
-            if (normalizedPath.includes('gerente/informes') || normalizedPath.includes('estadisticas')) return 'estadisticas';
-            if (normalizedPath.includes('ventas/pedidos/mozo') || normalizedPath.includes('pedidos')) return 'pedidos';
-            if (normalizedPath.includes('ventas/reservas') || normalizedPath.includes('reservas')) return 'reservas';
-            if (normalizedPath.includes('ventas/promociones') || normalizedPath.includes('promociones')) return 'promociones';
-            if (normalizedPath.includes('ventas/pedidos/cocina') || normalizedPath.includes('cocina')) return 'cocina';
-            if (normalizedPath.includes('stock') || normalizedPath.includes('inventario')) return 'inventario';
-            if (normalizedPath.includes('mesas')) return 'mesas';
-            if (normalizedPath.includes('ventas/productos') || normalizedPath.includes('productos') || normalizedPath.includes('platillos')) return 'productos';
-            if (normalizedPath.includes('gerente/usuarios') || normalizedPath.includes('usuarios')) return 'usuarios';
-            if (normalizedPath.includes('gerente/empresa') || normalizedPath.includes('empresa')) return 'empresa';
-        }
-
-        addEventListeners() {
-            const navLinks = this.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    setTimeout(() => this.updateActiveLink(), 100);
-                });
-            });
-        }
-
-        setActiveLink(linkName) {
-            const navLinks = this.querySelectorAll('.nav-link');
-
-            navLinks.forEach(link => {
-                const linkText = link.textContent.trim();
-                link.classList.toggle('active', linkText === linkName);
-            });
-        }
-
-        getActiveLink() {
-            const activeLink = this.querySelector('.nav-link.active');
-            return activeLink ? activeLink.textContent.trim() : '';
-        }
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 767) {
+                menuToggle.classList.remove('active');
+                nav.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
     }
+
+    updateActiveLink() {
+        const currentPath = window.location.pathname;
+        const activePage = this.getCurrentPage(currentPath);
+        const navLinks = this.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => link.classList.remove('active-link'));
+
+        navLinks.forEach(link => {
+            if (link.getAttribute('data-page') === activePage) {
+                link.classList.add('active-link');
+            }
+        });
+    }
+
+    getCurrentPage(path) {
+        const normalizedPath = path.toLowerCase();
+
+        if (normalizedPath.includes('gerente/informes') || normalizedPath.includes('estadisticas')) return 'estadisticas';
+        if (normalizedPath.includes('ventas/pedidos/mozo') || normalizedPath.includes('pedidos')) return 'pedidos';
+        if (normalizedPath.includes('ventas/reservas') || normalizedPath.includes('reservas')) return 'reservas';
+        if (normalizedPath.includes('ventas/promociones') || normalizedPath.includes('promociones')) return 'promociones';
+        if (normalizedPath.includes('ventas/pedidos/cocina') || normalizedPath.includes('cocina')) return 'cocina';
+        if (normalizedPath.includes('stock') || normalizedPath.includes('inventario')) return 'inventario';
+        if (normalizedPath.includes('mesas')) return 'mesas';
+        if (normalizedPath.includes('ventas/productos') || normalizedPath.includes('productos') || normalizedPath.includes('platillos')) return 'productos';
+        if (normalizedPath.includes('gerente/usuarios') || normalizedPath.includes('usuarios')) return 'usuarios';
+        if (normalizedPath.includes('gerente/empresa') || normalizedPath.includes('empresa')) return 'empresa';
+    }
+
+    addEventListeners() {
+        const navLinks = this.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(() => this.updateActiveLink(), 100);
+            });
+        });
+    }
+
+    setActiveLink(linkName) {
+        const navLinks = this.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => {
+            const linkText = link.textContent.trim();
+            link.classList.toggle('active', linkText === linkName);
+        });
+    }
+
+    getActiveLink() {
+        const activeLink = this.querySelector('.nav-link.active');
+        return activeLink ? activeLink.textContent.trim() : '';
+    }
+}
 
 customElements.define('nav-admin', NavAdmin);
 

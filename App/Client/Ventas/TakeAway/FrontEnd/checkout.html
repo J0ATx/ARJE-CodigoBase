@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <base href="/App/Client/Ventas/TakeAway/FrontEnd/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Los 3 Tanos - Carrito</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="checkout.css">
+  <script src="../../../../Componentes/JS/headerClient.js"></script>
+</head>
+
+<body>
+  <div class="main-container">
+    <div class="page">
+      <client-header></client-header>
+      <div class="right-side">
+        <div class="form-box">
+          <a href="index.html" class="btn-volver">Volver al menú</a>
+          <div class="menu-header">
+            <h2 class="titulo">Carrito</h2>
+          </div>
+          <div class="menu-contenedor" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <section class="resumen">
+              <h3 class="categoria-titulo">Resumen</h3>
+              <div id="resumen"></div>
+              <div class="producto-calificacion" style="border-top:none;justify-content:space-between">
+                <span>Total:</span>
+                <strong id="total">$0</strong>
+              </div>
+            </section>
+            <section class="datos">
+              <h3 class="categoria-titulo">Datos</h3>
+              <form id="form" class="formulario" style="gap:12px">
+                <label class="label">Método de pago</label>
+                <select id="metodo" class="checkout-input">
+                  <option value="Efectivo">Efectivo</option>
+                  <option value="Tarjeta">Tarjeta</option>
+                </select>
+                <label class="label">Observaciones</label>
+                <textarea id="obs" rows="3" class="checkout-input"></textarea>
+                <div class="producto-calificacion" style="border-top:none;justify-content:space-between">
+                  <span>Estimación de preparación:</span>
+                  <strong id="eta">-</strong>
+                </div>
+                <button class="btn-comentar-principal" type="submit">Confirmar pedido</button>
+              </form>
+            </section>
+          </div>
+        </div>
+      </div>
+      <client-footer></client-footer>
+    </div>
+  </div>
+
+  <div id="modal-notify" class="modal-filtros">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3 id="modal-notify-title">Aviso</h3>
+        <button id="modal-notify-close" class="btn-cerrar-modal" aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-notify-msg" class="filtro-grupo"></div>
+      </div>
+      <div class="modal-actions">
+        <button id="modal-notify-ok" class="btn-aplicar-filtros">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-confirm" class="modal-filtros">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3>Confirmar pedido</h3>
+        <button id="modal-confirm-close" class="btn-cerrar-modal" aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-confirm-msg" class="filtro-grupo"></div>
+      </div>
+      <div class="modal-actions">
+        <button id="modal-confirm-cancel" class="btn-limpiar-filtros">Cancelar</button>
+        <button id="modal-confirm-ok" class="btn-aplicar-filtros">Confirmar</button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script src="../session.js"></script>
+  <script src="../../../../Componentes/JS/footerClient.js"></script>
+</body>
+
+</html>

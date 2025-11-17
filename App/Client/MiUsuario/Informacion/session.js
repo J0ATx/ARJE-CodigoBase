@@ -26,15 +26,31 @@ async function checkSession() {
         });
         const data = await response.json();
         if (!data.logged_in) {
-            window.location.href = '../../../../Control/SignIn/FrontEnd/index.html';
+            window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
             return false;
         } else {
-            const res = await fetch('/App/Control/Session/avatar.php', {
+            const userNameElements = document.querySelectorAll('#userName');
+            const userRolElements = document.querySelectorAll('#userRol');
+            const userIcon = document.querySelector('.user-icon');
+            const fullName = `${data.user.nombre} ${data.user.apellido}`;
+
+            userNameElements.forEach(element => {
+                if (element) {
+                    element.textContent = fullName;
+                }
+            });
+
+            userRolElements.forEach(element => {
+                if (element) {
+                    element.textContent = data.user.rol;
+                }
+            });
+            const resposnseAvatar = await fetch('/App/Control/Session/avatar.php', {
                 method: 'GET',
                 credentials: 'same-origin'
             });
-            const avatar = await res.json();
-            document.getElementById('avatar').src = "/App/Recursos/avatars/" + avatar.avatar
+            const avatar = await resposnseAvatar.json();
+            userIcon.innerHTML += `<img src="/App/Recursos/avatars/${avatar.avatar}" id="avatar" class="logged" alt="Foto de perfíl">`
             showContent();
         }
     } catch (error) {

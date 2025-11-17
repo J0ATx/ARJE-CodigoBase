@@ -84,7 +84,7 @@ async function cargarUsuarios() {
                 document.querySelectorAll('.menu-opciones').forEach(menu => {
                     if (menu !== menuOpciones) menu.style.display = 'none';
                 });
-                menuOpciones.style.display = menuOpciones.style.display === 'block' ? 'none' : 'block';
+                menuOpciones.style.display = menuOpciones.style.display === 'flex' ? 'none' : 'flex';
             });
             tr.querySelectorAll('.opcion').forEach(opcion => {
                 opcion.addEventListener('click', (e) => {

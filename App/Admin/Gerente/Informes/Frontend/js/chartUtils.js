@@ -103,16 +103,18 @@ function getOrCreateMetricsContainer() {
     if (!container) {
         container = document.createElement('div');
         container.className = 'metrics-section';
-        
-        // Insertar antes del contenido de informes existente
-        const informesDiv = document.getElementById('informes');
-        if (informesDiv) {
-            informesDiv.parentNode.insertBefore(container, informesDiv);
+        const dashboardContainer = document.querySelector('.dashboard-container');
+        if (dashboardContainer) {
+            dashboardContainer.prepend(container);
         } else {
-            // Si no existe el div informes, agregarlo al contenedor principal
-            const mainContainer = document.querySelector('.contenedor');
-            if (mainContainer) {
-                mainContainer.appendChild(container);
+            const informesDiv = document.getElementById('informes');
+            if (informesDiv && informesDiv.parentNode) {
+                informesDiv.parentNode.insertBefore(container, informesDiv);
+            } else {
+                const mainContainer = document.querySelector('.contenedor');
+                if (mainContainer) {
+                    mainContainer.appendChild(container);
+                }
             }
         }
     }
@@ -791,8 +793,8 @@ function createLineChart(containerId, data, config) {
             },
             data: [{
                 type: "line",
-                color: "#dc3545",
-                markerColor: "#dc3545",
+                color: "#363636",
+                markerColor: "#363636",
                 markerSize: responsiveConfig.data[0].markerSize,
                 lineThickness: responsiveConfig.data[0].lineThickness,
                 dataPoints: data || []

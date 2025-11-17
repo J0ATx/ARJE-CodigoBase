@@ -1,126 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Pseudo-RAG Gemma 3 con PHP</title>
-        
-        <style>
-            /* Estilos básicos para el extractor de PDF */
-            .pdf-extractor {
-                margin-top: 30px;
-                padding: 20px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                background-color: #f9f9f9;
-            }
-            #output {
-                margin-top: 15px;
-                padding: 10px;
-                border: 1px solid #ccc;
-                background-color: #fff;
-                white-space: pre-wrap;
-                max-height: 300px;
-                overflow-y: auto;
-            }
-            .pdf-extractor button {
-                padding: 10px 15px;
-                background-color: #28a745; /* Botón verde para diferenciarse */
-                color: white;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-            .pdf-extractor button:hover {
-                background-color: #1e7e34;
-            }
-        </style>
-    </head>
-    <body>
-        
-        <h1>Chatbot Pseudo-RAG (Gemma 3)</h1>
-        <p>Pregunta sobre la información estática del producto o contacto.</p>
-        
-        <input type="text" id="userInput" placeholder="Escribe tu pregunta aquí..." style="width: 300px;">
-        <button onclick="sendQuery()">Enviar Consulta</button>
-        
-        <div id="loading" style="display: none; color: gray;">Generando respuesta...</div>
-        
-        <h2>Respuesta del Chatbot:</h2>
-        <div id="respuesta" style="border: 1px solid #ccc; padding: 15px; min-height: 50px;"></div>
 
-        <div class="pdf-extractor">
-            <h1>📄 Extractor de Texto PDF</h1>
-            <p>Sube un archivo PDF para extraer y ver su contenido de texto.</p>
-            
-            <input type="file" id="pdf-file-input" accept="application/pdf">
-            <button onclick="extractText()">Extraer Texto</button>
-            
-            <h2>Texto Extraído:</h2>
-            <pre id="output">Aquí aparecerá el texto extraído del PDF.</pre>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/App/Admin/Gerente/SARI/FrontEnd/">
+    <title>SARI - Admin</title>
+    <script src="/App/Componentes/JS/navAdmin.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../../Recursos/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="loading-screen">
+        <div id="logo-container" class="logo-loading"></div>
+    </div>
+    <div id="main-content">
+        <div class="page">
+            <nav-admin></nav-admin>
+            <main class="contenedor">
+                <section class="card">
+                    <div class="chat-header">
+                        <h2>Chat con SARI</h2>
+                        <span class="pdf-status" id="pdfStatus">Sin PDF</span>
+                    </div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div id="loading" class="loading">Generando respuesta...</div>
+                    <div class="chat-inputs">
+                        <button class="icon-button" id="openPdfModal" aria-label="Adjuntar PDF">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7 3h6l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" stroke="#363636" stroke-width="2" fill="#e8f4fd"/>
+                                <path d="M13 3v5h5" stroke="#363636" stroke-width="2"/>
+                            </svg>
+                        </button>
+                        <input type="text" id="userInput" class="input-text" placeholder="Escribe tu mensaje...">
+                        <button class="submit-button" id="sendBtn">Enviar</button>
+                    </div>
+                </section>
+
+                <div id="pdfModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closePdfModal">×</span>
+                        <h2>Subir PDF</h2>
+                        <div class="pdf-actions">
+                            <input type="file" id="pdf-file-input" accept="application/pdf">
+                            <button class="submit-button" id="extractPdfBtn">Extraer texto</button>
+                        </div>
+                        <pre id="output" class="pdf-output"></pre>
+                        <div class="form-buttons">
+                            <button class="submit-button" id="useContextBtn">Usar como contexto</button>
+                            <button class="cancel-button" id="clearContextBtn">Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
+    </div>
+    <script src="../session.js"></script>
+    <script type="module" src="sari.js"></script>
+</body>
 
-        <script src="../script.js"></script>
-        
-        <script type="module">
-            
-            // 🚨 RUTAS CRÍTICAS DE PDF.JS (Usando tu ruta relativa)
-            // 1. Importa el módulo principal (pdf.mjs)
-            import { getDocument, GlobalWorkerOptions } from '../../../../Control/Librerias/pdfjs/build/pdf.mjs';
-
-            // 2. Configura la ruta del Worker (pdf.worker.mjs)
-            GlobalWorkerOptions.workerSrc = '../../../../Control/Librerias/pdfjs/build/pdf.worker.mjs';
-            
-            // LÓGICA DE EXTRACCIÓN
-            
-            async function getFullText(pdfDocument) {
-                let fullText = '';
-                const numPages = pdfDocument.numPages;
-
-                for (let i = 1; i <= numPages; i++) {
-                    const page = await pdfDocument.getPage(i);
-                    const textContent = await page.getTextContent();
-                    
-                    const pageText = textContent.items
-                        .map(item => item.str)
-                        .join(' '); 
-
-                    fullText += `\n\n--- INICIO PÁGINA ${i} ---\n\n` + pageText;
-                }
-
-                return fullText;
-            }
-
-            window.extractText = async function() {
-                const fileInput = document.getElementById('pdf-file-input');
-                const outputElement = document.getElementById('output');
-                outputElement.textContent = 'Cargando y extrayendo texto...';
-                
-                const file = fileInput.files[0];
-                if (!file) {
-                    outputElement.textContent = 'Por favor, selecciona un archivo PDF.';
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = async function(event) {
-                    const arrayBuffer = event.target.result;
-                    
-                    try {
-                        const pdfDocument = await getDocument({ data: arrayBuffer }).promise;
-                        
-                        const fullText = await getFullText(pdfDocument);
-                        
-                        outputElement.textContent = fullText;
-
-                    } catch (error) {
-                        outputElement.textContent = `🚫 Error al procesar el PDF: ${error.message}. Verifica las rutas de pdf.mjs y pdf.worker.mjs.`;
-                        console.error("Error de PDF.js:", error);
-                    }
-                };
-                
-                reader.readAsArrayBuffer(file);
-            }
-        </script>
-    </body>
 </html>

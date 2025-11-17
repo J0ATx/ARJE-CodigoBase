@@ -298,6 +298,7 @@ function procederCrearPedido(idMesa, idMozo, especificacion, productos) {
         cargarPedidos();
         document.getElementById('modalNuevoPedido').close();
       } else {
+        document.getElementById('modalNuevoPedido').close();
         mostrarNotificacion('error', 'Error', data.message || 'Error al crear el pedido.');
       }
     });
@@ -545,7 +546,7 @@ function cargarPedidos() {
             <div class="pedido-info">
               <h3 class="pedido-titulo">Pedido #${pedido.idPedido}</h3>
               <div class="pedido-meta">
-                <span title="Mesa">Mesa ${pedido.idMesa}</span>
+                <span title="Mesa">${pedido.idMesa ? `Mesa ${pedido.idMesa}` : 'TAKE AWAY'}</span>
                 <span title="Mozo">${pedido.nombreMozo || 'Sin asignar'}</span>
                 <span title="Fecha">${formatearFechaHora(pedido.fecha)}</span>
               </div>

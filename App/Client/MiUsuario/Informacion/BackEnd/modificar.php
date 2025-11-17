@@ -32,6 +32,10 @@ try {
         throw new Exception("Nombre y apellido son campos requeridos");
     }
 
+    if (!empty($datos['telefono']) && !preg_match('/^\d{9}$/', $datos['telefono'])) {
+        throw new Exception("El teléfono debe tener exactamente 9 dígitos numéricos");
+    }
+
     $set = [];
     $params = [];
 
