@@ -104,22 +104,22 @@
         }
 
         // Eliminar productos previos asociados
-        $sqlDeletePosee = 'DELETE FROM Posee WHERE promocion_id = ?';
-        $stmtDeletePosee = $con->prepare($sqlDeletePosee);
+        $sqlDeleteAplica = 'DELETE FROM Aplica WHERE promocion_id = ?';
+        $stmtDeleteAplica = $con->prepare($sqlDeleteAplica);
 
-        if (!$stmtDeletePosee) {
+        if (!$stmtDeleteAplica) {
             throw new Exception('Error al preparar eliminación de productos');
         }
 
-        if (!$stmtDeletePosee->execute([$promocionId])) {
+        if (!$stmtDeleteAplica->execute([$promocionId])) {
             throw new Exception('Error al eliminar productos previos');
         }
 
-        // Insertar nuevas relaciones Posee
-        $sqlPosee = 'INSERT INTO Posee (promocion_id, producto_id, pedido_id) VALUES (?, ?, ?)';
-        $stmtPosee = $con->prepare($sqlPosee);
+        // Insertar nuevas relaciones Aplica
+        $sqlAplica = 'INSERT INTO Aplica (promocion_id, producto_id) VALUES (?, ?)';
+        $stmtAplica = $con->prepare($sqlAplica);
 
-        if (!$stmtPosee) {
+        if (!$stmtAplica) {
             throw new Exception('Error al preparar relación de productos');
         }
 
@@ -138,7 +138,7 @@
                 throw new Exception('El producto con ID ' . $productoId . ' no existe');
             }
 
-            if (!$stmtPosee->execute([$promocionId, $productoId, null])) {
+            if (!$stmtAplica->execute([$promocionId, $productoId])) {
                 throw new Exception('Error al asociar producto a la promoción');
             }
         }

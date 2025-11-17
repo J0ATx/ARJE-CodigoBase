@@ -103,10 +103,6 @@ function mostrarExito(mensaje) {
     }
 }
 
-// Mostrar productos
-// El listado de productos fue removido del frontend. Si más adelante se vuelve a necesitar,
-// reimplementar la función mostrarProductos y el contenedor correspondiente en el HTML.
-
 // Mostrar promociones
 function mostrarPromociones(promociones) {
     const contenedor = document.getElementById('promocionesContainer');
@@ -326,7 +322,149 @@ function editarPromocion(promocionId) {
         mostrarError('Promoción no encontrada');
         return;
     }
-    alert('Editar promoción: ' + promocion.promocion_nombre + ' - Próxima implementación');
+
+    const modalRoot = document.getElementById('modalContainer');
+    if (!modalRoot) return;
+
+    if (!Array.isArray(productosGlobal) || productosGlobal.length === 0) {
+        mostrarError('No hay productos disponibles');
+        return;
+    }
+
+    // Obtener IDs de productos actuales
+    const productosActuales = Array.isArray(promocion.productos) ? promocion.productos.map(p => p.producto_id) : [];
+
+    let productosHtml = '';
+    productosGlobal.forEach(prod => {
+        const id = prod.producto_id;
+        const nombre = escapeHtml(prod.producto_nombre || 'Sin nombre');
+        const checked = productosActuales.includes(id) ? 'checked' : '';
+        productosHtml += `\n            <label style="display:block; margin-bottom:6px;"><input type="checkbox" name="productos[]" value="${id}" ${checked}> ${nombre}</label>`;
+    });
+
+    const modalHtml = `
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Editar Promoción</div>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarPromocion">
+                    <input type="hidden" name="promocion_id" value="${promocionId}">
+                    <div style="margin-bottom:10px;">
+                        <label>Nombre:<input type="text" name="promocion_nombre" required maxlength="100" value="${escapeHtml(promocion.promocion_nombre || '')}"></label>
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label>Descripción:<input type="text" name="promocion_descripcion" required maxlength="100" value="${escapeHtml(promocion.promocion_descripcion || '')}"></label>
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label>Descuento (%):<input type="number" name="promocion_descuento" required min="0" max="100" step="0.01" value="${parseFloat(promocion.promocion_descuento || 0).toFixed(2)}"></label>
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label><input type="checkbox" name="promocion_fidelizada" ${promocion.promocion_fidelizada ? 'checked' : ''}> Promoción fidelizada</label>
+                    </div>
+                    <div style="margin-bottom:10px; max-height:240px; overflow:auto; border:1px solid #eee; padding:10px;">
+                        <strong>Productos (seleccione al menos 1):</strong>
+                        ${productosHtml}
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="btnCancelModal" class="btn-eliminar">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+
+    modalRoot.innerHTML = modalHtml;
+    modalRoot.style.display = 'flex';
+
+    requestAnimationFrame(() => {
+        const modal = modalRoot.querySelector('.modal');
+        const overlay = modalRoot.querySelector('.modal-overlay');
+        if (modal) modal.classList.add('show');
+        if (overlay) overlay.classList.add('show');
+        const firstInput = modal ? modal.querySelector('input[type="text"]') : null;
+        if (firstInput) {
+            setTimeout(() => { firstInput.focus(); }, 120);
+        }
+    });
+
+    const closeModal = () => {
+        const modal = modalRoot.querySelector('.modal');
+        const overlay = modalRoot.querySelector('.modal-overlay');
+        if (modal) modal.classList.remove('show');
+        if (overlay) overlay.classList.remove('show');
+        setTimeout(() => { modalRoot.style.display = 'none'; modalRoot.innerHTML = ''; }, 220);
+        document.removeEventListener('keydown', escHandler);
+    };
+
+    const escHandler = (ev) => { if (ev.key === 'Escape') closeModal(); };
+    document.addEventListener('keydown', escHandler);
+
+    const overlayEl = document.getElementById('modalOverlay');
+    if (overlayEl) overlayEl.addEventListener('click', closeModal);
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('btnCancelModal').addEventListener('click', closeModal);
+
+    const form = document.getElementById('formEditarPromocion');
+    form.addEventListener('submit', function(e) { submitEditarPromocion(e, closeModal); });
+}
+
+function submitEditarPromocion(e, onSuccessClose) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const promocionId = formData.get('promocion_id');
+    const nombre = (formData.get('promocion_nombre') || '').toString().trim();
+    const descripcion = (formData.get('promocion_descripcion') || '').toString().trim();
+    const descuentoRaw = formData.get('promocion_descuento');
+    const fidelizada = formData.get('promocion_fidelizada') !== null;
+    const productosChecked = [];
+
+    for (const pair of formData.entries()) {
+        if (pair[0] === 'productos[]') {
+            productosChecked.push(parseInt(pair[1], 10));
+        }
+    }
+
+    if (!nombre) { mostrarError('El nombre es requerido'); return; }
+    if (!descripcion) { mostrarError('La descripción es requerida'); return; }
+    if (!descuentoRaw && descuentoRaw !== '0') { mostrarError('El descuento es requerido'); return; }
+    const descuento = parseFloat(descuentoRaw);
+    if (isNaN(descuento) || descuento < 0 || descuento > 100) { mostrarError('Descuento inválido (0-100)'); return; }
+    if (!Array.isArray(productosChecked) || productosChecked.length === 0) { mostrarError('Seleccione al menos un producto'); return; }
+
+    mostrarCargando(true);
+    fetch('../Backend/modificar.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            promocion_id: parseInt(promocionId),
+            promocion_nombre: nombre,
+            promocion_descripcion: descripcion,
+            promocion_descuento: descuento,
+            promocion_fidelizada: fidelizada,
+            productos: productosChecked
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            mostrarExito(data.message || 'Promoción actualizada correctamente');
+            if (typeof onSuccessClose === 'function') onSuccessClose();
+            cargarDatos();
+        } else {
+            mostrarError('Error al actualizar: ' + (data.message || 'Respuesta no exitosa'));
+        }
+    })
+    .catch(err => {
+        console.error('Error al actualizar promoción:', err);
+        mostrarError('Error al actualizar la promoción: ' + err.message);
+    })
+    .finally(() => mostrarCargando(false));
 }
 
 function abrirDetallesPromocion(promocionId) {
