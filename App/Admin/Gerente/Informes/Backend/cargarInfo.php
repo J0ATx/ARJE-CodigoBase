@@ -1,5 +1,5 @@
 <?php
-    require_once '../../../../Control/Conexion/conexion.php';
+    require_once '../../../../Control/Conexion/gerente.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 

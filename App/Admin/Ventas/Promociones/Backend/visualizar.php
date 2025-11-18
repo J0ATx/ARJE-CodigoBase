@@ -1,6 +1,6 @@
 <?php
     header('Content-Type: application/json; charset=utf-8');
-    require_once '../../../../Control/Conexion/conexion.php';
+    require_once '../../../../Control/Conexion/empleado.php';
 
     $response = [
         'success' => false,

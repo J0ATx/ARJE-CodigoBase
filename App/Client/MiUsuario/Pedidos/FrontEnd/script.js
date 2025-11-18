@@ -58,7 +58,7 @@ function renderPedidos(pedidos){
     if (!metodo) return
     const r = await fetch('../BackEnd/repetir.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pedido_id:targetPedido,metodo})})
     const data = await r.json()
-    if (data && data.success){ alert(`Pedido repetido #${data.pedido_id}`); cerrarModal() } else { alert(data.message||'Error al repetir pedido') }
+    if (data && data.success){ alert(`Pedido repetido correctamente`); cerrarModal() } else { alert(data.message||'Error al repetir pedido') }
   })
 }
 
@@ -67,7 +67,7 @@ async function repetirPedido(pedidoId){
   if (!metodo || !['Efectivo','Tarjeta'].includes(metodo)) return
   const r = await fetch('../BackEnd/repetir.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pedido_id:pedidoId,metodo})})
   const data = await r.json()
-  if (data && data.success){ alert(`Pedido repetido #${data.pedido_id}`) } else { alert(data.message||'Error al repetir pedido') }
+  if (data && data.success){ alert(`Pedido repetido correctamente`) } else { alert(data.message||'Error al repetir pedido') }
 }
 
 document.addEventListener('DOMContentLoaded', cargarPedidos)

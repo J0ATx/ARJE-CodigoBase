@@ -1,5 +1,5 @@
 <?php
-    require_once '../../../../Control/Conexion/conexion.php';
+    require_once '../../../../Control/Conexion/gerente.php';
 
     $sql = "INSERT INTO empresa_horario (empresa_id, empresa_dia, empresa_hora)
             VALUES (1, :dia, :hora);";

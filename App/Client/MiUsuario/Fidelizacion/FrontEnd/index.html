@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <base href="/App/Client/MiUsuario/Fidelizacion/FrontEnd/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Los 3 Tanos - Fidelización</title>
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+  <link rel="icon" type="image/png" sizes="32x32" href="/App/Recursos/favicon.ico">
+  <link rel="stylesheet" href="/App/Client/MiUsuario/Informacion/FrontEnd/style.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loading-screen">
+    <div id="logo-container" class="logo-loading"></div>
+  </div>
+  <div id="main-content">
+    <div class="page">
+      <nav-client></nav-client>
+      <main class="contenedor">
+        <section>
+          <h1>Fidelización</h1>
+          <div class="fidelizacion-info">
+            <div class="info-card">
+              <h2>¿Qué es la fidelización?</h2>
+              <p>Es un estado que reconoce tu preferencia por nuestro restaurante y te habilita beneficios exclusivos.</p>
+            </div>
+            <div class="info-card">
+              <h2>Beneficios</h2>
+              <ul class="beneficios-lista">
+                <li>Acceso a promociones especiales y descuentos seleccionados.</li>
+                <li>Prioridad en reservas en fechas de alta demanda.</li>
+                <li>Invitaciones a eventos y degustaciones.</li>
+              </ul>
+            </div>
+          </div>
+          <div id="fidelizacion-info" class="fidelizacion-container"></div>
+          <div class="acciones">
+            <button id="btnSolicitar" class="btn-primario">Solicitar fidelización</button>
+          </div>
+          <div id="msgFidelizacion"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="/App/Componentes/JS/navClient.js"></script>
+  <script src="../session.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

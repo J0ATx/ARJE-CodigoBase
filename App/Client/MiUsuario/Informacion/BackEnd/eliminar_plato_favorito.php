@@ -25,9 +25,35 @@ try {
         exit;
     }
 
-    $query = "UPDATE Cliente SET cliente_platillo_favorito = NULL WHERE cliente_id = ?";
-    $stmt = $con->prepare($query);
-    $ok = $stmt->execute([$cliente_id]);
+    $platoNombre = isset($_POST['plato_nombre']) ? trim($_POST['plato_nombre']) : null;
+
+    if (isset($_POST['plato_id']) && is_numeric($_POST['plato_id'])) {
+        $plato_id = (int)$_POST['plato_id'];
+        $query = "DELETE FROM Cliente_Plato_Favorito WHERE cliente_plato_id = ? AND cliente_id = ?";
+        $stmt = $con->prepare($query);
+        $ok = $stmt->execute([$plato_id, $cliente_id]);
+    } else if ($platoNombre) {
+        $q = "SELECT cliente_platillo_favorito FROM Cliente WHERE cliente_id = ?";
+        $st = $con->prepare($q);
+        $st->execute([$cliente_id]);
+        $row = $st->fetch(PDO::FETCH_ASSOC);
+        $current = $row && isset($row['cliente_platillo_favorito']) ? $row['cliente_platillo_favorito'] : '';
+        $parts = array_filter(array_map('trim', preg_split('/[,|]/', $current)));
+        $parts = array_values(array_filter($parts, function($v) use ($platoNombre) { return $v !== $platoNombre; }));
+        if (empty($parts)) {
+            $query = "UPDATE Cliente SET cliente_platillo_favorito = NULL WHERE cliente_id = ?";
+            $stmt = $con->prepare($query);
+            $ok = $stmt->execute([$cliente_id]);
+        } else {
+            $new = implode(',', $parts);
+            $query = "UPDATE Cliente SET cliente_platillo_favorito = ? WHERE cliente_id = ?";
+            $stmt = $con->prepare($query);
+            $ok = $stmt->execute([$new, $cliente_id]);
+        }
+    } else {
+        echo json_encode(['error' => 'Parámetros inválidos']);
+        exit;
+    }
 
     if ($ok) {
         echo json_encode(['success' => true]);

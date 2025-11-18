@@ -30,7 +30,8 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h2>Editar Perfil</h2>
-                                <button type="button" class="cerrar" id="cerrarModal" onclick="cerrarModal()">&times;</button>
+                                <button type="button" class="cerrar" id="cerrarModal"
+                                    onclick="cerrarModal()">&times;</button>
                             </div>
                             <form id="formEditar" class="formulario">
                                 <div id="msgEditar"></div>
@@ -57,7 +58,8 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="editContrasenia">Nueva Contraseña <small>(dejar en blanco para no cambiar)</small></label>
+                                    <label for="editContrasenia">Nueva Contraseña <small>(dejar en blanco para no
+                                            cambiar)</small></label>
                                     <input type="password" id="editContrasenia" name="contrasenia">
                                 </div>
 
@@ -76,15 +78,17 @@
                             </div>
                             <form id="formFotoPerfil" class="formulario">
                                 <div id="msgFoto"></div>
-                                
+
                                 <div class="form-group">
                                     <label for="fotoPerfil">Seleccionar imagen</label>
                                     <div class="file-upload" id="fileUploadContainer">
-                                        <input type="file" id="fotoPerfil" name="fotoPerfil" class="file-upload-input" accept="image/png,image/jpeg" required>
+                                        <input type="file" id="fotoPerfil" name="fotoPerfil" class="file-upload-input"
+                                            accept="image/png,image/jpeg" required>
                                         <label for="fotoPerfil" class="file-upload-label" id="fileUploadLabel">
                                             <span class="file-name" id="fileName">Ningún archivo seleccionado</span>
                                         </label>
-                                        <small class="text-muted">Formatos permitidos: JPG, PNG. Tamaño máximo: 2MB</small>
+                                        <small class="text-muted">Formatos permitidos: JPG, PNG. Tamaño máximo:
+                                            2MB</small>
                                     </div>
                                 </div>
 
@@ -95,58 +99,43 @@
                             </form>
                         </div>
                     </div>
-                    
-                    <!-- Sección Alergias -->
+                </section>
+                <section class="alergias" id="alergias">
+                    <div class="seccion-header tooltip">
+                        <h1>Alergias</h1>
+                        <span class="tooltip-icon" aria-label="Más información">?</span>
+                        <div class="tooltip-content" role="tooltip">Esta información será utilizada para que los chefs
+                            puedan preparar los platos de manera segura para ti.</div>
+                    </div>
                     <div class="seccion-alergias">
-                        <div class="seccion-header">
-                            <h2>Alergias</h2>
-                            <div class="help-icon" title="Información sobre alergias">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                    <circle cx="12" cy="8" r="1" fill="currentColor"/>
-                                </svg>
-                            </div>
-                        </div>
                         <div class="lista-items" id="listaAlergias">
-                            <!-- Las alergias se cargarán dinámicamente -->
+
                         </div>
                         <div class="accion-agregar">
                             <button type="button" class="btn-agregar" id="btnAgregarAlergia">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                    <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                                Agregar alergia
+                                + Agregar alergia
                             </button>
                         </div>
                     </div>
-                    
-                    <!-- Sección Platos Favoritos -->
+                </section>
+
+                <section class="platos-favoritos" id="platosFavoritos">
+                    <div class="seccion-header">
+                        <h1>Platos favoritos</h1>
+                        <span class="tooltip-icon" aria-label="Más información">?</span>
+                        <div class="tooltip-content" role="tooltip">Esta información será utilizada con fines estadísticos.</div>
+                    </div>
                     <div class="seccion-platos-favoritos">
-                        <div class="seccion-header">
-                            <h2>Platos favoritos</h2>
-                            <div class="help-icon" title="Información sobre platos favoritos">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                    <circle cx="12" cy="8" r="1" fill="currentColor"/>
-                                </svg>
-                            </div>
-                        </div>
                         <div class="lista-items" id="listaPlatosFavoritos">
                             <!-- Los platos favoritos se cargarán dinámicamente -->
                         </div>
                         <div class="accion-agregar">
                             <button type="button" class="btn-agregar" id="btnAgregarPlato">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                    <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                                Agregar plato favorito
+                                + Agregar plato favorito
                             </button>
                         </div>
                     </div>
+                </section>
         </div>
         </section>
         </main>

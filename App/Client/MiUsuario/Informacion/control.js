@@ -313,7 +313,7 @@ async function mostrarDatosUsuario(usuario) {
                     
                     <label for="userTelefono">
                         Teléfono
-                        <div class="input-wrapper tooltip">
+                        <div class="input-wrapper">
                             <input type="tel" id="userTelefono" 
                                 value="${usuario.telefono || ''}" 
                                 class="telefono-input" 
@@ -441,12 +441,10 @@ function mostrarAlergias() {
     } else {
         contenedor.innerHTML = alergias.map(alergia => `
             <div class="item-lista" data-id="${alergia.id}">
-                <input type="text" class="item-input" value="${alergia.alergia || ''}" placeholder="Escribe tu alergia" data-id="${alergia.id}" />
+                <input type="text" class="item-input" value="${alergia.alergia || ''}" placeholder="Escribe tu alergia" data-id="${alergia.id}" data-original="${alergia.alergia || ''}" />
                 <div class="item-acciones">
                     <button type="button" class="btn-eliminar" onclick='eliminarAlergia("${alergia.id}")' title="Eliminar">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18 6L6 18M6 6L18 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
+                        ×
                     </button>
                 </div>
             </div>
@@ -460,47 +458,84 @@ function mostrarAlergias() {
                 }
             });
             input.addEventListener('blur', function() {
-                const val = this.value.trim();
-                if (!val) return;
-                guardarAlergia(val);
+                guardarAlergiaInput(this);
             });
         });
     }
 }
 
 function agregarAlergia() {
-    if (alergias.length > 0) {
-        mostrarMensajeAlergia('Solo puedes registrar una alergia', 'error');
-        return;
-    }
-    alergias = [{ id: usuarioActual?.id || '', alergia: '' }];
+    const tempId = 'temp-' + Date.now();
+    alergias.push({ id: tempId, alergia: '' });
     mostrarAlergias();
     const contenedor = document.getElementById('listaAlergias');
-    const input = contenedor?.querySelector('.item-input');
+    const input = contenedor?.querySelector(`.item-input[data-id="${tempId}"]`);
     if (input) input.focus();
 }
 
-function guardarAlergia(nombre) {
-    const formData = new FormData();
-    formData.append('alergia', nombre.trim());
-    fetch('../BackEnd/agregar_alergia.php', {
-        method: 'POST',
-        body: formData,
-        credentials: 'same-origin'
-    })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                alergias = [{ id: data.alergia_id, alergia: data.alergia }];
-                mostrarAlergias();
-                mostrarMensajeAlergia('Alergia guardada', 'success');
-            } else {
-                mostrarMensajeAlergia(data.error || 'Error al guardar alergia', 'error');
-            }
+function guardarAlergiaInput(inputEl) {
+    const id = inputEl.getAttribute('data-id');
+    const original = inputEl.getAttribute('data-original') || '';
+    const nombre = inputEl.value.trim();
+    if (!nombre) return;
+
+    if (id && id.startsWith('temp-')) {
+        const formData = new FormData();
+        formData.append('alergia', nombre);
+        fetch('../BackEnd/agregar_alergia.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
         })
-        .catch(() => {
-            mostrarMensajeAlergia('Error al guardar alergia', 'error');
-        });
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const idx = alergias.findIndex(a => a.id === id);
+                    if (idx !== -1) alergias[idx] = { id: data.alergia_id, alergia: data.alergia };
+                    mostrarAlergias();
+                    mostrarMensajeAlergia('Alergia guardada', 'success');
+                } else {
+                    mostrarMensajeAlergia(data.error || 'Error al guardar alergia', 'error');
+                }
+            })
+            .catch(() => {
+                mostrarMensajeAlergia('Error al guardar alergia', 'error');
+            });
+    } else if (id && nombre !== original) {
+        const formDataDel = new FormData();
+        formDataDel.append('alergia_id', id);
+        fetch('../BackEnd/eliminar_alergia.php', {
+            method: 'POST',
+            body: formDataDel,
+            credentials: 'same-origin'
+        })
+            .then(r => r.json())
+            .then(() => {
+                const formDataAdd = new FormData();
+                formDataAdd.append('alergia', nombre);
+                return fetch('../BackEnd/agregar_alergia.php', {
+                    method: 'POST',
+                    body: formDataAdd,
+                    credentials: 'same-origin'
+                });
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const idx = alergias.findIndex(a => a.id == id);
+                    if (idx !== -1) alergias[idx] = { id: data.alergia_id, alergia: data.alergia };
+                    mostrarAlergias();
+                    mostrarMensajeAlergia('Alergia actualizada', 'success');
+                } else {
+                    mostrarMensajeAlergia(data.error || 'Error al actualizar alergia', 'error');
+                    cargarAlergias();
+                }
+            })
+            .catch(() => {
+                mostrarMensajeAlergia('Error al actualizar alergia', 'error');
+                cargarAlergias();
+            });
+    }
 }
 
 function editarAlergia(id) {
@@ -543,8 +578,17 @@ function editarAlergia(id) {
 }
 
 function eliminarAlergia(id) {
+    const formData = new FormData();
+    const isNumericId = /^[0-9]+$/.test(String(id));
+    if (isNumericId) {
+        formData.append('alergia_id', id);
+    } else {
+        const item = alergias.find(a => String(a.id) === String(id));
+        if (item && item.alergia) formData.append('alergia_nombre', item.alergia);
+    }
     fetch('../BackEnd/eliminar_alergia.php', {
         method: 'POST',
+        body: formData,
         credentials: 'same-origin'
     })
         .then(response => response.json())
@@ -579,20 +623,27 @@ function eliminarAlergiaDeLista(id, callback) {
 }
 
 function mostrarMensajeAlergia(mensaje, tipo) {
-    const contenedor = document.getElementById('listaAlergias');
+    const contenedor = document.getElementById('alergias');
     if (!contenedor) return;
 
-    const mensajeDiv = document.createElement('div');
+    let mensajeDiv = contenedor.querySelector('.mensaje-estado');
+    if (!mensajeDiv) {
+        mensajeDiv = document.createElement('div');
+        const primerElemento = contenedor.firstChild;
+        if (primerElemento) {
+            contenedor.appendChild(mensajeDiv);
+        } else {
+            contenedor.appendChild(mensajeDiv);
+        }
+    }
     mensajeDiv.className = `mensaje-estado ${tipo}`;
     mensajeDiv.textContent = mensaje;
 
-    // Insertar antes de la lista
-    const primerElemento = contenedor.firstChild;
-    if (primerElemento) {
-        contenedor.insertBefore(mensajeDiv, primerElemento);
-    } else {
-        contenedor.appendChild(mensajeDiv);
-    }
+    setTimeout(() => {
+        if (mensajeDiv && mensajeDiv.parentNode) {
+            mensajeDiv.parentNode.removeChild(mensajeDiv);
+        }
+    }, 3000);
 }
 
 // Funciones para Platos Favoritos
@@ -622,12 +673,10 @@ function mostrarPlatosFavoritos() {
     } else {
         contenedor.innerHTML = platosFavoritos.map(plato => `
             <div class="item-lista" data-id="${plato.id}">
-                <input type="text" class="item-input" value="${plato.plato || ''}" placeholder="Escribe tu plato favorito" data-id="${plato.id}" />
+                <input type="text" class="item-input" value="${plato.plato || ''}" placeholder="Escribe tu plato favorito" data-id="${plato.id}" data-original="${plato.plato || ''}" />
                 <div class="item-acciones">
                     <button type="button" class="btn-eliminar" onclick='eliminarPlatoFavorito("${plato.id}")' title="Eliminar">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M18 6L6 18M6 6L18 12L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
+                        ×
                     </button>
                 </div>
             </div>
@@ -641,47 +690,89 @@ function mostrarPlatosFavoritos() {
                 }
             });
             input.addEventListener('blur', function() {
-                const val = this.value.trim();
-                if (!val) return;
-                guardarPlatoFavorito(val);
+                guardarPlatoFavoritoInput(this);
             });
         });
     }
 }
 
 function agregarPlatoFavorito() {
-    if (platosFavoritos.length > 0) {
-        mostrarMensajePlato('Solo puedes registrar un plato favorito', 'error');
-        return;
-    }
-    platosFavoritos = [{ id: usuarioActual?.id || '', plato: '' }];
+    const tempId = 'temp-' + Date.now();
+    platosFavoritos.push({ id: tempId, plato: '' });
     mostrarPlatosFavoritos();
     const contenedor = document.getElementById('listaPlatosFavoritos');
-    const input = contenedor?.querySelector('.item-input');
+    const input = contenedor?.querySelector(`.item-input[data-id="${tempId}"]`);
     if (input) input.focus();
 }
 
-function guardarPlatoFavorito(nombre) {
-    const formData = new FormData();
-    formData.append('plato', nombre.trim());
-    fetch('../BackEnd/agregar_plato_favorito.php', {
-        method: 'POST',
-        body: formData,
-        credentials: 'same-origin'
-    })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                platosFavoritos = [{ id: data.plato_id, plato: data.plato }];
-                mostrarPlatosFavoritos();
-                mostrarMensajePlato('Plato favorito guardado', 'success');
-            } else {
-                mostrarMensajePlato(data.error || 'Error al guardar plato favorito', 'error');
-            }
+function guardarPlatoFavoritoInput(inputEl) {
+    const id = inputEl.getAttribute('data-id');
+    const original = inputEl.getAttribute('data-original') || '';
+    const nombre = inputEl.value.trim();
+    if (!nombre) return;
+
+    if (id && id.startsWith('temp-')) {
+        const formData = new FormData();
+        formData.append('plato', nombre);
+        fetch('../BackEnd/agregar_plato_favorito.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
         })
-        .catch(() => {
-            mostrarMensajePlato('Error al guardar plato favorito', 'error');
-        });
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const idx = platosFavoritos.findIndex(p => p.id === id);
+                    if (idx !== -1) platosFavoritos[idx] = { id: data.plato_id, plato: data.plato };
+                    mostrarPlatosFavoritos();
+                    mostrarMensajePlato('Plato favorito guardado', 'success');
+                } else {
+                    mostrarMensajePlato(data.error || 'Error al guardar plato favorito', 'error');
+                }
+            })
+            .catch(() => {
+                mostrarMensajePlato('Error al guardar plato favorito', 'error');
+            });
+    } else if (id && nombre !== original) {
+        const formDataDel = new FormData();
+        const isNumericId = /^[0-9]+$/.test(String(id));
+        if (isNumericId) {
+            formDataDel.append('plato_id', id);
+        } else {
+            formDataDel.append('plato_nombre', original);
+        }
+        fetch('../BackEnd/eliminar_plato_favorito.php', {
+            method: 'POST',
+            body: formDataDel,
+            credentials: 'same-origin'
+        })
+            .then(r => r.json())
+            .then(() => {
+                const formDataAdd = new FormData();
+                formDataAdd.append('plato', nombre);
+                return fetch('../BackEnd/agregar_plato_favorito.php', {
+                    method: 'POST',
+                    body: formDataAdd,
+                    credentials: 'same-origin'
+                });
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const idx = platosFavoritos.findIndex(p => p.id == id);
+                    if (idx !== -1) platosFavoritos[idx] = { id: data.plato_id, plato: data.plato };
+                    mostrarPlatosFavoritos();
+                    mostrarMensajePlato('Plato favorito actualizado', 'success');
+                } else {
+                    mostrarMensajePlato(data.error || 'Error al actualizar plato favorito', 'error');
+                    cargarPlatosFavoritos();
+                }
+            })
+            .catch(() => {
+                mostrarMensajePlato('Error al actualizar plato favorito', 'error');
+                cargarPlatosFavoritos();
+            });
+    }
 }
 
 function editarPlatoFavorito(id) {
@@ -724,8 +815,17 @@ function editarPlatoFavorito(id) {
 }
 
 function eliminarPlatoFavorito(id) {
+    const formData = new FormData();
+    const isNumericId = /^[0-9]+$/.test(String(id));
+    if (isNumericId) {
+        formData.append('plato_id', id);
+    } else {
+        const item = platosFavoritos.find(p => String(p.id) === String(id));
+        if (item && item.plato) formData.append('plato_nombre', item.plato);
+    }
     fetch('../BackEnd/eliminar_plato_favorito.php', {
         method: 'POST',
+        body: formData,
         credentials: 'same-origin'
     })
         .then(response => response.json())
@@ -760,18 +860,25 @@ function eliminarPlatoDeLista(id, callback) {
 }
 
 function mostrarMensajePlato(mensaje, tipo) {
-    const contenedor = document.getElementById('listaPlatosFavoritos');
+    const contenedor = document.getElementById('platosFavoritos');
     if (!contenedor) return;
 
-    const mensajeDiv = document.createElement('div');
+    let mensajeDiv = contenedor.querySelector('.mensaje-estado');
+    if (!mensajeDiv) {
+        mensajeDiv = document.createElement('div');
+        const primerElemento = contenedor.firstChild;
+        if (primerElemento) {
+            contenedor.appendChild(mensajeDiv);
+        } else {
+            contenedor.appendChild(mensajeDiv);
+        }
+    }
     mensajeDiv.className = `mensaje-estado ${tipo}`;
     mensajeDiv.textContent = mensaje;
 
-    // Insertar antes de la lista
-    const primerElemento = contenedor.firstChild;
-    if (primerElemento) {
-        contenedor.insertBefore(mensajeDiv, primerElemento);
-    } else {
-        contenedor.appendChild(mensajeDiv);
-    }
+    setTimeout(() => {
+        if (mensajeDiv && mensajeDiv.parentNode) {
+            mensajeDiv.parentNode.removeChild(mensajeDiv);
+        }
+    }, 3000);
 }

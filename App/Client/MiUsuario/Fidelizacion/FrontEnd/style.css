@@ -1,0 +1,40 @@
+.fidelizacion-container {
+  display: grid;
+  gap: 16px;
+}
+
+.fidelizacion-info { display: grid; gap: 16px; margin-bottom: 16px; }
+.info-card { background: #f1f1f1; border-radius: 10px; padding: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.info-card h2 { font-size: 20px; margin-bottom: 8px; color: #1c1c1c; }
+.info-card p { color: #333; font-size: 14px; }
+.beneficios-lista { list-style: disc; margin-left: 20px; color: #333; }
+.beneficios-lista li { margin-bottom: 6px; }
+
+.acciones {
+  margin-top: 12px;
+}
+
+.btn-primario {
+  background-color: #303030;
+  color: #EFE7D2;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.btn-primario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#msgFidelizacion {
+  margin-top: 8px;
+}
+
+.dato {
+  color: #A4A4A4;
+  font-size: 14px;
+  font-weight: 500;
+}
+.nota { color: #666; font-size: 13px; }

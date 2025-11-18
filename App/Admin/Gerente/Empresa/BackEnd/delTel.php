@@ -1,5 +1,5 @@
 <?php
-    require_once '../../../../Control/Conexion/conexion.php';
+    require_once '../../../../Control/Conexion/gerente.php';
 
     $sql = "DELETE FROM empresa_telefono
             WHERE empresa_telefono = :telefono;";

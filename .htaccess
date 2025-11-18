@@ -23,6 +23,9 @@ RewriteRule ^App/Client/MiUsuario/Informacion/FrontEnd/index\.html$ MiUsuario [R
 # Regla para /MisPedidos
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/MiUsuario/Pedidos/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Client/MiUsuario/Pedidos/FrontEnd/index\.html$ MisPedidos [R=301,L] 
+# Regla para /MisReservas
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/MiUsuario/Reservas/FrontEnd/index\.html\sHTTP
+RewriteRule ^App/Client/MiUsuario/Reservas/FrontEnd/index\.html$ MisReservas [R=301,L]
 # Regla para /Menu
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/App/Client/Ventas/Menu/FrontEnd/index\.html\sHTTP
 RewriteRule ^App/Client/Ventas/Menu/FrontEnd/index\.html$ Menu [R=301,L]
@@ -96,6 +99,8 @@ RewriteRule ^Contacto$ App/Client/Contacto/FrontEnd/index.html [L]
 RewriteRule ^Informacion$ App/Client/Informacion/FrontEnd/index.html [L]
 RewriteRule ^MiUsuario$ App/Client/MiUsuario/Informacion/FrontEnd/index.html [L]
 RewriteRule ^MisPedidos$ App/Client/MiUsuario/Pedidos/FrontEnd/index.html [L]
+RewriteRule ^MisReservas$ App/Client/MiUsuario/Reservas/FrontEnd/index.html [L]
+RewriteRule ^Fidelizacion$ App/Client/MiUsuario/Fidelizacion/FrontEnd/index.html [L]
 RewriteRule ^Menu$ App/Client/Ventas/Menu/FrontEnd/index.html [L]
 RewriteRule ^Menu/Plato$ App/Client/Ventas/Menu/FrontEnd/detalle.html [L]
 RewriteRule ^Reservas$ App/Client/Ventas/Reservas/FrontEnd/index.html [L]
@@ -116,6 +121,7 @@ RewriteRule ^Platillos$ App/Admin/Ventas/Productos/FrontEnd/index.html [L]
 RewriteRule ^Promociones$ App/Admin/Ventas/Promociones/FrontEnd/index.html [L]
 RewriteRule ^Usuarios$ App/Admin/Gerente/Usuarios/FrontEnd/index.html [L]
 RewriteRule ^Empresa$ App/Admin/Gerente/Empresa/FrontEnd/index.html [L]
+RewriteRule ^Fidelizados$ App/Admin/Gerente/Fidelizados/FrontEnd/index.html [L]
 
 ErrorDocument 401 /App/Control/Errores/401.html
 ErrorDocument 403 /App/Control/Errores/403.html

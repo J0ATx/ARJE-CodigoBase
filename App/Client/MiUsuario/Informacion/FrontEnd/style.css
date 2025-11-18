@@ -23,6 +23,7 @@ h1 {
     font-size: 2.5rem;
     color: #A4A4A4;
     text-align: center;
+    font-weight: 100;
 }
 
 @font-face {
@@ -41,6 +42,11 @@ h1 {
 
 .contenedor {
     grid-area: main;
+    display: grid;
+    grid-template-areas: "datos alergias platos";
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
     text-align: center;
     padding: 32px;
     height: 100vh;
@@ -49,6 +55,20 @@ h1 {
     z-index: 1;
 }
 
+.datos-personales {
+    grid-area: datos;
+    width: auto;
+}
+
+.alergias {
+    grid-area: alergias;
+    width: auto;
+}
+
+.platos-favoritos {
+    grid-area: platos;
+    width: auto;
+}
 
 .texture-bg {
     position: fixed;
@@ -79,9 +99,71 @@ h1 {
     z-index: -1;
 }
 
+.seccion-header {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    justify-content: center;
+}
 
-.datos-personales {
-    width: 400px;
+.tooltip {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    margin-left: 8px;
+}
+
+.tooltip-icon {
+    font-family: sans-serif;
+    width: 20px;
+    height: 20px;
+    background-color: #333;
+    color: white;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+    font-size: 12px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+    margin-left: 8px;
+    cursor: default;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.tooltip-content {
+    position: absolute;
+    right: 30%;
+    top: calc(100% + 8px);
+    width: fit-content;
+    background: #151515;
+    color: #ccc;
+    border: 1px solid rgba(239, 231, 210, 0.12);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+    transform: translateY(-20px) translateX(20%);
+    z-index: 999;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.tooltip:hover .tooltip-content,
+.tooltip:focus-within .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(20%) translateY(0);
 }
 
 .perfil-container {
@@ -306,63 +388,24 @@ input:disabled {
     font-style: italic;
 }
 
-/* Focus state */
 .file-upload-input:focus+.file-upload-label {
     border-color: #D32F2F;
     box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
 }
 
-/* Disabled state */
 .file-upload-input:disabled+.file-upload-label {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-/* Error state */
 .file-upload.error .file-upload-label {
     border-color: #D32F2F;
     background: rgba(211, 47, 47, 0.1);
 }
 
-/* Success state */
 .file-upload.success .file-upload-label {
     border-color: #4CAF50;
     background: rgba(76, 175, 80, 0.1);
-}
-
-.tooltip {
-    position: relative;
-}
-
-
-.tooltip-content {
-    position: absolute;
-    right: 30%;
-    top: calc(100% - 100px);
-    width: 250px;
-    background: #151515;
-    color: #ccc;
-    border: 1px solid rgba(239, 231, 210, 0.12);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 13px;
-    line-height: 1.4;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
-    transform: translateX(25%) translateY(-4px);
-    z-index: 999;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-}
-
-.tooltip:hover .tooltip-content,
-.tooltip:focus-within .tooltip-content {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(25%) translateY(0);
 }
 
 /* Phone number validation styles */
@@ -580,7 +623,8 @@ input:disabled {
 
 /* Modal Styles */
 #modalEditar,
-#modalFoto, #modalRepetir {
+#modalFoto,
+#modalRepetir {
     display: none;
     position: fixed;
     top: 0;
@@ -596,7 +640,8 @@ input:disabled {
 }
 
 #modalEditar.active,
-#modalFoto.active, #modalRepetir.active {
+#modalFoto.active,
+#modalRepetir.active {
     display: flex;
 }
 
@@ -655,6 +700,12 @@ input:disabled {
 .formulario {
     padding: 25px;
     background-color: #111;
+}
+
+.formulario p{
+    color: #A4A4A4;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .form-group {
@@ -766,6 +817,17 @@ input:disabled {
     }
 }
 
+@media (max-width: 1000px) {
+    .contenedor{
+        grid-template-areas: 
+        "datos"
+        "alergias"
+        "platos";
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
 @media (max-width: 768px) {
     .modal-content {
         width: 95%;
@@ -780,27 +842,6 @@ input:disabled {
         font-size: 24px;
         width: 35px;
         height: 35px;
-    }
-}
-
-@media (max-width: 480px) {
-    .modal-header h2 {
-        font-size: 16px;
-    }
-
-    .cerrar {
-        font-size: 20px;
-        width: 30px;
-        height: 30px;
-    }
-
-    .modal-actions {
-        flex-direction: column;
-    }
-
-    .btn-cancelar,
-    .btn-guardar {
-        width: 100%;
     }
 }
 
@@ -857,47 +898,32 @@ input:disabled {
     }
 }
 
-/* Estilos para secciones de Alergias y Platos Favoritos */
 .seccion-alergias,
 .seccion-platos-favoritos {
     background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(239, 231, 210, 0.15);
-    border-radius: 16px;
-    padding: 24px;
+    border: 1px solid rgba(239, 231, 210, 0.12);
+    border-radius: 32px;
     margin-top: 24px;
     backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
 }
 
 .seccion-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.seccion-header h2 {
-    color: #A4A4A4;
-    font-size: 1.5rem;
-    font-weight: 500;
+    justify-content: center;
     margin: 0;
-}
-
-.help-icon {
-    width: 24px;
-    height: 24px;
-    color: #A4A4A4;
-    cursor: help;
-    transition: color 0.3s ease;
-}
-
-.help-icon:hover {
-    color: #EFE7D2;
+    position: relative;
 }
 
 .lista-items {
-    margin-bottom: 16px;
-    max-height: 300px;
+    padding: 16px;
+    min-height: 200px;
+    flex-grow: 1;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .item-lista {
@@ -947,6 +973,9 @@ input:disabled {
 .btn-eliminar {
     background: transparent;
     border: none;
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
     color: #A4A4A4;
     cursor: pointer;
     padding: 6px;
@@ -987,24 +1016,40 @@ input:disabled {
 }
 
 .btn-agregar {
-    background: transparent;
-    border: 1px dashed rgba(239, 231, 210, 0.3);
-    color: #A4A4A4;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(to right, #ffffff23, #ffffff02);
+    width: 100%;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-bottom-left-radius: 32px;
+    border-bottom-right-radius: 32px;
+    font-size: 16px;
     font-family: 'Poppins', sans-serif;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 1px #fff;
+    background-clip: padding-box;
+    height: 100%;
+}
+
+.btn-agregar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-bottom-left-radius: 32px;
+    border-bottom-right-radius: 32px;
+    padding: 1px;
+    background: radial-gradient(circle, #ffffff44 60%, #ffffffbe 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
 }
 
 .btn-agregar:hover {
-    color: #EFE7D2;
-    border-color: rgba(239, 231, 210, 0.5);
-    background: rgba(255, 255, 255, 0.05);
+    background: linear-gradient(to right, #ffffff4d, #ffffff2d);
 }
 
 .item-nuevo {
@@ -1016,6 +1061,7 @@ input:disabled {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1057,47 +1103,23 @@ input:disabled {
 
 /* Responsive para las nuevas secciones */
 @media (max-width: 768px) {
+
     .seccion-alergias,
     .seccion-platos-favoritos {
         padding: 16px;
         margin-top: 16px;
     }
-    
+
     .seccion-header h2 {
         font-size: 1.25rem;
     }
-    
+
     .item-lista {
         padding: 10px 12px;
     }
-    
+
     .item-input {
         font-size: 13px;
         padding: 6px 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .seccion-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .item-lista {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-    }
-    
-    .item-input {
-        margin-right: 0;
-        margin-bottom: 8px;
-    }
-    
-    .item-acciones {
-        display: flex;
-        justify-content: flex-end;
-        gap: 4px;
     }
 }

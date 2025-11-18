@@ -64,3 +64,16 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER fidelizacion_auto
+AFTER INSERT ON Efectua
+FOR EACH ROW
+BEGIN
+    DECLARE total_pedidos INT;
+    SELECT COUNT(*) INTO total_pedidos FROM Efectua WHERE cliente_id = NEW.cliente_id;
+    IF total_pedidos >= 15 THEN
+        UPDATE Cliente SET cliente_fidelizado = TRUE WHERE cliente_id = NEW.cliente_id;
+    END IF;
+END $$
+DELIMITER ;
