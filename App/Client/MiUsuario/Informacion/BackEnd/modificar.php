@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require_once "../../../Control/Conexion/clienteRegistrado.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . '/App/Control/Conexion/clienteRegistrado.php';
 session_start();
 
 if (!isset($_SESSION["usuario_id"])) {

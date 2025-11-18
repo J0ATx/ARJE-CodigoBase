@@ -35,6 +35,10 @@
                                 </svg>
                             </span>
                         </div>
+                        <div class="filters">
+                            <button id="openFiltersBtn" class="action-button">Filtros</button>
+                            <button id="refreshBtn" class="action-button">Actualizar</button>
+                        </div>
                         <button id="addUserBtn" class="action-button">+ Agregar Usuario</button>
                     </div>
                     <table id="usuariosTable">
@@ -73,6 +77,35 @@
             <button type="submit">Guardar cambios</button>
             <button type="button" onclick="cerrarModalEditar()">Cancelar</button>
         </form>
+    </div>
+
+    <div id="modalFiltros" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeFilters">&times;</span>
+            <h2>Filtros</h2>
+            <div class="form-group">
+                <label for="modalFilterRol">Rol</label>
+                <select id="modalFilterRol" class="filtro-select">
+                    <option value="">Todos los roles</option>
+                    <option value="Cliente">Cliente</option>
+                    <option value="Gerente-General">Gerente General</option>
+                    <option value="Gerente-Turno">Gerente de Turno</option>
+                    <option value="Chef-Ejecutivo">Chef Ejecutivo</option>
+                    <option value="Chef">Chef</option>
+                    <option value="Camarero">Camarero</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="modalFilterEstado">Estado</label>
+                <select id="modalFilterEstado" class="filtro-select">
+                    <option value="">Todos los estados</option>
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+            <button id="applyFiltersBtn" class="submit-button">Aplicar filtros</button>
+            <button id="clearFiltersBtn" class="action-button">Limpiar filtros</button>
+        </div>
     </div>
 
     <div id="modalCrear" class="modal">

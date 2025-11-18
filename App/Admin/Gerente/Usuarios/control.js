@@ -1,5 +1,37 @@
+function debounce(fn, delay){
+    let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), delay); };
+}
+
+let currentFilters = { rol: '', estado: '' };
+
 document.addEventListener('DOMContentLoaded', async () => {
     await cargarUsuarios();
+    const searchInput = document.getElementById('searchInput');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const openFiltersBtn = document.getElementById('openFiltersBtn');
+    const modalFiltros = document.getElementById('modalFiltros');
+    const closeFilters = document.getElementById('closeFilters');
+    const modalFilterRol = document.getElementById('modalFilterRol');
+    const modalFilterEstado = document.getElementById('modalFilterEstado');
+    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    if (searchInput) searchInput.addEventListener('input', debounce(() => cargarUsuarios(searchInput.value, currentFilters.rol, currentFilters.estado), 300));
+    if (refreshBtn) refreshBtn.addEventListener('click', () => cargarUsuarios(searchInput?.value||'', currentFilters.rol, currentFilters.estado));
+    if (openFiltersBtn) openFiltersBtn.addEventListener('click', () => { if (modalFiltros) modalFiltros.style.display = 'flex'; });
+    if (closeFilters) closeFilters.addEventListener('click', () => { if (modalFiltros) modalFiltros.style.display = 'none'; });
+    window.addEventListener('click', (e) => { if (e.target === modalFiltros) modalFiltros.style.display = 'none'; });
+    if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', () => {
+        currentFilters.rol = modalFilterRol?.value || '';
+        currentFilters.estado = modalFilterEstado?.value || '';
+        if (modalFiltros) modalFiltros.style.display = 'none';
+        cargarUsuarios(searchInput?.value||'', currentFilters.rol, currentFilters.estado);
+    });
+    if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', () => {
+        if (modalFilterRol) modalFilterRol.value = '';
+        if (modalFilterEstado) modalFilterEstado.value = '';
+        currentFilters = { rol: '', estado: '' };
+        cargarUsuarios(searchInput?.value||'', currentFilters.rol, currentFilters.estado);
+    });
     document.getElementById('addUserBtn').addEventListener('click', () => {
         document.getElementById('formUsuario').reset();
         document.getElementById('modalCrear').style.display = 'flex';
@@ -28,11 +60,12 @@ function getRolColor(rol) {
     }
 }
 
-async function cargarUsuarios() {
+async function cargarUsuarios(searchTerm = '', rol = '', estado = '') {
     const tabla = document.getElementById('tablaUsuarios');
     tabla.innerHTML = '';
     try {
-        const res = await fetch('../BackEnd/visualizar.php');
+        const body = { search: searchTerm, rol, estado };
+        const res = await fetch('../BackEnd/visualizar.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         const data = await res.json();
         if (!data.success) {
             throw new Error(data.error || 'Error al cargar usuarios');

@@ -624,7 +624,8 @@ input:disabled {
 /* Modal Styles */
 #modalEditar,
 #modalFoto,
-#modalRepetir {
+#modalRepetir,
+#modalEliminarCuenta {
     display: none;
     position: fixed;
     top: 0;
@@ -641,7 +642,8 @@ input:disabled {
 
 #modalEditar.active,
 #modalFoto.active,
-#modalRepetir.active {
+#modalRepetir.active,
+#modalEliminarCuenta.active {
     display: flex;
 }
 

@@ -58,6 +58,11 @@ h1 {
     color: white;
     border-radius: 10px 10px 0 0;
 }
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 .buscador-con-icono {
     position: relative;
 }
@@ -69,6 +74,18 @@ h1 {
     padding: 8px 12px;
     padding-left: 32px;
     width: 180px;
+}
+.filtro-select {
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-width: 180px;
+}
+.filtro-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(54, 54, 54, 0.1);
 }
 .icono-lupa {
     position: absolute;
@@ -87,6 +104,7 @@ h1 {
     font-size: 0.9rem;
     display: flex;
     align-items: center;
+    height: 32px;
     gap: 5px;
 }
 .action-button:hover {

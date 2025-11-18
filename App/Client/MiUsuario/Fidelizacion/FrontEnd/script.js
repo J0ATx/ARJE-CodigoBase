@@ -20,10 +20,10 @@ async function cargarEstado(){
     const pedidos = data.pedidos_count || 0;
     const solicitudEstado = data.solicitud_estado || 'Sin solicitud';
     cont.innerHTML = `
-      <div class="dato"><strong>Cliente fidelizado:</strong> ${estado}</div>
+    <div class="nota">Se fideliza automáticamente al alcanzar 15 pedidos.</div>
+      <div class="dato"><strong>¿Estás fidelizado?:</strong> ${estado}</div>
       <div class="dato"><strong>Pedidos registrados:</strong> ${pedidos}</div>
       <div class="dato"><strong>Estado de solicitud:</strong> ${solicitudEstado}</div>
-      <div class="nota">Se fideliza automáticamente al alcanzar 15 pedidos.</div>
     `;
     const btn = document.getElementById('btnSolicitar');
     btn.disabled = solicitudEstado === 'Pendiente' || data.fidelizado === true;

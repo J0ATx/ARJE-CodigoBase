@@ -11,7 +11,7 @@ CREATE PROCEDURE Validar_SignUp_Cliente (
     OUT mensaje VARCHAR(100)
 )
 BEGIN
-    IF (SELECT COUNT(*) FROM Datos_Usuarios WHERE usuario_id = email) > 0 THEN
+    IF (SELECT COUNT(*) FROM Datos_Usuarios WHERE usuario_id = email AND (usuario_eliminado IS NULL OR usuario_eliminado = FALSE)) > 0 THEN
         SET mensaje = 'El usuario ya existe';
         SET usuario = NULL;
     ELSE
@@ -44,7 +44,7 @@ CREATE PROCEDURE Validar_SignUp_Personal (
     OUT mensaje VARCHAR(100)
 )
 BEGIN
-    IF (SELECT COUNT(*) FROM Datos_Usuarios WHERE usuario_id = email) > 0 THEN
+    IF (SELECT COUNT(*) FROM Datos_Usuarios WHERE usuario_id = email AND (usuario_eliminado IS NULL OR usuario_eliminado = FALSE)) > 0 THEN
         SET mensaje = 'El usuario ya existe';
         SET usuario = NULL;
     ELSE
@@ -76,7 +76,7 @@ BEGIN
 
     SELECT COUNT(*) INTO usuario_encontrado
     FROM Cliente
-    WHERE cliente_id = email;
+    WHERE cliente_id = email AND (cliente_eliminado IS NULL OR cliente_eliminado = FALSE);
 
     IF usuario_encontrado > 0 THEN
         SELECT JSON_OBJECT(
@@ -89,7 +89,7 @@ BEGIN
             'contrasenia', cliente_contrasenia
         ) INTO usuario
         FROM Cliente
-        WHERE cliente_id = email;
+        WHERE cliente_id = email AND (cliente_eliminado IS NULL OR cliente_eliminado = FALSE);
 
         SET mensaje = 'Usuario encontrado';
     ELSE
@@ -109,7 +109,7 @@ BEGIN
 
     SELECT COUNT(*) INTO usuario_encontrado
     FROM Personal
-    WHERE personal_id = email;
+    WHERE personal_id = email AND (personal_eliminado IS NULL OR personal_eliminado = FALSE);
 
     IF usuario_encontrado > 0 THEN
         SELECT JSON_OBJECT(
@@ -121,7 +121,7 @@ BEGIN
             'contrasenia', personal_contrasenia
         ) INTO usuario
         FROM Personal
-        WHERE personal_id = email;
+        WHERE personal_id = email AND (personal_eliminado IS NULL OR personal_eliminado = FALSE);
 
         SET mensaje = 'Usuario encontrado';
     ELSE

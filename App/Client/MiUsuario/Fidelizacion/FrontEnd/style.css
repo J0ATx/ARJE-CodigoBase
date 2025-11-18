@@ -1,14 +1,40 @@
+.contenedor {
+  display: block !important;
+}
+
 .fidelizacion-container {
   display: grid;
   gap: 16px;
 }
 
-.fidelizacion-info { display: grid; gap: 16px; margin-bottom: 16px; }
-.info-card { background: #f1f1f1; border-radius: 10px; padding: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-.info-card h2 { font-size: 20px; margin-bottom: 8px; color: #1c1c1c; }
-.info-card p { color: #333; font-size: 14px; }
-.beneficios-lista { list-style: disc; margin-left: 20px; color: #333; }
-.beneficios-lista li { margin-bottom: 6px; }
+.fidelizacion-info {
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items:center;
+  margin-bottom: 16px;
+}
+
+.info-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(239, 231, 210, 0.2);
+  border-radius: 6px;
+  color: #EFE7D2;
+  padding: 16px;
+  max-width: 600px;
+  width: 460px;
+}
+
+.info-card h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #fff9eb;
+}
+
+.info-card p {
+  color: #EFE7D2;
+  font-size: 14px;
+}
 
 .acciones {
   margin-top: 12px;
@@ -37,4 +63,8 @@
   font-size: 14px;
   font-weight: 500;
 }
-.nota { color: #666; font-size: 13px; }
+
+.nota {
+  color: #666;
+  font-size: 13px;
+}

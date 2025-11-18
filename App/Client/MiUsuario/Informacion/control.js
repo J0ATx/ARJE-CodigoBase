@@ -411,7 +411,71 @@ function toggleEditField(field) {
 }
 
 function saveChanges() {
-    abrirModalEdicion();
+    const nombreInput = document.getElementById('userNombre');
+    const apellidoInput = document.getElementById('userApellido');
+    const telefonoInput = document.getElementById('userTelefono');
+
+    const nombre = (nombreInput?.value || '').trim();
+    const apellido = (apellidoInput?.value || '').trim();
+    const telefono = (telefonoInput?.value || '').trim();
+
+    if (!nombre || !apellido) {
+        mostrarMensaje('Nombre y apellido son obligatorios', 'error');
+        return;
+    }
+    if (telefono && !/^\d{9}$/.test(telefono)) {
+        mostrarMensaje('El teléfono debe tener 9 dígitos numéricos', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('apellido', apellido);
+    if (telefono) formData.append('telefono', telefono);
+
+    const saveBtn = document.getElementById('saveChangesBtn');
+    const prevText = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando...';
+
+    fetch('../BackEnd/modificar.php', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin'
+    })
+        .then(r => r.json())
+        .then(resp => {
+            if (resp && resp.success) {
+                mostrarMensaje('Datos actualizados correctamente', 'success');
+                if (resp.user) {
+                    usuarioActual = { ...usuarioActual, ...resp.user };
+                }
+                if (nombreInput) {
+                    nombreInput.readOnly = true; nombreInput.disabled = true;
+                    nombreInput.setAttribute('data-original', nombre);
+                }
+                if (apellidoInput) {
+                    apellidoInput.readOnly = true; apellidoInput.disabled = true;
+                    apellidoInput.setAttribute('data-original', apellido);
+                }
+                if (telefonoInput) {
+                    telefonoInput.readOnly = true; telefonoInput.disabled = true;
+                    telefonoInput.setAttribute('data-original', telefono);
+                }
+                const cont = document.getElementById('saveBtnContainer');
+                if (cont) cont.style.display = 'none';
+            } else {
+                throw new Error(resp.error || 'Error al actualizar los datos');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            mostrarMensaje(err.message || 'Error al actualizar los datos', 'error');
+        })
+        .finally(() => {
+            saveBtn.disabled = false;
+            saveBtn.textContent = prevText;
+        });
 }
 
 // Funciones para Alergias

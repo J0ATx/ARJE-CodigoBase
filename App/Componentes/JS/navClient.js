@@ -1,4 +1,4 @@
-﻿
+
 
 class NavClient extends HTMLElement {
     constructor() {
@@ -550,4 +550,58 @@ function logout() {
     }).catch(error => {
         window.location.href = '/App/Control/SignIn/FrontEnd/index.html';
     });
+}
+
+function deleteAccount() {
+    let modal = document.getElementById('modalEliminarCuenta');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'modalEliminarCuenta';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Eliminar cuenta</h2>
+                    <button type="button" class="cerrar" id="cerrarModalEliminar">&times;</button>
+                </div>
+                <form class="formulario" id="formEliminarCuenta">
+                    <p>¿Confirmas que deseas continuar?</p>
+                    <div id="msgEliminarCuenta"></div>
+                </form>
+                <div class="modal-actions" style="padding-bottom: 20px;">
+                    <button type="button" class="btn-cancelar" id="cancelarEliminar">Cancelar</button>
+                    <button type="button" class="btn-guardar" id="confirmarEliminar">Eliminar</button>
+                </div>
+            </div>`;
+        document.body.appendChild(modal);
+    }
+
+    const close = () => { modal.classList.remove('active'); document.body.style.overflow = ''; };
+    const abrir = () => { modal.classList.add('active'); document.body.style.overflow = 'hidden'; };
+
+    document.getElementById('cerrarModalEliminar').onclick = close;
+    document.getElementById('cancelarEliminar').onclick = close;
+    document.getElementById('confirmarEliminar').onclick = async () => {
+        const btn = document.getElementById('confirmarEliminar');
+        const prev = btn.textContent;
+        try {
+            const resp = await fetch('/App/Control/Panel/BackEnd/eliminarCuenta.php', {
+                method: 'POST',
+                credentials: 'same-origin'
+            });
+            const data = await resp.json();
+            if (data && data.success) {
+                setTimeout(() => { window.location.href = '/App/Control/SignIn/FrontEnd/index.html'; }, 800);
+            } else {
+                throw new Error(data.error || 'Error al eliminar la cuenta');
+            }
+        } catch (e) {
+            msg.textContent = e.message || 'Error al eliminar la cuenta';
+        } finally {
+            btn.disabled = false; btn.textContent = prev;
+        }
+    };
+
+    window.addEventListener('click', (e) => { if (e.target === modal) close(); });
+    abrir();
 }
