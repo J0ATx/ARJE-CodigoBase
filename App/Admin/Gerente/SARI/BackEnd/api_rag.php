@@ -226,7 +226,7 @@ if (!empty(trim($user_context)) && trim($user_context) !== $placeholder_text) {
 $system_instruction = "Eres un asistente de IA para el panel Admin (SARI). Responde usando SOLO la información del CONTEXTO DE CONOCIMIENTO.
 
 El CONTEXTO DE CONOCIMIENTO tiene tres secciones:
-1.  'BASE DE CONOCIMIENTO (Restaurante)' (fija).
+1.  'BASE DE CONOCIMIENTO (Restaurante)' (fija). **(La información de esta sección está actualizada al 19 de Noviembre de 2025).**
 2.  'CONTEXTO ANALÍTICO DE LA BASE DE DATOS' (JSON de métricas y ventas).
 3.  'CONTEXTO PDF ADJUNTO' (si existe).
 
