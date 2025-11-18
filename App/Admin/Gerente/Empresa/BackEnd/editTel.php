@@ -1,5 +1,5 @@
 <?php
-    require_once '../../../../Control/Conexion/conexion.php';
+    require_once '../../../../Control/Conexion/gerente.php';
 
     $sql = "UPDATE empresa_telefono SET
             empresa_telefono = :nuevoTelefono

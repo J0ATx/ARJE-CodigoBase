@@ -14,6 +14,7 @@
 -- DROP TRIGGER IF EXISTS actualizar_promedio_calificacion_insert;
 -- DROP TRIGGER IF EXISTS actualizar_promedio_calificacion_update;
 -- DROP TRIGGER IF EXISTS actualizar_promedio_calificacion_delete;
+-- DROP TRIGGER IF EXISTS fidelizacion_auto;
 
 -- DROP VIEW IF EXISTS Ventas_Totales;
 -- DROP VIEW IF EXISTS Ventas_Por_Cliente;

@@ -159,7 +159,7 @@ $user_context = $input['context'] ?? ''; // Texto extraído del PDF
 
 
 // --- 4. CONSULTA Y EXTRACCIÓN DE DATOS DE LA BASE DE DATOS (NUEVA LÓGICA) ---
-require_once '../../../../Control/Conexion/conexion.php'; // <-- ¡VERIFICA ESTA RUTA!
+require_once '../../../../Control/Conexion/gerente.php'; // <-- ¡VERIFICA ESTA RUTA!
 
 $db_context = "";
 

@@ -1,7 +1,7 @@
-﻿const ROLE_PERMISSIONS = {
+const ROLE_PERMISSIONS = {
     'Gerente-General': {
         sections: ['estadisticas', 'promociones', 'pedidos', 'inventario',
-            'reservas', 'mesas', 'cocina', 'productos', 'usuarios', 'empresa', 'sari'],
+            'reservas', 'mesas', 'cocina', 'productos', 'usuarios', 'empresa', 'sari', 'fidelizados'],
         fullAccess: true
     },
     'Camarero': {
@@ -100,6 +100,13 @@ const NAVBAR_SECTIONS = {
         href: '/Empresa',
         icon: '/App/Componentes/svg/Datos.svg',
         dataPage: 'empresa'
+    },
+    fidelizados: {
+        id: 'fidelizados',
+        label: 'Fidelizados',
+        href: '/Fidelizados',
+        icon: '/App/Componentes/svg/Usuarios.svg',
+        dataPage: 'fidelizados'
     }
 };
 
@@ -620,6 +627,7 @@ class NavAdmin extends HTMLElement {
         if (normalizedPath.includes('ventas/productos') || normalizedPath.includes('productos') || normalizedPath.includes('platillos')) return 'productos';
         if (normalizedPath.includes('gerente/usuarios') || normalizedPath.includes('usuarios')) return 'usuarios';
         if (normalizedPath.includes('gerente/empresa') || normalizedPath.includes('empresa')) return 'empresa';
+        if (normalizedPath.includes('gerente/fidelizados') || normalizedPath.includes('fidelizados')) return 'fidelizados';
     }
 
     addEventListeners() {

@@ -235,3 +235,12 @@ CREATE TABLE No_Show (
     FOREIGN KEY (cliente_id) REFERENCES Cliente (cliente_id) ON DELETE CASCADE,
     FOREIGN KEY (reserva_id) REFERENCES Reserva (reserva_id) ON DELETE CASCADE
 );
+
+CREATE TABLE Fidelizacion_Solicitud (
+    solicitud_id INT AUTO_INCREMENT NOT NULL,
+    cliente_id VARCHAR(100) NOT NULL,
+    solicitud_fecha DATETIME NOT NULL,
+    solicitud_estado ENUM('Pendiente','Aprobada','Rechazada') DEFAULT 'Pendiente',
+    PRIMARY KEY (solicitud_id),
+    FOREIGN KEY (cliente_id) REFERENCES Cliente (cliente_id) ON DELETE CASCADE
+);

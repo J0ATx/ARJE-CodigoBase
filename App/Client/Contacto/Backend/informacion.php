@@ -1,5 +1,5 @@
 <?php
-    require_once '../../../Control/Conexion/conexion.php';
+    require_once '../../../Control/Conexion/clienteRegistrado.php';
     
     $sql = "SELECT empresa_dia, empresa_hora FROM empresa_horario;";
     $stmt = $con->prepare($sql);

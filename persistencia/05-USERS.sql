@@ -1,4 +1,4 @@
-﻿CREATE USER 'gerente'@'localhost' IDENTIFIED BY '0gGiOjvwsBRHnpdt';
+CREATE USER 'gerente'@'localhost' IDENTIFIED BY '0gGiOjvwsBRHnpdt';
 CREATE USER 'empleado'@'localhost' IDENTIFIED BY 'F3sycVEqp9rrdCjt';
 CREATE USER 'cliente_registrado'@'localhost' IDENTIFIED BY 'VApxJBYwnfHRuv43';
 CREATE USER 'cliente_no_registrado'@'localhost' IDENTIFIED BY 'lgfCaXeEgEarShYu';
@@ -14,8 +14,10 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Stock_Cantidad TO 'gerent
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Mesa TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Reserva TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Pedido TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Efectua TO 'gerente'@'localhost';
 GRANT SELECT ON lostrestanosdb.Consume TO 'gerente'@'localhost';
 GRANT SELECT ON lostrestanosdb.Datos_Usuarios TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Fidelizacion_Solicitud TO 'gerente'@'localhost';
 GRANT SELECT ON lostrestanosdb.Cliente TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa TO 'gerente'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Ubicacion TO 'gerente'@'localhost';
@@ -62,6 +64,7 @@ GRANT SELECT ON lostrestanosdb.Empresa_Ubicacion TO 'cliente_registrado'@'localh
 GRANT SELECT ON lostrestanosdb.Empresa_Telefono TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Horario TO 'cliente_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.No_Show TO 'cliente_registrado'@'localhost';
+GRANT SELECT, INSERT ON lostrestanosdb.Fidelizacion_Solicitud TO 'cliente_registrado'@'localhost';
 
 GRANT SELECT, INSERT ON lostrestanosdb.Cliente TO 'cliente_no_registrado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Personal TO 'cliente_no_registrado'@'localhost';

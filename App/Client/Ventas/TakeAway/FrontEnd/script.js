@@ -250,7 +250,7 @@ async function confirmarPedido(e) {
     const data = await res.json()
     if (data && data.success) {
       localStorage.removeItem('takeaway_carrito');
-      abrirModalNotify('Pedido confirmado', `<p>Tu pedido #${data.pedido_id} fue creado correctamente.</p><p>Tiempo estimado: <strong>${data.eta} min</strong></p>`, () => { window.location.href = '/MisPedidos' });
+      abrirModalNotify('Pedido confirmado', `<p>Tu pedido fue creado correctamente.</p><p>Tiempo estimado: <strong>${data.eta} min</strong></p> <br><p style="color: #4CAF50; text-align: center;">Una vez tu pedido se encuentre listo, te notificaremos por correo electrónico.</p>`, () => { window.location.href = '/MisPedidos' });
     } else {
       abrirModalNotify('Error', `<p>Hubo un error al crear el pedido.</p><p>Por favor, contacta con el restaurante.</p>`, () => {})
     }

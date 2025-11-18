@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <base href="/App/Client/MiUsuario/Reservas/FrontEnd/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Los 3 Tanos - Mis reservas</title>
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+  <link rel="icon" type="image/png" sizes="32x32" href="/App/Recursos/favicon.ico">
+  <link rel="stylesheet" href="/App/Client/MiUsuario/Informacion/FrontEnd/style.css">
+  <link rel="stylesheet" href="style.css">
+  </head>
+<body>
+  <div id="loading-screen">
+    <div id="logo-container" class="logo-loading"></div>
+  </div>
+  <div id="main-content">
+    <div class="page">
+      <nav-client></nav-client>
+      <main class="contenedor">
+        <section>
+          <h1>Mis reservas</h1>
+          <div id="reservas-listado" class="reservas-container"></div>
+          <div id="modalConfirmar" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2>Confirmar eliminación</h2>
+                <button type="button" class="cerrar" id="cerrarModalConfirmar">&times;</button>
+              </div>
+              <div class="formulario">
+                <p>¿Estás seguro de que deseas eliminar esta reserva?</p>
+                <div class="modal-actions">
+                  <button type="button" class="btn-cancelar" id="cancelarCancelar">Cancelar</button>
+                  <button type="button" class="btn-guardar" id="confirmarCancelar">Eliminar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../../../../Componentes/JS/navClient.js"></script>
+  <script src="../session.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

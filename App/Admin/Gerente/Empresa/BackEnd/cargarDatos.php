@@ -1,5 +1,5 @@
 <?php
-    require_once '../../../../Control/Conexion/conexion.php';
+    require_once '../../../../Control/Conexion/gerente.php';
 
     $sql = "SELECT empresa_nombre, empresa_mision, empresa_vision, empresa_valores, empresa_whatsapp, empresa_instagram, empresa_facebook
             FROM empresa;";

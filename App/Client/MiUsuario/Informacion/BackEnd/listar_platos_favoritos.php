@@ -25,17 +25,36 @@ try {
         exit;
     }
 
-    $query = "SELECT cliente_platillo_favorito FROM Cliente WHERE cliente_id = ?";
-    $stmt = $con->prepare($query);
-    $stmt->execute([$cliente_id]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
     $platos = [];
-    if ($row && !empty($row['cliente_platillo_favorito'])) {
-        $platos[] = [
-            'id' => $cliente_id,
-            'plato' => $row['cliente_platillo_favorito']
-        ];
+    try {
+        $query = "SELECT cliente_plato_id, cliente_plato_nombre FROM Cliente_Plato_Favorito WHERE cliente_id = ? ORDER BY cliente_plato_nombre";
+        $stmt = $con->prepare($query);
+        $stmt->execute([$cliente_id]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
+            $platos[] = [
+                'id' => $row['cliente_plato_id'],
+                'plato' => $row['cliente_plato_nombre']
+            ];
+        }
+    } catch (Exception $ignored) {
+        $query = "SELECT cliente_platillo_favorito FROM Cliente WHERE cliente_id = ?";
+        $stmt = $con->prepare($query);
+        $stmt->execute([$cliente_id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row && isset($row['cliente_platillo_favorito'])) {
+            $str = $row['cliente_platillo_favorito'] ?? '';
+            $parts = preg_split('/[,|]/', $str, -1, PREG_SPLIT_NO_EMPTY);
+            foreach ($parts as $p) {
+                $val = trim($p);
+                if ($val !== '') {
+                    $platos[] = [
+                        'id' => $cliente_id . ':' . $val,
+                        'plato' => $val
+                    ];
+                }
+            }
+        }
     }
 
     echo json_encode(['success' => true, 'platos' => $platos]);

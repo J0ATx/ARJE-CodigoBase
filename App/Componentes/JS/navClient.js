@@ -354,7 +354,11 @@ class NavClient extends HTMLElement {
                 .menu-toggle {
                     display: block !important;
                 }
-
+                .page {
+                    grid-template-columns: 1fr;
+                    grid-template-areas: "main";
+                    position: relative;
+                }
                 nav {
                     position: fixed;
                     top: 0;
@@ -379,9 +383,6 @@ class NavClient extends HTMLElement {
             }
 
             @media (max-width: 1199px) and (min-width: 768px) {
-                nav {
-                    width: 250px;
-                }
 
                 nav .user-section {
                     width: 250px;

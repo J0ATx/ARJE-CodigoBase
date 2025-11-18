@@ -9,7 +9,8 @@ $MODULE_PERMISSIONS = [
     'promociones' => ['Gerente-General', 'Chef-Ejecutivo', 'Gerente-Turno'],
     'usuarios' => ['Gerente-General'],
     'empresa' => ['Gerente-General'],
-    'estadisticas' => ['Gerente-General']
+    'estadisticas' => ['Gerente-General'],
+    'fidelizados' => ['Gerente-General']
 ];
 
 $READ_ONLY_PERMISSIONS = [

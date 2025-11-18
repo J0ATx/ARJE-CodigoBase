@@ -1,4 +1,8 @@
-.pedidos-container{
+.contenedor {
+  display: block !important;
+}
+
+.pedidos-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,7 +17,7 @@
   color: #EFE7D2;
   padding: 16px;
   max-width: 600px;
-  width:600px;
+  width: 460px;
 }
 
 .empty-card {
@@ -27,8 +31,13 @@
   margin-bottom: 8px;
 }
 
-.pedido-title { font-weight: 600; }
-.pedido-total { color: #EFE7D2; }
+.pedido-title {
+  font-weight: 600;
+}
+
+.pedido-total {
+  color: #EFE7D2;
+}
 
 .chips {
   display: flex;
@@ -49,9 +58,20 @@
   font-size: 12px;
 }
 
-.chip--estado-pendiente { background: rgba(255, 193, 7, 0.12); border-color: rgba(255, 193, 7, 0.35); }
-.chip--estado-preparacion { background: rgba(33, 150, 243, 0.12); border-color: rgba(33, 150, 243, 0.35); }
-.chip--estado-completado { background: rgba(76, 175, 80, 0.12); border-color: rgba(76, 175, 80, 0.35); }
+.chip--estado-pendiente {
+  background: rgba(255, 193, 7, 0.12);
+  border-color: rgba(255, 193, 7, 0.35);
+}
+
+.chip--estado-preparacion {
+  background: rgba(33, 150, 243, 0.12);
+  border-color: rgba(33, 150, 243, 0.35);
+}
+
+.chip--estado-completado {
+  background: rgba(76, 175, 80, 0.12);
+  border-color: rgba(76, 175, 80, 0.35);
+}
 
 .productos-list {
   list-style: none;
