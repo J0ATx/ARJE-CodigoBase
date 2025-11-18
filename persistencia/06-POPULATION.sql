@@ -1,4 +1,4 @@
-﻿USE lostrestanosdb;
+USE lostrestanosdb;
 
 -- GRUPO 1: Tablas "Hijas" (Nivel mÃ¡s bajo de dependencia)
 -- Estas tablas referencian a otras, pero ninguna otra tabla las referencia a ellas.

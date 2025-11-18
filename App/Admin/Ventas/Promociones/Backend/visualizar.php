@@ -59,8 +59,8 @@
                     p.producto_nombre,
                     p.producto_id
                 FROM Promocion pr
-                LEFT JOIN Posee po ON pr.promocion_id = po.promocion_id
-                LEFT JOIN Producto p ON po.producto_id = p.producto_id
+                LEFT JOIN Aplica ap ON pr.promocion_id = ap.promocion_id
+                LEFT JOIN Producto p ON ap.producto_id = p.producto_id
                 ORDER BY pr.promocion_creacion DESC, p.producto_nombre ASC';
         
         $stmt = $con->prepare($sql);
@@ -79,7 +79,7 @@
             throw new Exception('Error al obtener promociones de la base de datos');
         }
 
-        // Agrupar promociones por ID para evitar duplicados
+        // Construir array de promociones agrupadas por ID (un producto por fila en la BD)
         $promociones = [];
         $promocionesIds = [];
         

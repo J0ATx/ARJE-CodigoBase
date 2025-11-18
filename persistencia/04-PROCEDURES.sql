@@ -1,4 +1,4 @@
-﻿USE lostrestanosdb;
+USE lostrestanosdb;
 
 DELIMITER $$
 

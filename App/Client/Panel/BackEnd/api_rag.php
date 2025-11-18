@@ -77,12 +77,9 @@ R: Para consultas sobre opciones para dietas especiales como Keto o bajas en sod
 Categoría: Promociones y Descuentos
 
 P: ¿Qué promociones semanales tienen?
-R: Tenemos varias promociones vigentes:
-    Lunes de Pizza: 2x1 en pizzas medianas (no válido para delivery).
-    Martes de Pasta: 30% de descuento en pastas (6:00 PM - 10:00 PM).
-    Miércoles de Parrilla: 20% de descuento en parrilladas (todo el día).
-    Jueves de Hamburguesas: Combo de hamburguesa + papas + bebida por $15.000 (7:00 PM - 10:00 PM).
-    Happy Hour: Lunes a Viernes (4:00 PM - 6:00 PM) con 2x1 en bebidas seleccionadas.
+R: Nuestras promociones semanales y ofertas especiales cambian constantemente para ofrecerle siempre algo nuevo y emocionante. Para obtener la información más precisa y actualizada sobre las promociones vigentes (como 2x1, descuentos por día o happy hours), le recomendamos realizar una de las siguientes acciones:
+    Visitar nuestra página web.
+    Consultar directamente con el restaurante: Puede contactarnos por teléfono o a través de nuestras redes sociales para verificar las promociones específicas que aplican en este momento.
 
 P: ¿Tienen algún programa de fidelidad o descuento por cumpleaños?
 R: Sí. Con 10 visitas registradas accedes a la Tarjeta VIP con 10% de descuento permanente (no acumulable). También tenemos el Club de Cumpleañeros: registrándote, obtienes un postre gratuito durante el mes de tu cumpleaños (con consumo mínimo).

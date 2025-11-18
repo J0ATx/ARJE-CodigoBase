@@ -3,71 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error 500</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa; /* Gris muy claro */
-            color: #343a40; /* Texto oscuro */
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
-
-        .error-container {
-            background-color: #ffffff; /* Fondo blanco para el contenido */
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
-        }
-
-        h1 {
-            color: #dc3545; /* Rojo fuerte para el título */
-            font-size: 2.5em;
-            margin-bottom: 15px;
-        }
-
-        p {
-            font-size: 1.1em;
-            color: #6c757d; /* Gris medio para el texto */
-            line-height: 1.6;
-        }
-        
-        strong {
-            color: #343a40; /* Negro para el código */
-            font-size: 1.2em;
-        }
-
-        hr {
-            margin: 25px 0;
-            border: 0;
-            border-top: 1px solid #e9ecef;
-        }
-
-        a {
-            color: #007bff; /* Azul primario para enlaces */
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-    <script src="error.js" defer></script> 
+    <base href="/App/Control/Errores/">
+    <title>Error 500 - Error del Servidor</title>
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <div class="error-container">
-        <h1 id="error-title">500</h1>
-        <p><strong id="error-code">Nada para comer por aquí</strong></p>
-        <hr>
-        <p>Vuelve a la <a href="/">Página de Inicio</a>.</p>
+        <div class="error-header">
+            <div class="error-code">500</div>
+            <h1 class="error-title">Error del Servidor</h1>
+        </div>
+        <p class="error-description">Algo salió mal en nuestro servidor. Estamos trabajando para solucionarlo. Intenta nuevamente más tarde.</p>
+        <div class="error-divider"></div>
+        <div class="error-actions">
+            <a href="/" class="error-link">Volver al Inicio</a>
+            <a href="javascript:location.reload()" class="error-link error-link-secondary">Reintentar</a>
+        </div>
     </div>
 </body>
 </html>
