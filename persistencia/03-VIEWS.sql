@@ -86,6 +86,7 @@ SELECT
     cliente_calificacion AS usuario_calificacion,
     cliente_platillo_favorito AS usuario_platillo_favorito,
     cliente_fidelizado AS usuario_fidelizado,
+    cliente_eliminado AS usuario_eliminado,
     'Cliente' AS usuario_rol
 FROM Cliente
 UNION ALL
@@ -98,5 +99,6 @@ SELECT
     personal_calificacion AS usuario_calificacion,
     NULL AS usuario_platillo_favorito,
     FALSE AS usuario_fidelizado,
+    personal_eliminado AS usuario_eliminado,
     personal_rol AS usuario_rol
 FROM Personal;

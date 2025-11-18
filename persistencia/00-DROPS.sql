@@ -1,3 +1,42 @@
+-- USE lostrestanosdb;
+
+-- SET FOREIGN_KEY_CHECKS = 0;
+
+-- TRUNCATE TABLE Aplica;
+-- TRUNCATE TABLE Comentario;
+-- TRUNCATE TABLE Consume;
+-- TRUNCATE TABLE Contiene;
+-- TRUNCATE TABLE Efectua;
+-- TRUNCATE TABLE Fidelizacion_Solicitud;
+-- TRUNCATE TABLE No_Show;
+-- TRUNCATE TABLE Posee;
+
+-- TRUNCATE TABLE Pedido;
+-- TRUNCATE TABLE Reserva;
+
+-- TRUNCATE TABLE Stock_Cantidad;
+-- TRUNCATE TABLE Stock;
+-- TRUNCATE TABLE Producto_Criterio;
+-- TRUNCATE TABLE Producto;
+-- TRUNCATE TABLE Promocion;
+
+-- TRUNCATE TABLE Mesa;
+-- TRUNCATE TABLE Empresa_Horario;
+-- TRUNCATE TABLE Empresa_Telefono;
+-- TRUNCATE TABLE Empresa_Ubicacion;
+-- TRUNCATE TABLE Empresa;
+
+-- TRUNCATE TABLE Cliente_Alergia;
+-- TRUNCATE TABLE Cliente;
+-- TRUNCATE TABLE Camarero;
+-- TRUNCATE TABLE Chef_Ejecutivo;
+-- TRUNCATE TABLE Gerente_General;
+-- TRUNCATE TABLE Personal;
+
+-- TRUNCATE TABLE image_id_sequence;
+
+-- SET FOREIGN_KEY_CHECKS = 1;
+
 -- DROP USER IF EXISTS 'gerente'@'localhost';
 -- DROP USER IF EXISTS 'empleado'@'localhost';
 -- DROP USER IF EXISTS 'cliente_registrado'@'localhost';

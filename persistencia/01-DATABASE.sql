@@ -14,6 +14,7 @@ CREATE TABLE Personal (
     personal_contrasenia VARCHAR (256),
     personal_calificacion ENUM ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
     personal_rol ENUM ('Cliente', 'Gerente-General', 'Gerente-Turno', 'Chef-Ejecutivo', 'Chef', 'Camarero'),
+    personal_eliminado BOOLEAN DEFAULT FALSE,
     PRIMARY KEY(personal_id)
 );
 
@@ -45,6 +46,7 @@ CREATE TABLE Cliente (
     cliente_calificacion ENUM ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10'),
     cliente_platillo_favorito VARCHAR (150),
     cliente_fidelizado BOOLEAN DEFAULT FALSE,
+    cliente_eliminado BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (cliente_id)
 );
 
