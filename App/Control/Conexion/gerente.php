@@ -3,7 +3,7 @@
     try {
         $con = new PDO("mysql:
         host=localhost;
-        dbname=lostrestanosdb;charset=utf8mb4", 
+        dbname=lostrestanosdb", 
         "gerente", 
         "0gGiOjvwsBRHnpdt");
     } catch (Throwable $th) {
