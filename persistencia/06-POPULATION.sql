@@ -470,3 +470,22 @@ INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha,
 (2, '2', DATE_ADD(CURDATE(), INTERVAL 7 DAY), '20:00:00', 'Pendiente', 'florencia@example.com', 15),
 (4, '3', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '20:00:00', 'Confirmada', 'julia@example.com', 2),
 (6, '4', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '21:30:00', 'Pendiente', 'martin@example.com', 6);
+
+-- Sentencias de inserción para la tabla Aplica
+
+-- Promoción 1: '2x1 en Sándwiches Calientes' (ID 1)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES 
+(1, 8);
+
+-- Promoción 2: 'Pizza y Cerveza' (ID 2)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES 
+(2, 61);
+
+-- Promoción 3: 'Menú del Día Económico' (ID 3)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES 
+(3, 17), (3, 18), (3, 20), (3, 21), 
+(3, 37), (3, 38), (3, 39), (3, 40), (3, 41), (3, 42), (3, 46);
+
+-- Promoción 4: 'Promo Vegetariana' (ID 4)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES 
+(4, 47), (4, 48), (4, 49), (4, 50), (4, 51);
