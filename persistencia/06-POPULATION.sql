@@ -165,7 +165,6 @@ INSERT INTO Producto (producto_id, producto_nombre, producto_precio, producto_de
 (65, 'Porción figazza', 210.00, 'Pizza de cebolla.', 'Hornear con cebolla.', '10 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com'),
 (66, 'Porción de fugazzeta', 280.00, 'Cebolla y queso.', 'Gratinar cebolla y queso.', '10 min', CURDATE(), 'Pizzería', 'chefejecutivo@prueba.com');
 
-
 -- Relación Consumo (Recetas)
 INSERT INTO Consume (producto_id, stock_id, consume_cantidad, consume_medida) VALUES
 (1, 1, 2.0, 'u'), (1, 2, 0.150, 'kg'), (1, 3, 0.050, 'kg'), (1, 4, 0.020, 'kg'),
@@ -262,7 +261,7 @@ INSERT INTO Cliente_Alergia (cliente_id, cliente_alergia) VALUES
 ON DUPLICATE KEY UPDATE cliente_alergia = VALUES(cliente_alergia);
 
 -- =================================================================================
--- 5. MESAS Y PROMOCIONES
+-- 5. MESAS Y PROMOCIONES COHERENTES
 -- =================================================================================
 
 INSERT INTO Mesa (mesa_id, mesa_estado, mesa_tiempo_uso, mesa_alcance, mesa_reservable, mesa_creacion) VALUES
@@ -279,18 +278,70 @@ INSERT INTO Mesa (mesa_id, mesa_estado, mesa_tiempo_uso, mesa_alcance, mesa_rese
 (25, 'Libre', '00:00:00', 4, 'Si', CURDATE()), (26, 'Libre', '00:00:00', 4, 'Si', CURDATE()),
 (27, 'Libre', '00:00:00', 4, 'Si', CURDATE());
 
+-- PROMOCIONES: Versión Coherente con Productos
 INSERT INTO Promocion (promocion_nombre, promocion_descripcion, promocion_descuento, promocion_fidelizada, promocion_creacion) VALUES
-('2x1 Cervezas', 'Happy hour de 19:00 a 21:00', 50, FALSE, CURDATE()),
-('Pizza + Refresco', 'Pizzeta mozzarella + Refresco 1L', 15, FALSE, CURDATE()),
-('Descuento Fidelidad', '10% off en toda la carta', 10, TRUE, CURDATE()),
-('Jueves de Pastas', '20% off en todas las pastas', 20, FALSE, CURDATE()),
-('Combo Picada', 'Gramajo Grande + 2 Cervezas', 15, FALSE, CURDATE()),
-('Menu Vegetariano', '15% off en Menu Vegetariano', 15, FALSE, CURDATE()),
-('Postre Gratis', 'Con la compra de un Asado', 0.0, FALSE, CURDATE()),
-('Descuento Cumpleaños', '25% off para el cumpleañero', 25, TRUE, CURDATE()),
-('Combo Familiar', '1 Metro Mozzarella + Refresco', 20, FALSE, CURDATE()),
-('Tanos Noche', 'Descuento post 23:00', 10, FALSE, CURDATE());
+('2x1 Cervezas', 'Happy hour de 19:00 a 21:00 - Llevá 2 cervezas al precio de 1', 50, FALSE, CURDATE()),
+('Combo Pizzeta', 'Pizzeta de mozzarella + Bebida - 15% OFF', 15, FALSE, CURDATE()),
+('Jueves de Pastas', 'Todos los jueves: 20% OFF en pastas caseras', 20, FALSE, CURDATE()),
+('Combo Picada', 'Gramajo Grande + Rabas + Fritas con Salsa - 15% OFF', 15, FALSE, CURDATE()),
+('Promo Verde', 'Todos los productos vegetarianos con 15% de descuento', 15, FALSE, CURDATE()),
+('Combo Familiar', '1 Metro de Mozzarella + 2 Bebidas - 20% OFF', 20, FALSE, CURDATE()),
+('Miércoles Burguer', 'Todas las hamburguesas con 10% de descuento', 10, FALSE, CURDATE()),
+('Promo Kids', 'Menú infantil completo con 12% OFF', 12, FALSE, CURDATE()),
+('Club Tanos', '10% OFF en toda la carta para clientes fidelizados', 10, TRUE, CURDATE()),
+('Cumple Tanos', '25% OFF en tu cumpleaños + postre gratis', 25, TRUE, CURDATE()),
+('Parrilla Premium', 'Asados y parrilla con 18% OFF para clientes VIP', 18, TRUE, CURDATE()),
+('Tanos Noche', '15% OFF después de las 23:00 hs', 15, TRUE, CURDATE());
 
+-- TABLA APLICA: Vinculación Promociones con Productos
+-- PROMO 2: Combo Pizzeta (Aplica a todas las pizzetas)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(2, 56), (2, 57), (2, 58);
+
+-- PROMO 3: Jueves de Pastas (Todas las pastas caseras)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(3, 17), (3, 18), (3, 19), (3, 20), (3, 21), (3, 22);
+
+-- PROMO 4: Combo Picada (Productos para picar)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(4, 2), (4, 4), (4, 3);
+
+-- PROMO 5: Promo Verde (Menú Vegetariano completo)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(5, 47), (5, 48), (5, 49), (5, 50), (5, 51);
+
+-- PROMO 6: Combo Familiar (Pizzas grandes)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(6, 61), (6, 62);
+
+-- PROMO 7: Miércoles Burguer (Todas las hamburguesas)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(7, 34), (7, 35), (7, 36), (7, 47), (7, 48);
+
+-- PROMO 8: Promo Kids (Menú para los pequeños)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(8, 28), (8, 29), (8, 30), (8, 31), (8, 32), (8, 33);
+
+-- PROMO 9: Club Tanos (Aplica a TODOS los productos - Clientes VIP)
+INSERT INTO Aplica (promocion_id, producto_id) 
+SELECT 9, producto_id FROM Producto WHERE producto_id BETWEEN 1 AND 66;
+
+-- PROMO 10: Cumple Tanos (Productos principales/destacados para cumpleaños)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(10, 61), (10, 62), (10, 37), (10, 2), (10, 1), (10, 7);
+
+-- PROMO 11: Parrilla Premium (Todos los asados)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(11, 37), (11, 38), (11, 39), (11, 40), (11, 41), (11, 42), 
+(11, 43), (11, 44), (11, 45), (11, 46);
+
+-- PROMO 12: Tanos Noche (Pizzas y picadas - menú nocturno)
+INSERT INTO Aplica (promocion_id, producto_id) VALUES
+(12, 52), (12, 53), (12, 54), (12, 55), (12, 56), (12, 57), (12, 58),
+(12, 59), (12, 60), (12, 61), (12, 62),
+(12, 1), (12, 2), (12, 3), (12, 4), (12, 5), (12, 6), (12, 7);
+
+-- Criterios de Producto
 INSERT INTO Producto_Criterio (producto_id, producto_criterio) VALUES
 (1, 'Mas Vendido'), (2, 'Mas Vendido'), (47, 'Vegetariano'), (48, 'Vegetariano'),
 (49, 'Vegetariano'), (50, 'Vegetariano'), (51, 'Vegetariano'), (17, 'Casero'),
@@ -325,10 +376,10 @@ INSERT INTO Comentario (producto_id, cliente_id, comentario_contenido, comentari
 (10, 'laura@example.com', 'Buena combinación.', 5);
 
 -- =================================================================================
--- 7. PEDIDOS (HISTÓRICO Y ACTUAL) - ACTUALIZADO PARA VARIEDAD
+-- 7. PEDIDOS (HISTÓRICO Y ACTUAL)
 -- =================================================================================
 
--- 7.1 Pedidos Recientes (Últimas 48h - Estado variado)
+-- 7.1 Pedidos Recientes (Últimas 48h)
 INSERT INTO Pedido (pedido_estado, pedido_especificacion, pedido_fecha, pedido_monto, pedido_pago, personal_id, mesa_id) VALUES
 ('En-Preparacion', 'Sin cebolla', NOW(), 680.0, NULL, 'camarero1@prueba.com', 5),
 ('Pagado', 'Para llevar', DATE_SUB(NOW(), INTERVAL 2 HOUR), 1430.0, 'Efectivo', 'camarero2@prueba.com', 1),
@@ -350,66 +401,51 @@ INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES
 (1, 2, 1), (2, 57, 1), (2, 4, 1), (2, 5, 1), (3, 61, 1), (4, 17, 1), (5, 36, 2),
 (6, 1, 2), (6, 7, 1), (6, 6, 1), (7, 37, 1), (8, 46, 1), (9, 49, 2), (9, 51, 1), (10, 16, 1);
 
+-- Vinculación de pedidos con promociones (ACTUALIZADA)
 INSERT INTO Posee (promocion_id, producto_id, pedido_id) VALUES
-(2, 57, 2), (9, 61, 3), (4, 17, 4), (3, 36, 5), (5, 1, 6), (5, 7, 6),
-(3, 37, 7), (6, 49, 9), (6, 51, 9), (3, 16, 10);
+(2, 57, 2), (6, 61, 3), (3, 17, 4), (7, 36, 5),
+(4, 1, 6), (4, 7, 6), (5, 49, 9), (5, 51, 9);
 
--- 7.2 "BEST SELLERS" (Lote masivo para Coca-Cola y Pizzas) - Hace 5-10 días
--- Esto creará picos en los gráficos de productos
-
--- Pedido Masivo 1: Pizzas y Cocas (Mesa Grande)
+-- 7.2 Pedidos Masivos (Best Sellers)
 INSERT INTO Pedido (pedido_estado, pedido_fecha, pedido_monto, pedido_pago, personal_id, mesa_id)
 VALUES ('Pagado', DATE_SUB(NOW(), INTERVAL 5 DAY), 3500.00, 'Tarjeta', 'camarero1@prueba.com', 1);
 INSERT INTO Efectua (pedido_id, cliente_id) VALUES (LAST_INSERT_ID(), 'eduardo@example.com');
-INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES 
-(LAST_INSERT_ID(), 61, 3); -- 3 Metros Pizza
+INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (LAST_INSERT_ID(), 61, 3);
 
--- Pedido Masivo 2: Noche de Cervezas (Grupo Amigos)
 INSERT INTO Pedido (pedido_estado, pedido_fecha, pedido_monto, pedido_pago, personal_id, mesa_id)
 VALUES ('Pagado', DATE_SUB(NOW(), INTERVAL 6 DAY), 2200.00, 'Efectivo', 'camarero3@prueba.com', 6);
 INSERT INTO Efectua (pedido_id, cliente_id) VALUES (LAST_INSERT_ID(), 'kevin@example.com');
-INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (LAST_INSERT_ID(), 2, 2);  -- 2 Gramajos
+INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (LAST_INSERT_ID(), 2, 2);
 
--- Pedido Masivo 3: Almuerzo Familiar (Domingo pasado)
 INSERT INTO Pedido (pedido_estado, pedido_fecha, pedido_monto, pedido_pago, personal_id, mesa_id)
 VALUES ('Pagado', DATE_SUB(NOW(), INTERVAL 10 DAY), 1800.00, 'Tarjeta', 'camarero2@prueba.com', 4);
 INSERT INTO Efectua (pedido_id, cliente_id) VALUES (LAST_INSERT_ID(), 'ana@example.com');
-INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES 
-(LAST_INSERT_ID(), 34, 3); -- 3 Hamburguesas
+INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (LAST_INSERT_ID(), 34, 3);
 
--- Pedido Masivo 4: Comida Rápida (Hace 2 semanas)
 INSERT INTO Pedido (pedido_estado, pedido_fecha, pedido_monto, pedido_pago, personal_id, mesa_id)
 VALUES ('Pagado', DATE_SUB(NOW(), INTERVAL 14 DAY), 900.00, 'Efectivo', 'camarero5@prueba.com', 12);
 INSERT INTO Efectua (pedido_id, cliente_id) VALUES (LAST_INSERT_ID(), 'diego@example.com');
-INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES 
-(LAST_INSERT_ID(), 59, 2); -- 2 Medios Metros
+INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (LAST_INSERT_ID(), 59, 2);
 
--- Pedido Masivo 5: Fiesta Infantil (Muchos Nuggets y Papas)
 INSERT INTO Pedido (pedido_estado, pedido_fecha, pedido_monto, pedido_pago, personal_id, mesa_id)
 VALUES ('Pagado', DATE_SUB(NOW(), INTERVAL 20 DAY), 4200.00, 'Tarjeta', 'camarero10@prueba.com', 1);
 INSERT INTO Efectua (pedido_id, cliente_id) VALUES (LAST_INSERT_ID(), 'julia@example.com');
 INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES 
-(LAST_INSERT_ID(), 5, 5),  -- 5 Porciones Nuggets
-(LAST_INSERT_ID(), 23, 5); -- 5 Porciones Fritas
+(LAST_INSERT_ID(), 5, 5), (LAST_INSERT_ID(), 23, 5);
 
--- 7.3 Pedidos EN VIVO (Estado actual del restaurante para la DEMO)
--- MESA 20 (Ocupada, Pedido Pendiente)
+-- 7.3 Pedidos EN VIVO (Estado actual del restaurante)
 UPDATE Mesa SET mesa_estado = 'Ocupada' WHERE mesa_id = 20;
 INSERT INTO Pedido (pedido_estado, pedido_especificacion, pedido_fecha, pedido_monto, pedido_pago, personal_id, mesa_id)
 VALUES ('Pendiente', 'Sin sal las papas', NOW(), 950.00, NULL, 'camarero5@prueba.com', 20);
 INSERT INTO Efectua (pedido_id, cliente_id) VALUES (LAST_INSERT_ID(), 'florencia@example.com');
 INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (LAST_INSERT_ID(), 28, 2);
 
-
-
--- MESA 22 (Ocupada, En Cocina)
 UPDATE Mesa SET mesa_estado = 'Ocupada' WHERE mesa_id = 22;
 INSERT INTO Pedido (pedido_estado, pedido_especificacion, pedido_fecha, pedido_monto, pedido_pago, personal_id, mesa_id)
 VALUES ('En-Preparacion', 'Punto jugoso', DATE_SUB(NOW(), INTERVAL 15 MINUTE), 1200.00, NULL, 'camarero4@prueba.com', 22);
 INSERT INTO Efectua (pedido_id, cliente_id) VALUES (LAST_INSERT_ID(), 'gustavo@example.com');
 INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (LAST_INSERT_ID(), 38, 1), (LAST_INSERT_ID(), 25, 1);
 
--- MESA 24 (Ocupada, Comiendo/Entregado)
 UPDATE Mesa SET mesa_estado = 'Ocupada' WHERE mesa_id = 24;
 INSERT INTO Pedido (pedido_estado, pedido_especificacion, pedido_fecha, pedido_monto, pedido_pago, personal_id, mesa_id)
 VALUES ('Entregado', '', DATE_SUB(NOW(), INTERVAL 45 MINUTE), 580.00, NULL, 'camarero6@prueba.com', 24);
@@ -417,11 +453,10 @@ INSERT INTO Efectua (pedido_id, cliente_id) VALUES (LAST_INSERT_ID(), 'natalia@e
 INSERT INTO Contiene (pedido_id, producto_id, contiene_cantidad) VALUES (LAST_INSERT_ID(), 59, 1);
 
 -- =================================================================================
--- 8. NO SHOWS Y FIDELIZACIÓN (CON VARIEDAD DE DATOS)
+-- 8. NO SHOWS Y FIDELIZACIÓN
 -- =================================================================================
 
--- 8.1 Generación de No-Shows (Ivan y Natalia son los clientes "problemáticos")
--- Ivan (4 No-Shows)
+-- 8.1 No-Shows: Ivan (4 No-Shows - Cliente problemático)
 INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha, reserva_inicio, reserva_estado, cliente_id, mesa_id) VALUES
 (2, '2', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '21:00:00', 'No-Show', 'ivan@example.com', 1),
 (2, '2', DATE_SUB(CURDATE(), INTERVAL 10 DAY), '21:00:00', 'No-Show', 'ivan@example.com', 1),
@@ -429,12 +464,12 @@ INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha,
 (2, '2', DATE_SUB(CURDATE(), INTERVAL 25 DAY), '21:00:00', 'No-Show', 'ivan@example.com', 1);
 
 INSERT INTO No_Show (cliente_id, reserva_id, no_show_fecha, no_show_hora) VALUES
-('ivan@example.com', 11, DATE_SUB(CURDATE(), INTERVAL 1 DAY), '21:00:00'), -- ID manual asumido
+('ivan@example.com', 11, DATE_SUB(CURDATE(), INTERVAL 1 DAY), '21:00:00'),
 ('ivan@example.com', 12, DATE_SUB(CURDATE(), INTERVAL 10 DAY), '21:00:00'),
 ('ivan@example.com', 13, DATE_SUB(CURDATE(), INTERVAL 20 DAY), '21:00:00'),
 ('ivan@example.com', 14, DATE_SUB(CURDATE(), INTERVAL 25 DAY), '21:00:00');
 
--- Natalia (3 No-Shows)
+-- 8.2 No-Shows: Natalia (3 No-Shows)
 INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha, reserva_inicio, reserva_estado, cliente_id, mesa_id) VALUES
 (4, '2', DATE_SUB(CURDATE(), INTERVAL 1 DAY), '20:30:00', 'No-Show', 'natalia@example.com', 11),
 (4, '2', DATE_SUB(CURDATE(), INTERVAL 15 DAY), '20:30:00', 'No-Show', 'natalia@example.com', 11),
@@ -445,7 +480,7 @@ INSERT INTO No_Show (cliente_id, reserva_id, no_show_fecha, no_show_hora) VALUES
 ('natalia@example.com', 16, DATE_SUB(CURDATE(), INTERVAL 15 DAY), '20:30:00'),
 ('natalia@example.com', 17, DATE_SUB(CURDATE(), INTERVAL 22 DAY), '20:30:00');
 
--- Otros Clientes (1 No-Show cada uno)
+-- 8.3 No-Shows: Otros Clientes (1 No-Show cada uno)
 INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha, reserva_inicio, reserva_estado, cliente_id, mesa_id) VALUES
 (2, '1', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '22:00:00', 'No-Show', 'ana@example.com', 3),
 (6, '2', DATE_SUB(CURDATE(), INTERVAL 2 DAY), '21:00:00', 'No-Show', 'eduardo@example.com', 6),
@@ -456,36 +491,17 @@ INSERT INTO No_Show (cliente_id, reserva_id, no_show_fecha, no_show_hora) VALUES
 ('eduardo@example.com', 19, DATE_SUB(CURDATE(), INTERVAL 2 DAY), '21:00:00'),
 ('bruno@example.com', 20, DATE_SUB(CURDATE(), INTERVAL 3 DAY), '20:00:00');
 
--- 8.2 Solicitudes de Fidelización (Variadas)
+-- 8.4 Solicitudes de Fidelización (Variadas)
 INSERT INTO Fidelizacion_Solicitud (cliente_id, solicitud_fecha, solicitud_estado) VALUES
 ('carla@example.com', DATE_SUB(NOW(), INTERVAL 2 HOUR), 'Pendiente'),
 ('diego@example.com', DATE_SUB(NOW(), INTERVAL 1 DAY), 'Rechazada'),
 ('ana@example.com', DATE_SUB(NOW(), INTERVAL 5 HOUR), 'Pendiente'),
-('natalia@example.com', DATE_SUB(NOW(), INTERVAL 3 DAY), 'Aprobada'), -- Ya procesada
-('ivan@example.com', DATE_SUB(NOW(), INTERVAL 10 DAY), 'Rechazada'); -- Cliente problematico rechazado
+('natalia@example.com', DATE_SUB(NOW(), INTERVAL 3 DAY), 'Aprobada'),
+('ivan@example.com', DATE_SUB(NOW(), INTERVAL 10 DAY), 'Rechazada');
 
--- 8.3 Reservas Futuras (Para mostrar calendario lleno)
+-- 8.5 Reservas Futuras (Para mostrar calendario lleno)
 INSERT INTO Reserva (reserva_cantidad_personas, reserva_duracion, reserva_fecha, reserva_inicio, reserva_estado, cliente_id, mesa_id) VALUES
 (10, '4', DATE_ADD(CURDATE(), INTERVAL 1 DAY), '21:00:00', 'Confirmada', 'kevin@example.com', 1),
 (2, '2', DATE_ADD(CURDATE(), INTERVAL 7 DAY), '20:00:00', 'Pendiente', 'florencia@example.com', 15),
 (4, '3', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '20:00:00', 'Confirmada', 'julia@example.com', 2),
 (6, '4', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '21:30:00', 'Pendiente', 'martin@example.com', 6);
-
--- Sentencias de inserción para la tabla Aplica
-
--- Promoción 1: '2x1 en Sándwiches Calientes' (ID 1)
-INSERT INTO Aplica (promocion_id, producto_id) VALUES 
-(1, 8);
-
--- Promoción 2: 'Pizza y Cerveza' (ID 2)
-INSERT INTO Aplica (promocion_id, producto_id) VALUES 
-(2, 61);
-
--- Promoción 3: 'Menú del Día Económico' (ID 3)
-INSERT INTO Aplica (promocion_id, producto_id) VALUES 
-(3, 17), (3, 18), (3, 20), (3, 21), 
-(3, 37), (3, 38), (3, 39), (3, 40), (3, 41), (3, 42), (3, 46);
-
--- Promoción 4: 'Promo Vegetariana' (ID 4)
-INSERT INTO Aplica (promocion_id, producto_id) VALUES 
-(4, 47), (4, 48), (4, 49), (4, 50), (4, 51);
