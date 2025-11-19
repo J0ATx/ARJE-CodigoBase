@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const modalFiltros = document.getElementById('modalFiltros');
     const closeFilters = document.getElementById('closeFilters');
     const modalFilterRol = document.getElementById('modalFilterRol');
-    const modalFilterEstado = document.getElementById('modalFilterEstado');
     const applyFiltersBtn = document.getElementById('applyFiltersBtn');
     const clearFiltersBtn = document.getElementById('clearFiltersBtn');
     if (searchInput) searchInput.addEventListener('input', debounce(() => cargarUsuarios(searchInput.value, currentFilters.rol, currentFilters.estado), 300));
@@ -20,13 +19,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.addEventListener('click', (e) => { if (e.target === modalFiltros) modalFiltros.style.display = 'none'; });
     if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', () => {
         currentFilters.rol = modalFilterRol?.value || '';
-        currentFilters.estado = modalFilterEstado?.value || '';
         if (modalFiltros) modalFiltros.style.display = 'none';
         cargarUsuarios(searchInput?.value||'', currentFilters.rol, currentFilters.estado);
     });
     if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', () => {
         if (modalFilterRol) modalFilterRol.value = '';
-        if (modalFilterEstado) modalFilterEstado.value = '';
         currentFilters = { rol: '', estado: '' };
         cargarUsuarios(searchInput?.value||'', currentFilters.rol, currentFilters.estado);
     });

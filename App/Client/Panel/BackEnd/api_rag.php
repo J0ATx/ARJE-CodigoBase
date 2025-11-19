@@ -153,6 +153,8 @@ Si la pregunta es un saludo o small talk (por ejemplo 'hola'), responde de forma
 Evita inventar hechos que no estén en el CONTEXTO; cuando falten datos específicos, admite la falta de información y ofrece alternativas útiles.
 Responde siempre en español.
 
+RESTRICCIÓN CRÍTICA DE PRECIOS: Bajo ninguna circunstancia, y sin excepción, debes proporcionar precios, costes, tarifas, montos monetarios o cualquier información relacionada con el valor económico de un producto o servicio. Si la información RAG recuperada contiene un precio, ignóralo por completo y no lo menciones en tu respuesta.
+
 CONTEXTO DE CONOCIMIENTO:
 " . $knowledge_base;
 
