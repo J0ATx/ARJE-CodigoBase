@@ -70,7 +70,7 @@ body {
     overflow: hidden;
 }
 
-header{
+header {
     position: absolute !important;
     top: 0;
     left: 0;
@@ -81,7 +81,8 @@ header{
 }
 
 .page {
-    padding-top: 80px; /* Ajusta este valor según la altura de tu header */
+    padding-top: 80px;
+    /* Ajusta este valor según la altura de tu header */
     display: grid;
     grid-template-areas:
         "left right"
@@ -494,6 +495,13 @@ header{
     z-index: 10;
 }
 
+.tooltip:hover .tooltip-fecha,
+.tooltip:focus-within .tooltip-fecha {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-26px) !important;
+}
+
 .tooltip:hover .tooltip-content,
 .tooltip:focus-within .tooltip-content {
     opacity: 1;
@@ -632,11 +640,42 @@ input[type=number] {
     text-align: center;
 }
 
+.horarios-disponibles {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    height: 24px;
+}
+
+.horarios-disponibles .chip {
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: none;
+    border: 1px solid #555;
+    color: rgb(187, 187, 187);
+    font-size: 12px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.horarios-disponibles p{
+    border-radius: 999px;
+    font-size: 14px;
+    text-justify: center;
+    color: #ff4040;
+    text-align: center;
+}
+
+
 .toggle-panorama {
     display: none;
 }
 
-@media (width >= 900px) {
+@media (width >=900px) {
     .toggle-panorama {
         display: none !important;
     }
@@ -645,10 +684,9 @@ input[type=number] {
 @media (max-width: 900px) {
     .input-group.tooltip[data-mesa-tooltip] .tooltip-content {
         content: "Haz clic en el botón de la esquina para ver las mesas disponibles";
-        display: block;
     }
-    
-    .input-group.tooltip[data-mesa-tooltip] .tooltip-content > * {
+
+    .input-group.tooltip[data-mesa-tooltip] .tooltip-content>* {
         display: none;
     }
 
@@ -774,17 +812,17 @@ input[type=number] {
     }
 
     @media (max-width: 900px) {
-        .main-container > header {
+        .main-container>header {
             opacity: 1 !important;
             visibility: visible !important;
         }
-        
-        .left-side > *:not(header) {
+
+        .left-side>*:not(header) {
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
-        .left-side.active > *:not(header) {
+
+        .left-side.active>*:not(header) {
             opacity: 1;
         }
     }
@@ -856,6 +894,7 @@ input[type=number] {
     .input-group .label+img {
         top: 63%;
     }
+    
 
     .tooltip-content {
         width: 250px;

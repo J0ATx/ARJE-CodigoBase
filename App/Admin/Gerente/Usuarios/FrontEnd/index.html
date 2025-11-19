@@ -37,9 +37,8 @@
                         </div>
                         <div class="filters">
                             <button id="openFiltersBtn" class="action-button">Filtros</button>
-                            <button id="refreshBtn" class="action-button">Actualizar</button>
+                            <button id="addUserBtn" class="action-button">+ Agregar Usuario</button>
                         </div>
-                        <button id="addUserBtn" class="action-button">+ Agregar Usuario</button>
                     </div>
                     <table id="usuariosTable">
                         <thead>
@@ -58,7 +57,7 @@
             </main>
         </div>
     </div>
-    
+
     <div id="modalEditar">
         <form id="formEditar">
             <h2>Editar Usuario</h2>
@@ -103,8 +102,33 @@
                     <option value="0">Inactivo</option>
                 </select>
             </div>
-            <button id="applyFiltersBtn" class="submit-button">Aplicar filtros</button>
-            <button id="clearFiltersBtn" class="action-button">Limpiar filtros</button>
+            <button type="submit" id="applyFiltersBtn">Aplicar filtros</button>
+            <button type="button" id="clearFiltersBtn">Limpiar</button>
+        </div>
+    </div>
+
+    <div id="modalNotificacion" class="modal modal-notification">
+        <div class="modal-content notification-content">
+            <div class="notification-icon" id="notificationIcon"></div>
+            <h2 id="notificationTitle">Título</h2>
+            <p id="notificationMessage">Mensaje</p>
+            <button type="button" class="submit-button" onclick="cerrarModalNotificacion()">Aceptar</button>
+        </div>
+    </div>
+
+    <div id="modalConfirmacion" class="modal modal-notification">
+        <div class="modal-content notification-content">
+            <div class="notification-icon warning">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                </svg>
+            </div>
+            <h2 id="confirmacionTitle">Confirmar acción</h2>
+            <p id="confirmacionMessage">¿Estás seguro?</p>
+            <div class="form-buttons">
+                <button type="button" onclick="cancelarConfirmacion()">Cancelar</button>
+                <button type="submit" id="btnConfirmar">Confirmar</button>
+            </div>
         </div>
     </div>
 

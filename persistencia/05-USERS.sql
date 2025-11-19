@@ -39,6 +39,10 @@ GRANT SELECT ON lostrestanosdb.Ventas_Por_Producto TO 'gerente'@'localhost';
 GRANT SELECT ON lostrestanosdb.Calificacion_Promedio TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Promocion TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Fidelizacion_Solicitud TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Fidelizacion_Solicitud TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Promocion TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Fidelizacion_Solicitud TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Aplica TO 'gerente'@'localhost';
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Pedido TO 'empleado'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Contiene TO 'empleado'@'localhost';
@@ -60,6 +64,7 @@ GRANT SELECT ON lostrestanosdb.Empresa TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Ubicacion TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Telefono TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Empresa_Horario TO 'empleado'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Aplica TO 'empleado'@'localhost';
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Cliente_Alergia TO 'cliente_registrado'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Reserva TO 'cliente_registrado'@'localhost';

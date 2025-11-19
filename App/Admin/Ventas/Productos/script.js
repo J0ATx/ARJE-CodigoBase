@@ -318,7 +318,7 @@ function addIngredientToList(ingrediente) {
 
 async function editProduct(id) {
     if (window.canWriteProducts === false) {
-        mostrarNotificacion('warning', 'Acceso Denegado', 'No tienes permisos para editar productos');
+        window.mostrarNotificacion('warning', 'Acceso Denegado', 'No tienes permisos para editar productos');
         return;
     }
 
@@ -347,20 +347,23 @@ async function editProduct(id) {
             producto.ingredientes.forEach(ingrediente => addIngredientToList(ingrediente));
             document.getElementById('productModal').style.display = 'flex';
         } else {
-            mostrarNotificacion('error', 'Error', data.message || 'Error al cargar el producto');
+            window.mostrarNotificacion('error', 'Error', data.message || 'Error al cargar el producto');
         }
     } catch (error) {
         console.error('Error:', error);
-        mostrarNotificacion('error', 'Error', 'Error al cargar el producto');
+        window.mostrarNotificacion('error', 'Error', 'Error al cargar el producto');
     }
 }
 
 async function deleteProduct(id) {
     if (window.canWriteProducts === false) {
-        mostrarNotificacion('warning', 'Acceso Denegado', 'No tienes permisos para eliminar productos');
+        window.mostrarNotificacion('warning', 'Acceso Denegado', 'No tienes permisos para eliminar productos');
         return;
     }
-    mostrarConfirmacion(
+    try {
+        document.querySelectorAll('.menu-opciones').forEach(menu => { menu.style.display = 'none'; });
+    } catch (e) {}
+    window.mostrarConfirmacion(
         'Eliminar Producto',
         '¿Estás seguro de que deseas eliminar este producto?',
         async function() {
@@ -377,13 +380,13 @@ async function deleteProduct(id) {
 
                 if (data.success) {
                     loadProducts();
-                    mostrarNotificacion('success', '¡Éxito!', 'Producto eliminado con éxito');
+                    window.mostrarNotificacion('success', '¡Éxito!', 'Producto eliminado con éxito');
                 } else {
-                    mostrarNotificacion('error', 'Error', data.message || 'Error al eliminar el producto');
+                    window.mostrarNotificacion('error', 'Error', data.message || 'Error al eliminar el producto');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                mostrarNotificacion('error', 'Error', 'Error al eliminar el producto');
+                window.mostrarNotificacion('error', 'Error', 'Error al eliminar el producto');
             }
         }
     );

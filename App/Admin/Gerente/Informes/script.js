@@ -32,6 +32,10 @@ function cargarDatos() {
             if (!chartsSection) {
                 chartsSection = document.createElement('div');
                 chartsSection.className = 'charts-section';
+                chartsSection.style.width = '100%';
+                chartsSection.style.display = 'flex';
+                chartsSection.style.flexDirection = 'column';
+                chartsSection.style.gap = '16px';
                 
                 const dashboardContainer = document.querySelector('.dashboard-container');
                 if (dashboardContainer) {
@@ -47,11 +51,17 @@ function cargarDatos() {
                 fechaContainer = document.createElement('div');
                 fechaContainer.className = 'chart-container';
                 fechaContainer.id = 'ingresos-fecha-chart';
+                fechaContainer.style.width = '100%';
+                fechaContainer.style.display = 'block';
                 chartsSection.appendChild(fechaContainer);
                 
                 if (window.ChartUtils && window.ChartUtils.createIngresosFechaChart) {
                     window.ChartUtils.createIngresosFechaChart('ingresos-fecha-chart', data.ingresosPorFecha);
                 }
+            }
+            if (fechaContainer) {
+                fechaContainer.style.width = '100%';
+                fechaContainer.style.display = 'block';
             }
             
             // 2. Payment methods double column chart (Task 6)
@@ -60,11 +70,17 @@ function cargarDatos() {
                 pagoContainer = document.createElement('div');
                 pagoContainer.className = 'chart-container';
                 pagoContainer.id = 'ingresos-pago-chart';
+                pagoContainer.style.width = '100%';
+                pagoContainer.style.display = 'block';
                 chartsSection.appendChild(pagoContainer);
                 
                 if (window.ChartUtils && window.ChartUtils.createIngresosPagoChart) {
                     window.ChartUtils.createIngresosPagoChart('ingresos-pago-chart', data.ingresosPorPago);
                 }
+            }
+            if (pagoContainer) {
+                pagoContainer.style.width = '100%';
+                pagoContainer.style.display = 'block';
             }
             
             // 3. Sales by Product Chart with Controls (Task 8.1)
@@ -72,6 +88,9 @@ function cargarDatos() {
             if (!ventasContainer && data.ventasPorProducto) {
                 ventasContainer = document.createElement('div');
                 ventasContainer.className = 'chart-container';
+                ventasContainer.style.width = '100%';
+                ventasContainer.style.height = '560px';
+                ventasContainer.style.display = 'block';
                 ventasContainer.id = 'ventas-producto-chart';
                 
                 // Create controls for sales chart
@@ -83,6 +102,8 @@ function cargarDatos() {
                 // Create chart canvas
                 const chartCanvas = document.createElement('div');
                 chartCanvas.id = 'ventas-producto-chart-canvas';
+                chartCanvas.style.width = '100%';
+                chartCanvas.style.display = 'block';
                 ventasContainer.appendChild(chartCanvas);
                 
                 chartsSection.appendChild(ventasContainer);
@@ -100,6 +121,10 @@ function cargarDatos() {
                     window.ControlsManager.setupVentasControls();
                 }
             }
+            if (ventasContainer) {
+                ventasContainer.style.width = '100%';
+                ventasContainer.style.display = 'block';
+            }
             
             // 4. No Shows Table (Task 7 - Revised)
             let noShowContainer = document.getElementById('noshow-table');
@@ -107,6 +132,8 @@ function cargarDatos() {
                 noShowContainer = document.createElement('div');
                 noShowContainer.className = 'table-container';
                 noShowContainer.id = 'noshow-table';
+                noShowContainer.style.width = '100%';
+                noShowContainer.style.display = 'block';
                 chartsSection.appendChild(noShowContainer);
                 
                 // Usar datos reales si están disponibles, sino crear datos de prueba
@@ -154,6 +181,10 @@ function cargarDatos() {
                 if (window.ChartUtils && window.ChartUtils.createNoShowTable) {
                     window.ChartUtils.createNoShowTable('noshow-table', noShowData);
                 }
+            }
+            if (noShowContainer) {
+                noShowContainer.style.width = '100%';
+                noShowContainer.style.display = 'block';
             }
             
             chartsCreated = true;

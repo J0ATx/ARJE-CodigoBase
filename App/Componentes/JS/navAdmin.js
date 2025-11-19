@@ -31,12 +31,26 @@ const NAVBAR_SECTIONS = {
         icon: '/App/Componentes/svg/Estadisticas.svg',
         dataPage: 'estadisticas'
     },
+    empresa: {
+        id: 'empresa',
+        label: 'Datos empresariales',
+        href: '/Empresa',
+        icon: '/App/Componentes/svg/Datos.svg',
+        dataPage: 'empresa'
+    },
     sari: {
         id: 'sari',
         label: 'SARI',
         href: '/SARI',
         icon: '/App/Componentes/svg/SARI.svg',
         dataPage: 'sari'
+    },
+    fidelizados: {
+        id: 'fidelizados',
+        label: 'Fidelizados',
+        href: '/Fidelizados',
+        icon: '/App/Componentes/svg/Fidelizado.svg',
+        dataPage: 'fidelizados'
     },
     promociones: {
         id: 'promociones',
@@ -51,6 +65,20 @@ const NAVBAR_SECTIONS = {
         href: '/Pedidos',
         icon: '/App/Componentes/svg/Pedidos.svg',
         dataPage: 'pedidos'
+    },
+    cocina: {
+        id: 'cocina',
+        label: 'Cocina',
+        href: '/Cocina',
+        icon: '/App/Componentes/svg/Cocina.svg',
+        dataPage: 'cocina'
+    },
+    cocina: {
+        id: 'cocina',
+        label: 'Cocina',
+        href: '/Cocina',
+        icon: '/App/Componentes/svg/Cocina.svg',
+        dataPage: 'cocina'
     },
     inventario: {
         id: 'inventario',
@@ -73,40 +101,12 @@ const NAVBAR_SECTIONS = {
         icon: '/App/Componentes/svg/Mesas.svg',
         dataPage: 'mesas'
     },
-    cocina: {
-        id: 'cocina',
-        label: 'Cocina',
-        href: '/Cocina',
-        icon: '/App/Componentes/svg/Cocina.svg',
-        dataPage: 'cocina'
-    },
-    productos: {
-        id: 'productos',
-        label: 'Platillos',
-        href: '/Platillos',
-        icon: '/App/Componentes/svg/Platillos.svg',
-        dataPage: 'productos'
-    },
     usuarios: {
         id: 'usuarios',
         label: 'Usuarios',
         href: '/Usuarios',
         icon: '/App/Componentes/svg/Usuarios.svg',
         dataPage: 'usuarios'
-    },
-    empresa: {
-        id: 'empresa',
-        label: 'Datos empresariales',
-        href: '/Empresa',
-        icon: '/App/Componentes/svg/Datos.svg',
-        dataPage: 'empresa'
-    },
-    fidelizados: {
-        id: 'fidelizados',
-        label: 'Fidelizados',
-        href: '/Fidelizados',
-        icon: '/App/Componentes/svg/Usuarios.svg',
-        dataPage: 'fidelizados'
     }
 };
 

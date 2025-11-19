@@ -221,14 +221,14 @@ tr:nth-child(odd) {
     font-size: 14px;
     transition: all 0.2s;
 }
-#modalEditar input:focus,
-#modalEditar select:focus {
+#modalEditar input:focus,.modal-content input:focus,
+#modalEditar select:focus,.modal-content select:focus {
     outline: none;
     border-color: #363636;
     background-color: #fff;
     box-shadow: 0 0 0 3px rgba(54, 54, 54, 0.1);
 }
-#modalEditar button {
+#modalEditar button,.modal-content button {
     padding: 12px;
     border: none;
     border-radius: 8px;
@@ -239,21 +239,21 @@ tr:nth-child(odd) {
     transition: all 0.2s;
     margin-right: 10px;
 }
-#modalEditar button[type="submit"] {
+#modalEditar button[type="submit"],.modal-content button[type="submit"] {
     background-color: #363636;
     color: #fff;
 }
-#modalEditar button[type="submit"]:hover {
+#modalEditar button[type="submit"]:hover,.modal-content button[type="submit"]:hover {
     background-color: #1c1c1c;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-#modalEditar button[type="button"] {
+#modalEditar button[type="button"], .modal-content button[type="button"] {
     background-color: #fff;
     color: #333;
     border: 1px solid #d4d4d4;
 }
-#modalEditar button[type="button"]:hover {
+#modalEditar button[type="button"]:hover,.modal-content button[type="button"]:hover {
     background-color: #f8f8f8;
     border-color: #999;
 }
@@ -269,6 +269,59 @@ tr:nth-child(odd) {
     align-items: center;
     z-index: 1000;
 }
+.modal-notification .notification-content {
+    max-width: 400px;
+    text-align: center;
+}
+.form-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
+}
+.cancel-button {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #d4d4d4;
+    height:auto;
+    width: auto;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.notification-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.notification-icon svg {
+    width: 50px;
+    height: 50px;
+}
+.notification-icon.success { background-color: #d4edda; }
+.notification-icon.success svg { fill: #28a745; }
+.notification-icon.error { background-color: #f8d7da; }
+.notification-icon.error svg { fill: #dc3545; }
+.notification-icon.warning { background-color: #fff3cd; }
+.notification-icon.warning svg { fill: #ffc107; }
+.notification-content h2 { margin-bottom: 15px; }
+.notification-content p {
+    color: #666;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.notification-content .submit-button { width: auto; min-width: 120px; }
 .modal-content {
     position: relative;
     background-color: #ffffff;

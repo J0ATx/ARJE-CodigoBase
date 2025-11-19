@@ -4,6 +4,94 @@ const overlay = document.getElementById('reserva-overlay');
 const modalCloseBtn = document.getElementById('modalCloseBtn');
 const btnCancelar = document.getElementById('cancelarReserva');
 const btnConfirmar = document.getElementById('confirmarReserva');
+let horariosPorDia = {};
+const duracionReservaHoras = 2;
+function parseTimeToSeconds(t) {
+    const p = t.split(':');
+    return (parseInt(p[0], 10) * 3600) + (parseInt(p[1], 10) * 60);
+}
+function secondsToHHMM(s) {
+    const ss = ((s % 86400) + 86400) % 86400;
+    const h = String(Math.floor(ss / 3600)).padStart(2, '0');
+    const m = String(Math.floor((ss % 3600) / 60)).padStart(2, '0');
+    return `${h}:${m}`;
+}
+function obtenerDiaSemana(fechaStr) {
+    const d = new Date(fechaStr + 'T00:00:00');
+    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    return dias[d.getDay()];
+}
+function actualizarRestriccionesHora() {
+    const fecha = document.getElementById('fecha').value;
+    const horaInput = document.getElementById('hora');
+    const datalist = document.getElementById('horarios-validos');
+    const guia = document.getElementById('horarios-disponibles');
+    if (!fecha) return;
+    const dia = obtenerDiaSemana(fecha);
+    const ranges = horariosPorDia[dia] || [];
+    if (!ranges.length) {
+        horaInput.value = '';
+        horaInput.disabled = true;
+        if (datalist) datalist.innerHTML = '';
+        if (guia) guia.innerHTML = '';
+        let mensaje = document.createElement('p');
+        mensaje.textContent = 'El restaurante no abre ese día.';
+        guia.innerHTML = '';
+        guia.appendChild(mensaje);
+        return;
+    }
+    horaInput.disabled = false;
+    let minStartSec = null;
+    let maxEndSec = null;
+    let hasWrap = false;
+    let endsAtMidnight = false;
+    ranges.forEach(r => {
+        const partes = r.split('-');
+        if (partes.length === 2) {
+            const ini = partes[0].trim();
+            const fin = partes[1].trim();
+            const iniSec = parseTimeToSeconds(ini);
+            let finSec = parseTimeToSeconds(fin);
+            if (finSec === 0) { finSec = 86400; endsAtMidnight = true; }
+            if (finSec <= iniSec) { finSec += 86400; hasWrap = true; }
+            if (minStartSec === null || iniSec < minStartSec) minStartSec = iniSec;
+            if (maxEndSec === null || finSec > maxEndSec) maxEndSec = finSec;
+        }
+    });
+    if (minStartSec !== null) {
+        horaInput.setAttribute('min', secondsToHHMM(minStartSec));
+        if (ranges.length === 1 && !hasWrap && !endsAtMidnight && maxEndSec !== null && maxEndSec >= minStartSec) {
+            horaInput.setAttribute('max', secondsToHHMM(maxEndSec));
+        } else {
+            horaInput.removeAttribute('max');
+        }
+        horaInput.setAttribute('step', '60');
+    }
+
+    const opciones = [];
+    ranges.forEach(r => {
+        const partes = r.split('-');
+        if (partes.length !== 2) return;
+        const ini = partes[0].trim();
+        const fin = partes[1].trim();
+        let iniSec = parseTimeToSeconds(ini);
+        let finSec = parseTimeToSeconds(fin);
+        if (finSec === 0) finSec = 86400;
+        if (finSec <= iniSec) finSec += 86400;
+        let t = iniSec;
+        const limite = finSec - (duracionReservaHoras * 3600);
+        while (t <= limite) {
+            opciones.push(secondsToHHMM(t));
+            t += 1800;
+        }
+    });
+    if (datalist) {
+        datalist.innerHTML = opciones.map(v => `<option value="${v}"></option>`).join('');
+    }
+    if (guia) {
+        guia.innerHTML = ranges.map(r => `<span class="chip">${r.trim()}</span>`).join('');
+    }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const fechaInput = document.getElementById('fecha');
@@ -11,6 +99,20 @@ document.addEventListener('DOMContentLoaded', () => {
     twoDaysLater.setDate(twoDaysLater.getDate() + 2);
     const minDate = twoDaysLater.toISOString().split('T')[0];
     fechaInput.setAttribute('min', minDate);
+    fetch('/App/Client/Contacto/BackEnd/informacion.php')
+        .then(r => r.json())
+        .then(data => {
+            console.log(data)
+            horariosPorDia = {};
+            (data.horarios || []).forEach(h => {
+                const dia = h.empresa_dia;
+                const hora = h.empresa_hora;
+                if (!horariosPorDia[dia]) horariosPorDia[dia] = [];
+                horariosPorDia[dia].push(hora);
+            });
+            actualizarRestriccionesHora();
+        });
+    fechaInput.addEventListener('change', actualizarRestriccionesHora);
 });
 
 formulario.addEventListener('submit', (e) => {
@@ -21,7 +123,7 @@ formulario.addEventListener('submit', (e) => {
     const hora = document.getElementById('hora').value;
     const cantidad = document.getElementById('cantidad').value;
     const mesa_id = document.getElementById('mesa_id').value;
-
+    const guia = document.getElementById('horarios-disponibles');
     const fechaSeleccionada = new Date(fecha + 'T00:00:00');
     const twoDaysLater = new Date();
     twoDaysLater.setDate(twoDaysLater.getDate() + 2);
@@ -31,6 +133,37 @@ formulario.addEventListener('submit', (e) => {
         let mensaje = document.createElement('div');
         mensaje.className = 'alert';
         mensaje.textContent = "Las reservas deben realizarse con al menos 2 días de antelación.";
+        mensajesAlerta.appendChild(mensaje);
+        return;
+    }
+
+    const dia = obtenerDiaSemana(fecha);
+    const ranges = horariosPorDia[dia] || [];
+    if (!ranges.length) {
+        let mensaje = document.createElement('p');
+        mensaje.textContent = 'El restaurante no abre ese día.';
+        guia.innerHTML = '';
+        guia.appendChild(mensaje);
+        return;
+    }
+    const inicio = parseTimeToSeconds(hora);
+    const fin = inicio + (duracionReservaHoras * 3600);
+    const valido = ranges.some(r => {
+        const partes = r.split('-');
+        if (partes.length !== 2) return false;
+        const ri = parseTimeToSeconds(partes[0].trim());
+        let rf = parseTimeToSeconds(partes[1].trim());
+        if (rf === 0) rf = 86400;
+        if (rf <= ri) rf += 86400;
+        let checkFin = fin;
+        if (checkFin <= ri) checkFin += 86400;
+        return inicio >= ri && checkFin <= rf;
+    });
+    if (!valido) {
+        let mensaje = document.createElement('p');
+        mensaje.textContent = 'Selecciona una hora dentro del horario de apertura.';
+        mensaje.className = 'alert';
+        mensajesAlerta.innerHTML = '';
         mensajesAlerta.appendChild(mensaje);
         return;
     }
@@ -56,7 +189,7 @@ btnConfirmar.addEventListener('click', () => {
     mensajesAlerta.innerHTML = '';
     overlay.hidden = true;
     overlay.setAttribute('aria-hidden', 'true');
-    
+
     const fecha = document.getElementById('fecha').value;
     const hora = document.getElementById('hora').value;
     const cantidad = document.getElementById('cantidad').value;
@@ -120,6 +253,12 @@ btnConfirmar.addEventListener('click', () => {
                         break;
                     case "table_not_amount":
                         mensaje.textContent = "La mesa seleccionada no tiene suficiente capacidad.";
+                        break;
+                    case "closed_day":
+                        mensaje.textContent = "El restaurante no abre ese día.";
+                        break;
+                    case "outside_open_hours":
+                        mensaje.textContent = "Selecciona una hora dentro del horario de apertura.";
                         break;
                     default:
                         mensaje.textContent = "Error: " + data.error;

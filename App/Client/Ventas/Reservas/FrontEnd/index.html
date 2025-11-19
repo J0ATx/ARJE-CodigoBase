@@ -56,14 +56,16 @@
                                     <img src="files/svg/Group.svg" alt="Fecha" />
                                     <input type="date" name="fecha" id="fecha" required>
                                     <span class="tooltip-icon" aria-label="Más información">?</span>
-                                    <div class="tooltip-content" role="tooltip">Las reservas deben realizarse con al
+                                    <div class="tooltip-content tooltip-fecha" role="tooltip">Las reservas deben realizarse con al
                                         menos 2 días de antelación</div>
                                 </div>
 
                                 <div class="input-group">
                                     <label class="label" for="hora">Horario</label>
                                     <img src="files/svg/Vector (3).svg" alt="Hora" />
-                                    <input type="time" name="hora" id="hora" required>
+                                    <input type="time" name="hora" id="hora" list="horarios-validos" required>
+                                    <datalist id="horarios-validos"></datalist>
+                                    <div id="horarios-disponibles" class="horarios-disponibles"></div>
                                 </div>
                             </div>
 
@@ -85,9 +87,7 @@
                                     <input type="number" name="mesa_id" id="mesa_id" min="1" placeholder="Ej: 5"
                                         required>
                                     <span class="tooltip-icon" aria-label="Más información">?</span>
-                                    <div class="tooltip-content" role="tooltip" id="tooltip-mesa">Puedes ver las mesas
-                                        en la imagen de la
-                                        izquierda</div>
+                                    <div class="tooltip-content" role="tooltip" id="tooltip-mesa">Las mesas están en la imagen de la izquierda</div>
                                 </div>
                             </div>
                         </div>

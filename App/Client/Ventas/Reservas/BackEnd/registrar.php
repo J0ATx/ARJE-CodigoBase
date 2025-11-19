@@ -58,6 +58,67 @@ $id_cliente = $_SESSION["usuario_id"];
         exit();
     }
 
+    $diasSemana = [
+        1 => 'Lunes',
+        2 => 'Martes',
+        3 => 'Miércoles',
+        4 => 'Jueves',
+        5 => 'Viernes',
+        6 => 'Sábado',
+        7 => 'Domingo'
+    ];
+    $indiceDia = (int)date('N', strtotime($fecha));
+    $diaSeleccionado = $diasSemana[$indiceDia] ?? null;
+    if (!$diaSeleccionado) {
+        echo json_encode(["error" => "invalid date"]);
+        exit();
+    }
+
+    $stmtHorario = $con->prepare("SELECT empresa_hora FROM empresa_horario WHERE empresa_dia = ?");
+    $stmtHorario->execute([$diaSeleccionado]);
+    $horarios = $stmtHorario->fetchAll(PDO::FETCH_COLUMN);
+
+    if (!$horarios || count($horarios) === 0) {
+        echo json_encode(["error" => "closed_day"]);
+        exit();
+    }
+
+    $parseSeconds = function($t) {
+        $p = explode(':', $t);
+        return ((int)$p[0]) * 3600 + ((int)$p[1]) * 60;
+    };
+    $inicioReserva = $parseSeconds($hora);
+    $finReserva = $inicioReserva + ($duracion * 3600);
+    $dentroDeHorario = false;
+    foreach ($horarios as $h) {
+        $partes = preg_split('/\s*-\s*/', trim($h));
+        if (count($partes) !== 2) {
+            continue;
+        }
+        $hInicio = $parseSeconds(trim($partes[0]));
+        $hFin = $parseSeconds(trim($partes[1]));
+        if ($hFin === 0) {
+            $hFin = 86400;
+        }
+        if ($hFin <= $hInicio) {
+            $hFin += 86400;
+        }
+        $chkInicio = $inicioReserva;
+        $chkFin = $finReserva;
+        if ($chkFin <= $hInicio) {
+            $chkFin += 86400;
+        }
+        if ($chkInicio >= $hInicio && $chkFin <= $hFin) {
+            $dentroDeHorario = true;
+            break;
+        }
+    }
+
+    if (!$dentroDeHorario) {
+        echo json_encode(["error" => "outside_open_hours"]);
+        exit();
+    }
+
     try {
         $con->beginTransaction();
 

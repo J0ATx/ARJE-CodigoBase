@@ -369,7 +369,12 @@ function createAreaChart(containerId, data, config) {
             finalConfig.data[0] = { ...defaultConfig.data[0], ...config.data[0] };
         }
         
-        // Crear la gráfica
+        const containerEl = document.getElementById(containerId);
+        if (containerEl) {
+            containerEl.style.width = '100%';
+            containerEl.style.display = 'block';
+            containerEl.style.boxSizing = 'border-box';
+        }
         const chart = new CanvasJS.Chart(containerId, finalConfig);
         chart.render();
         
@@ -468,7 +473,12 @@ function createBarChart(containerId, data, config) {
             finalConfig.data[0] = { ...defaultConfig.data[0], ...config.data[0] };
         }
         
-        // Crear la gráfica
+        const containerEl = document.getElementById(containerId);
+        if (containerEl) {
+            containerEl.style.width = '100%';
+            containerEl.style.display = 'block';
+            containerEl.style.boxSizing = 'border-box';
+        }
         const chart = new CanvasJS.Chart(containerId, finalConfig);
         chart.render();
         
@@ -558,8 +568,11 @@ function createColumnChart(containerId, data, config) {
             }]
         };
         
-        // Combinar configuración por defecto con la personalizada
+        // Combinar configuración por defecto con la personalizada (merge profundo en claves comunes)
         const finalConfig = { ...defaultConfig, ...config };
+        finalConfig.title = { ...defaultConfig.title, ...(config && config.title ? config.title : {}) };
+        finalConfig.axisX = { ...defaultConfig.axisX, ...(config && config.axisX ? config.axisX : {}) };
+        finalConfig.axisY = { ...defaultConfig.axisY, ...(config && config.axisY ? config.axisY : {}) };
         if (config && config.data && config.data[0]) {
             finalConfig.data[0] = { ...defaultConfig.data[0], ...config.data[0] };
         }
@@ -571,6 +584,18 @@ function createColumnChart(containerId, data, config) {
         // Registrar la gráfica
         activeCharts.set(containerId, chart);
         
+        // Observer de cambios de tamaño del contenedor para re-render sin depender de window.resize
+        const containerNode = document.getElementById(containerId);
+        if (containerNode && typeof ResizeObserver !== 'undefined') {
+            const resizeObserver = new ResizeObserver(() => {
+                try {
+                    chart.render();
+                } catch (e) {}
+            });
+            resizeObserver.observe(containerNode);
+            chart._resizeObserver = resizeObserver;
+        }
+
         // Agregar listener para redimensionamiento
         const resizeHandler = () => {
             if (chart && chart.render) {
@@ -814,6 +839,18 @@ function createLineChart(containerId, data, config) {
         // Registrar la gráfica
         activeCharts.set(containerId, chart);
         
+        // Observer de cambios de tamaño del contenedor para re-render sin depender de window.resize
+        const containerNode = document.getElementById(containerId);
+        if (containerNode && typeof ResizeObserver !== 'undefined') {
+            const resizeObserver = new ResizeObserver(() => {
+                try {
+                    chart.render();
+                } catch (e) {}
+            });
+            resizeObserver.observe(containerNode);
+            chart._resizeObserver = resizeObserver;
+        }
+
         // Agregar listener para redimensionamiento
         const resizeHandler = () => {
             if (chart && chart.render) {
@@ -873,6 +910,10 @@ function destroyChart(chartId) {
             // Limpiar listener de resize si existe
             if (chart._resizeHandler) {
                 window.removeEventListener('resize', chart._resizeHandler);
+            }
+            // Desconectar observer de tamaño si existe
+            if (chart._resizeObserver && chart._resizeObserver.disconnect) {
+                chart._resizeObserver.disconnect();
             }
             
             // Destruir la gráfica
@@ -1253,13 +1294,6 @@ function createProductoControls(containerId) {
     return controlsDiv;
 }
 
-/**
- * Crea una gráfica de barras para ventas por producto con controles
- * @param {string} containerId - ID del contenedor
- * @param {Array} rawData - Datos crudos del backend
- * @param {Object} filterOptions - Opciones de filtrado
- * @param {Object} customConfig - Configuración personalizada opcional
- */
 function createVentasProductoChart(containerId, rawData, filterOptions = {}, customConfig = {}) {
     try {
         // Procesar datos con filtros
@@ -1286,6 +1320,9 @@ function createVentasProductoChart(containerId, rawData, filterOptions = {}, cus
         
         const config = {
             title: { text: titleText },
+            axisX: {
+                labelWrap: false
+            },
             axisY: { 
                 title: "Cantidad de Ventas",
                 gridColor: "#f1f1f1",
@@ -1427,51 +1464,54 @@ function createIngresosPagoChart(containerId, rawData, customConfig = {}) {
  */
 function createNoShowTable(containerId, rawData) {
     try {
-        console.log('createNoShowTable llamada con:', { containerId, rawData });
-        
         const container = document.getElementById(containerId);
         if (!container) {
-            console.error('Container not found:', containerId);
             return null;
         }
-        
-        // Procesar datos
-        const processedData = window.DataProcessor.processNoShowTableData(rawData);
-        console.log('Datos procesados para tabla:', processedData);
-        
-        if (!processedData || processedData.length === 0) {
-            container.innerHTML = `
-                <div class="no-show-empty">
-                    <div class="empty-icon">📊</div>
-                    <p class="empty-message">No hay datos de no shows disponibles</p>
-                    <p class="empty-details">Datos recibidos: ${rawData ? JSON.stringify(rawData).substring(0, 200) + '...' : 'null'}</p>
-                </div>
-            `;
-            return null;
-        }
-        
-        // Crear estructura de la tabla con buscador
+        const processedData = window.DataProcessor.processNoShowTableData(rawData) || [];
         container.innerHTML = `
-            <div class="no-show-section">
-                <div class="no-show-header">
-                    <h3>Clientes con No Shows</h3>
-                    <div class="no-show-search">
-                        <input type="text" id="${containerId}-search" placeholder="Buscar cliente por nombre o teléfono..." />
-                        <span class="search-icon">🔍</span>
+        <h2 class="tabla-titulo">Clientes con No Shows</h2>
+            <div class="tabla-contenedor">
+                <div class="encabezado-tabla">
+                    <div class="buscador-con-icono">
+                        <input type="text" id="${containerId}-search" class="buscador" placeholder="Buscar" />
+                        <span class="icono-lupa">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.6 18L10.3 11.7C9.8 12.1 9.225 12.4167 8.575 12.65C7.925 12.8833 7.23333 13 6.5 13C4.68333 13 3.14583 12.3708 1.8875 11.1125C0.629167 9.85417 0 8.31667 0 6.5C0 4.68333 0.629167 3.14583 1.8875 1.8875C3.14583 0.629167 4.68333 0 6.5 0C8.31667 0 9.85417 0.629167 11.1125 1.8875C12.3708 3.14583 13 4.68333 13 6.5C13 7.23333 12.8833 7.925 12.65 8.575C12.4167 9.225 12.1 9.8 11.7 10.3L18 16.6L16.6 18ZM6.5 11C7.75 11 8.8125 10.5625 9.6875 9.6875C10.5625 8.8125 11 7.75 11 6.5C11 5.25 10.5625 4.1875 9.6875 3.3125C8.8125 2.4375 7.75 2 6.5 2C5.25 2 4.1875 2.4375 3.3125 3.3125C2.4375 4.1875 2 5.25 2 6.5C2 7.75 2.4375 8.8125 3.3125 9.6875C4.1875 10.5625 5.25 11 6.5 11Z" fill="#A4A4A4" />
+                            </svg>
+                        </span>
                     </div>
                 </div>
-                <div class="no-show-stats">
-                    <div class="stat-item">
-                        <span class="stat-value">${processedData.length}</span>
-                        <span class="stat-label">Total Clientes con No Shows</span>
+                <table id="${containerId}-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente (ID)</th>
+                            <th>No Shows</th>
+                        </tr>
+                    </thead>
+                    <tbody id="${containerId}-tbody"></tbody>
+                </table>
+            </div>
+        `;
+        updateNoShowTableRows(containerId, processedData);
+        setupNoShowSearch(containerId, processedData);
+        return container;
+    } catch (error) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.innerHTML = `
+                <div class="tabla-contenedor">
+                    <div class="encabezado-tabla">
+                        <div class="buscador-con-icono">
+                            <input type="text" id="${containerId}-search" class="buscador" placeholder="Buscar" />
+                            <span class="icono-lupa">
+                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.6 18L10.3 11.7C9.8 12.1 9.225 12.4167 8.575 12.65C7.925 12.8833 7.23333 13 6.5 13C4.68333 13 3.14583 12.3708 1.8875 11.1125C0.629167 9.85417 0 8.31667 0 6.5C0 4.68333 0.629167 3.14583 1.8875 1.8875C3.14583 0.629167 4.68333 0 6.5 0C8.31667 0 9.85417 0.629167 11.1125 1.8875C12.3708 3.14583 13 4.68333 13 6.5C13 7.23333 12.8833 7.925 12.65 8.575C12.4167 9.225 12.1 9.8 11.7 10.3L18 16.6L16.6 18ZM6.5 11C7.75 11 8.8125 10.5625 9.6875 9.6875C10.5625 8.8125 11 7.75 11 6.5C11 5.25 10.5625 4.1875 9.6875 3.3125C8.8125 2.4375 7.75 2 6.5 2C5.25 2 4.1875 2.4375 3.3125 3.3125C2.4375 4.1875 2 5.25 2 6.5C2 7.75 2.4375 8.8125 3.3125 9.6875C4.1875 10.5625 5.25 11 6.5 11Z" fill="#A4A4A4" />
+                                </svg>
+                            </span>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-value">${processedData.reduce((sum, item) => sum + item.noShows, 0)}</span>
-                        <span class="stat-label">Total No Shows</span>
-                    </div>
-                </div>
-                <div class="no-show-table-container">
-                    <table class="no-show-table" id="${containerId}-table">
+                    <table id="${containerId}-table">
                         <thead>
                             <tr>
                                 <th>Cliente (ID)</th>
@@ -1479,28 +1519,11 @@ function createNoShowTable(containerId, rawData) {
                             </tr>
                         </thead>
                         <tbody id="${containerId}-tbody">
+                            <tr>
+                                <td colspan="4" style="text-align:center; padding:20px; color:#666;">Error al cargar los datos</td>
+                            </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-        `;
-        
-        // Llenar la tabla
-        updateNoShowTableRows(containerId, processedData);
-        
-        // Configurar buscador
-        setupNoShowSearch(containerId, processedData);
-        
-        return container;
-    } catch (error) {
-        console.error('Error creando tabla de no shows:', error);
-        const container = document.getElementById(containerId);
-        if (container) {
-            container.innerHTML = `
-                <div class="no-show-error">
-                    <div class="error-icon">⚠️</div>
-                    <p class="error-message">Error al cargar los datos de no shows</p>
-                    <p class="error-details">${error.message || 'Error desconocido'}</p>
                 </div>
             `;
         }

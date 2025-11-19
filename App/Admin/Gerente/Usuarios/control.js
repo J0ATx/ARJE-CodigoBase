@@ -7,7 +7,6 @@ let currentFilters = { rol: '', estado: '' };
 document.addEventListener('DOMContentLoaded', async () => {
     await cargarUsuarios();
     const searchInput = document.getElementById('searchInput');
-    const refreshBtn = document.getElementById('refreshBtn');
     const openFiltersBtn = document.getElementById('openFiltersBtn');
     const modalFiltros = document.getElementById('modalFiltros');
     const closeFilters = document.getElementById('closeFilters');
@@ -16,7 +15,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const applyFiltersBtn = document.getElementById('applyFiltersBtn');
     const clearFiltersBtn = document.getElementById('clearFiltersBtn');
     if (searchInput) searchInput.addEventListener('input', debounce(() => cargarUsuarios(searchInput.value, currentFilters.rol, currentFilters.estado), 300));
-    if (refreshBtn) refreshBtn.addEventListener('click', () => cargarUsuarios(searchInput?.value||'', currentFilters.rol, currentFilters.estado));
     if (openFiltersBtn) openFiltersBtn.addEventListener('click', () => { if (modalFiltros) modalFiltros.style.display = 'flex'; });
     if (closeFilters) closeFilters.addEventListener('click', () => { if (modalFiltros) modalFiltros.style.display = 'none'; });
     window.addEventListener('click', (e) => { if (e.target === modalFiltros) modalFiltros.style.display = 'none'; });
@@ -195,6 +193,56 @@ async function crearUsuario() {
         alert('Error al crear usuario: ' + error.message);
     }
 }
+
+let confirmacionCallback = null;
+window.cerrarModalNotificacion = function() {
+    const m = document.getElementById('modalNotificacion');
+    if (m) { m.classList.remove('active'); m.style.display = 'none'; }
+}
+window.cancelarConfirmacion = function() {
+    const m = document.getElementById('modalConfirmacion');
+    if (m) { m.classList.remove('active'); m.style.display = 'none'; }
+    confirmacionCallback = null;
+}
+window.confirmarAccion = function() {
+    if (confirmacionCallback) { confirmacionCallback(); confirmacionCallback = null; }
+    cancelarConfirmacion();
+}
+function mostrarNotificacion(tipo, titulo, mensaje) {
+    const icon = document.getElementById('notificationIcon');
+    const title = document.getElementById('notificationTitle');
+    const msg = document.getElementById('notificationMessage');
+    if (!icon || !title || !msg) return;
+    icon.className = 'notification-icon';
+    icon.classList.add(tipo);
+    const svgs = {
+        success: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>',
+        error: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>',
+        warning: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>'
+    };
+    icon.innerHTML = svgs[tipo] || svgs.success;
+    title.textContent = titulo;
+    msg.textContent = mensaje;
+    const modal = document.getElementById('modalNotificacion');
+    if (modal) { modal.classList.add('active'); modal.style.display = 'flex'; }
+}
+function mostrarConfirmacion(titulo, mensaje, callback) {
+    const t = document.getElementById('confirmacionTitle');
+    const m = document.getElementById('confirmacionMessage');
+    if (t) t.textContent = titulo;
+    if (m) m.textContent = mensaje;
+    confirmacionCallback = callback;
+    const btn = document.getElementById('btnConfirmar');
+    if (btn) btn.onclick = confirmarAccion;
+    const modal = document.getElementById('modalConfirmacion');
+    if (modal) { modal.classList.add('active'); modal.style.display = 'flex'; }
+}
+window.addEventListener('click', function(e) {
+    const mn = document.getElementById('modalNotificacion');
+    const mc = document.getElementById('modalConfirmacion');
+    if (e.target === mn) cerrarModalNotificacion();
+    if (e.target === mc) cancelarConfirmacion();
+});
 window.editarUsuario = async function (email, nombre, apellido, telefono, tipoUsuario) {
     try {
         document.getElementById('edit_email').value = email;
@@ -210,19 +258,19 @@ window.editarUsuario = async function (email, nombre, apellido, telefono, tipoUs
 };
 window.eliminarUsuario = async function (email, tipoUsuario) {
     try {
-        const response = await fetch('../BackEnd/checkSession.php', {
+        const response = await fetch('/App/Control/Session/checkSession.php', {
             method: 'GET',
             credentials: 'same-origin'
         });
         const data = await response.json();
-        if (data.user.id === email) {
-            alert('No puedes eliminar tu propia cuenta.');
+        if (data.user && data.user.id === email) {
+            mostrarNotificacion('error', 'Acción no permitida', 'No puedes eliminar tu propia cuenta.');
             return false;
         }
     } catch (error) {
         console.error('Error checking session:', error);
     }
-    if (confirm('¿Está seguro de eliminar este usuario?')) {
+    mostrarConfirmacion('Eliminar Usuario', '¿Seguro que deseas eliminar este usuario?', async function() {
         try {
             const res = await fetch('../BackEnd/eliminar.php', {
                 method: 'POST',
@@ -233,16 +281,16 @@ window.eliminarUsuario = async function (email, tipoUsuario) {
             });
             const data = await res.json();
             if (data.success) {
-                alert(data.mensaje);
                 await cargarUsuarios();
+                mostrarNotificacion('success', '¡Éxito!', data.mensaje || 'Usuario eliminado correctamente');
             } else {
-                throw new Error(data.error || 'Error al eliminar usuario');
+                mostrarNotificacion('error', 'Error', data.error || 'Error al eliminar usuario');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error al eliminar usuario: ' + error.message);
+            mostrarNotificacion('error', 'Error', 'Error al eliminar usuario: ' + error.message);
         }
-    }
+    });
 };
 window.cerrarModalEditar = async function () {
     try {
