@@ -17,11 +17,9 @@ async function getCachedData() {
     
     // Verificar si el cache es válido
     if (dataCache && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
-        console.log('Usando datos del cache');
         return Promise.resolve(dataCache);
     }
     
-    console.log('Obteniendo datos frescos del backend');
     
     try {
         const response = await fetch('../BackEnd/cargarInfo.php', {
@@ -41,7 +39,6 @@ async function getCachedData() {
         dataCache = data;
         cacheTimestamp = now;
         
-        console.log('Datos obtenidos y guardados en cache');
         return data;
     } catch (error) {
         console.error('Error obteniendo datos del backend:', error);
@@ -53,7 +50,6 @@ async function getCachedData() {
  * Limpia el cache de datos
  */
 function clearDataCache() {
-    console.log('Limpiando cache de datos');
     dataCache = null;
     cacheTimestamp = null;
 }
@@ -63,7 +59,6 @@ function clearDataCache() {
  * Esta función debe ser llamada después de que todas las gráficas estén creadas
  */
 function initializeControlSystem() {
-    console.log('Inicializando sistema completo de controles');
     
     // Esperar un poco para asegurar que todos los elementos DOM estén creados
     setTimeout(() => {
@@ -81,18 +76,13 @@ function initializeControlSystem() {
                 const container = document.getElementById(containerId);
                 if (container) {
                     foundContainers++;
-                    console.log(`Contenedor encontrado: ${containerId}`);
                 } else {
                     console.warn(`Contenedor no encontrado: ${containerId}`);
                 }
             });
             
-            console.log(`Encontrados ${foundContainers} de ${containers.length} contenedores`);
-            
             // Inicializar controles
             initializeControls();
-            
-            console.log('Sistema de controles inicializado correctamente');
         } catch (error) {
             console.error('Error inicializando sistema de controles:', error);
         }
@@ -114,7 +104,6 @@ function ensureControlsExist(chartContainerId, chartType) {
     // Verificar si ya existen controles
     const existingControls = container.querySelector('.chart-controls');
     if (existingControls) {
-        console.log(`Controles ya existen para: ${chartContainerId}`);
         return true;
     }
     
@@ -145,7 +134,6 @@ function ensureControlsExist(chartContainerId, chartType) {
     if (controlsElement) {
         // Insertar controles al principio del contenedor
         container.insertBefore(controlsElement, container.firstChild);
-        console.log(`Controles creados para: ${chartContainerId}`);
         return true;
     } else {
         console.warn(`No se pudieron crear controles para: ${chartContainerId}`);
@@ -157,7 +145,6 @@ function ensureControlsExist(chartContainerId, chartType) {
  * Inicializa todos los controles de personalización
  */
 function initializeControls() {
-    console.log('Inicializando controles de personalización');
     
     try {
         // Configurar controles para cada tipo de gráfica
@@ -165,8 +152,6 @@ function initializeControls() {
         setupProductoControls();
         setupVentasControls();
         setupNoShowControls();
-        
-        console.log('Controles inicializados correctamente');
     } catch (error) {
         console.error('Error inicializando controles:', error);
     }
@@ -176,7 +161,6 @@ function initializeControls() {
  * Configura controles para filtros de cliente
  */
 function setupClienteControls() {
-    console.log('Configurando controles de cliente');
     
     // Buscar el control de filtro de cliente
     const clienteFilter = document.getElementById('ingresos-cliente-chart-filter');
@@ -185,7 +169,7 @@ function setupClienteControls() {
         clienteFilter.removeEventListener('change', onClienteFilterChange);
         // Agregar nuevo listener
         clienteFilter.addEventListener('change', onClienteFilterChange);
-        console.log('Control de cliente configurado correctamente');
+        
     } else {
         console.warn('Control de filtro de cliente no encontrado: ingresos-cliente-chart-filter');
     }
@@ -195,7 +179,6 @@ function setupClienteControls() {
  * Configura controles para filtros de producto
  */
 function setupProductoControls() {
-    console.log('Configurando controles de producto');
     
     // Configurar radio buttons para tipo de filtro
     const productoRadios = document.querySelectorAll('input[name="ingresos-producto-chart-filter"]');
@@ -206,7 +189,7 @@ function setupProductoControls() {
             // Agregar nuevo listener
             radio.addEventListener('change', onProductoFilterChange);
         });
-        console.log(`Configurados ${productoRadios.length} radio buttons para productos`);
+        
     } else {
         console.warn('Radio buttons de producto no encontrados: input[name="ingresos-producto-chart-filter"]');
     }
@@ -218,7 +201,7 @@ function setupProductoControls() {
         productoCount.removeEventListener('change', onProductoFilterChange);
         // Agregar nuevo listener
         productoCount.addEventListener('change', onProductoFilterChange);
-        console.log('Selector de cantidad de productos configurado');
+        
     } else {
         console.warn('Selector de cantidad de productos no encontrado: ingresos-producto-chart-count');
     }
@@ -228,7 +211,6 @@ function setupProductoControls() {
  * Configura controles para filtros de ventas
  */
 function setupVentasControls() {
-    console.log('Configurando controles de ventas');
     
     // Configurar radio buttons para tipo de filtro de ventas
     const ventasRadios = document.querySelectorAll('input[name="ventas-producto-chart-filter"]');
@@ -239,7 +221,6 @@ function setupVentasControls() {
             // Agregar nuevo listener
             radio.addEventListener('change', onVentasFilterChange);
         });
-        console.log(`Configurados ${ventasRadios.length} radio buttons para ventas`);
     } else {
         console.warn('Radio buttons de ventas no encontrados: input[name="ventas-producto-chart-filter"]');
     }
@@ -251,7 +232,6 @@ function setupVentasControls() {
         ventasCount.removeEventListener('change', onVentasFilterChange);
         // Agregar nuevo listener
         ventasCount.addEventListener('change', onVentasFilterChange);
-        console.log('Selector de cantidad de ventas configurado');
     } else {
         console.warn('Selector de cantidad de ventas no encontrado: ventas-producto-chart-count');
     }
@@ -261,7 +241,6 @@ function setupVentasControls() {
  * Configura controles para filtros de no shows
  */
 function setupNoShowControls() {
-    console.log('Configurando controles de no shows');
     
     // Los no shows ahora usan tabla con buscador integrado
     // El buscador se configura automáticamente cuando se crea la tabla
@@ -270,12 +249,9 @@ function setupNoShowControls() {
     // Verificar si existe el contenedor de la tabla de no shows
     const noShowContainer = document.getElementById('noshow-table');
     if (noShowContainer) {
-        console.log('Contenedor de tabla de no shows encontrado');
     } else {
         console.warn('Contenedor de tabla de no shows no encontrado: noshow-table');
     }
-    
-    console.log('Controles de no shows configurados (tabla con buscador integrado)');
 }
 
 /**
@@ -316,8 +292,7 @@ function onVentasFilterChange(event) {
  * @param {Event} event - Evento del control
  */
 function onNoShowFilterChange(event) {
-    // Los no shows ahora se manejan con tabla y buscador
-    console.log('No shows ahora usan tabla con buscador');
+
 }
 
 /**
@@ -326,8 +301,7 @@ function onNoShowFilterChange(event) {
  * @param {string} endDate - Fecha de fin
  */
 function onDateRangeChange(startDate, endDate) {
-    // Esta función será implementada en tareas posteriores
-    console.log('Cambio en rango de fechas:', startDate, endDate);
+
 }
 
 /**
@@ -335,7 +309,6 @@ function onDateRangeChange(startDate, endDate) {
  * @param {string} filterValue - Valor del filtro
  */
 function updateClienteChart(filterValue) {
-    console.log('Actualizando gráfica de clientes con filtro:', filterValue);
     
     // Mostrar indicador de carga si existe
     const container = document.getElementById('ingresos-cliente-chart');
@@ -350,7 +323,6 @@ function updateClienteChart(filterValue) {
     // Obtener datos del backend (con cache)
     getCachedData()
     .then(data => {
-        console.log('Datos recibidos para actualizar gráfica de clientes:', data);
         
         const filterOptions = { topN: filterValue };
         
@@ -363,7 +335,6 @@ function updateClienteChart(filterValue) {
             );
             
             if (chart) {
-                console.log('Gráfica de clientes actualizada correctamente');
             } else {
                 console.warn('No se pudo crear la gráfica de clientes');
             }
@@ -396,7 +367,6 @@ function updateClienteChart(filterValue) {
  * @param {string} count - Cantidad de elementos
  */
 function updateProductoChart(filterType, count) {
-    console.log('Actualizando gráfica de productos con filtros:', { filterType, count });
     
     // Mostrar indicador de carga si existe
     const container = document.getElementById('ingresos-producto-chart');
@@ -411,7 +381,6 @@ function updateProductoChart(filterType, count) {
     // Obtener datos del backend (con cache)
     getCachedData()
     .then(data => {
-        console.log('Datos recibidos para actualizar gráfica de productos:', data);
         
         const filterOptions = { 
             rangeType: filterType,
@@ -427,7 +396,6 @@ function updateProductoChart(filterType, count) {
             );
             
             if (chart) {
-                console.log('Gráfica de productos actualizada correctamente');
             } else {
                 console.warn('No se pudo crear la gráfica de productos');
             }
@@ -460,7 +428,6 @@ function updateProductoChart(filterType, count) {
  * @param {string} count - Cantidad de elementos
  */
 function updateVentasChart(filterType, count) {
-    console.log('Actualizando gráfica de ventas con filtros:', { filterType, count });
     
     // Mostrar indicador de carga si existe
     const container = document.getElementById('ventas-producto-chart');
@@ -475,7 +442,6 @@ function updateVentasChart(filterType, count) {
     // Obtener datos del backend (con cache)
     getCachedData()
     .then(data => {
-        console.log('Datos recibidos para actualizar gráfica de ventas:', data);
         
         const filterOptions = { 
             rangeType: filterType,
@@ -493,7 +459,6 @@ function updateVentasChart(filterType, count) {
             );
             
             if (chart) {
-                console.log('Gráfica de ventas actualizada correctamente');
             } else {
                 console.warn('No se pudo crear la gráfica de ventas');
             }
@@ -525,7 +490,6 @@ function updateVentasChart(filterType, count) {
  * @param {string} containerId - ID del contenedor de la tabla
  */
 function updateNoShowTable(containerId = 'noshow-table') {
-    console.log('Actualizando tabla de no shows en contenedor:', containerId);
     
     // Mostrar indicador de carga si existe
     const container = document.getElementById(containerId);
@@ -536,14 +500,12 @@ function updateNoShowTable(containerId = 'noshow-table') {
     // Obtener datos del backend (con cache)
     getCachedData()
     .then(data => {
-        console.log('Datos recibidos para actualizar tabla de no shows:', data);
         
         // Verificar que existen las funciones necesarias
         if (window.ChartUtils && window.ChartUtils.createNoShowTable) {
             const table = window.ChartUtils.createNoShowTable(containerId, data.noShowPorCliente);
             
             if (table) {
-                console.log('Tabla de no shows actualizada correctamente');
             } else {
                 console.warn('No se pudo crear la tabla de no shows');
             }
@@ -571,7 +533,6 @@ function updateNoShowTable(containerId = 'noshow-table') {
  * @param {string} filterValue - Valor del filtro
  */
 function updateNoShowChart(filterValue) {
-    console.log('Actualizando tabla de no shows con filtro:', filterValue);
     
     // Función de compatibilidad - ahora actualiza la tabla
     updateNoShowTable('noshow-table');

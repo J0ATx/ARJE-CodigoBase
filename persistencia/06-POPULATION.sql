@@ -280,16 +280,16 @@ INSERT INTO Mesa (mesa_id, mesa_estado, mesa_tiempo_uso, mesa_alcance, mesa_rese
 (27, 'Libre', '00:00:00', 4, 'Si', CURDATE());
 
 INSERT INTO Promocion (promocion_nombre, promocion_descripcion, promocion_descuento, promocion_fidelizada, promocion_creacion) VALUES
-('2x1 Cervezas', 'Happy hour de 19:00 a 21:00', 0.5, FALSE, CURDATE()),
-('Pizza + Refresco', 'Pizzeta mozzarella + Refresco 1L', 0.15, FALSE, CURDATE()),
-('Descuento Fidelidad', '10% off en toda la carta', 0.10, TRUE, CURDATE()),
-('Jueves de Pastas', '20% off en todas las pastas', 0.20, FALSE, CURDATE()),
-('Combo Picada', 'Gramajo Grande + 2 Cervezas', 0.15, FALSE, CURDATE()),
-('Menu Vegetariano', '15% off en Menu Vegetariano', 0.15, FALSE, CURDATE()),
+('2x1 Cervezas', 'Happy hour de 19:00 a 21:00', 50, FALSE, CURDATE()),
+('Pizza + Refresco', 'Pizzeta mozzarella + Refresco 1L', 15, FALSE, CURDATE()),
+('Descuento Fidelidad', '10% off en toda la carta', 10, TRUE, CURDATE()),
+('Jueves de Pastas', '20% off en todas las pastas', 20, FALSE, CURDATE()),
+('Combo Picada', 'Gramajo Grande + 2 Cervezas', 15, FALSE, CURDATE()),
+('Menu Vegetariano', '15% off en Menu Vegetariano', 15, FALSE, CURDATE()),
 ('Postre Gratis', 'Con la compra de un Asado', 0.0, FALSE, CURDATE()),
-('Descuento Cumpleaños', '25% off para el cumpleañero', 0.25, TRUE, CURDATE()),
-('Combo Familiar', '1 Metro Mozzarella + Refresco', 0.20, FALSE, CURDATE()),
-('Tanos Noche', 'Descuento post 23:00', 0.10, FALSE, CURDATE());
+('Descuento Cumpleaños', '25% off para el cumpleañero', 25, TRUE, CURDATE()),
+('Combo Familiar', '1 Metro Mozzarella + Refresco', 20, FALSE, CURDATE()),
+('Tanos Noche', 'Descuento post 23:00', 10, FALSE, CURDATE());
 
 INSERT INTO Producto_Criterio (producto_id, producto_criterio) VALUES
 (1, 'Mas Vendido'), (2, 'Mas Vendido'), (47, 'Vegetariano'), (48, 'Vegetariano'),

@@ -13,6 +13,7 @@ let initialX = 0;
 let initialY = 0;
 let xOffset = 0;
 let yOffset = 0;
+let reservaIgnoradaId = null;
 
 window.cerrarModalNotificacion = function() {
   document.getElementById('modalNotificacion').classList.remove('active');
@@ -231,12 +232,14 @@ function crearPedido(e) {
   const especificacion = document.getElementById('especificacionPedido').value || '';
 
   if (!idMozo) {
+    document.getElementById('modalNuevoPedido').close();
     mostrarNotificacion('warning', 'Advertencia', 'Por favor, seleccione un mozo.');
     return;
   }
 
   const productos = obtenerProductosSeleccionados('div > .producto-item', productosDisponibles);
   if (!productos.length) {
+    document.getElementById('modalNuevoPedido').close();
     mostrarNotificacion('warning', 'Advertencia', 'Debe seleccionar al menos un producto.');
     return;
   }
@@ -255,6 +258,10 @@ function consultarReservaActiva(idMesa, idMozo, especificacion, productos) {
     .then(r => r.json())
     .then(data => {
       if (data.tiene_reserva) {
+        if (reservaIgnoradaId && String(reservaIgnoradaId) === String(data.reserva.reserva_id)) {
+          procederCrearPedido(idMesa, idMozo, especificacion, productos);
+          return;
+        }
         reservaActivaData = data.reserva;
         document.getElementById('reservaCliente').textContent = data.reserva.cliente_id;
         document.getElementById('reservaCantidad').textContent = data.reserva.reserva_cantidad_personas;
@@ -297,10 +304,20 @@ function procederCrearPedido(idMesa, idMozo, especificacion, productos) {
         sendReload();
         cargarPedidos();
         document.getElementById('modalNuevoPedido').close();
+        reservaIgnoradaId = null;
       } else {
         document.getElementById('modalNuevoPedido').close();
-        mostrarNotificacion('error', 'Error', data.message || 'Error al crear el pedido.');
+        setTimeout(() => {
+          mostrarNotificacion('error', 'Error', data.message || 'Error al crear el pedido.');
+        }, 0);
       }
+    })
+    .catch(err => {
+      console.error('Error al crear pedido:', err);
+      document.getElementById('modalNuevoPedido').close();
+      setTimeout(() => {
+        mostrarNotificacion('error', 'Error', 'Error al crear el pedido.');
+      }, 0);
     });
 }
 
@@ -308,6 +325,7 @@ function confirmarReservaActiva() {
   const emailCliente = document.getElementById('emailReserva').value;
 
   if (!emailCliente) {
+    document.getElementById('modalNuevoPedido').close();
     mostrarNotificacion('warning', 'Advertencia', 'Por favor ingrese el email del cliente para confirmar.');
     return;
   }
@@ -356,6 +374,7 @@ function rechazarReservaActiva() {
 
       if (data.success) {
         mostrarNotificacion('success', 'Información', 'Continuando con el pedido. Esta no es una reserva.');
+        reservaIgnoradaId = reservaActivaData && reservaActivaData.reserva_id ? reservaActivaData.reserva_id : null;
         procederCrearPedido(
           pedidoData.idMesa,
           pedidoData.idMozo,
@@ -364,15 +383,16 @@ function rechazarReservaActiva() {
         );
       } else {
         mostrarNotificacion('error', 'Error', data.message || 'Error');
+        pedidoData = null;
+        reservaActivaData = null;
       }
     })
     .catch(error => {
       console.error('Error:', error);
       mostrarNotificacion('error', 'Error', 'Error al procesar');
+      pedidoData = null;
+      reservaActivaData = null;
     });
-
-  pedidoData = null;
-  reservaActivaData = null;
 }
 
 function obtenerProductosSeleccionados(selector, productos) {
@@ -423,9 +443,7 @@ function cargarPedidos() {
       pedidos = data.data;
       const togglePagados = document.getElementById('togglePagados');
       const incluirPagados = togglePagados ? togglePagados.checked : false;
-      const estadosOrden = incluirPagados ? 
-        ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado'] : 
-        ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado'];
+      const estadosOrden = ['Pendiente', 'En-Preparacion', 'Listo', 'Entregado', 'Pagado'];
       const pedidosContainer = document.getElementById('pedidosList');
       pedidosContainer.innerHTML = '';
 
@@ -532,6 +550,7 @@ function cargarPedidos() {
       });
 
       pedidos.forEach(pedido => {
+        if (!incluirPagados && pedido.estado === 'Pagado') return;
         const productosLista = Array.isArray(pedido.productos) ? pedido.productos : [];
         const estadoClase = pedido.estado.toLowerCase().replace(/-/g, '_');
         const card = document.createElement('div');
@@ -852,7 +871,7 @@ function emailValido(email) {
   return re.test(String(email).toLowerCase());
 }
 
-function agregarClienteChip(inputId, chipsContainerId) {
+async function agregarClienteChip(inputId, chipsContainerId) {
   const input = document.getElementById(inputId);
   const cont = document.getElementById(chipsContainerId);
   const email = (input.value || '').trim().toLowerCase();
@@ -860,6 +879,19 @@ function agregarClienteChip(inputId, chipsContainerId) {
   if (!emailValido(email)) { alert('Email inválido'); return; }
   const existentes = Array.from(cont.querySelectorAll('.chip span')).map(s => s.textContent.toLowerCase());
   if (existentes.includes(email)) { input.value = ''; return; }
+
+  try {
+    const resp = await fetch('../BackEnd/validarCliente.php', {
+      method: 'POST',
+      body: new URLSearchParams({ email })
+    });
+    const data = await resp.json();
+    if (!data.success) { alert(data.message || 'Error validando cliente'); return; }
+    if (!data.exists) { alert('Cliente no registrado'); return; }
+  } catch (err) {
+    alert('Error validando cliente');
+    return;
+  }
 
   const chip = document.createElement('div');
   chip.className = 'chip';

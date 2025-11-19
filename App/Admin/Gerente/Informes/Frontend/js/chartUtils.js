@@ -11,8 +11,6 @@ const activeCharts = new Map();
  * @param {Object} data - Datos del backend
  */
 function initializeCharts(data) {
-    // Esta función será implementada en tareas posteriores
-    console.log('Inicializando gráficas con datos:', data);
 }
 
 /**
@@ -895,8 +893,6 @@ function createLineChart(containerId, data, config) {
  * @param {Array} newData - Nuevos datos
  */
 function updateChart(chartId, newData) {
-    // Esta función será implementada en tareas posteriores
-    console.log('Actualizando gráfica:', chartId);
 }
 
 /**
@@ -1542,8 +1538,6 @@ function updateNoShowTableRows(containerId, data) {
         console.error('No se encontró tbody para:', containerId);
         return;
     }
-    
-    console.log('Actualizando filas de tabla con datos:', data);
     
     if (!data || data.length === 0) {
         tbody.innerHTML = `
