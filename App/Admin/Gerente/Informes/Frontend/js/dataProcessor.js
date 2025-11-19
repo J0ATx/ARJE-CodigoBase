@@ -3,8 +3,6 @@
  * Módulo funcional para el sistema de estadísticas
  */
 
-console.log('Loading DataProcessor...');
-
 // Funciones de utilidad
 function safeParseFloat(value) {
     const parsed = parseFloat(value);
@@ -51,7 +49,6 @@ function processIngresosPorFecha(rawData) {
  * Procesa datos de ingresos por método de pago - TASK 6 IMPLEMENTATION
  */
 function processIngresosPorPago(rawData) {
-    console.log('processIngresosPorPago called with:', rawData);
     
     if (!rawData || !Array.isArray(rawData) || rawData.length === 0) {
         return { montoData: [], porcentajeData: [] };
@@ -83,8 +80,6 @@ function processIngresosPorPago(rawData) {
             label: item.label,
             y: parseFloat(item.porcentaje.toFixed(1))
         }));
-        
-        console.log('processIngresosPorPago result:', { montoData, porcentajeData });
         return { montoData, porcentajeData };
     } catch (error) {
         console.error('Error in processIngresosPorPago:', error);
@@ -210,15 +205,11 @@ function processVentasPorProducto(rawData, filterOptions = {}) {
  */
 function processNoShowTableData(rawData) {
     if (!rawData || !Array.isArray(rawData) || rawData.length === 0) {
-        console.log('No hay datos de no shows o datos vacíos');
         return [];
     }
     
-    console.log('Datos de no shows recibidos:', rawData);
-    
     try {
         return rawData.map((item, index) => {
-            console.log(`Procesando item ${index}:`, item);
             
             // Intentar diferentes nombres de campos que podrían venir del backend
             const clienteNombre = item.cliente_nombre || item.nombre || item.name || `Cliente ${item.cliente_id || index + 1}`;
@@ -330,7 +321,6 @@ try {
         formatDate,
         sortDataByValue
     };
-    console.log('DataProcessor loaded successfully');
 } catch (error) {
     console.error('Error exporting DataProcessor:', error);
 }

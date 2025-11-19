@@ -62,6 +62,7 @@ GRANT SELECT, DELETE, INSERT ON lostrestanosdb.Consume TO 'empleado'@'localhost'
 GRANT SELECT, UPDATE ON lostrestanosdb.Stock_Cantidad TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Camarero TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Personal TO 'empleado'@'localhost';
+GRANT SELECT ON lostrestanosdb.Cliente TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Cliente_Alergia TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Datos_Usuarios TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Stock TO 'empleado'@'localhost';
