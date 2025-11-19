@@ -3,6 +3,7 @@ let productosDisponibles = [];
 let pedidos = [];
 let confirmacionCallback = null;
 
+
 let touchStartX = 0;
 let touchStartY = 0;
 let touchStartTime = 0;
@@ -192,12 +193,19 @@ function agregarProductoInput(containerId, productos, editar = false, valor = ''
     select.appendChild(opt);
   });
 
+  // --- CAMBIO: Escuchar cambios para actualizar promos ---
+  select.addEventListener('change', actualizarPromociones);
+  // -----------------------------------------------------
+
   const inputCantidad = document.createElement('input');
   inputCantidad.type = 'number';
   inputCantidad.min = 1;
   inputCantidad.value = 1;
   inputCantidad.className = 'input-cantidad';
   inputCantidad.style.width = '60px';
+
+  // --- CAMBIO: Si cambia la cantidad, podrías querer validar promos también ---
+  inputCantidad.addEventListener('change', actualizarPromociones);
 
   if (editar && valor) {
     const prod = productos.find(p => p.producto_nombre === valor);
@@ -207,7 +215,13 @@ function agregarProductoInput(containerId, productos, editar = false, valor = ''
   const btnQuitar = document.createElement('button');
   btnQuitar.type = 'button';
   btnQuitar.textContent = 'Quitar';
-  btnQuitar.onclick = () => div.remove();
+  
+  // --- CAMBIO: Al quitar, actualizar promos ---
+  btnQuitar.onclick = () => { 
+      div.remove(); 
+      actualizarPromociones(); 
+  };
+  // ------------------------------------------
 
   div.appendChild(select);
   div.appendChild(inputCantidad);
@@ -231,12 +245,14 @@ function crearPedido(e) {
   const especificacion = document.getElementById('especificacionPedido').value || '';
 
   if (!idMozo) {
+    document.getElementById('modalNuevoPedido').close();
     mostrarNotificacion('warning', 'Advertencia', 'Por favor, seleccione un mozo.');
     return;
   }
 
   const productos = obtenerProductosSeleccionados('div > .producto-item', productosDisponibles);
   if (!productos.length) {
+    document.getElementById('modalNuevoPedido').close();
     mostrarNotificacion('warning', 'Advertencia', 'Debe seleccionar al menos un producto.');
     return;
   }
@@ -282,6 +298,23 @@ function procederCrearPedido(idMesa, idMozo, especificacion, productos) {
   formData.append('especificacion', especificacion);
   formData.append('productos', JSON.stringify(productos));
 
+  // --- INICIO CÓDIGO NUEVO PROMOCIONES ---
+  const promosSeleccionadas = [];
+  const checkboxes = document.querySelectorAll('#seccionPromociones .promo-checkbox:checked');
+  
+  checkboxes.forEach(chk => {
+    promosSeleccionadas.push({
+      promocion_id: chk.value,
+      producto_id: chk.getAttribute('data-producto-id'),
+      descuento: chk.getAttribute('data-descuento')
+    });
+  });
+
+  if (promosSeleccionadas.length > 0) {
+      formData.append('promociones', JSON.stringify(promosSeleccionadas));
+  }
+  // --- FIN CÓDIGO NUEVO PROMOCIONES ---
+
   const clientes = obtenerClientesDesdeChips('clientesChips');
   if (clientes.length) {
     formData.append('clientes', JSON.stringify(clientes));
@@ -294,6 +327,11 @@ function procederCrearPedido(idMesa, idMozo, especificacion, productos) {
         mostrarNotificacion('success', '¡Éxito!', 'Pedido creado exitosamente.');
         document.getElementById('formPedido').reset();
         document.getElementById('productosContainer').innerHTML = '';
+        
+        // Limpiar sección de promos visualmente
+        const seccionPromos = document.getElementById('seccionPromociones');
+        if(seccionPromos) seccionPromos.style.display = 'none';
+        
         sendReload();
         cargarPedidos();
         document.getElementById('modalNuevoPedido').close();
@@ -1063,4 +1101,61 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', setupTouchEvents);
 } else {
   setupTouchEvents();
+}
+
+function actualizarPromociones() {
+  // Usamos tu función existente para obtener los productos actuales del DOM
+  const productos = obtenerProductosSeleccionados('div > .producto-item', productosDisponibles);
+  const container = document.getElementById('seccionPromociones');
+  const lista = document.getElementById('listaPromociones');
+
+  // Si no existe el contenedor en el HTML (por si olvidaste agregarlo), no hacemos nada
+  if (!container || !lista) return;
+
+  if (productos.length === 0) {
+    container.style.display = 'none';
+    lista.innerHTML = '';
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('productos', JSON.stringify(productos));
+
+  fetch('../BackEnd/buscarPromociones.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(data => {
+      lista.innerHTML = '';
+
+      if (data.length > 0) {
+        container.style.display = 'block';
+        
+        data.forEach(promo => {
+          // Buscamos el nombre del producto para mostrarlo visualmente
+          const prodObj = productosDisponibles.find(p => p.producto_id == promo.producto_id);
+          const nombreProd = prodObj ? prodObj.producto_nombre : 'Producto';
+
+          const div = document.createElement('div');
+          div.style.cssText = 'margin-bottom: 8px; padding: 5px; border-bottom: 1px solid #eee;';
+          div.innerHTML = `
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; width: 100%;">
+                <input type="checkbox" class="promo-checkbox" 
+                    value="${promo.promocion_id}" 
+                    data-producto-id="${promo.producto_id}"
+                    data-descuento="${promo.promocion_descuento}">
+                <div style="font-size: 0.9rem;">
+                    <strong style="color: #2c3e50;">${promo.promocion_nombre}</strong>
+                    <br>
+                    <span style="font-size: 0.8rem; color: #27ae60;">
+                       ${promo.promocion_descuento}% OFF en ${nombreProd}
+                    </span>
+                </div>
+            </label>
+          `;
+          lista.appendChild(div);
+        });
+      } else {
+        container.style.display = 'none';
+      }
+    })
+    .catch(err => console.error('Error buscando promos:', err));
 }
