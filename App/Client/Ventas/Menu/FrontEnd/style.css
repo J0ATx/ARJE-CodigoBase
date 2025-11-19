@@ -230,6 +230,19 @@ body {
     background: linear-gradient(to right, #ffffff1a, #ffffff2d);
 }
 
+.btn-promociones{
+    margin-top: 12px;
+    justify-self:center;
+    width:100%;
+    align-self: center;
+    justify-content:center;
+    background: linear-gradient(to right, #ffffff1a, #ffffff2d);
+}
+
+.btn-promociones:hover{
+    background: linear-gradient(to right, #ffffff44, #ffffff66);
+}
+
 .menu-header {
     display: flex;
     align-items: center;
@@ -809,6 +822,140 @@ body {
     color: rgba(239, 231, 210, 0.8);
     font-size: 18px;
     font-weight: 500;
+}
+
+.promos-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0 10px;
+}
+
+.promos-header h3 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #f6f0e2;
+    font-family: 'Nesatho', 'Poppins', sans-serif;
+}
+
+.promos-contenedor {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.promo-item {
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.3s ease;
+}
+
+.promo-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 8px;
+    padding: 1px;
+    background: radial-gradient(circle, rgba(239, 231, 210, 0.1) 60%, #ffffff44 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.promo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.promo-header {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.promo-nombre {
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: 600;
+    color: #f6f0e2;
+}
+
+.promo-descuento {
+    background: linear-gradient(45deg, #D32F2F, #B71C1C);
+    color: #fff;
+    border-radius: 16px;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.promo-badge {
+    border-radius: 16px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(239, 231, 210, 0.2);
+}
+
+.badge-fidelizada {
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+}
+
+.badge-general {
+    background: rgba(239, 231, 210, 0.08);
+    color: #EFE7D2;
+}
+
+.promo-descripcion {
+    font-size: 15px;
+    color: #bbb;
+    line-height: 1.4;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.promo-productos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+    justify-content: center;
+}
+
+.promo-chip {
+    position: relative;
+    background: linear-gradient(to right, #ffffff23, #ffffff02);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.promo-chip::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 16px;
+    padding: 1px;
+    background: radial-gradient(circle, #ffffff44 60%, rgba(239, 231, 210, 0.1) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.promo-chip:hover {
+    background: linear-gradient(to right, #ffffff4d, #ffffff2d);
+}
+
+.promo-item.nuevo {
+    animation: fadeInUp 0.5s ease-out;
 }
 
 .tiempo-preparacion {
@@ -1773,5 +1920,13 @@ body {
 }
 
 #main-content.visible {
+    display: block;
+}
+.promos-section {
+    display: none;
+    margin-top: 32px;
+}
+
+.promos-section.active {
     display: block;
 }

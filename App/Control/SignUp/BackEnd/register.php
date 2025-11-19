@@ -1,6 +1,9 @@
 <?php
 header('Content-Type: application/json');
 require_once "../../Conexion/clienteNoRegistrado.php";
+require_once '../../Librerias/phpmailer/src/Exception.php';
+require_once '../../Librerias/phpmailer/src/PHPMailer.php';
+require_once '../../Librerias/phpmailer/src/SMTP.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -71,5 +74,29 @@ if ($usuario === null) {
 } else {
     include "../../SignIn/BackEnd/funLogin.php";
     iniciarSesion($usuario);
+    try {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'restaurantel3t@gmail.com';
+            $mail->Password = 'tqixgtmeyuxxjead';
+            $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+            $mail->setFrom('restaurantel3t@gmail.com', 'Los 3 Tanos');
+            $mail->addAddress($email);
+            $mail->addReplyTo('restaurantel3t@gmail.com','Los 3 Tanos');
+            $mail->isHTML(true);
+            $mail->Subject = 'Tu cuenta ha sido creada correctamente';
+            $nombreCompleto = trim(($nombre ?? '') . ' ' . ($apellido ?? ''));
+            $body = '<div style="font-family:Arial,Helvetica,sans-serif"><h2>Los 3 Tanos</h2><p>Tu cuenta ha sido creada correctamente.</p><p><strong>Nombre:</strong> ' . htmlspecialchars($nombreCompleto) . '</p><p><strong>Email:</strong> ' . htmlspecialchars($email) . '</p><p>¡Te esperamos!</p></div>';
+            $mail->Body = $body;
+            $mail->AltBody = 'Tu cuenta ha sido creada correctamente. Nombre: ' . $nombreCompleto . ' Email: ' . $email . '. ¡Te esperamos!';
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+            $mail->send();
+        }
+    } catch (\Exception $e) {}
     echo json_encode(["exito" => true, "mensaje" => "Registro exitoso."]);
 }

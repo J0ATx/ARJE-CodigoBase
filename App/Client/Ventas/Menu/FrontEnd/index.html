@@ -38,17 +38,25 @@
                             <span class="download2"></span>
                         </button>
                     </div>
-
+                    
                     <div class="busqueda-principal">
                         <div class="barra-busqueda">
                             <input type="text" id="busqueda-texto" placeholder="Buscar productos..."
-                                class="input-busqueda">
+                            class="input-busqueda">
                             <button id="btn-limpiar-busqueda" class="btn-limpiar">✕</button>
                             <button id="btn-abrir-filtros" class="btn-filtros">Filtros</button>
                         </div>
+                        <button id="btn-abrir-promos" class="btn-filtros btn-promociones">Promociones</button>
                     </div>
 
                     <div id="menu-listado" class="menu-contenedor"></div>
+
+                    <section id="promos-section" class="promos-section" aria-label="Promociones">
+                        <div class="promos-header">
+                            <h3>Promociones</h3>
+                        </div>
+                        <div id="promos-contenedor" class="promos-contenedor"></div>
+                    </section>
                 </div>
             </div>
             <client-footer></client-footer>

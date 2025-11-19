@@ -24,6 +24,7 @@ function validateRating(calificacion) {
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchProductos();
+    fetchPromociones();
     configurarEventListeners();
     configurarBotonDescarga();
 });
@@ -32,6 +33,7 @@ function configurarEventListeners() {
     const inputBusqueda = document.getElementById('busqueda-texto');
     const btnLimpiar = document.getElementById('btn-limpiar-busqueda');
     const btnAbrirFiltros = document.getElementById('btn-abrir-filtros');
+    const btnAbrirPromos = document.getElementById('btn-abrir-promos');
     const modalFiltros = document.getElementById('modal-filtros');
     const btnCerrarModal = document.getElementById('btn-cerrar-modal');
     const btnLimpiarTodosModal = document.getElementById('btn-limpiar-todos-modal');
@@ -47,6 +49,15 @@ function configurarEventListeners() {
     btnCerrarModal.addEventListener('click', cerrarModalFiltros);
     btnLimpiarTodosModal.addEventListener('click', limpiarTodosFiltrosModal);
     btnAplicarFiltros.addEventListener('click', aplicarFiltrosModal);
+
+    if (btnAbrirPromos) {
+        btnAbrirPromos.addEventListener('click', () => {
+            const section = document.getElementById('promos-section');
+            if (!section) return;
+            section.classList.add('active');
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
 
     modalFiltros.addEventListener('click', (e) => {
         if (e.target === modalFiltros) {
@@ -105,6 +116,7 @@ function aplicarFiltrosModal() {
 
 let productosOriginales = [];
 let productosFiltrados = [];
+let promocionesOriginales = [];
 
 function configurarBotonDescarga() {
     const btnDescargar = document.getElementById('descargar-menu');
@@ -155,6 +167,25 @@ function fetchProductos() {
         .catch(error => {
             console.error('Error fetching productos:', error);
             document.getElementById('contador-resultados').textContent = 'Error al cargar productos';
+        });
+}
+
+function fetchPromociones() {
+    const url = '../../../../Admin/Ventas/Promociones/Backend/visualizar.php';
+    fetch(url, { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            const promos = (data && data.success && data.data && Array.isArray(data.data.promociones)) ? data.data.promociones : [];
+            promocionesOriginales = promos;
+            mostrarPromociones(promos);
+
+            const btn = document.getElementById('btn-abrir-promos');
+            if (btn) btn.style.display = promos.length ? '' : 'none';
+        })
+        .catch(() => {
+            mostrarPromociones([]);
+            const btn = document.getElementById('btn-abrir-promos');
+            if (btn) btn.style.display = 'none';
         });
 }
 
@@ -326,6 +357,53 @@ function mostrarProductos(productos) {
 
     setTimeout(() => {
         document.querySelectorAll('.producto-item.nuevo').forEach(item => {
+            item.classList.remove('nuevo');
+        });
+    }, 600);
+}
+
+function mostrarPromociones(promociones) {
+    const header = document.querySelector('.promos-header');
+    const contenedor = document.getElementById('promos-contenedor');
+    const section = document.getElementById('promos-section');
+    if (!contenedor || !header) return;
+    contenedor.innerHTML = '';
+    if (!Array.isArray(promociones) || promociones.length === 0) {
+        header.style.display = 'none';
+        if (section) section.classList.remove('active');
+        return;
+    }
+    header.style.display = '';
+
+    promociones.forEach((promo, index) => {
+        const fidelizada = promo.promocion_fidelizada ? 'Fidelizados' : 'General';
+        const productos = Array.isArray(promo.productos) ? promo.productos : [];
+        const div = document.createElement('div');
+        div.className = 'promo-item nuevo';
+        div.style.animationDelay = `${index * 50}ms`;
+        const chips = productos.map(p => `<button class="promo-chip" data-id="${p.producto_id}">${p.producto_nombre}</button>`).join('');
+        div.innerHTML = `
+            <div class="promo-header">
+                <strong class="promo-nombre">${promo.promocion_nombre || ''}</strong>
+                <span class="promo-descuento">${parseFloat(promo.promocion_descuento || 0).toFixed(0)}% OFF</span>
+                <span class="promo-badge ${promo.promocion_fidelizada ? 'badge-fidelizada' : 'badge-general'}">${fidelizada}</span>
+            </div>
+            ${promo.promocion_descripcion ? `<div class="promo-descripcion">${promo.promocion_descripcion}</div>` : ''}
+            ${chips ? `<div class="promo-productos">${chips}</div>` : ''}
+        `;
+        contenedor.appendChild(div);
+    });
+
+    contenedor.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target && target.classList.contains('promo-chip')) {
+            const id = target.getAttribute('data-id');
+            if (id) window.location.href = `detalle.html?id=${id}`;
+        }
+    });
+
+    setTimeout(() => {
+        document.querySelectorAll('.promo-item.nuevo').forEach(item => {
             item.classList.remove('nuevo');
         });
     }, 600);

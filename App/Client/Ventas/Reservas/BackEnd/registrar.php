@@ -6,6 +6,11 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 include_once "../../../../Control/Conexion/clienteRegistrado.php";
+require_once '../../../../Control/Librerias/phpmailer/src/Exception.php';
+require_once '../../../../Control/Librerias/phpmailer/src/PHPMailer.php';
+require_once '../../../../Control/Librerias/phpmailer/src/SMTP.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 $fecha = isset($_POST['fecha']) ? $_POST['fecha'] : '';
 $hora = isset($_POST['hora']) ? $_POST['hora'] : '';
@@ -189,7 +194,32 @@ $id_cliente = $_SESSION["usuario_id"];
             $id_cliente, 
             $mesa_id
         ]);
-
+        $reservaId = $con->lastInsertId();
+        if (filter_var($id_cliente, FILTER_VALIDATE_EMAIL)) {
+            try {
+                $mail = new PHPMailer(true);
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'restaurantel3t@gmail.com';
+                $mail->Password = 'tqixgtmeyuxxjead';
+                $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+                $mail->setFrom('restaurantel3t@gmail.com', 'Los 3 Tanos');
+                $mail->addAddress($id_cliente);
+                $mail->addReplyTo('restaurantel3t@gmail.com','Los 3 Tanos');
+                $mail->isHTML(true);
+                $mail->Subject = 'Reserva confirmada - Los 3 Tanos';
+                $fechaFmt = date('d/m/Y', strtotime($fecha));
+                $horaFmt = substr($hora, 0, 5);
+                $body = '<div style="font-family:Arial,Helvetica,sans-serif"><h2>Los 3 Tanos</h2><p>Tu reserva ha sido registrada.</p><p><strong>Fecha:</strong> ' . $fechaFmt . '</p><p><strong>Hora:</strong> ' . $horaFmt . '</p><p><strong>Personas:</strong> ' . htmlspecialchars((string)$cantidad) . '</p><p><strong>Mesa:</strong> ' . htmlspecialchars((string)$mesa_id) . '</p><p><strong>Duración:</strong> ' . htmlspecialchars((string)$duracion) . ' horas</p><p><strong>ID de Reserva:</strong> ' . htmlspecialchars((string)$reservaId) . '</p><p>¡Te esperamos!</p></div>';
+                $mail->Body = $body;
+                $mail->AltBody = 'Tu reserva ha sido registrada. Fecha: ' . $fechaFmt . ' Hora: ' . $horaFmt . ' Personas: ' . $cantidad . ' Mesa: ' . $mesa_id . ' Duración: ' . $duracion . ' horas. ID: ' . $reservaId . '. ¡Te esperamos!';
+                $mail->CharSet = 'UTF-8';
+                $mail->Encoding = 'base64';
+                $mail->send();
+            } catch (Exception $e) {}
+        }
         $con->commit();
         echo json_encode(["success" => "Reserva creada exitosamente"]);
     } catch (\Throwable $th) {
