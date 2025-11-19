@@ -14,6 +14,10 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Stock_Cantidad TO 'gerent
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Mesa TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Promocion TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Fidelizacion_Solicitud TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Fidelizacion_Solicitud TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Promocion TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Fidelizacion_Solicitud TO 'gerente'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Aplica TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Reserva TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Pedido TO 'gerente'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON lostrestanosdb.Efectua TO 'gerente'@'localhost';
@@ -53,6 +57,7 @@ GRANT SELECT, UPDATE, DELETE, INSERT ON lostrestanosdb.Posee TO 'empleado'@'loca
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Reserva TO 'empleado'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.No_Show TO 'empleado'@'localhost';
 GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Promocion TO 'empleado'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON lostrestanosdb.Aplica TO 'empleado'@'localhost';
 GRANT SELECT, DELETE, INSERT ON lostrestanosdb.Consume TO 'empleado'@'localhost';
 GRANT SELECT, UPDATE ON lostrestanosdb.Stock_Cantidad TO 'empleado'@'localhost';
 GRANT SELECT ON lostrestanosdb.Camarero TO 'empleado'@'localhost';

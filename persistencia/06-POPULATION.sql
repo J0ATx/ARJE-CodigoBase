@@ -266,29 +266,18 @@ ON DUPLICATE KEY UPDATE cliente_alergia = VALUES(cliente_alergia);
 -- =================================================================================
 
 INSERT INTO Mesa (mesa_id, mesa_estado, mesa_tiempo_uso, mesa_alcance, mesa_reservable, mesa_creacion) VALUES
-(1, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 1
-(2, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 2
-(3, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 3
-(4, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 4
-(5, 'Ocupada', '01:15:30', 6, 'Si', CURDATE()), -- Mesa 5 (Usada para un pedido activo)
-(6, 'Libre', '00:00:00', 6, 'Si', CURDATE()), -- Mesa 6
-(10, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 10
-(11, 'Libre', '00:00:00', 4, 'No', CURDATE()), -- Mesa 11
-(12, 'Inhabilitada', '00:00:00', 4, 'No', CURDATE()), -- Mesa 12
-(13, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 13
-(14, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 14
-(15, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 15
-(16, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 16
-(17, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 17
-(18, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 18
-(20, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 20
-(21, 'Libre', '00:00:00', 2, 'Si', CURDATE()), -- Mesa 21
-(22, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 22
-(23, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 23
-(24, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 24
-(25, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 25
-(26, 'Libre', '00:00:00', 4, 'Si', CURDATE()), -- Mesa 26
-(27, 'Libre', '00:00:00', 4, 'Si', CURDATE()); -- Mesa 27
+(1, 'Libre', '00:00:00', 6, 'Si', CURDATE()), (2, 'Libre', '00:00:00', 6, 'Si', CURDATE()),
+(3, 'Libre', '00:00:00', 6, 'Si', CURDATE()), (4, 'Libre', '00:00:00', 6, 'Si', CURDATE()),
+(5, 'Ocupada', '01:15:30', 6, 'Si', CURDATE()), (6, 'Libre', '00:00:00', 6, 'Si', CURDATE()),
+(10, 'Libre', '00:00:00', 4, 'Si', CURDATE()), (11, 'Libre', '00:00:00', 4, 'No', CURDATE()),
+(12, 'Inhabilitada', '00:00:00', 4, 'No', CURDATE()), (13, 'Libre', '00:00:00', 4, 'Si', CURDATE()),
+(14, 'Libre', '00:00:00', 4, 'Si', CURDATE()), (15, 'Libre', '00:00:00', 4, 'Si', CURDATE()),
+(16, 'Libre', '00:00:00', 4, 'Si', CURDATE()), (17, 'Libre', '00:00:00', 4, 'Si', CURDATE()),
+(18, 'Libre', '00:00:00', 4, 'Si', CURDATE()), (20, 'Libre', '00:00:00', 4, 'Si', CURDATE()),
+(21, 'Libre', '00:00:00', 2, 'Si', CURDATE()), (22, 'Libre', '00:00:00', 4, 'Si', CURDATE()),
+(23, 'Libre', '00:00:00', 4, 'Si', CURDATE()), (24, 'Libre', '00:00:00', 4, 'Si', CURDATE()),
+(25, 'Libre', '00:00:00', 4, 'Si', CURDATE()), (26, 'Libre', '00:00:00', 4, 'Si', CURDATE()),
+(27, 'Libre', '00:00:00', 4, 'Si', CURDATE());
 
 INSERT INTO Promocion (promocion_nombre, promocion_descripcion, promocion_descuento, promocion_fidelizada, promocion_creacion) VALUES
 ('2x1 Cervezas', 'Happy hour de 19:00 a 21:00', 0.5, FALSE, CURDATE()),
